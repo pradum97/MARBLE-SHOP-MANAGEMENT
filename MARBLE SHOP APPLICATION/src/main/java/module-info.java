@@ -8,6 +8,7 @@ module com.shop.management {
     requires java.logging;
     requires java.sql;
 
+
     opens com.shop.management to javafx.fxml;
     exports com.shop.management;
     exports com.shop.management.Controller;
