@@ -1,4 +1,4 @@
-package com.shop.management.utilfile;
+package com.shop.management.util;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -19,7 +19,7 @@ public class DbConnection {
         FileInputStream file=null;
         Properties prop=null;
         try{
-            file= new FileInputStream("src/main/java/com/shop/management/utilfile/queary.properties");
+            file= new FileInputStream("src/main/java/com/shop/management/util/queary.properties");
             prop=new Properties();
             prop.load(file);
         } catch (FileNotFoundException e) {
