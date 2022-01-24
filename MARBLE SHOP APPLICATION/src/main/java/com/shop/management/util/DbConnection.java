@@ -1,4 +1,4 @@
-package com.shop.management.utilfile;
+package com.shop.management.util;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

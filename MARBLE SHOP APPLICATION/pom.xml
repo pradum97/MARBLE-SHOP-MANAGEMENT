@@ -15,6 +15,18 @@
     </properties>
 
     <dependencies>
+
+         <!--Enter New dependency-->
+
+            <!--Pradum Kumar-->
+
+
+
+
+            <!--Dhurav Kumar-->
+
+
+        <!--.......................-->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
