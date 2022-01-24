@@ -1,5 +1,6 @@
-package com.shop.management;
+package com.shop.management.Controller;
 
+import com.shop.management.Main;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -12,7 +13,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class FX_SplashController implements Initializable {
+public class SplashController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -31,7 +32,6 @@ public class FX_SplashController implements Initializable {
                     @Override
                     public void run() {
 
-                        System.out.println("hh");
                         new Main().changeScene("login.fxml","Login Here");
                     }
                 });

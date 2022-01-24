@@ -6,7 +6,7 @@
 <?import javafx.scene.text.Font?>
 <AnchorPane id="AnchorPane" fx:id="apane" prefHeight="400.0" prefWidth="600.0"
             style="-fx-background-color: linear-gradient(to left bottom, #021634, #2d1946, #581149, #7e003c, #981022);;"
-            xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/16" fx:controller="com.shop.management.FX_SplashController">
+            xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/16" fx:controller="com.shop.management.Controller.SplashController">
     <children>
         <Label layoutX="132.0" layoutY="164.0" text="SPLASH SCREEN" textFill="WHITE">
             <font>
