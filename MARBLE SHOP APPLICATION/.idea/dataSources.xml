@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="PostgreSQL - MARBLE_SHOP_MANAGEMENT@localhost" uuid="090cd519-e034-4c4e-a5a1-c7b2a507c2fb">
+    <data-source source="LOCAL" name="MARBELE_SHOP_MANAGEMENT@localhost" uuid="d982861d-e56c-4694-824d-f13d9d8a94e1">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
