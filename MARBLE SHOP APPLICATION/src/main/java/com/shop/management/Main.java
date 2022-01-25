@@ -14,19 +14,21 @@ import java.io.IOException;
 
 public class Main extends Application {
     static Stage primaryStage;
-    AppConfig appConfig;
+    private AppConfig appConfig;
     static Stage splash_stage;
 
     @Override
     public void start(Stage stage) throws IOException {
         primaryStage = stage;
 
-       /* splash_stage = new Stage();
-        Parent root = FXMLLoader.load(Main.class.getResource("signup.fxml"));
+
+        /*splash_stage = new Stage();
+        Parent root = FXMLLoader.load(Main.class.getResource("splash_screen.fxml"));
         Scene scene = new Scene(root, 600, 400);
         splash_stage.initStyle(StageStyle.UNDECORATED);
         splash_stage.setScene(scene);
         primaryStage.setMinWidth(600.0);
+       primaryStage.setMinHeight(500.0);
         splash_stage.show();*/
 
         changeScene("dashboard.fxml","test");
@@ -38,6 +40,8 @@ public class Main extends Application {
 
             if (null != primaryStage) {
 
+                //dh
+
                 primaryStage.setResizable(true);
                 primaryStage.getIcons().add(new Image(getClass().getResourceAsStream(appConfig.APPLICATION_ICON)));
                 primaryStage.setTitle(appConfig.APPLICATION_NAME);
@@ -45,15 +49,16 @@ public class Main extends Application {
                 Scene scene = new Scene(pane);
                 primaryStage.setScene(scene);
                 primaryStage.setTitle(appConfig.APPLICATION_NAME + " ( " + title + " ) ");
-             //   splash_stage.hide();
+               // splash_stage.hide();
                 primaryStage.show();
 
             }
+
         } catch (IOException | NullPointerException e) {
             e.printStackTrace();
         }
-
     }
+
     public static void main(String[] args) {
         launch(args);
     }
