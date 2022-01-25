@@ -7,5 +7,7 @@
    <children>
       <VBox fx:id="side_menu" prefHeight="768.0" prefWidth="180.0" />
       <VBox prefHeight="200.0" prefWidth="1100.0" />
+
+
    </children>
 </HBox>
