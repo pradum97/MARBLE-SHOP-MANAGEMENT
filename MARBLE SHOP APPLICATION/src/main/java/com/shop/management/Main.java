@@ -31,7 +31,7 @@ public class Main extends Application {
        primaryStage.setMinHeight(500.0);
         splash_stage.show();*/
 
-        changeScene("signup.fxml","test");
+        changeScene("dashboard.fxml","test");
     }
 
     public void changeScene(String fxml, String title) {
@@ -39,7 +39,8 @@ public class Main extends Application {
         try {
 
             if (null != primaryStage) {
-                //  primaryStage.initModality(Modality.NONE);
+
+                //dh
 
                 primaryStage.setResizable(true);
                 primaryStage.getIcons().add(new Image(getClass().getResourceAsStream(appConfig.APPLICATION_ICON)));
@@ -48,7 +49,7 @@ public class Main extends Application {
                 Scene scene = new Scene(pane);
                 primaryStage.setScene(scene);
                 primaryStage.setTitle(appConfig.APPLICATION_NAME + " ( " + title + " ) ");
-                splash_stage.hide();
+               // splash_stage.hide();
                 primaryStage.show();
 
             }

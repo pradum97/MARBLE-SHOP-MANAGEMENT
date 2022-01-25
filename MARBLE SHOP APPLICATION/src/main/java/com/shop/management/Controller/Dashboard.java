@@ -5,6 +5,9 @@ import javafx.fxml.Initializable;
 
 import java.net.URL;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class Dashboard implements Initializable {
@@ -16,6 +19,17 @@ public class Dashboard implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         dbConnection = new DBConnection();
-        System.out.println(dbConnection.getConnection());
+       connection = dbConnection.getConnection();
+        try {
+            PreparedStatement ps = connection.prepareStatement("select * from tbl_role");
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()){
+                System.out.println(rs.getString("role"));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
