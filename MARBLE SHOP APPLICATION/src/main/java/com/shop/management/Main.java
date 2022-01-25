@@ -40,6 +40,8 @@ public class Main extends Application {
 
             if (null != primaryStage) {
 
+                //dh
+
                 primaryStage.setResizable(true);
                 primaryStage.getIcons().add(new Image(getClass().getResourceAsStream(appConfig.APPLICATION_ICON)));
                 primaryStage.setTitle(appConfig.APPLICATION_NAME);
