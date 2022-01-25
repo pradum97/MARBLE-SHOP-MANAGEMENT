@@ -29,7 +29,7 @@ public class Main extends Application {
         primaryStage.setMinWidth(600.0);
         splash_stage.show();*/
 
-        changeScene("signup.fxml","test");
+        changeScene("dashboard.fxml","test");
     }
 
     public void changeScene(String fxml, String title) {
