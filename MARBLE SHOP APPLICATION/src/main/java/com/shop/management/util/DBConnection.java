@@ -9,9 +9,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
-public class DbConnection {
+public class DBConnection {
     public static void main(String[] args) {
-        DbConnection dbConnection=new DbConnection();
+        DBConnection dbConnection=new DBConnection();
         System.out.println(dbConnection.connection());
     }
 
