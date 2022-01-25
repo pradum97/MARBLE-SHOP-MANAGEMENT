@@ -14,7 +14,7 @@ import java.io.IOException;
 
 public class Main extends Application {
     static Stage primaryStage;
-    private AppConfig appConfig;
+    AppConfig appConfig;
     static Stage splash_stage;
 
     @Override
@@ -26,7 +26,7 @@ public class Main extends Application {
         Scene scene = new Scene(root, 600, 400);
         splash_stage.initStyle(StageStyle.UNDECORATED);
         splash_stage.setScene(scene);
-       primaryStage.setMinWidth(600.0);
+        primaryStage.setMinWidth(600.0);
         splash_stage.show();
     }
 
@@ -35,7 +35,6 @@ public class Main extends Application {
         try {
 
             if (null != primaryStage) {
-                //  primaryStage.initModality(Modality.NONE);
 
                 primaryStage.setResizable(true);
                 primaryStage.getIcons().add(new Image(getClass().getResourceAsStream(appConfig.APPLICATION_ICON)));
@@ -48,12 +47,11 @@ public class Main extends Application {
                 primaryStage.show();
 
             }
-
         } catch (IOException | NullPointerException e) {
             e.printStackTrace();
         }
-    }
 
+    }
     public static void main(String[] args) {
         launch(args);
     }
