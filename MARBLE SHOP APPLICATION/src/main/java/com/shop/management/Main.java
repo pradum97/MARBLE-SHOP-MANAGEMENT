@@ -1,14 +1,12 @@
 package com.shop.management;
 
-import com.shop.management.Method.AppConfig;
+import com.shop.management.util.AppConfig;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import java.io.IOException;
 
@@ -27,10 +25,12 @@ public class Main extends Application {
         splash_stage.initStyle(StageStyle.UNDECORATED);
         splash_stage.setScene(scene);
         primaryStage.setMinWidth(600.0);
-       primaryStage.setMinHeight(500.0);
+        primaryStage.setMinHeight(500.0);
         splash_stage.show();*/
 
-        changeScene("dashboard.fxml","test");
+        changeScene("feedback.fxml","test");
+
+
     }
 
     public void changeScene(String fxml, String title) {
