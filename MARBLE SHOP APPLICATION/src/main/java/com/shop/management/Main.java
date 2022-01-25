@@ -26,6 +26,7 @@ public class Main extends Application {
         Scene scene = new Scene(root, 600, 400);
         splash_stage.initStyle(StageStyle.UNDECORATED);
         splash_stage.setScene(scene);
+       primaryStage.setMinWidth(600.0);
         splash_stage.show();
     }
 
