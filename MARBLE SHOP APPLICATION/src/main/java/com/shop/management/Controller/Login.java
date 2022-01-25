@@ -19,6 +19,8 @@ public class Login implements Initializable {
 
         dbConnection = new DBConnection();
         Connection connection = dbConnection.getConnection();
+
+        System.out.println(connection);
     }
 
     public void forget_password_bn(ActionEvent event) {
