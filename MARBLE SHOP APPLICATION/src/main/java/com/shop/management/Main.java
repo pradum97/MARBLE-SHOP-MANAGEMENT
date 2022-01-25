@@ -21,7 +21,6 @@ public class Main extends Application {
     public void start(Stage stage) throws IOException {
         primaryStage = stage;
 
-
         /*splash_stage = new Stage();
         Parent root = FXMLLoader.load(Main.class.getResource("splash_screen.fxml"));
         Scene scene = new Scene(root, 600, 400);
