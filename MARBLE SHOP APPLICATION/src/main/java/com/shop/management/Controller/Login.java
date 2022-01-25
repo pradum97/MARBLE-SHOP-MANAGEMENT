@@ -16,11 +16,9 @@ public class Login implements Initializable {
     private DBConnection dbConnection;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        
+
         dbConnection = new DBConnection();
-        Connection connection = dbConnection.connection();
-
-
+        Connection connection = dbConnection.getConnection();
     }
 
     public void forget_password_bn(ActionEvent event) {
@@ -30,5 +28,7 @@ public class Login implements Initializable {
     }
 
     public void create_new_account(ActionEvent event) {
+
+
     }
 }

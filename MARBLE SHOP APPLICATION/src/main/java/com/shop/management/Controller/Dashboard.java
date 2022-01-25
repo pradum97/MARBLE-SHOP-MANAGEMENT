@@ -16,7 +16,6 @@ public class Dashboard implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         dbConnection = new DBConnection();
-        System.out.println(dbConnection.connection());
-
+        System.out.println(dbConnection.getConnection());
     }
 }

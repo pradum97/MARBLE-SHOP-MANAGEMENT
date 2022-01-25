@@ -12,14 +12,9 @@ import java.util.Properties;
 
 public class DBConnection {
 
-    public static void main(String[] args) {
-        DBConnection dbConnection = new DBConnection();
-        System.out.println(dbConnection.connection());
-    }
+    public Connection getConnection() {
 
-    public Connection connection() {
-
-        Properties properties = properties("query.properties");
+        Properties properties = getProperties("query.properties");
 
         String DB_URL = properties.getProperty("DB_URL");
         String DB_USERNAME = properties.getProperty("DB_USERNAME");
@@ -30,13 +25,12 @@ public class DBConnection {
             return DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
 
         } catch (SQLException e) {
-            e.getStackTrace();
             System.out.println(e.getMessage());
             return null;
         }
 
     }
-    public Properties properties(String filename){
+    public Properties getProperties(String filename){
 
         try {
             File file = new File("src/main/java/com/shop/management/util/" + filename);
