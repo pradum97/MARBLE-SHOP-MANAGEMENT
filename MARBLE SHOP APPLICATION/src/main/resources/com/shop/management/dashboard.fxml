@@ -3,11 +3,13 @@
 <?import javafx.scene.layout.*?>
 
 
+<?import javafx.scene.control.Label?>
 <HBox fx:id="dashboard_main_container" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <VBox fx:id="side_menu" prefHeight="768.0" prefWidth="180.0" />
+      <VBox fx:id="side_menu" alignment="TOP_CENTER" prefHeight="768.0" prefWidth="180.0">
+         <children>
+            <Label text="Label" />
+         </children></VBox>
       <VBox prefHeight="200.0" prefWidth="1100.0" />
-
-
    </children>
 </HBox>
