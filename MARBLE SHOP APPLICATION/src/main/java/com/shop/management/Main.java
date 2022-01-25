@@ -39,7 +39,6 @@ public class Main extends Application {
         try {
 
             if (null != primaryStage) {
-                //  primaryStage.initModality(Modality.NONE);
 
                 primaryStage.setResizable(true);
                 primaryStage.getIcons().add(new Image(getClass().getResourceAsStream(appConfig.APPLICATION_ICON)));
@@ -48,7 +47,7 @@ public class Main extends Application {
                 Scene scene = new Scene(pane);
                 primaryStage.setScene(scene);
                 primaryStage.setTitle(appConfig.APPLICATION_NAME + " ( " + title + " ) ");
-                splash_stage.hide();
+               // splash_stage.hide();
                 primaryStage.show();
 
             }
