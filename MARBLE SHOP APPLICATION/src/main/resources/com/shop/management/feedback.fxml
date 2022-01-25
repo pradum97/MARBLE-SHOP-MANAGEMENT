@@ -10,15 +10,14 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-
-<BorderPane maxHeight="-Infinity" maxWidth="400.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.Feedback">
    <center>
-      <StackPane maxWidth="400.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <StackPane BorderPane.alignment="CENTER">
          <children>
-            <VBox alignment="TOP_CENTER" fillWidth="false" maxWidth="400.0" prefWidth="571.0">
+            <VBox alignment="CENTER" fillWidth="false" maxWidth="400.0" prefWidth="571.0">
                <children>
                   <Label style="-fx-font-size: 17; -fx-font-weight: BOLD;" text="FEEDBACK" />
-                  <Label alignment="CENTER" prefHeight="74.0" prefWidth="342.0" text="we want to know what you thoght of your experience at suma marble so we'd love to here you feedback" textAlignment="CENTER" wrapText="true" />
+                  <Label alignment="CENTER" prefHeight="74.0" prefWidth="336.0" text="we want to know what you thoght of your experience at &lt;-shop name-&gt; so we'd love to here you feedback" textAlignment="CENTER" wrapText="true" />
                   <VBox prefWidth="341.0">
                      <children>
                         <VBox prefHeight="335.0" prefWidth="342.0" spacing="10.0">
@@ -30,7 +29,7 @@
                               <TextArea prefHeight="94.0" prefWidth="342.0" promptText="Your Comments" wrapText="true" />
                               <HBox alignment="CENTER" prefWidth="200.0">
                                  <children>
-                                    <Button alignment="CENTER" mnemonicParsing="false" prefHeight="26.0" prefWidth="171.0" text="SUBMIT" />
+                                    <Button fx:id="bn_feedback_submit" alignment="CENTER" mnemonicParsing="false" prefHeight="26.0" prefWidth="171.0" style="-fx-cursor: hand;" text="SUBMIT" />
                                  </children>
                                  <VBox.margin>
                                     <Insets top="20.0" />
@@ -44,6 +43,9 @@
                      </children>
                   </VBox>
                </children>
+               <padding>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+               </padding>
             </VBox>
          </children>
       </StackPane>

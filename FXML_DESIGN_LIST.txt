@@ -5,12 +5,11 @@ dashboard.fxml
 home.fxml
 addProduct.fxml
 editProfile.fxml
-my Product.fxml
+myProduct.fxml
 myProfile.fxml
 cart.fxml
 updateCart.fxml
 updateProduct.fxml
-viewUser.fxml
 sellProduct.fxml
 sellReport.fxml
 setting.fxml

@@ -168,7 +168,9 @@
 
                             <Button alignment="CENTER" onAction="#already_account_bn" prefHeight="30.0" style="-fx-cursor: hand;-fx-background-color: #5e0cee;" text="Already have an account? Login Here " textAlignment="CENTER" textFill="white" />
 
-                            <Button fx:id="submit_bn" alignment="CENTER" lineSpacing="1.0" onAction="#submit_bn" prefHeight="30.0" prefWidth="218.0" style="-fx-cursor: hand;-fx-background-color: #5e0cee;" text="Submit!" textAlignment="CENTER" textFill="#ffffff" />
+                            <Button fx:id="submit_bn" alignment="CENTER" lineSpacing="1.0"
+                                    onAction="#submit_bn" prefHeight="30.0" prefWidth="218.0"
+                                    style="-fx-cursor: hand;-fx-background-color: #5e0cee;" text="Submit!" textAlignment="CENTER" textFill="#ffffff" />
 
 
                         </HBox>

@@ -1,4 +1,4 @@
-package com.shop.management.Method;
+package com.shop.management.util;
 
 public class AppConfig {
 
