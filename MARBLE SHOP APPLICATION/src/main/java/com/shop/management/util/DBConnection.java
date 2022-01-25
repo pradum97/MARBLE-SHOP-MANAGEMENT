@@ -1,5 +1,6 @@
 package com.shop.management.util;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -10,40 +11,38 @@ import java.sql.Statement;
 import java.util.Properties;
 
 public class DBConnection {
-    public static void main(String[] args) {
-        DBConnection dbConnection=new DBConnection();
-        System.out.println(dbConnection.connection());
-    }
 
-    public  Properties propertiesFile(){
-        FileInputStream file=null;
-        Properties prop=null;
-        try{
-            file= new FileInputStream("src/main/java/com/shop/management/util/queary.properties");
-            prop=new Properties();
-            prop.load(file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return prop;
-    }
+    public Connection getConnection() {
 
-    public boolean connection(){
-        Properties prop=propertiesFile();
-        String user= prop.getProperty("username");
-        String password=prop.getProperty("password");
-        String url=prop.getProperty("url");
-        Connection conn=null;
-        try{
-            conn= DriverManager.getConnection(user,password,url);
-            Statement stmt=conn.createStatement();
-        } catch (SQLException sql) {
-            sql.printStackTrace();
-            System.out.println("connection fail");
+        Properties properties = getProperties("query.properties");
+
+        String DB_URL = properties.getProperty("DB_URL");
+        String DB_USERNAME = properties.getProperty("DB_USERNAME");
+        String DB_PASSWORD = properties.getProperty("DB_PASSWORD");
+
+        try {
+
+            return DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return null;
         }
-        return false;
+
+    }
+    public Properties getProperties(String filename){
+
+        try {
+            File file = new File("src/main/java/com/shop/management/util/" + filename);
+            FileInputStream fileInputStream = new FileInputStream(file.getAbsolutePath());
+            Properties prop = new Properties();
+            prop.load(fileInputStream);
+            return prop;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }

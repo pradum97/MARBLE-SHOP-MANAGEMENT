@@ -19,20 +19,18 @@
          <!--Enter New dependency-->
 
             <!--Pradum Kumar-->
-
-
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.2.8</version>
+        </dependency>
 
 
             <!--Dhurav Kumar-->
 
 
         <!--.......................-->
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-controls</artifactId>
-            <version>18-ea+10</version>
 
-        </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.openjfx/javafx-fxml -->
         <dependency>
@@ -40,6 +38,7 @@
             <artifactId>javafx-controls</artifactId>
             <version>17-ea+11</version>
         </dependency>
+
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
