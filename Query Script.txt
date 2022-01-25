@@ -35,6 +35,7 @@ CREATE TABLE TBL_USERS
     USER_ID        SERIAL PRIMARY KEY    NOT NULL,
     FIRST_NAME     VARCHAR(15)           NOT NULL,
     LAST_NAME      VARCHAR(15),
+    USERNAME VARCHAR(100) NOT NULL ,
     GENDER         VARCHAR(6)            NOT NULL,
     ROLE           VARCHAR(20)           NOT NULL,
     EMAIL          VARCHAR(100)          NOT NULL,
