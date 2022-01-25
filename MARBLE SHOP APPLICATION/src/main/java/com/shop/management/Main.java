@@ -22,19 +22,7 @@ public class Main extends Application {
         primaryStage = stage;
 
 
-        splash_stage = new Stage();
-        Parent root = FXMLLoader.load(Main.class.getResource("splash_screen.fxml"));
-        Scene scene = new Scene(root, 600, 400);
-        splash_stage.initStyle(StageStyle.UNDECORATED);
-        splash_stage.setScene(scene);
 
-
-
-
-
-       primaryStage.setMinWidth(600.0);
-       primaryStage.setMinHeight(500.0);
-        splash_stage.show();
     }
 
     public void changeScene(String fxml, String title) {
