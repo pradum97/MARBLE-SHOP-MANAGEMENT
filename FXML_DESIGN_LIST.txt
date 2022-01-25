@@ -1,10 +1,18 @@
-1.dashboard
-1.home page
-2.Sale board page
-3.sale report page
-4.product stock report page
-5.user report page
-6.add product page
-7.register page
-8.login page
-9.log out
+signup.fxml 
+login.fxml
+forgot.fxml
+dashboard.fxml
+home.fxml
+addProduct.fxml
+editProfile.fxml
+my Product.fxml
+myProfile.fxml
+cart.fxml
+updateCart.fxml
+updateProduct.fxml
+viewUser.fxml
+sellProduct.fxml
+sellReport.fxml
+setting.fxml
+stockReport.fxml
+feedback.fxml
