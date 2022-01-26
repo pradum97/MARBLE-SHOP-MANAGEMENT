@@ -16,7 +16,7 @@ import java.util.ResourceBundle;
 
 public class Dashboard implements Initializable {
 
-    public HBox dashboard_main_container;
+
     public VBox side_menu;
     public VBox screen_container;
     public Hyperlink menu_btn;
