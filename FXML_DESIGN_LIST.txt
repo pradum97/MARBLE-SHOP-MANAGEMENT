@@ -1,17 +1,15 @@
-signup.fxml 
-login.fxml
-forgot.fxml
+signup.fxml ✔️
+login.fxml ✔️
+forgot.fxml ✔️
 dashboard.fxml
 home.fxml
 addProduct.fxml
-editProfile.fxml
 myProduct.fxml
-myProfile.fxml
-cart.fxml
-updateCart.fxml
+userProfile.fxml ✔️
+cart.fxml / updateCart.fxml 
 updateProduct.fxml
 sellProduct.fxml
 sellReport.fxml
 setting.fxml
-stockReport.fxml
-feedback.fxml
+stockReport.fxml 
+feedback.fxml ✔️
