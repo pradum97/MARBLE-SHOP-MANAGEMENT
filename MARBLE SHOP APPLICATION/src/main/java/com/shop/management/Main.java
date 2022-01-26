@@ -28,7 +28,7 @@ public class Main extends Application {
         primaryStage.setMinHeight(500.0);
         splash_stage.show();*/
 
-        changeScene("feedback.fxml","test");
+        changeScene("dashboard/home.fxml","test");
 
 
     }
@@ -39,14 +39,18 @@ public class Main extends Application {
 
             if (null != primaryStage) {
 
-                //dh
+
 
                 primaryStage.setResizable(true);
                 primaryStage.getIcons().add(new Image(getClass().getResourceAsStream(appConfig.APPLICATION_ICON)));
                 primaryStage.setTitle(appConfig.APPLICATION_NAME);
                 Parent pane = FXMLLoader.load(getClass().getResource(fxml));
-                Scene scene = new Scene(pane);
+                Scene scene = new Scene(pane,1000.0,500.0);
                 primaryStage.setScene(scene);
+                primaryStage.setY(100.0);
+                primaryStage.setX(100.0);
+                primaryStage.setMinWidth(1000.0);
+                primaryStage.setMinHeight(500.0);
                 primaryStage.setTitle(appConfig.APPLICATION_NAME + " ( " + title + " ) ");
                // splash_stage.hide();
                 primaryStage.show();
