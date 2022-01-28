@@ -3,13 +3,14 @@ login.fxml ✔️
 forgot.fxml ✔️
 dashboard.fxml
 home.fxml
-addProduct.fxml
-myProduct.fxml
+addProduct.fxml ✔️
+myProduct.fxml ✔️
 userProfile.fxml ✔️
-cart.fxml / updateCart.fxml 
+cart.fxml  ✔️
 updateProduct.fxml
-sellProduct.fxml
+sellProduct.fxml ✔️
 sellReport.fxml
 setting.fxml
 stockReport.fxml 
+billReport.fxml
 feedback.fxml ✔️

@@ -15,20 +15,21 @@ CREATE TABLE TBL_MENU
 
     MENU_ID       SERIAL PRIMARY KEY,
     MENU_NAME     VARCHAR(30),
-    MENU_LOCATION VARCHAR(10)
+    MENU_LOCATION VARCHAR(10),
+    MENU_ICON_PATH VARCHAR(500)
 
 )
 
-INSERT INTO TBL_MENU(MENU_NAME, MENU_LOCATION)
-VALUES ('HOME', 'SIDE'),
-       ('PROFILE', 'SIDE'),
-       ('ALL PRODUCT', 'SIDE'),
-       ('SALE PRODUCT', 'SIDE'),
-       ('VIEW STOCK REPORT', 'SIDE'),
-       ('SETTING', 'SIDE'),
-       ('LOG OUT', 'SIDE'),
-       ('ADD PRODUCT', 'TOP')
-
+INSERT INTO TBL_MENU(MENU_ICON_PATH ,MENU_NAME, MENU_LOCATION)
+VALUES ('home_icon.png','HOME', 'SIDE'),
+       ('profile_ic.png','PROFILE', 'SIDE'),
+       ('employ.png','USERS', 'SIDE'),
+       ('settings_ic.png','SETTING', 'SIDE'),
+       ('shop_icon.png','ALL PRODUCT', 'SIDE'),
+       ('sell_ic.png','SELL PRODUCT', 'SIDE'),
+       ('viewReport_icon.png','SELL REPORT', 'SIDE'),
+       ('viewReport_icon.png','STOCK REPORT', 'SIDE'),
+       ('add_icon.png','ADD PRODUCT', 'TOP')
 
 CREATE TABLE TBL_USERS
 (
@@ -162,6 +163,7 @@ CREATE TABLE TBL_PRODUCTS
     PRODUCT_ID          SERIAL PRIMARY KEY NOT NULL,
     PRODUCT_NAME        VARCHAR(200)       NOT NULL,
     PRODUCT_DESCRIPTION VARCHAR(1000),
+    PURCHASE_PRICE      NUMERIC            NOT NULL,
     PRODUCT_MRP         NUMERIC            NOT NULL,
     MIN_SELLING         NUMERIC            NOT NULL,
     DISCOUNT_ID         INTEGER            NOT NULL,

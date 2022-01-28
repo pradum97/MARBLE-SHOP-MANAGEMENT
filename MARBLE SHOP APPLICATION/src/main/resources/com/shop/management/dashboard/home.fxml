@@ -128,7 +128,7 @@
             <Pane minWidth="150.0" prefHeight="180.0" prefWidth="258.0" style="-fx-background-color: #b9b6b6; -fx-border-color: red;-fx-border-radius: 5px; -fx-background-radius: 5px;">
                <children>
                   <ImageView fitHeight="70.0" fitWidth="70.0" layoutX="151.0" layoutY="32.0" pickOnBounds="true" preserveRatio="true">
-                     <Image url="@../img/icon/employ.png" />
+                     <Image url="@../img/menu_icon/employ.png" />
                   </ImageView>
                   <Label alignment="CENTER" layoutX="14.0" layoutY="37.0" prefHeight="19.0" prefWidth="123.0" text="Total Empoly">
                      <font>

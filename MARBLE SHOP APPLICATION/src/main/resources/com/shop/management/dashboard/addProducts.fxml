@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<StackPane prefHeight="730.0" stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.AddProducts">
+
+    <ScrollPane fitToWidth="true" style="-fx-background-color:transparent;">
+        <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" spacing="20.0">
+
+            <VBox alignment="CENTER" prefWidth="497.0" spacing="10.0" VBox.vgrow="ALWAYS">
+
+
+                <VBox spacing="5">
+                    <Label text="PRODUCT NAME  :">
+                        <VBox.margin>
+                            <Insets left="5.0" />
+                        </VBox.margin>
+                        <font>
+                            <Font name="System Bold" size="12.0" />
+                        </font>
+                    </Label>
+                    <TextArea fx:id="product_title" prefHeight="60.0" prefWidth="510.0" promptText="Enter Product Title :" text="Monte Pascoal" />
+               <padding>
+                  <Insets left="3.0" right="3.0" />
+               </padding>
+                </VBox>
+                <HBox alignment="CENTER" spacing="10">
+
+                    <VBox spacing="5">
+                        <Label text="PURCHASE PRICE :">
+                            <font>
+                                <Font name="System Bold" size="12.0" />
+                            </font>
+                            <VBox.margin>
+                                <Insets left="5.0" />
+                            </VBox.margin>
+                        </Label>
+                        <TextField alignment="CENTER" prefHeight="35.0" prefWidth="510.0" promptText="Enter Purchase Price :">
+                     <padding>
+                        <Insets left="3.0" />
+                     </padding></TextField>
+                  <padding>
+                     <Insets left="3.0" />
+                  </padding>
+                    </VBox>
+                    <VBox spacing="5">
+                        <Label text="MRP  :">
+                            <font>
+                                <Font name="System Bold" size="12.0" />
+                            </font>
+                            <VBox.margin>
+                                <Insets left="5.0" />
+                            </VBox.margin>
+                        </Label>
+                        <TextField fx:id="product_price" alignment="CENTER" prefHeight="35.0" prefWidth="510.0" promptText="Enter MRP :">
+                     <padding>
+                        <Insets right="3.0" />
+                     </padding></TextField>
+                  <padding>
+                     <Insets right="3.0" />
+                  </padding>
+                    </VBox>
+
+                </HBox>
+
+                <HBox alignment="CENTER" spacing="10">
+
+                    <VBox layoutX="10.0" layoutY="10.0" spacing="5">
+                        <children>
+                            <Label text="MIN SELLING PRICE  :">
+                                <font>
+                                    <Font name="System Bold" size="12.0" />
+                                </font>
+                                <VBox.margin>
+                                    <Insets left="5.0" />
+                                </VBox.margin>
+                            </Label>
+                            <TextField alignment="CENTER" prefHeight="35.0" prefWidth="300.0" promptText="Enter Min Seling PRICE :" />
+                        </children>
+                  <padding>
+                     <Insets left="3.0" />
+                  </padding>
+                    </VBox>
+
+                    <VBox spacing="5">
+                        <Label text="DISCOUNT  :">
+                            <font>
+                                <Font name="System Bold" size="12.0" />
+                            </font>
+                        </Label>
+                        <ComboBox prefHeight="35.0" prefWidth="300" promptText="DISCOUNT" />
+                  <padding>
+                     <Insets right="3.0" />
+                  </padding>
+                    </VBox>
+
+
+                </HBox>
+
+
+                <HBox alignment="CENTER" spacing="10">
+
+                    <VBox spacing="5">
+                        <Label text="COLOR  :">
+                            <font>
+                                <Font name="System Bold" size="12.0" />
+                            </font>
+                        </Label>
+                        <ComboBox fx:id="product_categories" prefHeight="35.0" prefWidth="180.0" promptText="CHOOSE COLOR" />
+                    </VBox>
+                    <VBox layoutX="260.0" layoutY="10.0" spacing="5">
+                        <children>
+                            <Label text="TYPE :" />
+                            <ComboBox fx:id="product_categories1" prefHeight="35.0" prefWidth="150.0" promptText="TYPE" />
+                        </children>
+                    </VBox>
+
+                    <VBox spacing="5">
+                        <children>
+                            <Label text="CATEGORY :">
+                                <font>
+                                    <Font name="System Bold" size="12.0" />
+                                </font>
+                                <VBox.margin>
+                                    <Insets left="5.0" />
+                                </VBox.margin>
+                            </Label>
+                            <ComboBox fx:id="subCategory1" prefHeight="35.0" prefWidth="170.0" promptText="CHOOSE CATEGORY" />
+                        </children>
+                  <padding>
+                     <Insets right="3.0" />
+                  </padding>
+                    </VBox>
+
+                </HBox>
+
+                <VBox spacing="10" style="-fx-border-color: red; -fx-padding: 10;">
+                    <HBox alignment="CENTER_LEFT" spacing="15.0">
+
+
+                        <VBox layoutX="10.0" layoutY="10.0" spacing="5">
+                            <children>
+                                <Label text="HEIGHT :">
+                                    <font>
+                                        <Font name="System Bold" size="12.0" />
+                                    </font>
+                                    <VBox.margin>
+                                        <Insets left="1.0" />
+                                    </VBox.margin>
+                                </Label>
+                                <TextField alignment="CENTER" prefHeight="35.0" prefWidth="150.0" promptText="Enter Height :">
+                                    <VBox.margin>
+                                        <Insets />
+                                    </VBox.margin>
+                                </TextField>
+                            </children>
+                        </VBox>
+
+                        <VBox layoutX="10.0" layoutY="10.0" spacing="5">
+                            <children>
+                                <Label text="WIDTH  :">
+                                    <font>
+                                        <Font name="System Bold" size="12.0" />
+                                    </font>
+                                    <VBox.margin>
+                                        <Insets left="10.0" />
+                                    </VBox.margin>
+                                </Label>
+                                <TextField alignment="CENTER" prefHeight="35.0" prefWidth="150.0" promptText="Enter Width :">
+                                    <VBox.margin>
+                                        <Insets left="10.0" />
+                                    </VBox.margin>
+                                </TextField>
+                            </children>
+                        </VBox>
+                        <VBox layoutX="171.0" layoutY="10.0" spacing="5">
+                            <children>
+                                <Label text="UNIT :">
+                                    <font>
+                                        <Font name="System Bold" size="12.0" />
+                                    </font>
+                                    <VBox.margin>
+                                        <Insets left="10.0" />
+                                    </VBox.margin>
+                                </Label>
+                                <ComboBox prefHeight="35.0" prefWidth="150.0" promptText="MM" />
+                            </children>
+                        </VBox>
+
+                    </HBox>
+
+                    <HBox alignment="CENTER" spacing="15.0">
+
+
+                        <VBox spacing="5">
+                            <Label text="QUANTITY  :">
+                                <font>
+                                    <Font name="System Bold" size="12.0" />
+                                </font>
+                                <VBox.margin>
+                                    <Insets left="5.0" />
+                                </VBox.margin>
+                            </Label>
+                            <TextField fx:id="product_quantity" alignment="CENTER" prefHeight="35.0" prefWidth="230.0" promptText="Quantity :" />
+                        </VBox>
+                        <VBox spacing="5">
+                            <Label text="UNIT :">
+                                <font>
+                                    <Font name="System Bold" size="12.0" />
+                                </font>
+                                <VBox.margin>
+                                    <Insets left="5.0" />
+                                </VBox.margin>
+                            </Label>
+                            <ComboBox fx:id="unit" prefHeight="35.0" prefWidth="130.0" promptText="PKT" />
+                        </VBox>
+                        <Button mnemonicParsing="false" prefHeight="30.0" prefWidth="96.0" style="-fx-background-color: #0881ea; -fx-text-fill: WHITE;" text="ADD">
+                            <HBox.margin>
+                                <Insets top="19.0" />
+                            </HBox.margin>
+                        </Button>
+
+
+                    </HBox>
+
+
+                </VBox>
+
+                <TableView fx:id="sizeTableView" prefHeight="70.0" prefWidth="200.0">
+
+                    <columns>
+                        <TableColumn editable="false" prefWidth="110.40003794431686" text="HEIGHT" />
+                        <TableColumn editable="false" prefWidth="109.5999755859375" text="WIDTH" />
+                        <TableColumn editable="false" prefWidth="137.59994506835938" text="QUANTITY" />
+                        <TableColumn editable="false" prefWidth="123.20001220703125" text="ACTION" />
+                    </columns>
+
+                </TableView>
+
+
+                <VBox spacing="5">
+                    <Label text="DESCRIPTION :">
+                        <font>
+                            <Font name="System Bold" size="12.0" />
+                        </font>
+                        <VBox.margin>
+                            <Insets left="5.0" />
+                        </VBox.margin>
+                    </Label>
+                    <TextArea fx:id="productDescription" prefHeight="50.0" promptText="Enter Description :" />
+               <padding>
+                  <Insets left="3.0" right="3.0" />
+               </padding>
+                </VBox>
+
+                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+                    <children>
+
+
+                        <ImageView fx:id="product_image" fitHeight="85.0" fitWidth="90.0">
+                            <Image url="@../img/icon/img_preview.png" />
+
+                        </ImageView>
+                    </children>
+                </HBox>
+            <VBox.margin>
+               <Insets bottom="20.0" />
+            </VBox.margin>
+
+
+            </VBox>
+            <HBox alignment="BOTTOM_CENTER" spacing="70.0">
+                <children>
+
+                    <Button fx:id="uploadImage_bn" alignment="CENTER" onAction="#uploadImage_bn" prefHeight="26.0" prefWidth="148.0" style="-fx-background-color: #c506fa; -fx-cursor: hand; -fx-font-weight: BOLD;" text="UPLOAD IMAGE" textAlignment="CENTER" textFill="#fafcfb" />
+
+                    <Button fx:id="submit_bn" alignment="CENTER" lineSpacing="2.0" onAction="#submit_bn" prefHeight="26.0" prefWidth="184.0" style="-fx-background-color: #0881ea;                  -fx-font-weight: BOLD;" text="SUBMIT" textAlignment="CENTER" textFill="#fafcfb" />
+                </children>
+            </HBox>
+
+        </VBox>
+        <padding>
+            <Insets bottom="10.0" left="30.0" right="30.0" />
+        </padding>
+    </ScrollPane>
+    <padding>
+        <Insets top="10.0" />
+    </padding>
+
+</StackPane>
