@@ -1,14 +1,12 @@
 package com.shop.management;
 
-import com.shop.management.Method.AppConfig;
+import com.shop.management.util.AppConfig;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import java.io.IOException;
 
@@ -21,12 +19,17 @@ public class Main extends Application {
     public void start(Stage stage) throws IOException {
         primaryStage = stage;
 
-        splash_stage = new Stage();
+        /*splash_stage = new Stage();
         Parent root = FXMLLoader.load(Main.class.getResource("splash_screen.fxml"));
         Scene scene = new Scene(root, 600, 400);
         splash_stage.initStyle(StageStyle.UNDECORATED);
         splash_stage.setScene(scene);
-        splash_stage.show();
+        primaryStage.setMinWidth(600.0);
+        primaryStage.setMinHeight(500.0);
+        splash_stage.show();*/
+
+        changeScene("dashboard.fxml","");
+
     }
 
     public void changeScene(String fxml, String title) {
@@ -34,16 +37,15 @@ public class Main extends Application {
         try {
 
             if (null != primaryStage) {
-                //  primaryStage.initModality(Modality.NONE);
 
                 primaryStage.setResizable(true);
                 primaryStage.getIcons().add(new Image(getClass().getResourceAsStream(appConfig.APPLICATION_ICON)));
                 primaryStage.setTitle(appConfig.APPLICATION_NAME);
                 Parent pane = FXMLLoader.load(getClass().getResource(fxml));
-                Scene scene = new Scene(pane);
+                Scene scene = new Scene(pane,1000.0,500.0);
                 primaryStage.setScene(scene);
                 primaryStage.setTitle(appConfig.APPLICATION_NAME + " ( " + title + " ) ");
-                splash_stage.hide();
+               // splash_stage.hide();
                 primaryStage.show();
 
             }

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Line?>
+<BorderPane fx:id="main_container" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@css/main.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Dashboard">
+
+    <left>
+        <VBox alignment="TOP_CENTER" prefHeight="340.0" prefWidth="170.0" style="-fx-background-color: #008080;" BorderPane.alignment="TOP_CENTER">
+            <children>
+                <VBox alignment="TOP_CENTER" spacing="12.0">
+                    <children>
+                        <ImageView fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@img/icon/person_ic.png" />
+                            </image>
+                        </ImageView>
+                        <Label style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="PRADUM KUMAR" wrapText="true" />
+                        <Label layoutX="44.0" layoutY="110.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="ADMIN" wrapText="true" />
+                        <Line endX="15.2929048538208" endY="0.09290238469839096" startX="-100.0" />
+                    </children>
+                    <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="8.0" />
+                    </padding>
+                </VBox>
+                <ScrollPane fx:id="menuScroll" fitToHeight="true" fitToWidth="true" pannable="true" vbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+                    <VBox.margin>
+                        <Insets top="30.0" />
+                    </VBox.margin>
+                    <content>
+                        <GridPane fx:id="gridPane" alignment="TOP_CENTER" style="-fx-background-color: transparent;">
+                            <columnConstraints>
+
+                                <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" />
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            </rowConstraints>
+                            <padding>
+                                <Insets left="8.0" />
+                            </padding>
+                            <opaqueInsets>
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                            </opaqueInsets>
+                        </GridPane>
+                    </content>
+                </ScrollPane>
+                <VBox alignment="BOTTOM_CENTER" VBox.vgrow="ALWAYS">
+                    <children>
+                        <Button fx:id="bn_logout" alignment="BOTTOM_CENTER" style="-fx-background-color: red; -fx-text-fill: white; " text="LOGOUT">
+                            <graphic>
+                                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@img/menu_icon/logout_ic.png" />
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                    </children>
+                    <padding>
+                        <Insets bottom="15.0" />
+                    </padding>
+                </VBox>
+            </children>
+        </VBox>
+    </left>
+    <top>
+        <HBox prefHeight="60.0" prefWidth="200.0" style="-fx-background-color: #008080;" BorderPane.alignment="CENTER" />
+    </top>
+    <center>
+        <AnchorPane BorderPane.alignment="CENTER">
+            <children>
+                <StackPane fx:id="contentArea" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            </children>
+        </AnchorPane>
+    </center>
+
+</BorderPane>
