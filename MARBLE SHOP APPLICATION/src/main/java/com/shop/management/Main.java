@@ -28,7 +28,7 @@ public class Main extends Application {
         primaryStage.setMinHeight(500.0);
         splash_stage.show();*/
 
-        changeScene("dashboard.fxml","test");
+        changeScene("dashboard/setting.fxml","test");
 
 
     }
