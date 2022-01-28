@@ -6,12 +6,13 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="700.0" prefHeight="400.0" prefWidth="180.0" style="-fx-background-color: #c9c6c6;" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane style="-fx-background-color: #c9c6c6;"
+            xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1">
    <top>
       <HBox fx:id="home_header" alignment="CENTER_LEFT" prefHeight="43.0" prefWidth="600.0" style="-fx-background-color: #3b3939;" BorderPane.alignment="CENTER">
          <children>
             <ImageView fitHeight="25.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
-               <Image url="@../img/icon/setting.png" />
+               <Image url="@../img/menu_icon/settings_ic.png" />
                <HBox.margin>
                   <Insets left="10.0" />
                </HBox.margin>
