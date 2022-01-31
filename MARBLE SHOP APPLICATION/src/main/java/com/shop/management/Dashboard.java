@@ -1,7 +1,10 @@
 package com.shop.management;
 
-import com.shop.management.Main;
+import com.shop.management.Controller.Login;
+import com.shop.management.Method.GetUserProfile;
+import com.shop.management.Model.UserDetails;
 import com.shop.management.util.DBConnection;
+import com.shop.management.Method.Method;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -15,7 +18,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.io.*;
 import java.net.URL;
@@ -23,7 +27,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -31,31 +35,122 @@ import java.util.logging.Logger;
 
 public class Dashboard implements Initializable {
 
-    public ListView<String> menu_listView;
+    public GridPane gridTopMenu;
+    @FXML
+    private GridPane gridPane;
     public BorderPane main_container;
     public Button bn_logout;
     public StackPane contentArea;
+    public Label fullName;
+    public ImageView userImage;
+    public Label userRole;
     private Connection connection;
     private DBConnection dbConnection;
     private Properties properties;
-    Text text;
-    @FXML
-    private GridPane gridPane;
-
-    private ObservableList<String> menu_item = FXCollections.observableArrayList();
+    CustomDialog customDialog;
+    Method method;
+    private Main main;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        method = new Method();
         dbConnection = new DBConnection();
-        text = new Text();
+        properties = method.getProperties("query.properties");
+        customDialog = new CustomDialog();
+        main = new Main();
         replaceScene("dashboard/home.fxml");
-        Main.primaryStage.setMaximized(true);
-
-
-        setMenuData();
-
+        setSideMenuData();
+        setTopMenuData();
         setCustomImage();
+        setUserData();
 
+    }
+
+    private void setTopMenuData() {
+
+        int cols=2, colCnt = 0, rowCnt = 0;
+
+        try {
+            connection = dbConnection.getConnection();
+            PreparedStatement ps = connection.prepareStatement(properties.getProperty("TOP_MENU"));
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String item = rs.getString("menu_name");
+                String icon_path = rs.getString("menu_icon_path");
+
+                Hyperlink menu_button = new Hyperlink();
+
+                menu_button.setId("menu_button");
+                menu_button.setStyle("-fx-background-color: blue ; -fx-background-radius: 5");
+
+                main_container.getStylesheets().add(String.valueOf(Main.class.getResource("css/menu.css")));
+                ImageView icon = new ImageView();
+                icon.setFitWidth(18);
+                icon.setFitHeight(18);
+
+                File file = new File("src/main/resources/com/shop/management/img/menu_icon/" + icon_path);
+                InputStream is = new FileInputStream(file.getAbsolutePath());
+                Image img = new Image(is);
+                icon.setImage(img);
+                menu_button.setText(item);
+
+                menu_button.setOnAction(event -> {
+
+                    String txt = ((Hyperlink) event.getSource()).getText();
+
+                    switch (txt) {
+
+                        case "ADD PRODUCT":
+                            customDialog.showFxmlDialog("dashboard/addProducts.fxml","ADD NEW PRODUCT");
+                            break;
+                        case "FEEDBACK":
+                            customDialog.showFxmlDialog("feedbackDialog.fxml","FEEDBACK");
+
+                            break;
+
+                    }
+
+
+                });
+
+                menu_button.setGraphic(icon);
+
+                gridTopMenu.add(menu_button, colCnt, rowCnt);
+                colCnt++;
+
+                if (colCnt>cols) {
+                    rowCnt++;
+                    colCnt=0;
+                }
+
+            }
+        } catch (SQLException | FileNotFoundException e) {
+            e.printStackTrace();
+            System.out.println("Dashboard : " + e.getMessage());
+
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    private void setUserData() {
+
+        UserDetails userDetails = new GetUserProfile().getUser(Login.currentlyLogin_Id);
+
+        if (null == userDetails) {
+            customDialog.showAlertBox("Failed", "User Not Find Please Re-Login");
+        } else {
+
+            fullName.setText(userDetails.getFirstName() + " " + userDetails.getLastName());
+            userRole.setText(userDetails.getRole());
+            String imgPath = "src/main/resources/com/shop/management/img/userImages/" + userDetails.getUserImage();
+            userImage.setImage(method.getImage(imgPath));
+        }
     }
 
     private void setCustomImage() {
@@ -76,12 +171,11 @@ public class Dashboard implements Initializable {
 
     }
 
-    private void setMenuData() {
+    private void setSideMenuData() {
         int i = 0;
 
         try {
             connection = dbConnection.getConnection();
-            properties = dbConnection.getProperties("query.properties");
             PreparedStatement ps = connection.prepareStatement(properties.getProperty("SIDE_MENU"));
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -122,7 +216,7 @@ public class Dashboard implements Initializable {
                             replaceScene("dashboard/setting.fxml");
                             break;
                         case "ALL PRODUCT":
-                            replaceScene("dashboard/myProducts.fxml");
+                            replaceScene("dashboard/allProducts.fxml");
                             break;
                         case "SELL PRODUCT":
                             replaceScene("dashboard/sellProducts.fxml");
@@ -142,7 +236,7 @@ public class Dashboard implements Initializable {
                 menu_button.setGraphic(icon);
 
                 gridPane.add(menu_button, 0, i);
-                gridPane.setVgap(15);
+                gridPane.setVgap(10);
 
                 i++;
             }
@@ -170,5 +264,27 @@ public class Dashboard implements Initializable {
         } catch (IOException e) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, e);
         }
+    }
+
+    public void bnLogout(ActionEvent event) {
+        ImageView image = new ImageView(method.getImage("src/main/resources/com/shop/management/img/icon/warning_ic.png"));
+        image.setFitWidth(45);
+        image.setFitHeight(45);
+        Alert alert = new Alert(Alert.AlertType.NONE);
+        alert.setAlertType(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Warning ");
+        alert.setGraphic(image);
+        alert.setHeaderText("Are you sure you want to Logout");
+        alert.initModality(Modality.APPLICATION_MODAL);
+        alert.initOwner(Main.primaryStage);
+        Optional<ButtonType> result = alert.showAndWait();
+        ButtonType button = result.orElse(ButtonType.CANCEL);
+        if (button == ButtonType.OK) {
+            main.changeScene("login.fxml", "LOGIN HERE");
+            Login.currentlyLogin_Id = 0;
+        } else {
+            alert.close();
+        }
+
     }
 }

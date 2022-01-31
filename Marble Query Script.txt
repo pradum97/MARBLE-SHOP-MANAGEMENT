@@ -30,8 +30,9 @@ VALUES ('home_icon.png','HOME', 'SIDE'),
        ('shop_icon.png','ALL PRODUCT', 'SIDE'),
        ('sell_ic.png','SELL PRODUCT', 'SIDE'),
        ('viewReport_icon.png','SELL REPORT', 'SIDE'),
-       ('viewReport_icon.png','STOCK REPORT', 'SIDE'),
-       ('add_icon.png','ADD PRODUCT', 'TOP')
+       ('stock_ic.png','STOCK REPORT', 'SIDE'),
+       ('add_icon.png','ADD PRODUCT', 'TOP'),
+       ('feedback_ic.png','FEEDBACK', 'TOP')
 
 CREATE TABLE TBL_USERS
 (
@@ -50,6 +51,9 @@ CREATE TABLE TBL_USERS
     ACCOUNT_STATUS int       default '1' NOT NULL,
     MAC_ADDRESS    VARCHAR(30)           NOT NULL
 )
+
+ALTER TABLE TBL_USERS ADD UNIQUE (email)
+ALTER TABLE TBL_USERS ADD UNIQUE (username)
 
 CREATE TABLE TBLS_PRODUCT_MES_UNIT
 (
@@ -71,14 +75,13 @@ VALUES ('PCS'),
 
 CREATE TABLE TBL_FEEDBACK
 (
-
     FEEDBACK_ID SERIAL PRIMARY KEY NOT NULL,
     FULL_NAME   VARCHAR(50)        NOT NULL,
-    EMAIL       VARCHAR(200)       NOT NULL,
-    PHONE       BIGINT             NOT NULL,
-    SUBJECT     VARCHAR(200)       NOT NULL,
+    EMAIL       VARCHAR(200)      ,
+    PHONE       BIGINT             ,
+    STAR     VARCHAR(200)       NOT NULL,
     MESSAGE     VARCHAR(1000)      NOT NULL,
-    FEEDBACK    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    FEEDBACK_DATE  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
 )
 

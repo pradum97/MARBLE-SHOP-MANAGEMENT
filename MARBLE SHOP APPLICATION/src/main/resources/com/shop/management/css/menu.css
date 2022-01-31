@@ -13,7 +13,8 @@
 .hyperlink:focused{
 
     -fx-background-color: blue;
-    -fx-border-color: #c41af3;
+    -fx-border-color: transparent;
     -fx-font-weight: bold;
+    -fx-background-radius: 5;
     -fx-border-radius: 2px;
 }
