@@ -1,4 +1,4 @@
-package com.shop.management.Controller;
+package com.shop.management.Controller.Update;
 
 import com.shop.management.CustomDialog;
 import com.shop.management.Main;
@@ -24,47 +24,42 @@ import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class FeedbackDialog implements Initializable {
-   @FXML
+public class UpdateFeedback implements Initializable {
+    @FXML
     public TextField fullName;
     public TextField email;
     public TextField phone;
     public TextArea comments;
     public Rating rate;
     public Button bn_feedback_submit;
-    private Properties colorProperties, queryProp;
+    private Properties queryProp;
     DBConnection dbConnection;
     CustomDialog customDialog;
     Method method;
-
-    String button_bg_color, button_text_color;
-
+    Feedback feed;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
         method = new Method();
         dbConnection = new DBConnection();
         customDialog = new CustomDialog();
-        colorProperties = method.getProperties("color.properties");
         queryProp = method.getProperties("query.properties");
 
-        button_bg_color = colorProperties.getProperty("BUTTON_BG_COLOR");
-        button_text_color = colorProperties.getProperty("BUTTON_TEXT_COLOR");
-        setTheme();
-        rate.setRating(4);
-
-
+         feed = (Feedback) Main.primaryStage.getUserData();
+        setData(feed);
     }
 
-    private void setTheme() {
+    private void setData(Feedback feed) {
 
-        bn_feedback_submit.setStyle(
-                "-fx-background-color:" + button_bg_color + ";" +
-                        " -fx-text-fill:" + button_text_color
-        );
+        fullName.setText(feed.getFullName());
+        email.setText(feed.getEmail());
+        phone.setText(String.valueOf(feed.getFeed_phone()));
+        rate.setRating(Double.parseDouble(feed.getStar()));
+        comments.setText(feed.getMessage());
     }
 
-    public void submitFeedback(ActionEvent event) {
+    public void updateFeedback(ActionEvent event) {
 
         String fullname = fullName.getText();
         String emailID = email.getText();
@@ -72,13 +67,10 @@ public class FeedbackDialog implements Initializable {
         String comment = comments.getText();
         double rating = rate.getRating();
 
-        rate.setRating(4);
-
         Pattern pattern = Pattern.compile(method.emailRegex);
         Matcher matcher = pattern.matcher(emailID);
 
         if (fullname.isEmpty()) {
-
             method.show_popup("Enter Full Name", fullName);
             return;
         } else if (!emailID.isEmpty()) {
@@ -86,9 +78,7 @@ public class FeedbackDialog implements Initializable {
             if (!matcher.matches()) {
                 method.show_popup("Enter Valid Email", email);
                 return;
-
             }
-
         } else if (!phoneNum.isEmpty()) {
 
             Pattern phone_pattern = Pattern.compile("^\\d{10}$");
@@ -96,10 +86,10 @@ public class FeedbackDialog implements Initializable {
 
             if (!phone_matcher.matches()) {
 
-                customDialog.showAlertBox("Failed ",
-                        "Enter 10-digit Phone Number Without Country Code");
+                customDialog.showAlertBox("Failed ", "Enter 10-digit Phone Number Without Country Code");
                 return;
             }
+
         } else if (comment.isEmpty()) {
 
             method.show_popup("Enter Comments", comments);
@@ -110,32 +100,39 @@ public class FeedbackDialog implements Initializable {
         PreparedStatement ps = null;
 
         try {
+
             con = dbConnection.getConnection();
 
             if (null == con) {
                 System.out.println("connection Faield");
                 return;
             }
-            ps = con.prepareStatement(queryProp.getProperty("FEEDBACK"));
+
+            ps = con.prepareStatement(queryProp.getProperty("FEEDBACK_UPDATE"));
             ps.setString(1, fullname);
             ps.setString(2, emailID);
             ps.setString(3, phoneNum);
             ps.setString(4, String.valueOf(rating));
             ps.setString(5, comment);
+            ps.setInt(6,feed.getFeed_id() );
 
             int res = ps.executeUpdate();
 
             if (res > 0) {
 
-                customDialog.showAlertBox("Successfully Submit Your Feedback",
-                        " Thank you for your feedback");
                 email.setText("");
                 phone.setText("");
                 comments.setText("");
                 fullName.setText("");
 
-            }
 
+                Stage stage = CustomDialog.stage;
+
+                if (stage.isShowing()){
+                    stage.close();
+                }
+
+            }
         } catch (SQLException | NumberFormatException e) {
             e.printStackTrace();
         } finally {
@@ -152,7 +149,6 @@ public class FeedbackDialog implements Initializable {
                 e.printStackTrace();
             }
         }
-
-
     }
+
 }

@@ -3,11 +3,11 @@ package com.shop.management.Model;
 public class Feedback {
 
     private int feed_id;
-    private long feed_phone;
-    private String fullName, email, star, message, feedDate;
+    private String feed_phone, fullName, email, star, message, feedDate;
 
-    public Feedback(int feed_id, long feed_phone, String fullName,
-                    String email, String star, String message, String feedDate) {
+
+    public Feedback(int feed_id, String feed_phone, String fullName, String email,
+                    String star, String message, String feedDate) {
         this.feed_id = feed_id;
         this.feed_phone = feed_phone;
         this.fullName = fullName;
@@ -25,11 +25,11 @@ public class Feedback {
         this.feed_id = feed_id;
     }
 
-    public long getFeed_phone() {
+    public String getFeed_phone() {
         return feed_phone;
     }
 
-    public void setFeed_phone(long feed_phone) {
+    public void setFeed_phone(String feed_phone) {
         this.feed_phone = feed_phone;
     }
 

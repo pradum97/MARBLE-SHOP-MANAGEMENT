@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import org.controlsfx.control.*?>
 
-<VBox alignment="CENTER" fillWidth="false" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.FeedbackDialog">
+<VBox alignment="CENTER" fillWidth="false" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.Update.UpdateFeedback">
    <children>
       <StackPane style="-fx-background-color: white; -fx-background-radius: 10;">
          <children>
@@ -33,7 +33,9 @@
                                     <Insets top="20.0" />
                                  </VBox.margin>
                                  <children>
-                                    <Button fx:id="bn_feedback_submit" alignment="CENTER" mnemonicParsing="false" onAction="#submitFeedback" prefHeight="26.0" prefWidth="171.0" style="-fx-cursor: hand;" text="SUBMIT" />
+                                    <Button fx:id="bn_feedback_submit" alignment="CENTER" mnemonicParsing="false"
+                                            onAction="#updateFeedback" prefHeight="26.0" prefWidth="171.0"
+                                            style="-fx-cursor: hand;" text="UPDATE" />
                                  </children>
                               </VBox>
                            </children>

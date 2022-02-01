@@ -346,7 +346,7 @@ public class Users implements Initializable {
 
     private void deleteUsers(UserDetails user) {
 
-        Alert alert = new Alert(Alert.AlertType.NONE);
+        Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setAlertType(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Warning ");
         alert.setHeaderText("Are You Sure You Want to Delete This User ( "+user.getFirstName()+" "+user.getLastName()+" )");

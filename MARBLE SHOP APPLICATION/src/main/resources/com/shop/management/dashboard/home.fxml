@@ -39,19 +39,17 @@
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
                   </HBox>
-
-
                   <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                      <children>
 
                         <TableView focusTraversable="false" tableMenuButtonVisible="true" BorderPane.alignment="CENTER">
                            <columns>
 
-                              <TableColumn fx:id="col_sno" prefWidth="75.0" text="S.NO" />
-                              <TableColumn fx:id="c_name" prefWidth="100.0" text="C-NAME" />
-                              <TableColumn fx:id="c_phone" prefWidth="85.0" text="C-PHONE" />
-                              <TableColumn fx:id="c_address" prefWidth="150.0" text="C-ADDRESS" />
-                              <TableColumn fx:id="saleID" editable="false" prefWidth="60.0" sortable="false" text="ID" />
+                              <TableColumn fx:id="col_sno" editable="false" sortable="false"  prefWidth="75.0" text="S.NO" />
+                              <TableColumn fx:id="c_name" editable="false" sortable="false"  prefWidth="100.0" text="C-NAME" />
+                              <TableColumn fx:id="c_phone" editable="false" sortable="false" prefWidth="85.0" text="C-PHONE" />
+                              <TableColumn fx:id="c_address" editable="false" sortable="false" prefWidth="150.0" text="C-ADDRESS" />
+                              <TableColumn fx:id="saleID" editable="false" sortable="false" prefWidth="60.0" text="ID" />
                               <TableColumn fx:id="saleIMG" editable="false" prefWidth="75.0" sortable="false" text="IMG" />
                               <TableColumn fx:id="saleColor" editable="false" prefWidth="100.0" sortable="false" text="COLOR" />
                               <TableColumn fx:id="productName" editable="false" prefWidth="200.0" sortable="false" text="P-NAME" />
@@ -66,9 +64,9 @@
                               <TableColumn fx:id="netAmount" editable="false" prefWidth="90.0" sortable="false" text="NET-AMOUNT" />
                               <TableColumn fx:id="productDiscount" editable="false" prefWidth="100" sortable="false" text="DISCOUNT" />
                               <TableColumn fx:id="productSize" editable="false" prefWidth="100.0" sortable="false" text="SIZE" />
-                              <TableColumn fx:id="col_p_seller_name" prefWidth="120.0" text="SELLER NAME" />
-                              <TableColumn fx:id="col_p_date" prefWidth="200.0" text="DATE" />
-                              <TableColumn fx:id="col_notes" prefWidth="200.0" text="Notes" />
+                              <TableColumn fx:id="col_p_seller_name" editable="false" sortable="false" prefWidth="120.0" text="SELLER NAME" />
+                              <TableColumn fx:id="col_p_date" editable="false" sortable="false" prefWidth="200.0" text="DATE" />
+                              <TableColumn fx:id="col_notes" editable="false" sortable="false" prefWidth="200.0" text="Notes" />
                               <TableColumn fx:id="action" editable="false" prefWidth="200.0" sortable="false" text="ACTION" />
 
                            </columns>
