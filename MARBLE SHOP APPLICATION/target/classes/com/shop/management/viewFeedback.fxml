@@ -2,37 +2,26 @@
 
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-
-<BorderPane
-            xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" stylesheets="@css/main.css"
-            fx:controller="com.shop.management.Controller.ViewFeedback">
-   <top>
-      <HBox prefHeight="63.0" prefWidth="600.0" BorderPane.alignment="CENTER" />
-   </top>
-   <center>
-      <AnchorPane BorderPane.alignment="CENTER">
+<HBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.ViewFeedback">
+   <children>
+      <VBox HBox.hgrow="ALWAYS">
          <children>
-            <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-               <children>
-                  <TableView fx:id="tableView" focusTraversable="false">
-                    <columns>
-                      <TableColumn fx:id="col_id" editable="false" reorderable="false" sortable="false" styleClass="table-column" prefWidth="75.0" text="ID" />
-                      <TableColumn fx:id="col_name" editable="false" reorderable="false" sortable="false" styleClass="table-column" prefWidth="100" text="NAME" />
-                        <TableColumn fx:id="col_email" editable="false" reorderable="false" sortable="false" styleClass="table-column" minWidth="200" prefWidth="-1.0" text="EMAIL" />
-                        <TableColumn fx:id="col_phone" editable="false" reorderable="false" sortable="false" styleClass="table-column" minWidth="150" prefWidth="-1.0" text="PHONE" />
-                        <TableColumn fx:id="col_star" editable="false" reorderable="false" sortable="false" styleClass="table-column" prefWidth="50" text="STAR" />
-                        <TableColumn fx:id="col_message" editable="false" reorderable="false" sortable="false" styleClass="table-column" maxWidth="300" minWidth="200.0" prefWidth="-1.0" text="MESSAGE" />
-                        <TableColumn fx:id="col_date" editable="false" reorderable="false" sortable="false" styleClass="table-column" minWidth="150" prefWidth="-1.0" text="DATE" />
-                    </columns>
-                  </TableView>
-               </children>
-            </VBox>
+            <TableView fx:id="tableView" focusTraversable="false" VBox.vgrow="ALWAYS">
+              <columns>
+                <TableColumn fx:id="col_id" editable="false" prefWidth="75.0" reorderable="false" sortable="false" styleClass="table-column" text="ID" />
+                <TableColumn fx:id="col_name" editable="false" prefWidth="100" reorderable="false" sortable="false" styleClass="table-column" text="NAME" />
+                  <TableColumn fx:id="col_email" editable="false" minWidth="200" prefWidth="-1.0" reorderable="false" sortable="false" styleClass="table-column" text="EMAIL" />
+                  <TableColumn fx:id="col_phone" editable="false" minWidth="150" prefWidth="-1.0" reorderable="false" sortable="false" styleClass="table-column" text="PHONE" />
+                  <TableColumn fx:id="col_star" editable="false" prefWidth="81" reorderable="false" sortable="false" styleClass="table-column" text="STAR" />
+                  <TableColumn fx:id="col_message" editable="false" maxWidth="300" minWidth="200.0" prefWidth="-1.0" reorderable="false" sortable="false" styleClass="table-column" text="MESSAGE" />
+                  <TableColumn fx:id="col_date" editable="false" minWidth="150" prefWidth="-1.0" reorderable="false" sortable="false" styleClass="table-column" text="DATE" />
+                  <TableColumn fx:id="col_action" editable="false" minWidth="150" prefWidth="-1.0" reorderable="false" sortable="false" styleClass="table-column" text="ACTION" />
+              </columns>
+            </TableView>
          </children>
-      </AnchorPane>
-   </center>
-</BorderPane>
+      </VBox>
+   </children>
+</HBox>

@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox alignment="CENTER" fillWidth="false" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.UpdateProfile">
+<VBox alignment="CENTER" fillWidth="false" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.Update.UpdateProfile">
 
     <StackPane style="-fx-background-color: #ffffff; -fx-background-radius: 10;" VBox.vgrow="ALWAYS">
 

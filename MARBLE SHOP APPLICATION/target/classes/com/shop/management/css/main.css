@@ -8,15 +8,9 @@
 
     -fx-alignment: CENTER;
     -fx-wrap-text: true;
-    -fx-table-cell-border-color: #a7a4a8;
+   /* -fx-table-cell-border-color: #a7a4a8;*/
 }
 
-.table-row-cell {
-
-    -fx-alignment: CENTER;
-    -fx-wrap-text: true;
-    -fx-table-cell-border-color: #a7a4a8;
-}
 
 .scroll-pane > .viewport {
     -fx-background-color: transparent;

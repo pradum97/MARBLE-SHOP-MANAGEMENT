@@ -17,7 +17,7 @@
                      <children>
                         <VBox prefWidth="342.0" spacing="10.0">
                            <children>
-                              <TextField fx:id="fullName" prefHeight="35.0" promptText="Name" text="Pradum Kumar" />
+                              <TextField fx:id="fullName" prefHeight="35.0" promptText="Name" />
                               <TextField fx:id="email" layoutX="10.0" layoutY="10.0" prefHeight="35.0" promptText="Email ( Optional )" />
                               <TextField fx:id="phone" layoutX="10.0" layoutY="40.0" prefHeight="35.0" promptText="Phone ( Optional )" />
 
@@ -27,14 +27,13 @@
                                        <Rating fx:id="rate" />
 
                               </VBox>
-                              <TextArea fx:id="comments" prefHeight="94.0" prefWidth="342.0" promptText="Your Feedback" text="“Hey {first name}, thank you for visiting us today! To help us best serve you and others, could you click on this {link} to answer one question about your experience today? Thanks {Insert Company Name}" wrapText="true" />
+                              <TextArea fx:id="comments" prefHeight="94.0" prefWidth="342.0" promptText="Your Feedback" wrapText="true" />
                               <VBox alignment="CENTER" spacing="20.0">
                                  <VBox.margin>
                                     <Insets top="20.0" />
                                  </VBox.margin>
                                  <children>
                                     <Button fx:id="bn_feedback_submit" alignment="CENTER" mnemonicParsing="false" onAction="#submitFeedback" prefHeight="26.0" prefWidth="171.0" style="-fx-cursor: hand;" text="SUBMIT" />
-                                    <Button fx:id="bn_viewFeedback" alignment="CENTER" mnemonicParsing="false" onAction="#viewFeedback" prefHeight="26.0" prefWidth="171.0" style="-fx-cursor: hand;" text="VIEW FEEDBACK" />
                                  </children>
                               </VBox>
                            </children>
