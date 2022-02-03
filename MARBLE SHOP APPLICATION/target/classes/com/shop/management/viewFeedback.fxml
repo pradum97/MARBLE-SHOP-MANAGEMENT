@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.ViewFeedback">
+   <children>
+      <VBox HBox.hgrow="ALWAYS">
+         <children>
+            <TableView fx:id="tableView" focusTraversable="false" VBox.vgrow="ALWAYS">
+              <columns>
+                <TableColumn fx:id="col_id" editable="false" prefWidth="75.0" reorderable="false" sortable="false" styleClass="table-column" text="ID" />
+                <TableColumn fx:id="col_name" editable="false" prefWidth="100" reorderable="false" sortable="false" styleClass="table-column" text="NAME" />
+                  <TableColumn fx:id="col_email" editable="false" minWidth="200" prefWidth="-1.0" reorderable="false" sortable="false" styleClass="table-column" text="EMAIL" />
+                  <TableColumn fx:id="col_phone" editable="false" minWidth="150" prefWidth="-1.0" reorderable="false" sortable="false" styleClass="table-column" text="PHONE" />
+                  <TableColumn fx:id="col_star" editable="false" prefWidth="81" reorderable="false" sortable="false" styleClass="table-column" text="STAR" />
+                  <TableColumn fx:id="col_message" editable="false" maxWidth="300" minWidth="200.0" prefWidth="-1.0" reorderable="false" sortable="false" styleClass="table-column" text="MESSAGE" />
+                  <TableColumn fx:id="col_date" editable="false" minWidth="150" prefWidth="-1.0" reorderable="false" sortable="false" styleClass="table-column" text="DATE" />
+                  <TableColumn fx:id="col_action" editable="false" minWidth="150" prefWidth="-1.0" reorderable="false" sortable="false" styleClass="table-column" text="ACTION" />
+              </columns>
+            </TableView>
+         </children>
+      </VBox>
+   </children>
+</HBox>

@@ -1,0 +1,20 @@
+#menu_listView-cell {
+
+    -fx-alignment: center;
+
+}
+
+.table-column {
+
+    -fx-alignment: CENTER;
+    -fx-wrap-text: true;
+   /* -fx-table-cell-border-color: #a7a4a8;*/
+}
+
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+.scroll-pane {
+    -fx-background-color: transparent;
+}
