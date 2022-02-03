@@ -300,3 +300,23 @@ CREATE TABLE TBL_SELL_ITEMS_DETAILS
 
 )
 
+
+//Added table by dhruv
+
+create table tbl_update_setting
+(
+    id  serial  primary key not null ,
+    theme        varchar(100) not null,
+    font_style   varchar(150) not null,
+    billing_type varchar(150) not null,
+    igst_tax     integer      not null,
+    cgst_tax     integer      not null,
+    sgst_tax     integer      not null
+)
+
+insert into tbl_update_setting 
+( theme, font_style, billing_type,
+ igst_tax, cgst_tax, sgst_tax)
+values 
+('Waterfront','Berlin Sans FB Demi',
+ 'Stander Bill','20','30','45');
