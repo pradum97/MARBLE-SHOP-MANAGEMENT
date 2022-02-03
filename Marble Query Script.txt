@@ -320,3 +320,8 @@ insert into tbl_update_setting
 values 
 ('Waterfront','Berlin Sans FB Demi',
  'Stander Bill','20','30','45');
+
+
+insert into tbl_product_tax ( sgst, cgst, igst, description)
+values ('25','34','35','bchsd');
+
