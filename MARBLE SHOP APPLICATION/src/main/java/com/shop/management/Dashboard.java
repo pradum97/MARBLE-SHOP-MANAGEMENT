@@ -1,8 +1,11 @@
 package com.shop.management;
 
+import com.shop.management.Controller.FeedbackDialog;
 import com.shop.management.Controller.Login;
+import com.shop.management.Controller.ViewFeedback;
 import com.shop.management.Method.GetUserProfile;
 import com.shop.management.Model.UserDetails;
+import com.shop.management.util.AppConfig;
 import com.shop.management.util.DBConnection;
 import com.shop.management.Method.Method;
 import javafx.collections.FXCollections;
@@ -13,6 +16,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -20,6 +24,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.io.*;
 import java.net.URL;
@@ -27,6 +32,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -99,17 +105,26 @@ public class Dashboard implements Initializable {
                     String txt = ((Hyperlink) event.getSource()).getText();
 
                     switch (txt) {
+                        case "ADD PRODUCT" -> {
 
-                        case "ADD PRODUCT":
-                            customDialog.showFxmlDialog("dashboard/addProducts.fxml","ADD NEW PRODUCT");
-                            break;
-                        case "FEEDBACK":
-                            customDialog.showFxmlDialog("feedbackDialog.fxml","FEEDBACK");
+                            try {
+                                Parent  parent = FXMLLoader.load(CustomDialog.class.getResource("dashboard/addProduct.fxml"));
+                               Stage stage = new Stage();
+                                stage.getIcons().add(new Image(getClass().getResourceAsStream(AppConfig.APPLICATION_ICON)));
+                                stage.setTitle("ADD NEW PRODUCT");
+                                Scene scene = new Scene(parent);
+                                scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/main.css")).toExternalForm());
+                                stage.setScene(scene);
+                               // stage.setMaximized(true);
+                                stage.show();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
 
-                            break;
-
+                        }
+                        case "FEEDBACK" -> customDialog.showFxmlDialog("feedbackDialog.fxml", "FEEDBACK");
+                        case "VIEW FEEDBACK" -> customDialog.showFxmlDialog2("viewFeedback.fxml", "ALL FEEDBACK");
                     }
-
 
                 });
 

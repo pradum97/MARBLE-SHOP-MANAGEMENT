@@ -1,5 +1,6 @@
-package com.shop.management.Controller;
+package com.shop.management.Controller.Update;
 
+import com.shop.management.Controller.Login;
 import com.shop.management.CustomDialog;
 import com.shop.management.Main;
 import com.shop.management.Method.CopyImage;

@@ -32,7 +32,9 @@ VALUES ('home_icon.png','HOME', 'SIDE'),
        ('viewReport_icon.png','SELL REPORT', 'SIDE'),
        ('stock_ic.png','STOCK REPORT', 'SIDE'),
        ('add_icon.png','ADD PRODUCT', 'TOP'),
-       ('feedback_ic.png','FEEDBACK', 'TOP')
+       ('feedback_ic.png','FEEDBACK', 'TOP'),
+       ('viewReport_icon.png','VIEW FEEDBACK', 'TOP')
+
 
 CREATE TABLE TBL_USERS
 (
@@ -78,7 +80,7 @@ CREATE TABLE TBL_FEEDBACK
     FEEDBACK_ID SERIAL PRIMARY KEY NOT NULL,
     FULL_NAME   VARCHAR(50)        NOT NULL,
     EMAIL       VARCHAR(200)      ,
-    PHONE       BIGINT             ,
+    PHONE       VARCHAR(15)             ,
     STAR     VARCHAR(200)       NOT NULL,
     MESSAGE     VARCHAR(1000)      NOT NULL,
     FEEDBACK_DATE  TIMESTAMP DEFAULT CURRENT_TIMESTAMP

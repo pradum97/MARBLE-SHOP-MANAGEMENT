@@ -27,6 +27,34 @@ public class Method {
         return FXCollections.observableArrayList("Male", "Female", "Other");
     }
 
+    public ObservableList<String> getProductType() {
+
+        return FXCollections.observableArrayList("Wall", "Floor");
+    }
+
+    public ObservableList<String> getProductCategory() {
+
+        return FXCollections.observableArrayList("Tiles", "Marble","Granite","Other");
+    }
+
+    public ObservableList<String> getSizeUnit() {
+
+        return FXCollections.observableArrayList("MM", "CM","INCH","FT");
+    }
+    public ObservableList<String> getSizeQuantityUnit() {
+
+        return FXCollections.observableArrayList("PCS", "PKT");
+    }
+
+    public ObservableList<String> getProductColor() {
+
+        return FXCollections.observableArrayList("White", "Dark grey","Blue" ,"Brown"
+                ,"Black" ,"Gold " ,"Orange" , "Red" ,"Green", "Black porcelain","Multicolour");
+
+    }
+
+
+
     public ObservableList<String> getAccountStatus() {
 
         return FXCollections.observableArrayList("Inactive","Active" );

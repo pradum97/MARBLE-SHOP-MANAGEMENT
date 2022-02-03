@@ -34,8 +34,6 @@ public class Login implements Initializable {
         customDialog = new CustomDialog();
         properties = method.getProperties("query.properties");
         dbConnection = new DBConnection();
-
-
     }
 
     @FXML
@@ -54,8 +52,6 @@ public class Login implements Initializable {
         String inputValue = email_f.getText();
         String password = password_f.getText();
 
-        String regexPattern = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
-
         if (inputValue.isEmpty()) {
             method.show_popup("Please enter valid username", email_f);
             return;
@@ -69,7 +65,6 @@ public class Login implements Initializable {
                 System.out.println("Properties File Not Found");
                 return;
             }
-
 
             connection = dbConnection.getConnection();
             // Email Login
@@ -119,7 +114,7 @@ public class Login implements Initializable {
             }
 
         } catch (Exception e) {
-            System.out.println("Error : " + e.getMessage());
+            customDialog.showAlertBox("Authentication Failed", e.getMessage());
         } finally {
 
             try {
