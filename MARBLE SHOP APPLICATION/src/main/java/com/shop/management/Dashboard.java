@@ -74,7 +74,7 @@ public class Dashboard implements Initializable {
 
     private void setTopMenuData() {
 
-        int cols=2, colCnt = 0, rowCnt = 0;
+        int cols = 2, colCnt = 0, rowCnt = 0;
 
         try {
             connection = dbConnection.getConnection();
@@ -108,15 +108,15 @@ public class Dashboard implements Initializable {
                         case "ADD PRODUCT" -> {
 
                             try {
-                                Parent  parent = FXMLLoader.load(CustomDialog.class.getResource("dashboard/addProduct.fxml"));
-                               Stage stage = new Stage();
+                                Parent parent = FXMLLoader.load(CustomDialog.class.getResource("dashboard/addProduct.fxml"));
+                                Stage stage = new Stage();
                                 stage.getIcons().add(new Image(getClass().getResourceAsStream(AppConfig.APPLICATION_ICON)));
                                 stage.setTitle("ADD NEW PRODUCT");
                                 Scene scene = new Scene(parent);
                                 scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/main.css")).toExternalForm());
                                 stage.setScene(scene);
-                               // stage.setMaximized(true);
-                                stage.show();
+                                stage.initModality(Modality.APPLICATION_MODAL);
+                                stage.showAndWait();
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -133,9 +133,9 @@ public class Dashboard implements Initializable {
                 gridTopMenu.add(menu_button, colCnt, rowCnt);
                 colCnt++;
 
-                if (colCnt>cols) {
+                if (colCnt > cols) {
                     rowCnt++;
-                    colCnt=0;
+                    colCnt = 0;
                 }
 
             }
