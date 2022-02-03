@@ -181,7 +181,9 @@
                                                       </HBox>
                                                       <VBox alignment="CENTER" layoutX="271.0" layoutY="10.0" spacing="5.0">
                                                           <children>
-                                                              <Button fx:id="bnAddSize" alignment="CENTER" minHeight="30.0" minWidth="100.0" mnemonicParsing="false" onAction="#bnAddSize" prefHeight="30.0" prefWidth="100.0" style="-fx-background-color: BLUE; -fx-text-fill: WHITE;" text="ADD" textAlignment="CENTER">
+                                                              <Button fx:id="bnAddSize" alignment="CENTER" minHeight="30.0" minWidth="100.0" mnemonicParsing="false"
+                                                                      onAction="#bnAddSize" prefHeight="30.0" prefWidth="100.0"
+                                                                      style="-fx-background-color: BLUE; -fx-text-fill: WHITE;" text="ADD" textAlignment="CENTER">
                                                                   <VBox.margin>
                                                                       <Insets top="25.0" />
                                                                   </VBox.margin>
