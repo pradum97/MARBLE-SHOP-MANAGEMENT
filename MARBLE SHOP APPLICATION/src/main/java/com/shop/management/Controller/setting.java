@@ -1,5 +1,6 @@
 package com.shop.management.Controller;
 
+import com.shop.management.CustomDialog;
 import com.shop.management.Method.Method;
 import com.shop.management.util.DBConnection;
 import javafx.collections.ObservableList;
@@ -34,13 +35,15 @@ public class setting implements Initializable {
     ObservableList<Double>cgstTaxList;
     ObservableList<Double>sgstTaxList;
     ObservableList<String>billingTypeList;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setThemeAndFontList();
         setIgstCgstSgst();
         setBillingType();
         setSettingValue();
-        System.out.println(theme.getValue());
+        double ram= (double) igstTax.getValue();
+        System.out.println(ram+1);
 
     }
 //    set item add in theme and fontstle DropDwon
@@ -133,7 +136,8 @@ public class setting implements Initializable {
         }
     }
 
-   public void updateSetting(){
+   public void updateSetting()  {
+       CustomDialog customDialog=new CustomDialog();
         try {
             conn=dbConnection.getConnection();
             prop=method.getProperties("query.properties");
@@ -141,14 +145,26 @@ public class setting implements Initializable {
             stmt.setString(1,theme.getValue().toString());
             stmt.setString(2,fontStyle.getValue().toString());
             stmt.setString(3,billing.getValue().toString());
-            stmt.setDouble(4, (Double) igstTax.getValue());
-           stmt.setDouble(5, (Double) cgstTax.getValue());
-           stmt.setDouble(6, (Double) sgstTax.getValue());
-            stmt.executeUpdate();
+            stmt.setString(4, igstTax.getValue().toString());
+           stmt.setString(5,  cgstTax.getValue().toString());
+           stmt.setString(6,  sgstTax.getValue().toString());
+            int rs=stmt.executeUpdate();
+            if(rs==1){
+                customDialog.showAlertBox("Message","your  Record Successful Save");
+            }else{
+                System.out.println("update not successful ");
 
-        } catch (Exception e) {
-            e.printStackTrace();
+            }
+
+        } catch (SQLException throwables) {
+            throwables.getMessage();
+        }finally {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-    }
+   }
 }
 

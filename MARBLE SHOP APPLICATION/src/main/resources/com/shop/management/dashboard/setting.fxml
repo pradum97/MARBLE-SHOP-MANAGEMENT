@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.*?>
+<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
@@ -12,7 +13,7 @@
             <Insets />
          </BorderPane.margin>
          <children>
-            <Button fx:id="saveBtn" mnemonicParsing="false" onAction="#updateSetting" text="Save">
+            <Button fx:id="saveBtn" mnemonicParsing="false" onAction="#updateSetting" styleClass="savebtn" text="Save">
                <font>
                   <Font name="Baskerville Old Face" size="14.0" />
                </font>
@@ -22,6 +23,9 @@
                <HBox.margin>
                   <Insets right="10.0" />
                </HBox.margin>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
             </Button>
          </children></HBox>
    </top>

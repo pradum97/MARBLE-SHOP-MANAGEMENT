@@ -18,3 +18,8 @@
 .scroll-pane {
     -fx-background-color: transparent;
 }
+
+/*setting css*/
+.savebtn:hover{
+    -fx-background-color: blue;
+}
