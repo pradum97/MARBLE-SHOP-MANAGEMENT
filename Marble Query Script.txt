@@ -303,15 +303,15 @@ CREATE TABLE TBL_SELL_ITEMS_DETAILS
 
 //Added table by dhruv
 
-create table tbl_update_setting
+ create table tbl_update_setting
 (
     id  serial  primary key not null ,
     theme        varchar(100) not null,
     font_style   varchar(150) not null,
     billing_type varchar(150) not null,
-    igst_tax     integer      not null,
-    cgst_tax     integer      not null,
-    sgst_tax     integer      not null
+    igst_tax     varchar(5)      not null,
+    cgst_tax     varchar(5)      not null,
+    sgst_tax    varchar(5)      not null
 )
 
 insert into tbl_update_setting 
@@ -319,7 +319,7 @@ insert into tbl_update_setting
  igst_tax, cgst_tax, sgst_tax)
 values 
 ('Waterfront','Berlin Sans FB Demi',
- 'Stander Bill','20','30','45');
+ 'Stander Bill','20.0','30.5','45.6');
 
 
 insert into tbl_product_tax ( sgst, cgst, igst, description)
