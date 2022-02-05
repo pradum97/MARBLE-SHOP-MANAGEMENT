@@ -18,7 +18,7 @@ public class CustomDialog {
     public static Stage stage;
     public static Stage stage2;
 
-    public Parent showFxmlDialog(String fxml_file, String title)  {
+    public void showFxmlDialog(String fxml_file, String title)  {
 
         try {
             Parent  parent = FXMLLoader.load(CustomDialog.class.getResource(fxml_file));
@@ -32,27 +32,22 @@ public class CustomDialog {
             stage.setScene(scene);
             stage.setResizable(false);
             stage.showAndWait();
-            return parent;
 
         } catch (IOException e) {
             e.printStackTrace();
-            return null;
         }
-
     }
 
-    public Alert showAlertBox(String title, String message) {
+    public void showAlertBox(String title, String message) {
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(message);
         alert.initOwner(Main.primaryStage);
         alert.showAndWait();
-
-        return alert;
     }
 
-    public Parent showFxmlDialog2(String fxml_file, String title)  {
+    public void showFxmlDialog2(String fxml_file, String title)  {
 
         try {
             Parent  parent = FXMLLoader.load(CustomDialog.class.getResource(fxml_file));
@@ -66,11 +61,9 @@ public class CustomDialog {
             stage2.setScene(scene);
             stage2.setResizable(false);
             stage2.showAndWait();
-            return parent;
 
         } catch (IOException e) {
             e.printStackTrace();
-            return null;
         }
 
     }

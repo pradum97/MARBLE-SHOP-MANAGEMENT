@@ -1,5 +1,6 @@
 package com.shop.management.Method;
 
+import com.shop.management.Controller.AddProducts;
 import com.shop.management.util.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -30,6 +31,11 @@ public class Method {
     public ObservableList<String> getProductType() {
 
         return FXCollections.observableArrayList("Wall", "Floor");
+    }
+
+    public ObservableList<String> getDiscountType() {
+
+        return FXCollections.observableArrayList("PERCENTAGE","FLAT");
     }
 
     public ObservableList<String> getProductCategory() {
@@ -94,19 +100,7 @@ public class Method {
             return  null;
         } finally {
 
-            try {
-                if (null != connection) {
-                    connection.close();
-                }
-                if (null != ps) {
-                    ps.close();
-                }
-                if (null != rs) {
-                    rs.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            AddProducts.closeConnection(connection, ps, rs);
         }
 
 

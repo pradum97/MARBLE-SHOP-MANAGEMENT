@@ -86,7 +86,8 @@
    <top>
       <VBox alignment="CENTER_RIGHT" fillWidth="false" style="-fx-background-color: #008080;" BorderPane.alignment="CENTER_RIGHT">
          <children>
-               <ScrollPane fx:id="menuScrollTop" hbarPolicy="NEVER" pannable="true" style="-fx-background-color: transparent;" vbarPolicy="NEVER">
+               <ScrollPane fx:id="menuScrollTop" hbarPolicy="NEVER"
+                           pannable="true" style="-fx-background-color: transparent;" vbarPolicy="NEVER">
                    <content>
                        <GridPane fx:id="gridTopMenu" alignment="CENTER_RIGHT" hgap="40.0" style="-fx-background-color: transparent;">
                            <columnConstraints>
