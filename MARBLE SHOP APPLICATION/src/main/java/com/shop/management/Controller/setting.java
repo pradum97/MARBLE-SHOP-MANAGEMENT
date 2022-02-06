@@ -150,7 +150,7 @@ public class setting implements Initializable {
            stmt.setString(6,  sgstTax.getValue().toString());
             int rs=stmt.executeUpdate();
             if(rs==1){
-                customDialog.showAlertBox("Message","your  Record Successful Save");
+                customDialog.showAlertBox("Message","Successful Setting Update ");
             }else{
                 System.out.println("update not successful ");
 

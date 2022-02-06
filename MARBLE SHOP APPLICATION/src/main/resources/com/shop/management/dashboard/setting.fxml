@@ -30,144 +30,176 @@
          </children></HBox>
    </top>
    <center>
-      <VBox fx:id="containtBox" alignment="TOP_CENTER" minWidth="700.0" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #dad8d8;" BorderPane.alignment="CENTER">
+      <VBox fx:id="containtBox" alignment="TOP_CENTER" minWidth="700.0" prefHeight="800.0" prefWidth="100.0" style="-fx-background-color: #dad8d8;" BorderPane.alignment="CENTER">
          <children>
-            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+            <VBox alignment="CENTER" prefWidth="200.0" spacing="10.0">
                <children>
-                  <Pane prefHeight="100.0" prefWidth="425.0" style="-fx-border-color: #a6bbd2; -fx-border-radius: 5px;">
-                     <children>
-                        <Label layoutX="183.0" layoutY="4.0" text="Theme" textFill="#114d8d">
-                           <font>
-                              <Font name="Berlin Sans FB Demi Bold" size="18.0" />
-                           </font>
-                        </Label>
-                        <VBox layoutX="209.0" layoutY="40.0" minWidth="100.0">
-                           <children>
-                              <Label minHeight="-Infinity" minWidth="-Infinity" text="Font Style">
-                                 <font>
-                                    <Font name="Berlin Sans FB Demi Bold" size="14.0" />
-                                 </font>
-                              </Label>
-                              <ComboBox fx:id="fontStyle" minWidth="100.0" prefHeight="25.0" prefWidth="180.0">
-                                 <VBox.margin>
-                                    <Insets top="5.0" />
-                                 </VBox.margin>
-                              </ComboBox>
-                           </children>
-                           <padding>
-                              <Insets left="10.0" right="10.0" />
-                           </padding>
-                        </VBox>
-                        <VBox layoutX="5.0" layoutY="40.0" minWidth="100.0">
-                           <children>
-                              <Label minHeight="-Infinity" minWidth="-Infinity" text="Theme">
-                                 <font>
-                                    <Font name="Berlin Sans FB Demi Bold" size="14.0" />
-                                 </font>
-                              </Label>
-                              <ComboBox fx:id="theme" minWidth="100.0" prefHeight="25.0" prefWidth="180.0">
-                                 <VBox.margin>
-                                    <Insets top="5.0" />
-                                 </VBox.margin>
-                              </ComboBox>
-                           </children>
-                           <padding>
-                              <Insets left="10.0" right="10.0" />
-                           </padding>
-                        </VBox>
-                     </children>
-                     <HBox.margin>
-                        <Insets />
-                     </HBox.margin>
+                  <VBox alignment="TOP_CENTER" minWidth="250.0" style="-fx-border-color: #a6bbd2; -fx-border-radius: 5px;">
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
                      <padding>
-                        <Insets left="10.0" right="10.0" />
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </padding>
-                  </Pane>
-                  <Pane prefHeight="100.0" prefWidth="778.0" style="-fx-border-color: #a6bbd2; -fx-border-radius: 5px;">
                      <children>
-                        <Label layoutX="325.0" layoutY="4.0" text="Billing Box" textFill="#114d8d">
-                           <font>
-                              <Font name="Berlin Sans FB Demi Bold" size="18.0" />
-                           </font>
-                        </Label>
-                        <VBox layoutX="4.0" layoutY="40.0" minWidth="100.0">
+                        <HBox alignment="TOP_CENTER" minWidth="50.0">
                            <children>
-                              <Label minHeight="-Infinity" minWidth="-Infinity" text="Billing">
+                              <Label text="Theme" textFill="#114d8d">
                                  <font>
-                                    <Font name="Berlin Sans FB Demi Bold" size="14.0" />
+                                    <Font name="Berlin Sans FB Demi Bold" size="16.0" />
                                  </font>
                               </Label>
-                              <ComboBox fx:id="billing" minWidth="100.0" prefHeight="25.0" prefWidth="180.0">
-                                 <VBox.margin>
-                                    <Insets top="5.0" />
-                                 </VBox.margin>
-                              </ComboBox>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" minWidth="250.0">
+                           <children>
+                              <VBox minWidth="100.0">
+                                 <children>
+                                    <Label minHeight="-Infinity" minWidth="-Infinity" text="Theme">
+                                       <font>
+                                          <Font name="Berlin Sans FB Demi Bold" size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <ComboBox fx:id="theme" minWidth="100.0" prefHeight="25.0" prefWidth="180.0">
+                                       <VBox.margin>
+                                          <Insets top="5.0" />
+                                       </VBox.margin>
+                                    </ComboBox>
+                                 </children>
+                                 <padding>
+                                    <Insets left="10.0" right="10.0" />
+                                 </padding>
+                              </VBox>
+                              <VBox minWidth="100.0">
+                                 <children>
+                                    <Label minHeight="-Infinity" minWidth="-Infinity" text="Font Style">
+                                       <font>
+                                          <Font name="Berlin Sans FB Demi Bold" size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <ComboBox fx:id="fontStyle" minWidth="100.0" prefHeight="25.0" prefWidth="180.0">
+                                       <VBox.margin>
+                                          <Insets top="5.0" />
+                                       </VBox.margin>
+                                    </ComboBox>
+                                 </children>
+                                 <padding>
+                                    <Insets left="10.0" right="10.0" />
+                                 </padding>
+                              </VBox>
                            </children>
                            <padding>
                               <Insets left="10.0" right="10.0" />
                            </padding>
-                        </VBox>
-                        <VBox layoutX="198.0" layoutY="40.0" minWidth="100.0">
-                           <children>
-                              <Label minHeight="-Infinity" minWidth="-Infinity" text="Igst Tax">
-                                 <font>
-                                    <Font name="Berlin Sans FB Demi Bold" size="14.0" />
-                                 </font>
-                              </Label>
-                              <ComboBox fx:id="igstTax" minWidth="100.0" prefHeight="25.0" prefWidth="150.0">
-                                 <VBox.margin>
-                                    <Insets top="5.0" />
-                                 </VBox.margin>
-                              </ComboBox>
-                           </children>
-                           <padding>
-                              <Insets left="10.0" right="10.0" />
-                           </padding>
-                        </VBox>
-                        <VBox layoutX="375.0" layoutY="42.0" minWidth="50.0">
-                           <children>
-                              <Label minHeight="-Infinity" minWidth="-Infinity" text="Cgst Tax">
-                                 <font>
-                                    <Font name="Berlin Sans FB Demi Bold" size="14.0" />
-                                 </font>
-                              </Label>
-                              <ComboBox fx:id="cgstTax" minWidth="50.0" prefHeight="25.0" prefWidth="150.0">
-                                 <VBox.margin>
-                                    <Insets top="5.0" />
-                                 </VBox.margin>
-                              </ComboBox>
-                           </children>
-                           <padding>
-                              <Insets left="10.0" right="10.0" />
-                           </padding>
-                        </VBox>
-                        <VBox layoutX="555.0" layoutY="40.0" minWidth="50.0">
-                           <children>
-                              <Label minHeight="-Infinity" minWidth="-Infinity" text="Sgst Tax">
-                                 <font>
-                                    <Font name="Berlin Sans FB Demi Bold" size="14.0" />
-                                 </font>
-                              </Label>
-                              <ComboBox fx:id="sgstTax" minWidth="100.0" prefHeight="25.0" prefWidth="150.0">
-                                 <VBox.margin>
-                                    <Insets top="5.0" />
-                                 </VBox.margin>
-                              </ComboBox>
-                           </children>
-                           <padding>
-                              <Insets left="7.0" right="10.0" />
-                           </padding>
-                        </VBox>
+                           <VBox.margin>
+                              <Insets top="10.0" />
+                           </VBox.margin>
+                        </HBox>
                      </children>
+                  </VBox>
+
+                  <VBox alignment="TOP_CENTER" minWidth="250.0" style="-fx-border-color: #a6bbd2; -fx-border-radius: 5px;">
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
                      <padding>
-                        <Insets left="10.0" right="10.0" />
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </padding>
-                  </Pane>
+                     <children>
+                        <HBox alignment="TOP_CENTER" minWidth="50.0">
+                           <children>
+                              <Label text="Tax Config" textFill="#114d8d">
+                                 <font>
+                                    <Font name="Berlin Sans FB Demi Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" minWidth="250.0">
+                           <children>
+                              <VBox minWidth="100.0">
+                                 <children>
+                                    <Label minHeight="-Infinity" minWidth="-Infinity" text="Billing">
+                                       <font>
+                                          <Font name="Berlin Sans FB Demi Bold" size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <ComboBox fx:id="billing" minWidth="100.0" prefHeight="25.0" prefWidth="180.0">
+                                       <VBox.margin>
+                                          <Insets top="5.0" />
+                                       </VBox.margin>
+                                    </ComboBox>
+                                 </children>
+                                 <padding>
+                                    <Insets left="10.0" right="10.0" />
+                                 </padding>
+                              </VBox>
+                              <VBox minWidth="100.0">
+                                 <children>
+                                    <Label minHeight="-Infinity" minWidth="-Infinity" text="Igst Tax">
+                                       <font>
+                                          <Font name="Berlin Sans FB Demi Bold" size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <ComboBox fx:id="igstTax" minWidth="100.0" prefHeight="25.0" prefWidth="150.0">
+                                       <VBox.margin>
+                                          <Insets top="5.0" />
+                                       </VBox.margin>
+                                    </ComboBox>
+                                 </children>
+                                 <padding>
+                                    <Insets left="10.0" right="10.0" />
+                                 </padding>
+                              </VBox>
+                              <VBox minWidth="50.0">
+                                 <children>
+                                    <Label minHeight="-Infinity" minWidth="-Infinity" text="Cgst Tax">
+                                       <font>
+                                          <Font name="Berlin Sans FB Demi Bold" size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <ComboBox fx:id="cgstTax" minWidth="50.0" prefHeight="25.0" prefWidth="150.0">
+                                       <VBox.margin>
+                                          <Insets top="5.0" />
+                                       </VBox.margin>
+                                    </ComboBox>
+                                 </children>
+                                 <padding>
+                                    <Insets left="10.0" right="10.0" />
+                                 </padding>
+                              </VBox>
+                              <VBox minWidth="50.0">
+                                 <children>
+                                    <Label minHeight="-Infinity" minWidth="-Infinity" text="Sgst Tax">
+                                       <font>
+                                          <Font name="Berlin Sans FB Demi Bold" size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <ComboBox fx:id="sgstTax" minWidth="100.0" prefHeight="25.0" prefWidth="150.0">
+                                       <VBox.margin>
+                                          <Insets top="5.0" />
+                                       </VBox.margin>
+                                    </ComboBox>
+                                 </children>
+                                 <padding>
+                                    <Insets left="7.0" right="10.0" />
+                                 </padding>
+                              </VBox>
+                           </children>
+                           <padding>
+                              <Insets left="10.0" right="10.0" />
+                           </padding>
+                           <VBox.margin>
+                              <Insets top="10.0" />
+                           </VBox.margin>
+                        </HBox>
+                     </children>
+                  </VBox>
                </children>
                <VBox.margin>
                   <Insets top="5.0" />
                </VBox.margin>
-            </HBox>
+            </VBox>
          </children>
          <padding>
             <Insets left="10.0" right="10.0" />
