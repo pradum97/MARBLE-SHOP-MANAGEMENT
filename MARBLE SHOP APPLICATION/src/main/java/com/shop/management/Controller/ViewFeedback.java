@@ -102,22 +102,7 @@ public class ViewFeedback implements Initializable {
             e.printStackTrace();
         }finally {
 
-            try {
-
-                if (null != connection){
-                    connection.close();
-                }
-
-                if (null != ps){
-                    ps.close();
-                }
-
-                if (null != rs){
-                    rs.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            AddProducts.closeConnection(connection, ps, rs);
         }
         col_id.setCellValueFactory(new PropertyValueFactory<>("feed_id"));
         col_name.setCellValueFactory(new PropertyValueFactory<>("fullName"));
