@@ -3,10 +3,16 @@ package com.shop.management;
 import com.shop.management.Controller.Avatar;
 import com.shop.management.util.AppConfig;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -27,6 +33,9 @@ public class Main extends Application {
         Scene scene = new Scene(root);
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/main.css")).toExternalForm());
         stage.setScene(scene);
+
+
+
         stage.show();
     }
     public void changeScene(String fxml, String title) {

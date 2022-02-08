@@ -2,18 +2,45 @@ package com.shop.management.Model;
 
 public class ProductSize {
 
-    double width , height ;
+
+    double purchasePrice, productMRP , MinSellPrice , width , height ;
     long quantity ;
     String  sizeUnit , quantityUnit;
 
-    public ProductSize(double width, double height, long quantity, String sizeUnit,
-                       String quantityUnit) {
-
+    public ProductSize(double purchasePrice, double productMRP, double minSellPrice,
+                       double width, double height, long quantity, String sizeUnit, String quantityUnit) {
+        this.purchasePrice = purchasePrice;
+        this.productMRP = productMRP;
+        MinSellPrice = minSellPrice;
         this.width = width;
         this.height = height;
         this.quantity = quantity;
         this.sizeUnit = sizeUnit;
         this.quantityUnit = quantityUnit;
+    }
+
+    public double getPurchasePrice() {
+        return purchasePrice;
+    }
+
+    public void setPurchasePrice(double purchasePrice) {
+        this.purchasePrice = purchasePrice;
+    }
+
+    public double getProductMRP() {
+        return productMRP;
+    }
+
+    public void setProductMRP(double productMRP) {
+        this.productMRP = productMRP;
+    }
+
+    public double getMinSellPrice() {
+        return MinSellPrice;
+    }
+
+    public void setMinSellPrice(double minSellPrice) {
+        MinSellPrice = minSellPrice;
     }
 
     public double getWidth() {

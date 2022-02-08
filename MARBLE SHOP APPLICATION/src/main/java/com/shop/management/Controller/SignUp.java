@@ -13,6 +13,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apache.commons.io.FileUtils;
@@ -62,6 +64,12 @@ public class SignUp implements Initializable {
         properties = method.getProperties("query.properties");
 
         setData();
+
+        String type  =(String) Main.primaryStage.getUserData();
+        if (type == "adduser"){
+
+            already_account.setVisible(false);
+        }
     }
 
     private void setData() {
@@ -77,7 +85,65 @@ public class SignUp implements Initializable {
         main.changeScene("login.fxml", "Login Here");
     }
 
-    public void submit_bn(ActionEvent event) throws IOException {
+    public void submit_bn(ActionEvent event) {
+
+       startSignup();
+    }
+
+    private void clearValue() {
+
+        first_name_f.setText("");
+        last_name_f.setText("");
+        username_f.setText("");
+        phone_f.setText("");
+        email_f.setText("");
+        full_address_f.setText("");
+        password_f.setText("");
+        con_password_f.setText("");
+
+        Stage stage = CustomDialog.stage;
+
+        if (stage.isShowing()){
+            stage.close();
+        }
+
+        imgAvatarPath = "";
+        profile_photo.setImage(method.getImage("src/main/resources/com/shop/management/img/icon/person_ic.png"));
+        profile_img_choose.setText("Upload Photo");
+
+    }
+
+    public void chooseAvatar(ActionEvent event) {
+
+        customDialog.showFxmlDialog2("avatar.fxml","CHOOSE YOUR PROFILE AVATAR");
+        setAvatar();
+
+    }
+
+    public void setAvatar(){
+        String path = "src/main/resources/com/shop/management/img/Avatar/";
+        try {
+            imgAvatarPath = (String) Main.primaryStage.getUserData();
+        } catch (ClassCastException e) {
+            e.printStackTrace();
+        }
+        String img = path+imgAvatarPath;
+
+        if (null != imgAvatarPath){
+           profile_photo.setImage(new Method().getImage(img));
+        }
+    }
+
+    public void enterPress(KeyEvent e) {
+
+        if (e.getCode() == KeyCode.ENTER) {
+            //do something
+
+            startSignup();
+        }
+    }
+
+    private void startSignup() {
 
         Connection connection = null;
         PreparedStatement ps_insert_data = null;
@@ -154,7 +220,7 @@ public class SignUp implements Initializable {
             method.show_popup("confirm password doesn't match", con_password_f);
             return;
         } else if (mac_address.isEmpty()) {
-           mac_address = "Not-Found";
+            mac_address = "Not-Found";
         }
         imageName = new CopyImage().copy(new File("src/main/resources/com/shop/management/img/Avatar/"+imgAvatarPath).getAbsolutePath(), "userImages/profileImg");
 
@@ -201,7 +267,11 @@ public class SignUp implements Initializable {
             if (null != imageName) {
                 File file = new File("src/main/resources/com/shop/management/img/userImages/" + imageName);
                 if (file.exists()) {
-                    FileUtils.forceDelete(file);
+                    try {
+                        FileUtils.forceDelete(file);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
                     System.out.println("Image deleted : " + imageName);
                 }
             }
@@ -217,50 +287,6 @@ public class SignUp implements Initializable {
                     e.printStackTrace();
                 }
             }
-        }
-    }
-
-    private void clearValue() {
-
-        first_name_f.setText("");
-        last_name_f.setText("");
-        username_f.setText("");
-        phone_f.setText("");
-        email_f.setText("");
-        full_address_f.setText("");
-        password_f.setText("");
-        con_password_f.setText("");
-
-        Stage stage = CustomDialog.stage;
-
-        if (stage.isShowing()){
-            stage.close();
-        }
-
-        imgAvatarPath = "";
-        profile_photo.setImage(method.getImage("src/main/resources/com/shop/management/img/icon/person_ic.png"));
-        profile_img_choose.setText("Upload Photo");
-
-    }
-
-    public void chooseAvatar(ActionEvent event) {
-
-        customDialog.showFxmlDialog2("avatar.fxml","CHOOSE YOUR PROFILE AVATAR");
-        setAvatar();
-
-    }
-
-    public void setAvatar(){
-        String path = "src/main/resources/com/shop/management/img/Avatar/";
-        try {
-            imgAvatarPath = (String) Main.primaryStage.getUserData();
-        } catch (ClassCastException e) {
-            e.printStackTrace();
-        }
-        String img = path+imgAvatarPath;
-
-        if (null != imgAvatarPath){
-           profile_photo.setImage(new Method().getImage(img));
         }
     }
 }

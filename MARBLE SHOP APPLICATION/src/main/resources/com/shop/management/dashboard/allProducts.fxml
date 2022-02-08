@@ -9,30 +9,33 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.AllProducts">
    <center>
-      <TableView focusTraversable="false" tableMenuButtonVisible="true" BorderPane.alignment="CENTER">
+      <TableView fx:id="tableView" focusTraversable="false" tableMenuButtonVisible="true" BorderPane.alignment="CENTER">
         <columns>
 
-            <TableColumn editable="false" prefWidth="60.0" sortable="false" text="ID" />
-            <TableColumn editable="false" prefWidth="75.0" sortable="false" text="IMG" />
-            <TableColumn editable="false" prefWidth="100.0" sortable="false" text="COLOR" />
-            <TableColumn editable="false" prefWidth="200.0" sortable="false" text="PROD-NAME" />
-            <TableColumn editable="false" prefWidth="150" sortable="false" text="PURCHASE PRICE" />
-            <TableColumn editable="false" prefWidth="81" sortable="false" text="PROD-MRP" />
-            <TableColumn editable="false" prefWidth="81" sortable="false" text="MIN-MRP" />
-            <TableColumn editable="false" prefWidth="100.0" sortable="false" text="PROD-TYPE" />
-            <TableColumn editable="false" prefWidth="100.0" sortable="false" text="CATEGORY" />
-            <TableColumn editable="false" prefWidth="90.0" sortable="false" text="QUANTITY" />
-            <TableColumn editable="false" prefWidth="90.0" sortable="false" text="UNIT" />
-            <TableColumn editable="false" prefWidth="100" sortable="false" text="DISCOUNT" />
-            <TableColumn editable="false" prefWidth="100.0" sortable="false" text="SIZE" />
-            <TableColumn editable="false" prefWidth="100.0" sortable="false" text="DESCRIPTION" />
-            <TableColumn editable="false" prefWidth="200.0" sortable="false" text="ACTION" />
+            <TableColumn fx:id="col_IMG" editable="false" prefWidth="75.0" sortable="false" text="IMG" />
+            <TableColumn fx:id="colColor" editable="false" prefWidth="120.0" sortable="false" text="COLOR" />
+            <TableColumn fx:id="colProductName" editable="false" prefWidth="200.0" sortable="false" text="PROD-NAME" />
+            <TableColumn fx:id="colType" editable="false" prefWidth="110.0" sortable="false" text="PROD-TYPE" />
+            <TableColumn fx:id="colCategory" editable="false" prefWidth="120.0" sortable="false" text="CATEGORY" />
+            <TableColumn fx:id="colDiscount" editable="false" prefWidth="100" sortable="false" text="DISCOUNT" />
+            <TableColumn fx:id="colTax" editable="false" prefWidth="100" sortable="false" text="TAX" />
+
+
+            <TableColumn fx:id="colSize" editable="false" prefWidth="100.0" sortable="false" text="SIZE" />
+            <TableColumn fx:id="colPurchasePrice" editable="false" prefWidth="150" sortable="false" text="PURCHASE PRICE" />
+            <TableColumn fx:id="colMrp" editable="false" prefWidth="100.0" sortable="false" text="PROD-MRP" />
+            <TableColumn fx:id="colMinSellPrice" editable="false" prefWidth="100.0" sortable="false" text="MIN-SELL" />
+            <TableColumn fx:id="colQuantity" editable="false" prefWidth="100.0" sortable="false" text="QUANTITY" />
+            <TableColumn fx:id="colQuantityUnit" editable="false" prefWidth="100.0" sortable="false" text="UNIT" />
+            <TableColumn fx:id="colDescription" editable="false" prefWidth="150.0" sortable="false" text="DESCRIPTION" />
+            <TableColumn fx:id="colProduct" editable="false" prefWidth="200.0" sortable="false" text="ACTION" />
 
         </columns>
       </TableView>
    </center>
+
    <top>
       <HBox alignment="CENTER" fillHeight="false" spacing="40.0" style="-fx-background-color: #008080;" BorderPane.alignment="CENTER">
          <children>
@@ -52,4 +55,5 @@
          </padding>
       </HBox>
    </top>
+
 </BorderPane>

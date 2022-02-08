@@ -422,6 +422,7 @@ public class Users implements Initializable {
 
     public void bn_addUsers(ActionEvent event) {
 
+        Main.primaryStage.setUserData("adduser");
         customDialog.showFxmlDialog("signup.fxml", "Add New User");
         refreshTableData();
 

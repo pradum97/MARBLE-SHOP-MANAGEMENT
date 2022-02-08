@@ -25,7 +25,7 @@ public class CustomDialog {
             stage = new Stage();
             stage.getIcons().add(new Image(getClass().getResourceAsStream(AppConfig.APPLICATION_ICON)));
             stage.initStyle(StageStyle.UTILITY);
-            stage.setTitle(AppConfig.APPLICATION_NAME + " ( " + title + " ) ");
+            stage.setTitle(title);
             stage.initModality(Modality.APPLICATION_MODAL);
             Scene scene = new Scene(parent);
             scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/main.css")).toExternalForm());
@@ -54,7 +54,7 @@ public class CustomDialog {
             stage2 = new Stage();
             stage2.getIcons().add(new Image(getClass().getResourceAsStream(AppConfig.APPLICATION_ICON)));
             stage2.initStyle(StageStyle.UTILITY);
-            stage2.setTitle(AppConfig.APPLICATION_NAME + " ( " + title + " ) ");
+            stage2.setTitle(title);
             stage2.initModality(Modality.APPLICATION_MODAL);
             Scene scene = new Scene(parent);
             scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/main.css")).toExternalForm());

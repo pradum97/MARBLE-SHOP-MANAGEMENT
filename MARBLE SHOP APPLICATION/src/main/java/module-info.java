@@ -21,4 +21,6 @@ module com.shop.management {
     opens com.shop.management.Method to javafx.fxml;
     exports com.shop.management.Controller.Update;
     opens com.shop.management.Controller.Update to javafx.fxml;
+    exports com.shop.management.Controller.SettingController;
+    opens com.shop.management.Controller.SettingController to javafx.fxml;
 }

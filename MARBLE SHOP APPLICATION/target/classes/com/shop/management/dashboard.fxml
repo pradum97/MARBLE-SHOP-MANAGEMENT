@@ -35,7 +35,7 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="8.0" />
                     </padding>
                 </VBox>
-                <ScrollPane fx:id="menuScrollSide" fitToHeight="true" fitToWidth="true" pannable="true" vbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+                <ScrollPane fx:id="menuScrollSide" fitToWidth="true" pannable="true" vbarPolicy="NEVER" VBox.vgrow="ALWAYS">
                     <VBox.margin>
                         <Insets top="30.0" />
                     </VBox.margin>
@@ -86,8 +86,7 @@
    <top>
       <VBox alignment="CENTER_RIGHT" fillWidth="false" style="-fx-background-color: #008080;" BorderPane.alignment="CENTER_RIGHT">
          <children>
-               <ScrollPane fx:id="menuScrollTop" hbarPolicy="NEVER"
-                           pannable="true" style="-fx-background-color: transparent;" vbarPolicy="NEVER">
+               <ScrollPane fx:id="menuScrollTop" hbarPolicy="NEVER" pannable="true" style="-fx-background-color: transparent;" vbarPolicy="NEVER">
                    <content>
                        <GridPane fx:id="gridTopMenu" alignment="CENTER_RIGHT" hgap="40.0" style="-fx-background-color: transparent;">
                            <columnConstraints>

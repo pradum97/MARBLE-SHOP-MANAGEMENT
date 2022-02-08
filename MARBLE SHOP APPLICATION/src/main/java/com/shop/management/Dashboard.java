@@ -1,17 +1,12 @@
 package com.shop.management;
 
-import com.shop.management.Controller.FeedbackDialog;
 import com.shop.management.Controller.Login;
-import com.shop.management.Controller.ViewFeedback;
 import com.shop.management.Method.GetUserProfile;
 import com.shop.management.Model.UserDetails;
 import com.shop.management.util.AppConfig;
 import com.shop.management.util.DBConnection;
 import com.shop.management.Method.Method;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -20,7 +15,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -70,11 +65,39 @@ public class Dashboard implements Initializable {
         setCustomImage();
         setUserData();
 
+        keyBoardShortcut();
+
+    }
+
+    private void keyBoardShortcut() {
+
+        Scene scene = Main.primaryStage.getScene();
+
+        scene.getAccelerators().put(
+                KeyCombination.keyCombination("CTRL+A"),
+                () -> addProduct("dashboard/addProduct.fxml","ADD NEW PRODUCT",685,650,StageStyle.UTILITY)
+        );
+
+        scene.getAccelerators().put(
+                KeyCombination.keyCombination("CTRL+F"),
+                this::addFeedback
+        );
+
+        scene.getAccelerators().put(
+                KeyCombination.keyCombination("CTRL+SHIFT+L"),
+                () -> bnLogout(null)
+        );
+    }
+
+    private void addFeedback() {
+
+        customDialog.showFxmlDialog("feedbackDialog.fxml", "FEEDBACK");
+
     }
 
     private void setTopMenuData() {
 
-        int cols = 2, colCnt = 0, rowCnt = 0;
+        int cols = 5, colCnt = 0, rowCnt = 0;
 
         try {
             connection = dbConnection.getConnection();
@@ -106,24 +129,11 @@ public class Dashboard implements Initializable {
 
                     switch (txt) {
                         case "ADD PRODUCT" -> {
-
-                            try {
-                                Parent parent = FXMLLoader.load(CustomDialog.class.getResource("dashboard/addProduct.fxml"));
-                                Stage stage = new Stage();
-                                stage.getIcons().add(new Image(getClass().getResourceAsStream(AppConfig.APPLICATION_ICON)));
-                                stage.setTitle("ADD NEW PRODUCT");
-                                Scene scene = new Scene(parent);
-                                scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/main.css")).toExternalForm());
-                                stage.setScene(scene);
-                                stage.initModality(Modality.APPLICATION_MODAL);
-                                stage.showAndWait();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-
+                           addProduct("dashboard/addProduct.fxml","ADD NEW PRODUCT" ,685,650, StageStyle.DECORATED);
                         }
-                        case "FEEDBACK" -> customDialog.showFxmlDialog("feedbackDialog.fxml", "FEEDBACK");
+                        case "FEEDBACK" -> addFeedback();
                         case "VIEW FEEDBACK" -> customDialog.showFxmlDialog2("viewFeedback.fxml", "ALL FEEDBACK");
+                        default -> addProduct("dashboard/setting.fxml","SETTING",600,1000, StageStyle.UTILITY);
                     }
 
                 });
@@ -151,6 +161,27 @@ public class Dashboard implements Initializable {
             }
         }
 
+    }
+
+    private void addProduct(String fxmlName, String title, double height, double width, StageStyle utility) {
+
+        try {
+            Parent parent = FXMLLoader.load(CustomDialog.class.getResource(fxmlName));
+            Stage stage = new Stage();
+            stage.getIcons().add(new Image(getClass().getResourceAsStream(AppConfig.APPLICATION_ICON)));
+            stage.setTitle(title);
+            stage.setMinHeight(height);
+            stage.setMinWidth(width);
+            stage.setMaximized(false);
+            Scene scene = new Scene(parent,width,height);
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/main.css")).toExternalForm());
+            stage.setScene(scene);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initStyle(utility);
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void setUserData() {
@@ -217,32 +248,13 @@ public class Dashboard implements Initializable {
                     String txt = ((Hyperlink) event.getSource()).getText();
 
                     switch (txt) {
-
-                        case "HOME":
-                            replaceScene("dashboard/home.fxml");
-                            break;
-                        case "PROFILE":
-                            replaceScene("dashboard/userprofile.fxml");
-                            break;
-                        case "USERS":
-                            replaceScene("dashboard/users.fxml");
-                            break;
-                        case "SETTING":
-                            replaceScene("dashboard/setting.fxml");
-                            break;
-                        case "ALL PRODUCT":
-                            replaceScene("dashboard/allProducts.fxml");
-                            break;
-                        case "SELL PRODUCT":
-                            replaceScene("dashboard/sellProducts.fxml");
-                            break;
-                        case "SELL REPORT":
-                            replaceScene("dashboard/sellReport.fxml");
-                            break;
-                        case "STOCK REPORT":
-                            replaceScene("dashboard/stockReport.fxml");
-
-                            break;
+                        case "HOME" -> replaceScene("dashboard/home.fxml");
+                        case "PROFILE" -> replaceScene("dashboard/userprofile.fxml");
+                        case "USERS" -> replaceScene("dashboard/users.fxml");
+                        case "ALL PRODUCT" -> replaceScene("dashboard/allProducts.fxml");
+                        case "SELL PRODUCT" -> replaceScene("dashboard/sellProducts.fxml");
+                        case "SELL REPORT" -> replaceScene("dashboard/sellReport.fxml");
+                        case "STOCK REPORT" -> replaceScene("dashboard/stockReport.fxml");
                     }
 
 

@@ -11,6 +11,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
 import java.net.URL;
 import java.sql.*;
@@ -44,6 +46,54 @@ public class Login implements Initializable {
     }
 
     public void login_bn(ActionEvent event) {
+
+       startLogin();
+    }
+
+    private void getProfileDetails(ResultSet rs) throws SQLException {
+
+        int userID = rs.getInt("user_id");
+        int userStatus = rs.getInt("account_status");
+
+        if (userStatus == 0){
+            customDialog.showAlertBox("Login Failed","Your Account Has Been Inactive Please Contact Administrator");
+            return;
+        }
+
+        currentlyLogin_Id = userID;
+        UserDetails userDetails = new GetUserProfile().getUser(userID);
+
+        if (null == userDetails){
+
+            customDialog.showAlertBox("Failed","User Not Found");
+
+        }else {
+
+            Main.primaryStage.setUserData(userDetails);
+            main.changeScene("dashboard.fxml", "Dashboard");
+            Main.primaryStage.setMaximized(true);
+
+        }
+
+    }
+
+
+    public void create_new_account(ActionEvent event) {
+        main.changeScene("signup.fxml", "Signup Here");
+
+    }
+
+
+    public void enterPress(KeyEvent e) {
+
+        if (e.getCode() == KeyCode.ENTER) {
+            //do something
+
+            startLogin();
+        }
+    }
+
+    private void startLogin() {
 
         Connection connection = null;
         PreparedStatement ps = null;
@@ -132,38 +182,6 @@ public class Login implements Initializable {
                 e.printStackTrace();
             }
         }
-    }
-
-    private void getProfileDetails(ResultSet rs) throws SQLException {
-
-        int userID = rs.getInt("user_id");
-        int userStatus = rs.getInt("account_status");
-
-        if (userStatus == 0){
-            customDialog.showAlertBox("Login Failed","Your Account Has Been Inactive Please Contact Administrator");
-            return;
-        }
-
-        currentlyLogin_Id = userID;
-        UserDetails userDetails = new GetUserProfile().getUser(userID);
-
-        if (null == userDetails){
-
-            customDialog.showAlertBox("Failed","User Not Found");
-
-        }else {
-
-            Main.primaryStage.setUserData(userDetails);
-            main.changeScene("dashboard.fxml", "Dashboard");
-            Main.primaryStage.setMaximized(true);
-
-        }
-
-    }
-
-
-    public void create_new_account(ActionEvent event) {
-        main.changeScene("signup.fxml", "Signup Here");
 
     }
 }

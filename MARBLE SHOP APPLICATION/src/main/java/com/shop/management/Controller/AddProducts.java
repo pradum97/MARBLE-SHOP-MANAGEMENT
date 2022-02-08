@@ -2,6 +2,8 @@ package com.shop.management.Controller;
 
 import com.shop.management.CustomDialog;
 import com.shop.management.Main;
+import com.shop.management.Method.CopyImage;
+import com.shop.management.Method.GetTax;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.Discount;
 import com.shop.management.Model.ProductSize;
@@ -11,12 +13,15 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -28,10 +33,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -65,6 +67,9 @@ public class AddProducts implements Initializable {
     public Button bnSubmit;
     public ComboBox<TAX> productTax;
     public GridPane gridImage;
+    public TableColumn<ProductSize, String> col_PurchasePrice;
+    public TableColumn<ProductSize, String> col_mrp;
+    public TableColumn<ProductSize, String> col_minSelPrice;
 
     double tableViewSize = 70;
     List<String> imagePath;
@@ -105,66 +110,57 @@ public class AddProducts implements Initializable {
 
     public void submit_bn(ActionEvent event) {
 
-        // textField
-        String prodName = productName.getText();
-        String purchasePrice = productPurchasePrice.getText();
-        String prodMrp = productMrp.getText();
-        String minSellPrice = productMinSell.getText();
-        String prodDescription = productDescription.getText();
-
-        Discount discount = productDiscount.getSelectionModel().getSelectedItem();
-        ObservableList<ProductSize> tableData = sizeTableView.getItems();
-
-        if (prodName.isEmpty()) {
-            method.show_popup("ENTER PRODUCT NAME ", productName);
-            return;
-        } else if (purchasePrice.isEmpty()) {
-            method.show_popup("ENTER PURCHASE PRICE ", productPurchasePrice);
-            return;
-        } else if (prodMrp.isEmpty()) {
-            method.show_popup("ENTER PRODUCT MRP ", productMrp);
-            return;
-        } else if (minSellPrice.isEmpty()) {
-            method.show_popup("ENTER MIN SELLING PRICE ", productMinSell);
-            return;
-        } else if (null == productColor.getValue()) {
-            method.show_popup("CHOOSE PRODUCT COLOR ", productColor);
-            return;
-        } else if (null == productType.getValue()) {
-            method.show_popup("CHOOSE PRODUCT TYPE ", productType);
-            return;
-        } else if (null == productCategory.getValue()) {
-            method.show_popup("CHOOSE PRODUCT CATEGORY", productCategory);
-            return;
-        } else if (tableData.isEmpty()) {
-            method.show_popup("ADD AT LEAST 1 SIZE", bnAddSize);
-            return;
-        } else if (null == imagePath) {
-            method.show_popup("CHOOSE PRODUCT IMAGE", bn_UploadImage);
-            return;
-        }
-
-        String prodColor = productColor.getValue();
-        String prodType = productType.getValue();
-        String prodCategory = productCategory.getValue();
-
-        int prodDiscount;
-        int prodTax;
-
-        prodDiscount = productDiscount.getValue().getDiscount_id();
-        prodTax = productTax.getValue().getTaxID();
-
-        System.out.println(prodDiscount);
-        System.out.println(prodTax);
-
-        String propQuery = "INSERT INTO TBL_PRODUCT_PROP (PRODUCT_COLOR_CODE, PRODUCT_COLOR_NAME, PRODUCT_TYPE, DESCRIPTION)VALUES (?,?,?,?)";
+        submit();
     }
+
+
 
     public void bnAddSize(ActionEvent event) {
 
         String heightS = productHeight.getText();
         String widthS = productWidth.getText();
         String quantityS = productQuantity.getText();
+        String purchasePrice = productPurchasePrice.getText();
+        String prodMrp = productMrp.getText();
+        String minSellPrice = productMinSell.getText();
+        double mrp = 0, min_Sell_Price = 0, purchase_price = 0;
+
+        if (purchasePrice.isEmpty()) {
+            method.show_popup("ENTER PURCHASE PRICE ", productPurchasePrice);
+            return;
+        }
+        try {
+            purchase_price = Double.parseDouble(purchasePrice.replaceAll("[^0-9.]", ""));
+        } catch (NumberFormatException e) {
+            customDialog.showAlertBox("INVALID PURCHASE PRICE", "ENTER VALID PURCHASE PRICE");
+            e.printStackTrace();
+            return;
+        }
+
+
+        if (prodMrp.isEmpty()) {
+            method.show_popup("ENTER PRODUCT MRP ", productMrp);
+            return;
+        }
+        try {
+            mrp = Double.parseDouble(prodMrp.replaceAll("[^0-9.]", ""));
+        } catch (NumberFormatException e) {
+            customDialog.showAlertBox("INVALID MRP", "ENTER VALID MRP");
+            e.printStackTrace();
+            return;
+        }
+        if (minSellPrice.isEmpty()) {
+            method.show_popup("ENTER MIN SELLING PRICE ", productMinSell);
+            return;
+        }
+        try {
+            min_Sell_Price = Double.parseDouble(minSellPrice.replaceAll("[^0-9.]", ""));
+
+        } catch (NumberFormatException e) {
+            customDialog.showAlertBox("INVALID MIN SELL PRICE", "ENTER VALID INVALID MIN SELL PRICE");
+            e.printStackTrace();
+            return;
+        }
 
         if (heightS.isEmpty()) {
             method.show_popup("ENTER PRODUCT HEIGHT", productHeight);
@@ -190,9 +186,11 @@ public class AddProducts implements Initializable {
         double width = 0;
         long quantity = 0;
 
+
         try {
             height = Double.parseDouble(heightS.replaceAll("[^0-9.]", ""));
             width = Double.parseDouble(widthS.replaceAll("[^0-9.]", ""));
+
         } catch (NumberFormatException e) {
             customDialog.showAlertBox("INVALID PRODUCT SIZE", "ENTER VALID HEIGHT AND WIDTH ");
             return;
@@ -206,7 +204,7 @@ public class AddProducts implements Initializable {
         String sizeUnit = productSizeUnit.getValue();
         String quantityUnit = productQuantityUnit.getValue();
 
-        ProductSize productSize = new ProductSize(width, height, quantity, sizeUnit, quantityUnit);
+        ProductSize productSize = new ProductSize(purchase_price, mrp, min_Sell_Price, width, height, quantity, sizeUnit, quantityUnit);
         sizeList.add(productSize);
 
         sizeTableView.setItems(sizeList);
@@ -214,6 +212,9 @@ public class AddProducts implements Initializable {
         tableViewSize = tableViewSize + 20;
         sizeTableView.setMinHeight(tableViewSize);
 
+        col_PurchasePrice.setCellValueFactory(new PropertyValueFactory<>("purchasePrice"));
+        col_mrp.setCellValueFactory(new PropertyValueFactory<>("productMRP"));
+        col_minSelPrice.setCellValueFactory(new PropertyValueFactory<>("MinSellPrice"));
         col_Height.setCellValueFactory(new PropertyValueFactory<>("height"));
         col_Width.setCellValueFactory(new PropertyValueFactory<>("width"));
         col_Quantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
@@ -239,7 +240,7 @@ public class AddProducts implements Initializable {
                         ImageView iv_delete;
                         Image image_delete = null;
 
-                        String path = "src/main/resources/com/shop/management/img/img/";
+                        String path = "src/main/resources/com/shop/management/img/icon/";
 
                         try {
                             delete_file = new File(path + "delete_ic.png");
@@ -298,6 +299,17 @@ public class AddProducts implements Initializable {
         };
 
         col_action.setCellFactory(cellFactory);
+
+        productPurchasePrice.setText("");
+        productMrp.setText("");
+        productMinSell.setText("");
+
+        productHeight.setText("");
+        productWidth.setText("");
+
+        productSizeUnit.getSelectionModel().clearSelection();
+        productQuantity.setText("");
+        productQuantityUnit.getSelectionModel().clearSelection();
     }
 
     private void setDiscount() {
@@ -306,43 +318,7 @@ public class AddProducts implements Initializable {
             discountList.clear();
         }
 
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
 
-        try {
-
-            connection = dbConnection.getConnection();
-
-            if (null == connection) {
-                System.out.println("connection failed");
-                return;
-            }
-
-            ps = connection.prepareStatement(properties.getProperty("GET_DISCOUNT"));
-            rs = ps.executeQuery();
-
-            while (rs.next()) {
-
-                // discount
-                int discountID = rs.getInt("discount_id");
-                double discount = rs.getDouble("discount");
-
-                String discountType = rs.getString("discount_type");
-                String description = rs.getString("description");
-                discountList.addAll(new Discount(discountID, discount, discountType, description));
-
-            }
-
-            productDiscount.setItems(discountList);
-
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-
-            closeConnection(connection, ps, rs);
-        }
     }
 
     private void setTax() {
@@ -351,43 +327,10 @@ public class AddProducts implements Initializable {
             taxList.clear();
         }
 
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+        ObservableList<TAX> gst = new GetTax().getGst();
 
-        try {
-
-            connection = dbConnection.getConnection();
-
-            if (null == connection) {
-                System.out.println("connection failed");
-                return;
-            }
-
-            ps = connection.prepareStatement(properties.getProperty("GET_TAX"));
-            rs = ps.executeQuery();
-
-            while (rs.next()) {
-
-                // tax
-
-                int taxID = rs.getInt("tax_id");
-                double sgst = rs.getDouble("sgst");
-                double cgst = rs.getDouble("cgst");
-                double igst = rs.getDouble("igst");
-                String tax_description = rs.getString("sgst");
-
-                taxList.add(new TAX(taxID, sgst, cgst, igst, tax_description));
-            }
-
-            productTax.setItems(taxList);
-
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-
-            closeConnection(connection, ps, rs);
+        if (null != gst){
+            productTax.setItems(gst);
         }
     }
 
@@ -464,5 +407,152 @@ public class AddProducts implements Initializable {
         }
 
 
+    }
+
+    public void enterPress(KeyEvent e) {
+
+        if (e.getCode() == KeyCode.ENTER) {
+
+            submit();
+        }
+    }
+
+    private void submit() {
+
+        // textField
+        String prodName = productName.getText();
+        String prodDescription = productDescription.getText();
+
+        Discount discount = productDiscount.getSelectionModel().getSelectedItem();
+        TAX tax = productTax.getSelectionModel().getSelectedItem();
+        ObservableList<ProductSize> tableData = sizeTableView.getItems();
+
+        if (prodName.isEmpty()) {
+            method.show_popup("ENTER PRODUCT NAME ", productName);
+            return;
+        } else if (null == productCategory.getValue()) {
+            method.show_popup("CHOOSE PRODUCT CATEGORY", productCategory);
+            return;
+        } else if (null == productColor.getValue()) {
+            method.show_popup("CHOOSE PRODUCT COLOR ", productColor);
+            return;
+        } else if (null == productType.getValue()) {
+            method.show_popup("CHOOSE PRODUCT TYPE ", productType);
+            return;
+        } else if (tableData.isEmpty()) {
+            method.show_popup("ADD AT LEAST 1 SIZE", bnAddSize);
+            return;
+        } else if (imagePath.isEmpty()) {
+            method.show_popup("CHOOSE PRODUCT IMAGE", bn_UploadImage);
+            return;
+        }
+
+        String prodColor = productColor.getValue();
+        String prodType = productType.getValue();
+        String prodCategory = productCategory.getValue();
+
+
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            connection = dbConnection.getConnection();
+
+            if (null == connection) {
+                System.out.println("AddProduct : Connection Failed");
+
+                return;
+            }
+
+            String productQuery = "INSERT INTO TBL_PRODUCTS(PRODUCT_NAME, PRODUCT_DESCRIPTION, PRODUCT_COLOR, PRODUCT_TYPE,\n" +
+                    "                         CATEGORY, DISCOUNT_ID, TAX_ID)\n" +
+                    " VALUES(?,?,?,?,?,?,?)";
+
+            ps = connection.prepareStatement(productQuery, new String[]{"product_id"});
+            ps.setString(1, prodName);
+            ps.setString(2, prodDescription);
+            ps.setString(3, prodColor);
+            ps.setString(4, prodType);
+            ps.setString(5, prodCategory);
+
+            if (null == discount) {
+                ps.setNull(6, Types.NULL);
+            } else {
+                ps.setInt(6, discount.getDiscount_id()); // dis
+            }
+            if (null == tax) {
+                ps.setNull(7, Types.NULL);
+            } else {
+                ps.setInt(7, tax.getTaxID()); //tax
+            }
+
+            int productResult = ps.executeUpdate();
+
+            if (productResult > 0) {
+
+                rs = ps.getGeneratedKeys();
+
+                if (rs.next()) {
+
+                    int productID = rs.getInt(1);
+
+                    String imgQuery = "INSERT INTO  TBL_PRODUCT_IMG(PRODUCT_ID, IMG_PATH) VALUES (?,?)";
+
+                    ps = null;
+
+
+                    for (String str : imagePath) {
+
+                        String fileName = new CopyImage().copy(str, "Product_Image/prod-ID-" + productID + "-");
+                        ps = connection.prepareStatement(imgQuery);
+                        ps.setInt(1, productID);
+                        ps.setString(2, fileName);
+
+                        ps.executeUpdate();
+
+                    }
+
+                    ps = null;
+
+                    String stockQuery = "INSERT INTO TBL_PRODUCT_STOCK (PURCHASE_PRICE, PRODUCT_MRP, min_sellingPrice, PRODUCT_ID, HEIGHT," +
+                            " WIDTH, QUANTITY, SIZE_UNIT, QUANTITY_UNIT) VALUES (?,?,?,?,?,?,?,?,?)";
+                    ps = connection.prepareStatement(stockQuery);
+                    for (ProductSize pz : tableData) {
+
+                        ps.setDouble(1, pz.getPurchasePrice());
+                        ps.setDouble(2, pz.getProductMRP());
+                        ps.setDouble(3, pz.getMinSellPrice());
+                        ps.setInt(4, productID);
+                        ps.setDouble(5, pz.getHeight());
+                        ps.setDouble(6, pz.getWidth());
+                        ps.setDouble(7, pz.getQuantity());
+                        ps.setString(8, pz.getSizeUnit());
+                        ps.setString(9, pz.getQuantityUnit());
+
+                        int stockRes = ps.executeUpdate();
+
+                        if (stockRes < 0) {
+                            return;
+                        }
+                    }
+                    customDialog.showAlertBox("", "Product Successfully Added");
+
+                    connection.close();
+
+                    if (null != ps) {
+                        ps.close();
+                    }
+                    rs.close();
+
+
+                }
+            }
+
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
     }
 }

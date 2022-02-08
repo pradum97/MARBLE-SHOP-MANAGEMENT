@@ -11,6 +11,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import org.controlsfx.control.Rating;
 
@@ -55,7 +57,14 @@ public class FeedbackDialog implements Initializable {
 
 
     }
+    public void enterPress(KeyEvent e) {
 
+        if (e.getCode() == KeyCode.ENTER) {
+            //do something
+
+            submitFeedback(null);
+        }
+    }
     private void setTheme() {
 
         bn_feedback_submit.setStyle(

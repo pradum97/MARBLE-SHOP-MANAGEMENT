@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" fillWidth="false" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.SignUp">
+<VBox onKeyReleased="#enterPress" alignment="CENTER" fillWidth="false" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.SignUp">
 
     <StackPane style="-fx-background-color: white; -fx-background-radius: 10;">
 
@@ -34,7 +34,7 @@
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                                 <TextField fx:id="first_name_f" maxHeight="131.0" minHeight="37.0" prefHeight="37.0" prefWidth="300.0" promptText="Enter First Name" text="Pradum" />
+                                 <TextField fx:id="first_name_f" maxHeight="131.0" minHeight="37.0" onKeyReleased="#enterPress" prefHeight="37.0" prefWidth="300.0" promptText="Enter First Name" text="Pradum" />
       
                              </VBox>
       
@@ -45,7 +45,7 @@
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                                 <TextField fx:id="last_name_f" maxHeight="80.0" minHeight="37.0" prefHeight="37.0" prefWidth="300.0" promptText="Enter Last Name" text="Kumar" />
+                                 <TextField fx:id="last_name_f" maxHeight="80.0" minHeight="37.0" onKeyReleased="#enterPress" prefHeight="37.0" prefWidth="300.0" promptText="Enter Last Name" text="Kumar" />
       
                              </VBox>
                          </HBox>
@@ -57,7 +57,7 @@
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                                 <TextField fx:id="username_f" maxHeight="375.0" minHeight="37.0" prefHeight="37.0" prefWidth="300.0" promptText="Enter username" text="pradum98" />
+                                 <TextField fx:id="username_f" maxHeight="375.0" minHeight="37.0" onKeyReleased="#enterPress" prefHeight="37.0" prefWidth="300.0" promptText="Enter username" text="pradum98" />
       
                              </VBox>
       
@@ -67,7 +67,7 @@
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                                 <TextField fx:id="phone_f" layoutX="45.0" layoutY="27.0" maxHeight="80.0" minHeight="37.0" prefHeight="37.0" prefWidth="300.0" promptText="Enter 10-Digit Phone Number" text="9608461591" />
+                                 <TextField fx:id="phone_f" layoutX="45.0" layoutY="27.0" maxHeight="80.0" minHeight="37.0" onKeyReleased="#enterPress" prefHeight="37.0" prefWidth="300.0" promptText="Enter 10-Digit Phone Number" text="9608461591" />
       
                              </VBox>
       
@@ -81,7 +81,7 @@
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                                 <TextField fx:id="email_f" maxHeight="70.0" minHeight="37.0" prefHeight="37.0" prefWidth="616" promptText="Enter Valid Email" text="pk@gmail.com" />
+                                 <TextField fx:id="email_f" maxHeight="70.0" minHeight="37.0" onKeyReleased="#enterPress" prefHeight="37.0" prefWidth="616" promptText="Enter Valid Email" text="pk@gmail.com" />
       
                              </VBox>
                          </HBox>
@@ -117,7 +117,7 @@
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                                 <TextArea fx:id="full_address_f" maxHeight="80.0" minHeight="37.0" prefHeight="37.0" prefWidth="616.0" promptText="Enter Full Address" style="-fx-text-alignment: CENTER" text="Lakhisarai">
+                                 <TextArea fx:id="full_address_f" maxHeight="80.0" minHeight="37.0" onKeyReleased="#enterPress" prefHeight="37.0" prefWidth="616.0" promptText="Enter Full Address" style="-fx-text-alignment: CENTER" text="Lakhisarai">
                            <padding>
                               <Insets right="3.0" />
                            </padding>
@@ -137,7 +137,7 @@
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                                 <PasswordField fx:id="password_f" minHeight="37.0" prefHeight="37.0" prefWidth="616.0" promptText="Enter Password" text="12345" />
+                                 <PasswordField fx:id="password_f" minHeight="37.0" onKeyReleased="#enterPress" prefHeight="37.0" prefWidth="616.0" promptText="Enter Password" text="12345" />
       
                              </VBox>
                          </HBox>
@@ -150,7 +150,7 @@
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                                <TextField fx:id="con_password_f" layoutX="46.0" layoutY="27.0" minHeight="37.0" prefHeight="37.0" prefWidth="616.0" promptText="Enter Conform Password" text="12345" />
+                                <TextField fx:id="con_password_f" layoutX="46.0" layoutY="27.0" minHeight="37.0" onKeyReleased="#enterPress" prefHeight="37.0" prefWidth="616.0" promptText="Enter Conform Password" text="12345" />
       
                             </VBox>
                         </HBox>
@@ -174,7 +174,7 @@
                   <VBox alignment="CENTER" fillWidth="false" style="-fx-alignment: center; -fx-spacing: 15;">
                      <children>
       
-                                              <Button fx:id="submit_bn" alignment="CENTER" lineSpacing="1.0" minHeight="28.0" onAction="#submit_bn" prefHeight="28.0" prefWidth="177.0" style="-fx-cursor: hand;-fx-background-color: #5e0cee;" text="SUBMIT" textAlignment="CENTER" textFill="#ffffff" />
+                                              <Button fx:id="submit_bn" alignment="CENTER" lineSpacing="1.0" minHeight="28.0" onAction="#submit_bn" onKeyReleased="#enterPress" prefHeight="28.0" prefWidth="177.0" style="-fx-cursor: hand;-fx-background-color: #5e0cee;" text="SUBMIT" textAlignment="CENTER" textFill="#ffffff" />
       
                                               <Button fx:id="already_account" alignment="CENTER" onAction="#already_account_bn" prefHeight="30.0" style="-fx-cursor: hand; -fx-background-color: transparent; -fx-text-fill: black;" text="Already have an account? Login Here " textAlignment="CENTER" textFill="white" />
                      </children>

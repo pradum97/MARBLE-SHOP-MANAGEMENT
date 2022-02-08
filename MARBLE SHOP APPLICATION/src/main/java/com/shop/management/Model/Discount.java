@@ -3,10 +3,10 @@ package com.shop.management.Model;
 public class Discount {
 
     int discount_id ;
-    double discount;
+    int discount;
     String discountType,description;
 
-    public Discount(int discount_id, double discount, String discountType, String description) {
+    public Discount(int discount_id, int discount, String discountType, String description) {
         this.discount_id = discount_id;
         this.discount = discount;
         this.discountType = discountType;
@@ -27,11 +27,11 @@ public class Discount {
         this.discount_id = discount_id;
     }
 
-    public double getDiscount() {
+    public int getDiscount() {
         return discount;
     }
 
-    public void setDiscount(double discount) {
+    public void setDiscount(int discount) {
         this.discount = discount;
     }
 
