@@ -1,5 +1,7 @@
 package com.shop.management.Model;
 
+import java.math.BigDecimal;
+
 public class Stock {
 
     int stockID , productID;
@@ -24,6 +26,14 @@ public class Stock {
         this.quantity = quantity;
     }
 
+    @Override
+    public String toString() {
+        BigDecimal h = BigDecimal.valueOf(this.getHeight());
+        BigDecimal w = BigDecimal.valueOf(this.getWidth());
+
+        return h.stripTrailingZeros().toPlainString()+" x "
+                +w.stripTrailingZeros().toPlainString()+getSizeUnit();
+    }
 
     public int getStockID() {
         return stockID;

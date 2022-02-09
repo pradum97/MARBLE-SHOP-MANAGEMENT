@@ -5,6 +5,7 @@ import com.shop.management.Main;
 import com.shop.management.Method.*;
 import com.shop.management.Model.*;
 import com.shop.management.util.DBConnection;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,6 +24,7 @@ import javafx.util.Callback;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -41,15 +43,10 @@ public class AllProducts implements Initializable {
     public TableColumn<Products, String> colCategory;
     public TableColumn<Products, String> colDiscount;
     public TableColumn<Products, String> colTax;
-    public TableColumn<Products, String> colSize;
-    public TableColumn<Products, String> colPurchasePrice;
-    public TableColumn<Products, String> colMrp;
-    public TableColumn<Products, String> colMinSellPrice;
-    public TableColumn<Products, String> colQuantity;
-    public TableColumn<Products, String> colQuantityUnit;
     public TableColumn<Products, String> colDescription;
-    public TableColumn<Products, String> colProduct;
+    public TableColumn<Products, String> colAction;
     public TableView<Products> tableView;
+    public TableColumn<Products , String> colSize;
 
     DBConnection dbconnection;
     Method method;
@@ -74,6 +71,21 @@ public class AllProducts implements Initializable {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
+        int productID =0;
+        String productName = null;
+        String productDescription = null;
+        String productColor = null;
+        String productType =null;
+        String productCategory = null;
+        int discountID =0;
+        int taxID = 0;
+
+        Discount discounts = null ;
+        TAX gst = null ;
+        Stock stock =null;
+        int discount = 0 , tax = 0;
+
+
         try {
 
             String query = "SELECT * FROM TBL_PRODUCTS";
@@ -89,20 +101,19 @@ public class AllProducts implements Initializable {
 
             while (rs.next()) {
 
-                int productID = rs.getInt("product_id");
-                String productName = rs.getString("product_name");
-                String productDescription = rs.getString("product_description");
-                String productColor = rs.getString("product_color");
-                String productType = rs.getString("product_type");
-                String productCategory = rs.getString("category");
-                int discountID = rs.getInt("discount_id");
-                int taxID = rs.getInt("tax_id");
+                 productID = rs.getInt("product_id");
+                 productName = rs.getString("product_name");
+                 productDescription = rs.getString("product_description");
+                 productColor = rs.getString("product_color");
+                 productType = rs.getString("product_type");
+                 productCategory = rs.getString("category");
+                 discountID = rs.getInt("discount_id");
+                 taxID = rs.getInt("tax_id");
 
-                Discount discounts = new GetDiscount().get(discountID);
-                TAX gst = new GetTax().getGst(taxID);
-                Stock stock = new GetStockData().getStock(productID);
+                 discounts = new GetDiscount().get(discountID);
+                 gst = new GetTax().getGst(taxID);
+                 stock = new GetStockData().getStock(productID);
 
-                int discount = 0 , tax = 0;
                 if (null != discounts){
                     discount = discounts.getDiscount();
                 }
@@ -114,7 +125,13 @@ public class AllProducts implements Initializable {
                 if (null != stock){
 
                     productsList.add(new Products(stock.getStockID(),productID, stock.getPurchasePrice(), stock.getProductMRP(),
-                            stock.getMinSellingPrice(),stock.getHeight(),stock.getWidth(),stock.getSizeUnit(),stock.getQuantityUnit(),stock.getQuantity(),productID,productName,productDescription,productColor,productType,productCategory,discount,tax,null));
+                            stock.getMinSellingPrice(),stock.getHeight(),stock.getWidth(),stock.getSizeUnit(),
+                            stock.getQuantityUnit(),stock.getQuantity(),productID,productName,productDescription,productColor,
+                            productType,productCategory,discount,tax,null));
+
+
+
+
                 }
 
             }
@@ -130,26 +147,12 @@ public class AllProducts implements Initializable {
 
         }
 
-        colPurchasePrice.setCellValueFactory(new PropertyValueFactory<>("purchasePrice"));
-        colColor.setCellValueFactory(new PropertyValueFactory<>("productColor"));
-        colProductName.setCellValueFactory(new PropertyValueFactory<>("productName"));
-        colType.setCellValueFactory(new PropertyValueFactory<>("productType"));
-        colCategory.setCellValueFactory(new PropertyValueFactory<>("category"));
-        colDiscount.setCellValueFactory(new PropertyValueFactory<>("discount"));
-        colTax.setCellValueFactory(new PropertyValueFactory<>("tax"));
+       setColumnData();
 
-        colSize.setCellValueFactory(new PropertyValueFactory<>("height"));
-        colPurchasePrice.setCellValueFactory(new PropertyValueFactory<>("purchasePrice"));
-        colMrp.setCellValueFactory(new PropertyValueFactory<>("productMRP"));
-        colMinSellPrice.setCellValueFactory(new PropertyValueFactory<>("minSellingPrice"));
-        colQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
-        colQuantityUnit.setCellValueFactory(new PropertyValueFactory<>("quantityUnit"));
-        colDescription.setCellValueFactory(new PropertyValueFactory<>("productDescription"));
+        Callback<TableColumn<Products, String>, TableCell<Products, String>>
+                cellFactory = (TableColumn<Products, String> param) -> {
 
-        Callback<TableColumn<TAX, String>, TableCell<TAX, String>>
-                cellFactory = (TableColumn<TAX, String> param) -> {
-
-            final TableCell<TAX, String> cell = new TableCell<TAX, String>() {
+            final TableCell<Products, String> cell = new TableCell<Products, String>() {
                 @Override
                 public void updateItem(String item, boolean empty) {
                     super.updateItem(item, empty);
@@ -238,8 +241,8 @@ public class AllProducts implements Initializable {
                         HBox managebtn = new HBox(iv_edit, iv_delete);
 
                         managebtn.setStyle("-fx-alignment:center");
-                        HBox.setMargin(iv_edit, new Insets(2, 2, 0, 3));
-                        HBox.setMargin(iv_delete, new Insets(2, 3, 0, 20));
+                        HBox.setMargin(iv_edit, new Insets(2, 2, 0, 0));
+                        HBox.setMargin(iv_delete, new Insets(2, 3, 0, 30));
 
                         setGraphic(managebtn);
 
@@ -253,8 +256,121 @@ public class AllProducts implements Initializable {
             return cell;
         };
 
+        Callback<TableColumn<Products, String>, TableCell<Products, String>>
+                cellSize = (TableColumn<Products, String> param) -> {
+
+            final TableCell<Products, String> cell = new TableCell<Products, String>() {
+                @Override
+                public void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setGraphic(null);
+                        setText(null);
+
+                    } else {
+
+
+                        HBox managebtn = null;
+
+                        int productId = productsList.get(getIndex()).getProductID();
+
+                       int count = getSizeLength(productId);
+
+                       if (count > 1){
+
+                           Label button = new Label("Check Price and Size");
+                           managebtn = new HBox(button);
+
+                           button.setStyle("-fx-background-color: #008080; -fx-background-radius: 5 ; " +
+                                   "-fx-padding: 5 ; -fx-text-fill: white");
+
+
+
+                       }else {
+                           Label sizeLabel = new Label();
+
+                           Label bnCheckPrice = new Label("Check Price");
+
+                           BigDecimal h = BigDecimal.valueOf(productsList.get(getIndex()).getHeight());
+                           BigDecimal w = BigDecimal.valueOf(productsList.get(getIndex()).getWidth());
+
+                           String size =  h.stripTrailingZeros().toPlainString()+" x "
+                                   +w.stripTrailingZeros().toPlainString()+productsList.get(getIndex()).getSizeUnit();
+
+                           sizeLabel.setText(size);
+
+                          // System.out.println(sizeLabel.getWidth());
+
+                           HBox.setMargin(sizeLabel, new Insets(2, 2, 0, 0));
+                           HBox.setMargin(bnCheckPrice, new Insets(2, 2, 0, 20));
+                           bnCheckPrice.setStyle("-fx-background-color: #008080; -fx-background-radius: 5 ; " +
+                                   "-fx-padding: 5 ; -fx-text-fill: white");
+
+                           managebtn = new HBox(sizeLabel , bnCheckPrice);
+                       }
+
+                        managebtn.setStyle("-fx-alignment:center");
+                       // HBox.setMargin(iv_edit, new Insets(2, 2, 0, 0));
+
+                        setGraphic(managebtn);
+
+                        setText(null);
+
+                    }
+                }
+
+            };
+
+            return cell;
+        };
+
+
+        colAction.setCellFactory(cellFactory);
+       colSize .setCellFactory(cellSize);
+        tableView.setItems(productsList);
+
         customColumn(colProductName);
         customColumn(colDescription);
+    }
+
+    private int getSizeLength (int productid){
+
+        Connection con = dbconnection.getConnection();
+        PreparedStatement p = null;
+        ResultSet r = null;
+        int sizeLenght = 0;
+        try {
+            p = con.prepareStatement("select count(*) from tbl_product_stock where product_id = ?");
+            p.setInt(1,productid);
+
+             r = p.executeQuery();
+
+            while (r.next()){
+
+               sizeLenght = r.getInt(1);
+
+
+            }
+            return sizeLenght;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 0;
+        }finally {
+            CloseConnection.closeConnection(con,p,r);
+        }
+
+    }
+
+    private void setColumnData() {
+
+        colColor.setCellValueFactory(new PropertyValueFactory<>("productColor"));
+        colProductName.setCellValueFactory(new PropertyValueFactory<>("productName"));
+        colType.setCellValueFactory(new PropertyValueFactory<>("productType"));
+        colCategory.setCellValueFactory(new PropertyValueFactory<>("category"));
+        colDiscount.setCellValueFactory(new PropertyValueFactory<>("discount"));
+        colTax.setCellValueFactory(new PropertyValueFactory<>("tax"));
+        colDescription.setCellValueFactory(new PropertyValueFactory<>("productDescription"));
     }
 
     private void deleteProduct(Products products) {

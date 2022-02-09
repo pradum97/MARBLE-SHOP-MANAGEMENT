@@ -59,7 +59,7 @@ public class Dashboard implements Initializable {
         properties = method.getProperties("query.properties");
         customDialog = new CustomDialog();
         main = new Main();
-        replaceScene("dashboard/home.fxml");
+        replaceScene("dashboard/allProducts.fxml");
         setSideMenuData();
         setTopMenuData();
         setCustomImage();
