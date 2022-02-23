@@ -2,14 +2,15 @@ package com.shop.management.Model;
 
 public class Products extends Stock {
 
-    int productID;
-    String productName, productDescription, productColor , productType , category ;
-    int discount , tax;
-    Product_Images productImages;
+   private int  productID;
+   private String productName, productDescription, productColor , productType , category ;
+   private int discountId , taxId;
+   private Product_Images productImages;
+   private String added_date , totalDiscount , totalTax ;
+   private int hsn_sac;
 
-    public Products(int stockID, int productID, double purchasePrice, double productMRP, double minSellingPrice, double height, double width, String sizeUnit, String quantityUnit, int quantity, int productID1, String productName, String productDescription, String productColor,
-
-                    String productType, String category, int discount, int tax, Product_Images productImages) {
+    public Products(int stockID, int productID, double purchasePrice, double productMRP, double minSellingPrice, double height, double width, String sizeUnit, String quantityUnit, int quantity, int productID1, String productName,
+                    String productDescription, String productColor, String productType, String category, int discountId, int taxId, Product_Images productImages, String added_date, String totalDiscount, String totalTax, int hsn_sac) {
         super(stockID, productID, purchasePrice, productMRP, minSellingPrice, height, width, sizeUnit, quantityUnit, quantity);
         this.productID = productID1;
         this.productName = productName;
@@ -17,9 +18,29 @@ public class Products extends Stock {
         this.productColor = productColor;
         this.productType = productType;
         this.category = category;
-        this.discount = discount;
-        this.tax = tax;
+        this.discountId = discountId;
+        this.taxId = taxId;
         this.productImages = productImages;
+        this.added_date = added_date;
+        this.totalDiscount = totalDiscount;
+        this.totalTax = totalTax;
+        this.hsn_sac = hsn_sac;
+    }
+
+    public int getHsn_sac() {
+        return hsn_sac;
+    }
+
+    public void setHsn_sac(int hsn_sac) {
+        this.hsn_sac = hsn_sac;
+    }
+
+    public String getAdded_date() {
+        return added_date;
+    }
+
+    public void setAdded_date(String added_date) {
+        this.added_date = added_date;
     }
 
     @Override
@@ -72,20 +93,36 @@ public class Products extends Stock {
         this.category = category;
     }
 
-    public int getDiscount() {
-        return discount;
+    public int getDiscountId() {
+        return discountId;
     }
 
-    public void setDiscount(int discount) {
-        this.discount = discount;
+    public void setDiscountId(int discountId) {
+        this.discountId = discountId;
     }
 
-    public int getTax() {
-        return tax;
+    public int getTaxId() {
+        return taxId;
     }
 
-    public void setTax(int tax) {
-        this.tax = tax;
+    public void setTaxId(int taxId) {
+        this.taxId = taxId;
+    }
+
+    public String getTotalDiscount() {
+        return totalDiscount;
+    }
+
+    public void setTotalDiscount(String totalDiscount) {
+        this.totalDiscount = totalDiscount;
+    }
+
+    public String getTotalTax() {
+        return totalTax;
+    }
+
+    public void setTotalTax(String totalTax) {
+        this.totalTax = totalTax;
     }
 
     public Product_Images getProductImages() {

@@ -1,30 +1,28 @@
 package com.shop.management.Controller;
 
+import com.shop.management.CustomDialog;
 import com.shop.management.Main;
 import com.shop.management.Method.CopyImage;
-import com.shop.management.CustomDialog;
-import com.shop.management.util.DBConnection;
 import com.shop.management.Method.Method;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import com.shop.management.Method.StaticData;
+import com.shop.management.util.DBConnection;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apache.commons.io.FileUtils;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
@@ -53,7 +51,7 @@ public class SignUp implements Initializable {
     private String imageName;
     private CustomDialog customDialog;
     private Main main;
-    String imgAvatarPath;
+    private String imgAvatarPath;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -65,8 +63,8 @@ public class SignUp implements Initializable {
 
         setData();
 
-        String type  =(String) Main.primaryStage.getUserData();
-        if (type == "adduser"){
+        String type = (String) Main.primaryStage.getUserData();
+        if (Objects.equals(type, "adduser")) {
 
             already_account.setVisible(false);
         }
@@ -74,9 +72,8 @@ public class SignUp implements Initializable {
 
     private void setData() {
 
-        gender_comboBox.setItems(method.getGender());
+        gender_comboBox.setItems(new StaticData().getGender());
         role_combobox.setItems(method.getRole());
-
 
     }
 
@@ -87,7 +84,7 @@ public class SignUp implements Initializable {
 
     public void submit_bn(ActionEvent event) {
 
-       startSignup();
+        startSignup();
     }
 
     private void clearValue() {
@@ -101,9 +98,9 @@ public class SignUp implements Initializable {
         password_f.setText("");
         con_password_f.setText("");
 
-        Stage stage = CustomDialog.stage;
+        Stage stage = new CustomDialog().stage;
 
-        if (stage.isShowing()){
+        if (stage.isShowing()) {
             stage.close();
         }
 
@@ -115,22 +112,22 @@ public class SignUp implements Initializable {
 
     public void chooseAvatar(ActionEvent event) {
 
-        customDialog.showFxmlDialog2("avatar.fxml","CHOOSE YOUR PROFILE AVATAR");
+        customDialog.showFxmlDialog2("avatar.fxml", "CHOOSE YOUR PROFILE AVATAR");
         setAvatar();
 
     }
 
-    public void setAvatar(){
+    public void setAvatar() {
         String path = "src/main/resources/com/shop/management/img/Avatar/";
         try {
             imgAvatarPath = (String) Main.primaryStage.getUserData();
         } catch (ClassCastException e) {
             e.printStackTrace();
         }
-        String img = path+imgAvatarPath;
+        String img = path + imgAvatarPath;
 
-        if (null != imgAvatarPath){
-           profile_photo.setImage(new Method().getImage(img));
+        if (null != imgAvatarPath) {
+            profile_photo.setImage(new Method().getImage(img));
         }
     }
 
@@ -158,7 +155,7 @@ public class SignUp implements Initializable {
         String password = password_f.getText();
         String confirm_password = con_password_f.getText();
 
-        Pattern pattern = Pattern.compile(method.emailRegex);
+        Pattern pattern = Pattern.compile(new StaticData().emailRegex);
 
         Matcher matcher = pattern.matcher(email);
 
@@ -179,17 +176,16 @@ public class SignUp implements Initializable {
         try {
             phoneNum = Long.parseLong(phone);
         } catch (NumberFormatException e) {
-            customDialog.showAlertBox("Registration Failed ","Enter 10-digit Phone Number Without Country Code");
+            customDialog.showAlertBox("Registration Failed ", "Enter 10-digit Phone Number Without Country Code");
             return;
         }
         Pattern phone_pattern = Pattern.compile("^\\d{10}$");
         Matcher phone_matcher = phone_pattern.matcher(phone);
 
-        if (!phone_matcher.matches()){
-            customDialog.showAlertBox("Registration Failed ","Enter 10-digit Phone Number Without Country Code");
+        if (!phone_matcher.matches()) {
+            customDialog.showAlertBox("Registration Failed ", "Enter 10-digit Phone Number Without Country Code");
             return;
-        }
-        else if (email.isEmpty()) {
+        } else if (email.isEmpty()) {
             method.show_popup("Enter Valid Email", email_f);
             return;
 
@@ -222,7 +218,7 @@ public class SignUp implements Initializable {
         } else if (mac_address.isEmpty()) {
             mac_address = "Not-Found";
         }
-        imageName = new CopyImage().copy(new File("src/main/resources/com/shop/management/img/Avatar/"+imgAvatarPath).getAbsolutePath(), "userImages/profileImg");
+        imageName = new CopyImage().copy(new File("src/main/resources/com/shop/management/img/Avatar/" + imgAvatarPath).getAbsolutePath(), "userImages/profileImg");
 
         try {
 
@@ -248,14 +244,13 @@ public class SignUp implements Initializable {
 
                 int userID = Login.currentlyLogin_Id;
 
-                if (userID == 0){
+                if (userID == 0) {
                     main.changeScene("login.fxml", "Login Here");
                     customDialog.showAlertBox("Congratulations 🎉🎉🎉", "Registration Successful");
-                }else {
+                } else {
 
                     clearValue();
                 }
-
 
 
             } else {

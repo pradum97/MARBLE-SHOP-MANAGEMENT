@@ -13,7 +13,6 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -21,9 +20,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.util.Callback;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -45,14 +41,12 @@ public class Users implements Initializable {
     public TableColumn<UserDetails, String> col_address;
     public TableColumn<UserDetails, String> col_account_status;
     public TableColumn<UserDetails, String> action;
-    public TableColumn col_userImg;
+    public TableColumn<UserDetails, String> col_userImg;
 
-
-    private Connection connection;
     private DBConnection dbConnection;
     private Properties properties;
-    CustomDialog customDialog;
-    Method method;
+    private CustomDialog customDialog;
+    private Method method;
     private Main main;
     private int userID;
 
@@ -74,7 +68,7 @@ public class Users implements Initializable {
 
     private void setUserData() {
 
-        if (null != userList){
+        if (null != userList) {
             userList.clear();
         }
 
@@ -96,195 +90,165 @@ public class Users implements Initializable {
 
 
         Callback<TableColumn<UserDetails, String>, TableCell<UserDetails, String>>
-                cellFactory = (TableColumn<UserDetails, String> param) -> {
+                cellFactory = (TableColumn<UserDetails, String> param) -> new TableCell<>() {
+            @Override
+            public void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                    setText(null);
 
-            final TableCell<UserDetails, String> cell = new TableCell<UserDetails, String>() {
-                @Override
-                public void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty) {
-                        setGraphic(null);
-                        setText(null);
+                } else {
+
+                    ImageView iv_edit, iv_view, iv_delete;
+
+                    String path = "src/main/resources/com/shop/management/img/icon/";
+
+
+                    iv_edit = new ImageView(method.getImage(path + "edit_ic.png"));
+                    iv_edit.setFitHeight(22);
+                    iv_edit.setFitHeight(22);
+                    iv_edit.setPreserveRatio(true);
+
+                    iv_view = new ImageView(method.getImage(path + "view_ic.png"));
+                    iv_view.setFitHeight(22);
+                    iv_view.setFitWidth(22);
+                    iv_view.setPreserveRatio(true);
+
+                    iv_delete = new ImageView(method.getImage(path + "delete_ic.png"));
+                    iv_delete.setFitHeight(17);
+                    iv_delete.setFitWidth(17);
+                    iv_delete.setPreserveRatio(true);
+
+                    Label txt = new Label();
+
+                    int table_userID = userList.get(getIndex()).getUserID();
+
+                    if (Login.currentlyLogin_Id == table_userID) {
+
+                        iv_delete.setVisible(false);
+                        txt.setText("Signed");
+                        txt.setVisible(true);
+
 
                     } else {
 
-                        FileInputStream input_edit, input_view, input_delete;
-                        File edit_file, view_file, delete_file;
-                        ImageView iv_edit, iv_view , iv_delete;
-                        Image image_edit = null, image_view = null, image_delete = null;
-
-                        String path = "src/main/resources/com/shop/management/img/icon/";
-
-                        try {
-                            edit_file = new File(path + "edit_ic.png");
-                            view_file = new File(path + "view_ic.png");
-                            delete_file = new File(path + "delete_ic.png");
-
-                            input_edit = new FileInputStream(edit_file.getPath());
-                            input_view = new FileInputStream(view_file.getPath());
-                            input_delete = new FileInputStream(delete_file.getPath());
-
-                            image_edit = new Image(input_edit);
-                            image_view = new Image(input_view);
-                            image_delete = new Image(input_delete);
-
-
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        }
-
-                        iv_edit = new ImageView(image_edit);
-                        iv_edit.setFitHeight(22);
-                        iv_edit.setFitHeight(22);
-                        iv_edit.setPreserveRatio(true);
-
-                        iv_view = new ImageView(image_view);
-                        iv_view.setFitHeight(22);
-                        iv_view.setFitWidth(22);
-                        iv_view.setPreserveRatio(true);
-
-                        iv_delete = new ImageView(image_delete);
-                        iv_delete.setFitHeight(17);
-                        iv_delete.setFitWidth(17);
-                        iv_delete.setPreserveRatio(true);
-
-                        Label txt = new Label();
-
-                        int table_userID = userList.get(getIndex()).getUserID();
-
-                        if (Login.currentlyLogin_Id == table_userID) {
-
-                            iv_delete.setVisible(false);
-                            txt.setText("Signed");
-                            txt.setVisible(true);
-
-
-                        } else {
-
-                            iv_delete.setVisible(true);
-                            txt.setVisible(false);
-                        }
-
-
-                        iv_edit.setStyle(
-                                " -fx-cursor: hand ;"
-                                        + "-glyph-size:28px;"
-                                        + "-fx-fill:#c506fa;"
-                        );
-                        iv_view.setStyle(
-                                " -fx-cursor: hand ;"
-                                        + "-glyph-size:28px;"
-                                        + "-fx-fill:#44ee0c;"
-                        );
-
-                        iv_delete.setStyle(
-                                " -fx-cursor: hand ;"
-                                        + "-glyph-size:28px;"
-                                        + "-fx-fill:#ff0000;"
-                        );
-                        iv_edit.setOnMouseClicked((MouseEvent event) -> {
-
-                            UserDetails edit_selection = user_table_view.
-                                    getSelectionModel().getSelectedItem();
-
-                            if (null == edit_selection) {
-                                method.show_popup("Please Select", user_table_view);
-                                return;
-                            }
-
-                            Main.primaryStage.setUserData(edit_selection);
-
-                            customDialog.showFxmlDialog("update/updateProfile.fxml", "EDIT PROFILE");
-                            refreshTableData();
-
-
-                        });
-                        iv_view.setOnMouseClicked((MouseEvent event) -> {
-
-                            UserDetails view_selection = user_table_view.
-                                    getSelectionModel().getSelectedItem();
-
-                            if (null == view_selection) {
-                                method.show_popup("Please Select", user_table_view);
-                                return;
-                            }
-
-                            Main.primaryStage.setUserData(view_selection);
-                            customDialog.showFxmlDialog("dashboard/userprofile.fxml", "User Profile");
-                        });
-                        iv_delete.setOnMouseClicked((MouseEvent event) -> {
-
-
-                            UserDetails delete_selection = user_table_view.
-                                    getSelectionModel().getSelectedItem();
-
-                            if (null == delete_selection) {
-                                method.show_popup("Please Select ", user_table_view);
-                                return;
-                            }
-
-                            deleteUsers(delete_selection);
-
-                        });
-
-                        HBox managebtn = new HBox(iv_edit, iv_delete, iv_view);
-
-                        managebtn.setStyle("-fx-alignment:center");
-                        HBox.setMargin(iv_edit, new Insets(2, 2, 0, 3));
-                        HBox.setMargin(iv_view, new Insets(2, 3, 0, 20));
-                        HBox.setMargin(iv_delete, new Insets(2, 3, 0, 20));
-
-                        setGraphic(managebtn);
-
-                        setText(null);
-
+                        iv_delete.setVisible(true);
+                        txt.setVisible(false);
                     }
+
+
+                    iv_edit.setStyle(
+                            " -fx-cursor: hand ;"
+                                    + "-glyph-size:28px;"
+                                    + "-fx-fill:#c506fa;"
+                    );
+                    iv_view.setStyle(
+                            " -fx-cursor: hand ;"
+                                    + "-glyph-size:28px;"
+                                    + "-fx-fill:#44ee0c;"
+                    );
+
+                    iv_delete.setStyle(
+                            " -fx-cursor: hand ;"
+                                    + "-glyph-size:28px;"
+                                    + "-fx-fill:#ff0000;"
+                    );
+                    iv_edit.setOnMouseClicked((MouseEvent event) -> {
+
+                        UserDetails edit_selection = user_table_view.
+                                getSelectionModel().getSelectedItem();
+
+                        if (null == edit_selection) {
+                            method.show_popup("Please Select", user_table_view);
+                            return;
+                        }
+
+                        Main.primaryStage.setUserData(edit_selection.getUserID());
+
+                        customDialog.showFxmlDialog("update/updateProfile.fxml", "EDIT PROFILE");
+                        refreshTableData();
+
+
+                    });
+                    iv_view.setOnMouseClicked((MouseEvent event) -> {
+
+                        UserDetails view_selection = user_table_view.
+                                getSelectionModel().getSelectedItem();
+
+                        if (null == view_selection) {
+                            method.show_popup("Please Select", user_table_view);
+                            return;
+                        }
+
+                        Main.primaryStage.setUserData(view_selection.getUserID());
+                        customDialog.showFxmlDialog("dashboard/userprofile.fxml", "User Profile");
+                    });
+                    iv_delete.setOnMouseClicked((MouseEvent event) -> {
+
+
+                        UserDetails delete_selection = user_table_view.
+                                getSelectionModel().getSelectedItem();
+
+                        if (null == delete_selection) {
+                            method.show_popup("Please Select ", user_table_view);
+                            return;
+                        }
+
+                        deleteUsers(delete_selection);
+
+                    });
+
+                    HBox managebtn = new HBox(iv_edit, iv_delete, iv_view);
+
+                    managebtn.setStyle("-fx-alignment:center");
+                    HBox.setMargin(iv_edit, new Insets(2, 2, 0, 3));
+                    HBox.setMargin(iv_view, new Insets(2, 3, 0, 20));
+                    HBox.setMargin(iv_delete, new Insets(2, 3, 0, 20));
+
+                    setGraphic(managebtn);
+
+                    setText(null);
+
                 }
+            }
 
-            };
-
-            return cell;
         };
 
 
         Callback<TableColumn<UserDetails, String>, TableCell<UserDetails, String>>
-                userImageCellFactory = (TableColumn<UserDetails, String> param) -> {
+                userImageCellFactory = (TableColumn<UserDetails, String> param) -> new TableCell<>() {
+            @Override
+            public void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                    setText(null);
 
-            final TableCell<UserDetails, String> cell = new TableCell<UserDetails, String>() {
-                @Override
-                public void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty) {
-                        setGraphic(null);
-                        setText(null);
+                } else {
 
-                    } else {
-
-                        ImageView iv = new ImageView();
-                        iv.setFitHeight(45);
-                        iv.setFitWidth(45);
-                        iv.setPreserveRatio(true);
+                    ImageView iv = new ImageView();
+                    iv.setFitHeight(45);
+                    iv.setFitWidth(45);
+                    iv.setPreserveRatio(true);
 
 
-                        String userImgPath = userList.get(getIndex()).getUserImage();
+                    String userImgPath = userList.get(getIndex()).getUserImage();
 
-                        iv.setImage(method.getImage("src/main/resources/com/shop/management/img/userImages/"+userImgPath));
+                    iv.setImage(method.getImage("src/main/resources/com/shop/management/img/userImages/" + userImgPath));
 
 
-                        HBox managebtn = new HBox(iv);
-                        managebtn.setStyle("-fx-alignment:center");
-                        HBox.setMargin(iv, new Insets(2, 2, 0, 3));
+                    HBox managebtn = new HBox(iv);
+                    managebtn.setStyle("-fx-alignment:center");
+                    HBox.setMargin(iv, new Insets(2, 2, 0, 3));
 
-                        setGraphic(managebtn);
+                    setGraphic(managebtn);
 
-                        setText(null);
+                    setText(null);
 
-                    }
                 }
+            }
 
-            };
-
-            return cell;
         };
 
 
@@ -310,7 +274,6 @@ public class Users implements Initializable {
                         }
 
 
-
                         HBox managebtn = new HBox(text);
                         managebtn.setStyle("-fx-alignment:center");
                         HBox.setMargin(text, new Insets(2, 2, 0, 3));
@@ -326,12 +289,9 @@ public class Users implements Initializable {
             return cell;
         };
 
-
         action.setCellFactory(cellFactory);
         col_userImg.setCellFactory(userImageCellFactory);
         col_account_status.setCellFactory(acStatusCellFactory);
-
-        user_table_view.setItems(userList);
 
         customColumn(col_role);
 
@@ -346,10 +306,9 @@ public class Users implements Initializable {
 
     private void deleteUsers(UserDetails user) {
 
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setAlertType(Alert.AlertType.CONFIRMATION);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Warning ");
-        alert.setHeaderText("Are You Sure You Want to Delete This User ( "+user.getFirstName()+" "+user.getLastName()+" )");
+        alert.setHeaderText("Are You Sure You Want to Delete This User ( " + user.getFirstName() + " " + user.getLastName() + " )");
         alert.initModality(Modality.APPLICATION_MODAL);
         alert.initOwner(Main.primaryStage);
         Optional<ButtonType> result = alert.showAndWait();
@@ -358,34 +317,34 @@ public class Users implements Initializable {
             Connection con = null;
             PreparedStatement ps = null;
 
-            try{
+            try {
 
-                con =  dbConnection.getConnection();
+                con = dbConnection.getConnection();
 
-                if (null == con){
+                if (null == con) {
                     return;
                 }
 
                 ps = con.prepareStatement("DELETE FROM TBL_USERS WHERE USER_ID = ?");
-                ps.setInt(1,user.getUserID());
+                ps.setInt(1, user.getUserID());
 
                 int res = ps.executeUpdate();
 
-                if (res > 0){
+                if (res > 0) {
                     refreshTableData();
                     alert.close();
                 }
 
             } catch (SQLException e) {
                 e.printStackTrace();
-            }finally {
+            } finally {
 
-                try{
+                try {
 
-                    if (null != con){
+                    if (null != con) {
                         con.close();
                     }
-                    if (null != ps){
+                    if (null != ps) {
                         ps.close();
                     }
 
@@ -414,6 +373,7 @@ public class Users implements Initializable {
             return cell;
         });
     }
+
     private void refreshTableData() {
 
         setUserData();

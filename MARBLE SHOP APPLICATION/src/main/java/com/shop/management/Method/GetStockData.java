@@ -1,11 +1,11 @@
 package com.shop.management.Method;
 
-import com.shop.management.Model.Discount;
 import com.shop.management.Model.Stock;
 import com.shop.management.util.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,7 +13,7 @@ import java.sql.SQLException;
 
 public class GetStockData {
 
-    public Stock getStock(int productID){
+    public Stock getStock(int productID) {
 
         Connection connection = null;
         PreparedStatement ps = null;
@@ -31,34 +31,32 @@ public class GetStockData {
 
             ps = connection.prepareStatement(new Method().getProperties("query.properties")
                     .getProperty("GET_STOCK"));
-            ps.setInt(1,productID);
-
-
+            ps.setInt(1, productID);
 
 
             rs = ps.executeQuery();
 
-            if(rs.next()) {
+            if (rs.next()) {
 
-               int stockID = rs.getInt("stock_id");
-               int productId = rs.getInt("product_id");
+                int stockID = rs.getInt("stock_id");
+                int productId = rs.getInt("product_id");
 
-               double purchasePrice = rs.getDouble("purchase_price");
-               double mrp = rs.getDouble("product_mrp");
-               double minSellPrice = rs.getDouble("min_sellingprice");
+                double purchasePrice = rs.getDouble("purchase_price");
+                double mrp = rs.getDouble("product_mrp");
+                double minSellPrice = rs.getDouble("min_sellingprice");
 
-               double height = rs.getDouble("height");
-               double width = rs.getDouble("width");
+                double height = rs.getDouble("height");
+                double width = rs.getDouble("width");
 
-               int quantity = rs.getInt("quantity");
+                int quantity = rs.getInt("quantity");
 
-               String sizeUnit = rs.getString("size_unit");
-               String quantityUnit = rs.getString("quantity_unit");
+                String sizeUnit = rs.getString("size_unit");
+                String quantityUnit = rs.getString("quantity_unit");
 
-               int isActive = rs.getInt("is_active");
+                // int isActive = rs.getInt("is_active");
 
-               stock = new Stock(stockID,productId,purchasePrice,mrp,minSellPrice,
-                        height,width,sizeUnit,quantityUnit,quantity);
+                stock = new Stock(stockID, productId, purchasePrice, mrp, minSellPrice,
+                        height, width, sizeUnit, quantityUnit, quantity);
             }
 
             return stock;
@@ -73,7 +71,7 @@ public class GetStockData {
         }
     }
 
-    public ObservableList<Stock> getStockList(int productID){
+    public ObservableList<Stock> getStockList(int productID) {
 
         Connection connection = null;
         PreparedStatement ps = null;
@@ -91,36 +89,43 @@ public class GetStockData {
 
             ps = connection.prepareStatement(new Method().getProperties("query.properties")
                     .getProperty("GET_STOCK"));
-            ps.setInt(1,productID);
+            ps.setInt(1, productID);
             rs = ps.executeQuery();
 
 
             while (rs.next()) {
 
-               int stockID = rs.getInt("stock_id");
-               int productId = rs.getInt("product_id");
+                int stockID = rs.getInt("stock_id");
+                int productId = rs.getInt("product_id");
 
-               double purchasePrice = rs.getDouble("purchase_price");
-               double mrp = rs.getDouble("product_mrp");
-               double minSellPrice = rs.getDouble("min_sellingprice");
+                double purchasePrice = rs.getDouble("purchase_price");
+                double mrp = rs.getDouble("product_mrp");
+                double minSellPrice = rs.getDouble("min_sellingprice");
 
-               double height = rs.getDouble("height");
-               double width = rs.getDouble("width");
+                double height = rs.getDouble("height");
+                double width = rs.getDouble("width");
 
-               int quantity = rs.getInt("quantity");
+                int quantity = rs.getInt("quantity");
 
-               String sizeUnit = rs.getString("size_unit");
-               String quantityUnit = rs.getString("quantity_unit");
+                String sizeUnit = rs.getString("size_unit");
+                String quantityUnit = rs.getString("quantity_unit");
 
-               int isActive = rs.getInt("is_active");
+                int isActive = rs.getInt("is_active");
+
+                String fullQuantity = quantity+" - "+quantityUnit;
+
+                BigDecimal h = BigDecimal.valueOf(height);
+                BigDecimal w = BigDecimal.valueOf(width);
+
+               String fullSize =  h.stripTrailingZeros().toPlainString()+" x "
+                       +w.stripTrailingZeros().toPlainString()+" "+sizeUnit;
 
 
-               stocks.add(new Stock(stockID,productId,purchasePrice,mrp,minSellPrice,
-                       height,width,sizeUnit,quantityUnit,quantity));
+                stocks.add(new Stock(stockID, productId, purchasePrice, mrp, minSellPrice,
+                        height, width, sizeUnit, quantityUnit, quantity,fullSize,fullQuantity));
             }
 
             return stocks;
-
 
         } catch (SQLException e) {
             e.printStackTrace();

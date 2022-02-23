@@ -2,12 +2,13 @@ package com.shop.management.Model;
 
 public class TAX {
 
-    int taxID ;
-    int sgst , cgst , igst;
-    String gstName ,taxDescription;
+    private int taxID, hsn_sac  ;
+    private int sgst, cgst, igst;
+    private String gstName, taxDescription;
 
-    public TAX(int taxID, int sgst, int cgst, int igst, String gstName, String taxDescription) {
+    public TAX(int taxID, int hsn_sac, int sgst, int cgst, int igst, String gstName, String taxDescription) {
         this.taxID = taxID;
+        this.hsn_sac = hsn_sac;
         this.sgst = sgst;
         this.cgst = cgst;
         this.igst = igst;
@@ -21,6 +22,15 @@ public class TAX {
 
     public void setTaxID(int taxID) {
         this.taxID = taxID;
+    }
+
+    public int getHsn_sac() {
+
+        return hsn_sac;
+    }
+
+    public void setHsn_sac(int hsn_sac) {
+        this.hsn_sac = hsn_sac;
     }
 
     public int getSgst() {
@@ -56,6 +66,11 @@ public class TAX {
     }
 
     public String getTaxDescription() {
+
+        if (null == taxDescription) {
+            taxDescription = "-";
+        }
+
         return taxDescription;
     }
 
@@ -65,6 +80,6 @@ public class TAX {
 
     @Override
     public String toString() {
-        return this.getGstName();
+        return String.valueOf(this.getHsn_sac());
     }
 }

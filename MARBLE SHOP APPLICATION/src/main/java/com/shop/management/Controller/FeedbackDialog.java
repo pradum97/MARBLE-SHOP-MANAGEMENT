@@ -27,7 +27,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class FeedbackDialog implements Initializable {
-   @FXML
+    @FXML
     public TextField fullName;
     public TextField email;
     public TextField phone;
@@ -35,11 +35,11 @@ public class FeedbackDialog implements Initializable {
     public Rating rate;
     public Button bn_feedback_submit;
     private Properties colorProperties, queryProp;
-    DBConnection dbConnection;
-    CustomDialog customDialog;
-    Method method;
+    private DBConnection dbConnection;
+    private CustomDialog customDialog;
+    private Method method;
 
-    String button_bg_color, button_text_color;
+    private String button_bg_color, button_text_color;
 
 
     @Override
@@ -57,6 +57,7 @@ public class FeedbackDialog implements Initializable {
 
 
     }
+
     public void enterPress(KeyEvent e) {
 
         if (e.getCode() == KeyCode.ENTER) {
@@ -65,6 +66,7 @@ public class FeedbackDialog implements Initializable {
             submitFeedback(null);
         }
     }
+
     private void setTheme() {
 
         bn_feedback_submit.setStyle(

@@ -4,13 +4,15 @@ import java.math.BigDecimal;
 
 public class Stock {
 
-    int stockID , productID;
-    double purchasePrice , productMRP , minSellingPrice,
-            height,width ;
+    private int stockID, productID;
+    private double purchasePrice, productMRP, minSellingPrice,
+            height, width;
 
-    String  sizeUnit ,quantityUnit;
+    private String sizeUnit, quantityUnit;
 
-    int quantity;
+    private int quantity;
+
+    private String fullSize, fullQuantity;
 
     public Stock(int stockID, int productID, double purchasePrice, double productMRP, double minSellingPrice,
                  double height, double width, String sizeUnit, String quantityUnit, int quantity) {
@@ -26,13 +28,46 @@ public class Stock {
         this.quantity = quantity;
     }
 
+    public Stock(int stockID, int productID, double purchasePrice, double productMRP, double minSellingPrice,
+                 double height, double width, String sizeUnit, String quantityUnit, int quantity,
+                 String fullSize, String fullQuantity) {
+        this.stockID = stockID;
+        this.productID = productID;
+        this.purchasePrice = purchasePrice;
+        this.productMRP = productMRP;
+        this.minSellingPrice = minSellingPrice;
+        this.height = height;
+        this.width = width;
+        this.sizeUnit = sizeUnit;
+        this.quantityUnit = quantityUnit;
+        this.quantity = quantity;
+        this.fullSize = fullSize;
+        this.fullQuantity = fullQuantity;
+    }
+
     @Override
     public String toString() {
         BigDecimal h = BigDecimal.valueOf(this.getHeight());
         BigDecimal w = BigDecimal.valueOf(this.getWidth());
 
-        return h.stripTrailingZeros().toPlainString()+" x "
-                +w.stripTrailingZeros().toPlainString()+getSizeUnit();
+        return h.stripTrailingZeros().toPlainString() + " x "
+                + w.stripTrailingZeros().toPlainString() + getSizeUnit();
+    }
+
+    public String getFullSize() {
+        return fullSize;
+    }
+
+    public void setFullSize(String fullSize) {
+        this.fullSize = fullSize;
+    }
+
+    public String getFullQuantity() {
+        return fullQuantity;
+    }
+
+    public void setFullQuantity(String fullQuantity) {
+        this.fullQuantity = fullQuantity;
     }
 
     public int getStockID() {

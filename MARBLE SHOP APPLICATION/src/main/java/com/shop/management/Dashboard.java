@@ -2,10 +2,13 @@ package com.shop.management;
 
 import com.shop.management.Controller.Login;
 import com.shop.management.Method.GetUserProfile;
+import com.shop.management.Method.Method;
 import com.shop.management.Model.UserDetails;
 import com.shop.management.util.AppConfig;
 import com.shop.management.util.DBConnection;
-import com.shop.management.Method.Method;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,27 +19,35 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Duration;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.ResourceBundle;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Dashboard implements Initializable {
 
     public GridPane gridTopMenu;
+    public Label dateL;
     @FXML
     private GridPane gridPane;
     public BorderPane main_container;
@@ -48,24 +59,31 @@ public class Dashboard implements Initializable {
     private Connection connection;
     private DBConnection dbConnection;
     private Properties properties;
-    CustomDialog customDialog;
-    Method method;
+    private CustomDialog customDialog;
+    private Method method;
     private Main main;
+    public static Stage stage;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        main_container.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/setting.css")).toExternalForm());
         method = new Method();
         dbConnection = new DBConnection();
         properties = method.getProperties("query.properties");
         customDialog = new CustomDialog();
         main = new Main();
-        replaceScene("dashboard/allProducts.fxml");
-        setSideMenuData();
-        setTopMenuData();
+        replaceScene("dashboard/home.fxml");
+        getMenuData();
         setCustomImage();
         setUserData();
-
         keyBoardShortcut();
+
+        Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
+            dateL.setText(LocalDateTime.now().format(formatter));
+        }), new KeyFrame(Duration.seconds(1)));
+        clock.setCycleCount(Animation.INDEFINITE);
+        clock.play();
 
     }
 
@@ -75,7 +93,7 @@ public class Dashboard implements Initializable {
 
         scene.getAccelerators().put(
                 KeyCombination.keyCombination("CTRL+A"),
-                () -> addProduct("dashboard/addProduct.fxml","ADD NEW PRODUCT",685,650,StageStyle.UTILITY)
+                () -> showDialog("dashboard/addProduct.fxml", "ADD NEW PRODUCT", 685, 650, StageStyle.UTILITY)
         );
 
         scene.getAccelerators().put(
@@ -95,88 +113,46 @@ public class Dashboard implements Initializable {
 
     }
 
-    private void setTopMenuData() {
 
-        int cols = 5, colCnt = 0, rowCnt = 0;
+    private void onClickAction(MenuItem gen, MenuItem appearance, Menu product, MenuItem gst, MenuItem discount, MenuItem help, MenuItem shopData) {
 
-        try {
-            connection = dbConnection.getConnection();
-            PreparedStatement ps = connection.prepareStatement(properties.getProperty("TOP_MENU"));
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                String item = rs.getString("menu_name");
-                String icon_path = rs.getString("menu_icon_path");
+        gen.setOnAction(event -> customDialog.showFxmlDialog2("setting/general.fxml", "GENERAL"));
 
-                Hyperlink menu_button = new Hyperlink();
+        appearance.setOnAction(event -> customDialog.showFxmlDialog2("setting/appearance.fxml", "APPEARANCE"));
 
-                menu_button.setId("menu_button");
-                menu_button.setStyle("-fx-background-color: blue ; -fx-background-radius: 5");
+        discount.setOnAction(event -> {
 
-                main_container.getStylesheets().add(String.valueOf(Main.class.getResource("css/menu.css")));
-                ImageView icon = new ImageView();
-                icon.setFitWidth(18);
-                icon.setFitHeight(18);
+            customDialog.showFxmlDialog2("setting/discountConfig.fxml", "DISCOUNT");
 
-                File file = new File("src/main/resources/com/shop/management/img/menu_icon/" + icon_path);
-                InputStream is = new FileInputStream(file.getAbsolutePath());
-                Image img = new Image(is);
-                icon.setImage(img);
-                menu_button.setText(item);
 
-                menu_button.setOnAction(event -> {
+        });
 
-                    String txt = ((Hyperlink) event.getSource()).getText();
 
-                    switch (txt) {
-                        case "ADD PRODUCT" -> {
-                           addProduct("dashboard/addProduct.fxml","ADD NEW PRODUCT" ,685,650, StageStyle.DECORATED);
-                        }
-                        case "FEEDBACK" -> addFeedback();
-                        case "VIEW FEEDBACK" -> customDialog.showFxmlDialog2("viewFeedback.fxml", "ALL FEEDBACK");
-                        default -> addProduct("dashboard/setting.fxml","SETTING",600,1000, StageStyle.UTILITY);
-                    }
+        gst.setOnAction(event -> customDialog.showFxmlDialog2("setting/gstConfig.fxml", "GST"));
 
-                });
+        help.setOnAction(event -> customDialog.showFxmlDialog2("setting/help.fxml", "HELP"));
+        shopData.setOnAction(event -> customDialog.showFxmlDialog2("shopDetails.fxml", ""));
 
-                menu_button.setGraphic(icon);
 
-                gridTopMenu.add(menu_button, colCnt, rowCnt);
-                colCnt++;
-
-                if (colCnt > cols) {
-                    rowCnt++;
-                    colCnt = 0;
-                }
-
-            }
-        } catch (SQLException | FileNotFoundException e) {
-            e.printStackTrace();
-            System.out.println("Dashboard : " + e.getMessage());
-
-        } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
 
     }
 
-    private void addProduct(String fxmlName, String title, double height, double width, StageStyle utility) {
+    private void showDialog(String fxmlName, String title, double height,
+                            double width, StageStyle utility) {
 
         try {
-            Parent parent = FXMLLoader.load(CustomDialog.class.getResource(fxmlName));
-            Stage stage = new Stage();
+            Parent parent = FXMLLoader.load(Objects.requireNonNull(CustomDialog.class.getResource(fxmlName)));
+            stage = new Stage();
             stage.getIcons().add(new Image(getClass().getResourceAsStream(AppConfig.APPLICATION_ICON)));
             stage.setTitle(title);
             stage.setMinHeight(height);
             stage.setMinWidth(width);
             stage.setMaximized(false);
-            Scene scene = new Scene(parent,width,height);
+            Scene scene = new Scene(parent, width, height);
             scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/main.css")).toExternalForm());
             stage.setScene(scene);
             stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initOwner(Main.primaryStage);
             stage.initStyle(utility);
             stage.showAndWait();
         } catch (IOException e) {
@@ -217,8 +193,9 @@ public class Dashboard implements Initializable {
 
     }
 
-    private void setSideMenuData() {
+    private void getMenuData() {
         int i = 0;
+        int cols = 5, colCnt = 0, rowCnt = 0;
 
         try {
             connection = dbConnection.getConnection();
@@ -227,47 +204,155 @@ public class Dashboard implements Initializable {
             while (rs.next()) {
                 String item = rs.getString("menu_name");
                 String icon_path = rs.getString("menu_icon_path");
+                String menu_location = rs.getString("menu_location");
 
-                Hyperlink menu_button = new Hyperlink();
+                switch (menu_location) {
 
-                menu_button.setId("menu_button");
+                    case "SIDE" -> {
 
-                main_container.getStylesheets().add(String.valueOf(Main.class.getResource("css/menu.css")));
-                ImageView icon = new ImageView();
-                icon.setFitWidth(18);
-                icon.setFitHeight(18);
+                        Hyperlink menu_button = new Hyperlink();
 
-                File file = new File("src/main/resources/com/shop/management/img/menu_icon/" + icon_path);
-                InputStream is = new FileInputStream(file.getAbsolutePath());
-                Image img = new Image(is);
-                icon.setImage(img);
-                menu_button.setText(item);
+                        menu_button.setId("menu_button");
 
-                menu_button.setOnAction(event -> {
+                        main_container.getStylesheets().add(String.valueOf(Main.class.getResource("css/menu.css")));
+                        ImageView icon = new ImageView();
+                        icon.setFitWidth(18);
+                        icon.setFitHeight(18);
+                        icon.setImage(method.getImage("src/main/resources/com/shop/management/img/menu_icon/" + icon_path));
+                        menu_button.setText(item);
 
-                    String txt = ((Hyperlink) event.getSource()).getText();
+                        menu_button.setOnAction(event -> {
 
-                    switch (txt) {
-                        case "HOME" -> replaceScene("dashboard/home.fxml");
-                        case "PROFILE" -> replaceScene("dashboard/userprofile.fxml");
-                        case "USERS" -> replaceScene("dashboard/users.fxml");
-                        case "ALL PRODUCT" -> replaceScene("dashboard/allProducts.fxml");
-                        case "SELL PRODUCT" -> replaceScene("dashboard/sellProducts.fxml");
-                        case "SELL REPORT" -> replaceScene("dashboard/sellReport.fxml");
-                        case "STOCK REPORT" -> replaceScene("dashboard/stockReport.fxml");
+                            String txt = ((Hyperlink) event.getSource()).getText();
+
+                            switch (txt) {
+                                case "HOME" -> replaceScene("dashboard/home.fxml");
+                                case "PROFILE" ->{
+                                    Main.primaryStage.setUserData(Login.currentlyLogin_Id);
+                                    replaceScene("dashboard/userprofile.fxml");
+                                }
+                                case "USERS" -> replaceScene("dashboard/users.fxml");
+                                case "ALL PRODUCT" -> replaceScene("dashboard/allProducts.fxml");
+                                case "SELL PRODUCT" -> replaceScene("dashboard/sellProducts.fxml");
+                                case "SALE REPORT" -> replaceScene("dashboard/saleReport.fxml");
+                                case "STOCK REPORT" -> replaceScene("dashboard/stockReport.fxml");
+                            }
+
+
+                        });
+
+                        menu_button.setGraphic(icon);
+
+                        gridPane.add(menu_button, 0, i);
+                        gridPane.setVgap(10);
+
+                        i++;
                     }
 
+                    case "TOP" -> {
 
-                });
+                        switch (item) {
+                            case "SETTING" -> {
 
-                menu_button.setGraphic(icon);
+                                MenuButton menu_button = new MenuButton();
 
-                gridPane.add(menu_button, 0, i);
-                gridPane.setVgap(10);
+                                MenuItem gen = new MenuItem("GENERAL");
+                                MenuItem appearance = new MenuItem("APPEARANCE");
 
-                i++;
+                                gen.setVisible(false);
+                                appearance.setVisible(false);
+
+                                MenuItem shopData = new MenuItem("SHOP DETAILS");
+                                MenuItem help = new MenuItem("HELP");
+                                Menu product = new Menu("PRODUCT");
+
+                                MenuItem gst = new MenuItem("GST");
+                                MenuItem discount = new MenuItem("DISCOUNT");
+
+                                product.getItems().addAll(gst, discount);
+
+                                menu_button.getItems().addAll(gen, appearance, product,shopData, help);
+
+                                onClickAction(gen, appearance, product, gst, discount, help,shopData);
+
+
+                                ImageView icon = new ImageView();
+                                icon.setFitWidth(18);
+                                icon.setFitHeight(18);
+                                menu_button.setStyle("-fx-cursor: hand;-fx-background-color: #0881ea ; -fx-background-radius: 5");
+
+                                icon.setImage(method.getImage("src/main/resources/com/shop/management/img/menu_icon/" + icon_path));
+
+                                menu_button.setGraphic(icon);
+
+
+                                gridTopMenu.add(menu_button, colCnt, rowCnt);
+                                colCnt++;
+
+                                if (colCnt > cols) {
+                                    rowCnt++;
+                                    colCnt = 0;
+                                }
+
+                            }
+                            case "FEEDBACK" -> {
+
+                                MenuButton menu_button = new MenuButton("");
+
+                                MenuItem addFeedback = new MenuItem("➕ ADD FEEDBACK");
+                                MenuItem view_feedback = new MenuItem("🪟 VIEW FEEDBACK");
+
+
+                                menu_button.getItems().addAll(addFeedback, view_feedback);
+
+                                addFeedback.setOnAction(event -> addFeedback());
+
+                                view_feedback.setOnAction(event -> showDialog("viewFeedback.fxml", "ALL FEEDBACK", 650, 750, StageStyle.DECORATED));
+
+
+                                ImageView icon = new ImageView();
+                                icon.setFitWidth(18);
+                                icon.setFitHeight(18);
+
+
+                                icon.setImage(method.getImage("src/main/resources/com/shop/management/img/menu_icon/" + icon_path));
+
+                                menu_button.setGraphic(icon);
+
+
+                                gridTopMenu.add(menu_button, colCnt, rowCnt);
+                                colCnt++;
+                                if (colCnt > cols) {
+                                    rowCnt++;
+                                    colCnt = 0;
+                                }
+
+                                break;
+                            }
+
+                            case "ADD PRODUCT" -> {
+
+                                Label button = new Label("➕ ADD PRODUCT");
+                                button.setStyle("-fx-padding: 5 10 5 10 ; -fx-background-color: #0881ea ; -fx-text-fill: white;" +
+                                        "-fx-background-radius: 5 ; -fx-cursor: hand");
+
+                                button.setOnMouseClicked(event -> showDialog("dashboard/addProduct.fxml", "ADD NEW PRODUCT", 660, 650, StageStyle.DECORATED));
+
+                                gridTopMenu.add(button, colCnt, rowCnt);
+                                colCnt++;
+
+                                if (colCnt > cols) {
+                                    rowCnt++;
+                                    colCnt = 0;
+                                }
+
+                            }
+                        }
+                    }
+                }
+
             }
-        } catch (SQLException | FileNotFoundException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Dashboard : " + e.getMessage());
 
@@ -281,7 +366,6 @@ public class Dashboard implements Initializable {
     }
 
     private void replaceScene(String fxml_file_name) {
-
 
         try {
             Parent parent = FXMLLoader.load(getClass().getResource(fxml_file_name));

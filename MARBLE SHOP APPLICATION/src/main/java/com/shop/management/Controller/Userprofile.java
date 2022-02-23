@@ -11,13 +11,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.net.URL;
 import java.sql.Connection;
 import java.util.Properties;
@@ -39,8 +34,9 @@ public class Userprofile implements Initializable {
     private Connection connection;
     private DBConnection dbConnection;
     private Properties properties;
-    CustomDialog customDialog;
-    Method method;
+    private CustomDialog customDialog;
+    private Method method;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         method = new Method();
@@ -49,20 +45,27 @@ public class Userprofile implements Initializable {
         customDialog = new CustomDialog();
 
 
-        int userId = ((UserDetails) Main.primaryStage.getUserData()).getUserID();
+
+        int userId = ((int) Main.primaryStage.getUserData());
 
         setUserData(userId);
 
     }
+
     private void setUserData(int userId) {
 
-        UserDetails userDetails =new GetUserProfile().getUser(userId);
+        if (userId != Login.currentlyLogin_Id){
+            bnChangePassword.setVisible(false);
+            bnChangePassword.managedProperty().bind(bnChangePassword.visibleProperty());
+        }
 
-        if (null == userDetails){
-            customDialog.showAlertBox("Failed","User Not Find Please Re-Login");
-        }else {
+        UserDetails userDetails = new GetUserProfile().getUser(userId);
 
-            fullName.setText(userDetails.getFirstName()+" "+ userDetails.getLastName());
+        if (null == userDetails) {
+            customDialog.showAlertBox("Failed", "User Not Find Please Re-Login");
+        } else {
+
+            fullName.setText(userDetails.getFirstName() + " " + userDetails.getLastName());
             userRole.setText(userDetails.getRole());
             userName.setText(userDetails.getUsername());
             userGender.setText(userDetails.getGender());
@@ -70,7 +73,7 @@ public class Userprofile implements Initializable {
             userPhone.setText(String.valueOf(userDetails.getPhone()));
             userAddress.setText(userDetails.getFullAddress());
 
-            String path = "src/main/resources/com/shop/management/img/userImages/"+ userDetails.getUserImage();
+            String path = "src/main/resources/com/shop/management/img/userImages/" + userDetails.getUserImage();
 
             userImage.setImage(method.getImage(path));
         }
@@ -78,11 +81,11 @@ public class Userprofile implements Initializable {
 
     public void editProfile(ActionEvent event) {
 
-        customDialog.showFxmlDialog("update/updateProfile.fxml","EDIT PROFILE");
+        customDialog.showFxmlDialog("update/updateProfile.fxml", "EDIT PROFILE");
     }
 
     public void changePassword(ActionEvent event) {
 
-        customDialog.showFxmlDialog("dashboard/forgotPassword.fxml","CHANGE PASSWORD");
+        customDialog.showFxmlDialog("dashboard/forgotPassword.fxml", "CHANGE PASSWORD");
     }
 }

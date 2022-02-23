@@ -11,8 +11,22 @@
 
 <AnchorPane prefHeight="300.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.SettingController.AddGst">
 
-    <VBox alignment="CENTER" fillWidth="false" prefWidth="302.0" spacing="30.0"  AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+    <VBox alignment="CENTER" fillWidth="false" prefWidth="302.0" spacing="30.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <children>
+         <HBox alignment="CENTER" layoutX="65.0" layoutY="29.0" spacing="10.0">
+            <children>
+               <VBox spacing="8.0">
+                  <children>
+                     <Label text="HSN / SAC">
+                        <font>
+                           <Font name="System Bold" size="12.0" />
+                        </font>
+                     </Label>
+                     <TextField fx:id="hsn_sacTf" minHeight="40.0" minWidth="290.0" prefHeight="40.0" prefWidth="290.0" promptText="Enter HSN / SAC" />
+                  </children>
+               </VBox>
+            </children>
+         </HBox>
             <HBox alignment="CENTER" layoutX="10.0" layoutY="10.0" spacing="10.0">
                 <children>
                     <VBox fillWidth="false">

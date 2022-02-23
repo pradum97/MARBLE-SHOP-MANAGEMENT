@@ -3,12 +3,13 @@ package com.shop.management.Model;
 public class ProductSize {
 
 
-    double purchasePrice, productMRP , MinSellPrice , width , height ;
-    long quantity ;
-    String  sizeUnit , quantityUnit;
+   private double purchasePrice, productMRP , MinSellPrice ;
+   private int width , height;
+   private long quantity ;
+   private String  sizeUnit , quantityUnit;
 
     public ProductSize(double purchasePrice, double productMRP, double minSellPrice,
-                       double width, double height, long quantity, String sizeUnit, String quantityUnit) {
+                       int width, int height, long quantity, String sizeUnit, String quantityUnit) {
         this.purchasePrice = purchasePrice;
         this.productMRP = productMRP;
         MinSellPrice = minSellPrice;
@@ -43,19 +44,19 @@ public class ProductSize {
         MinSellPrice = minSellPrice;
     }
 
-    public double getWidth() {
+    public int getWidth() {
         return width;
     }
 
-    public void setWidth(double width) {
+    public void setWidth(int width) {
         this.width = width;
     }
 
-    public double getHeight() {
+    public int getHeight() {
         return height;
     }
 
-    public void setHeight(double height) {
+    public void setHeight(int height) {
         this.height = height;
     }
 

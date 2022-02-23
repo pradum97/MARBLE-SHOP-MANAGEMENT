@@ -16,7 +16,7 @@ import java.util.ResourceBundle;
 
 public class Avatar implements Initializable {
     public GridPane gridPane;
-    String path = "src/main/resources/com/shop/management/img/Avatar/avtar_";
+   private String path = "src/main/resources/com/shop/management/img/Avatar/avtar_";
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -41,7 +41,7 @@ public class Avatar implements Initializable {
 
                     Main.primaryStage.setUserData(imgAvatarPath);
 
-                    Stage stage = CustomDialog.stage2;
+                    Stage stage =  new  CustomDialog().stage2;
 
                     if (stage.isShowing()){
                         stage.hide();

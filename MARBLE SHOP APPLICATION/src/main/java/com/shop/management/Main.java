@@ -1,18 +1,11 @@
 package com.shop.management;
 
-import com.shop.management.Controller.Avatar;
 import com.shop.management.util.AppConfig;
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
-import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -20,6 +13,9 @@ import java.util.Objects;
 
 public class Main extends Application {
     public static Stage primaryStage;
+
+    private double xOffset = 0;
+    private double yOffset = 0;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -34,7 +30,20 @@ public class Main extends Application {
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/main.css")).toExternalForm());
         stage.setScene(scene);
 
-
+       /* root.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                xOffset = event.getSceneX();
+                yOffset = event.getSceneY();
+            }
+        });
+        root.setOnMouseDragged(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                stage.setX(event.getScreenX() - xOffset);
+                stage.setY(event.getScreenY() - yOffset);
+            }
+        });*/
 
         stage.show();
     }
@@ -46,6 +55,21 @@ public class Main extends Application {
                 Parent pane = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(fxml)));
                 primaryStage.getScene().setRoot(pane);
                 primaryStage.setTitle(AppConfig.APPLICATION_NAME + " ( " + title + " ) ");
+
+                /*pane.setOnMousePressed(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        xOffset = event.getSceneX();
+                        yOffset = event.getSceneY();
+                    }
+                });
+                pane.setOnMouseDragged(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        primaryStage.setX(event.getScreenX() - xOffset);
+                        primaryStage.setY(event.getScreenY() - yOffset);
+                    }
+                });*/
                 primaryStage.show();
 
             }

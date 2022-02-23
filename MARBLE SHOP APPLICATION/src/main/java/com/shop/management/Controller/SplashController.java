@@ -2,16 +2,10 @@ package com.shop.management.Controller;
 
 import com.shop.management.Main;
 import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class SplashController implements Initializable {
 

@@ -1,0 +1,35 @@
+.context-menu {
+    -fx-background-color: #dbdcde;
+    -fx-border-color: transparent;
+    -fx-text-fill: black;
+    -fx-cursor: hand;
+    -fx-padding: 10;
+    -fx-font-size: 16;
+    -fx-background-radius: 4;
+}
+
+
+.menu-item:focused .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.menu-item:focused {
+    -fx-background: -fx-accent;
+    -fx-background-color: #0881ea;
+    -fx-text-fill: white;
+    -fx-background-radius: 4;
+}
+
+.menu-button{
+
+    -fx-color: white;
+    -fx-background-color: #0881ea;
+    -fx-cursor: hand;
+}
+
+.menu-button:selected{
+
+    -fx-text-fill: white;
+    -fx-background-color: #f10707;
+}

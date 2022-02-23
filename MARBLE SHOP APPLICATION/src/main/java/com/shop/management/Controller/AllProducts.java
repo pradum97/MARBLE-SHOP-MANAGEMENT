@@ -2,13 +2,16 @@ package com.shop.management.Controller;
 
 import com.shop.management.CustomDialog;
 import com.shop.management.Main;
-import com.shop.management.Method.*;
-import com.shop.management.Model.*;
+import com.shop.management.Method.CloseConnection;
+import com.shop.management.Method.Method;
+import com.shop.management.Model.Products;
 import com.shop.management.util.DBConnection;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
+import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -20,24 +23,28 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.util.Callback;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.math.BigDecimal;
+import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class AllProducts implements Initializable {
 
+    int rowsPerPage = 15;
+
     public TableColumn<Products, String> colColor;
-    public TableColumn<Products, String> col_IMG;
+    public TableColumn<Products , Integer> colSrNo;
     public TableColumn<Products, String> colProductName;
     public TableColumn<Products, String> colType;
     public TableColumn<Products, String> colCategory;
@@ -45,13 +52,23 @@ public class AllProducts implements Initializable {
     public TableColumn<Products, String> colTax;
     public TableColumn<Products, String> colDescription;
     public TableColumn<Products, String> colAction;
+    public TableColumn<Products, String> colPrice;
+    public TableColumn<Products, String> colDate;
+    public TableColumn<Products, String> colHsnSan;
     public TableView<Products> tableView;
-    public TableColumn<Products , String> colSize;
+    public TableColumn<Products, String> colSize;
+    public HBox refresh_bn;
+    public ImageView refresh_img;
+    public TextField searchTf;
+    public Pagination pagination;
 
-    DBConnection dbconnection;
-    Method method;
-    CustomDialog customDialog;
-    Properties properties;
+
+    private DBConnection dbconnection;
+    private Method method;
+    private CustomDialog customDialog;
+    private Properties properties;
+
+    FilteredList<Products> filteredData;
 
     ObservableList<Products> productsList = FXCollections.observableArrayList();
 
@@ -62,33 +79,138 @@ public class AllProducts implements Initializable {
         dbconnection = new DBConnection();
         customDialog = new CustomDialog();
         properties = method.getProperties("query.properties");
-        getProduct();
+        setCustomImage();
+
+       getProduct();
+
+
+        listener();
+    }
+
+    private void search_Item() {
+
+       filteredData = new FilteredList<>(productsList, p -> true);
+
+        searchTf.textProperty().addListener((observable, oldValue, newValue) -> {
+
+            filteredData.setPredicate(products -> {
+
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                String lowerCaseFilter = newValue.toLowerCase();
+
+                if (products.getProductName().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+
+                } else if (products.getProductType().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                } else if (products.getCategory().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                } else if (products.getProductColor().toLowerCase().contains(lowerCaseFilter)) {
+
+                    return true;
+                }else if (products.getAdded_date().toLowerCase().contains(lowerCaseFilter)) {
+
+                    return true;
+                }else if (products.getTotalDiscount().toLowerCase().contains(lowerCaseFilter)) {
+
+                    return true;
+                }else if (products.getTotalTax().toLowerCase().contains(lowerCaseFilter)) {
+
+                    return true;
+                }
+                else if (String.valueOf(products.getHsn_sac()).toLowerCase().contains(lowerCaseFilter)) {
+
+                    return true;
+                }
+                return false;
+            });
+
+            changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);
+        });
+
+        pagination.setCurrentPageIndex(0);
+        changeTableView(0, rowsPerPage);
+        pagination.currentPageIndexProperty().addListener(
+                (observable1, oldValue1, newValue1) -> changeTableView(newValue1.intValue(), rowsPerPage));
+
+    }
+
+    private void changeTableView(int index, int limit) {
+
+        int totalPage = (int) (Math.ceil(filteredData.size() * 1.0 / rowsPerPage));
+        pagination.setPageCount(totalPage);
+
+        colSrNo.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(
+                tableView.getItems().indexOf(cellData.getValue()) + 1));
+        colColor.setCellValueFactory(new PropertyValueFactory<>("productColor"));
+        colProductName.setCellValueFactory(new PropertyValueFactory<>("productName"));
+        colType.setCellValueFactory(new PropertyValueFactory<>("productType"));
+        colCategory.setCellValueFactory(new PropertyValueFactory<>("category"));
+        colDiscount.setCellValueFactory(new PropertyValueFactory<>("totalDiscount"));
+        colTax.setCellValueFactory(new PropertyValueFactory<>("totalTax"));
+        colHsnSan.setCellValueFactory(new PropertyValueFactory<>("hsn_sac"));
+        colDescription.setCellValueFactory(new PropertyValueFactory<>("productDescription"));
+        colSize.setCellValueFactory(new PropertyValueFactory<>("sizeUnit"));
+        colDate.setCellValueFactory(new PropertyValueFactory<>("added_date"));
+
+
+        int fromIndex = index * limit;
+        int toIndex = Math.min(fromIndex + limit, productsList.size());
+
+        int minIndex = Math.min(toIndex, filteredData.size());
+        SortedList<Products> sortedData = new SortedList<>(
+                FXCollections.observableArrayList(filteredData.subList(Math.min(fromIndex, minIndex), minIndex)));
+        sortedData.comparatorProperty().bind(tableView.comparatorProperty());
+
+        tableView.setItems(sortedData);
+
+    }
+
+    private void listener() {
+
+
+        refresh_bn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+
+                bnRefresh(null);
+
+            }
+        });
+    }
+
+    private void setCustomImage() {
+
+        // refreshImage.setImage(method.getImage("src/main/resources/com/shop/management/img/icon/refresh_ic.png"));
     }
 
     private void getProduct() {
+
+        if (null != productsList) {
+            productsList.clear();
+
+        }
 
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
 
-        int productID =0;
-        String productName = null;
-        String productDescription = null;
-        String productColor = null;
-        String productType =null;
-        String productCategory = null;
-        int discountID =0;
-        int taxID = 0;
-
-        Discount discounts = null ;
-        TAX gst = null ;
-        Stock stock =null;
-        int discount = 0 , tax = 0;
-
-
         try {
 
-            String query = "SELECT * FROM TBL_PRODUCTS";
+            String query = "SELECT tp.product_id,tp.added_date , tp.product_name , tp.product_description\n" +
+                    "       ,tp.product_color,tp.product_type,tp.category,\n" +
+                    "       tp.discount_id ,tp.tax_id ,\n" +
+                    "       td.discount_id ,td.discount,td.description,tpt.tax_id , tpt.hsn_sac ,\n" +
+                    "       tpt.tax_id ,tpt.sgst,tpt.cgst,tpt.igst,tpt.description,tpt.\"gstName\",\n" +
+                    "       (select string_agg(concat(tps.height , 'x' , tps.width ,' ', tps.size_unit ),', ' ) as height_width\n" +
+                    "       from tbl_product_stock as tps where  tps.product_id = tp.product_id group by tp.product_id )\n" +
+                    "\n" +
+                    "FROM   tbl_products as tp\n" +
+                    "         Left JOIN tbl_discount as td  ON ( tp.discount_id = td.discount_id )\n" +
+                    "         Left Join tbl_product_tax as tpt  on ( tp.tax_id = tpt.tax_id ) ORDER BY tp.product_id DESC";
 
             connection = dbconnection.getConnection();
 
@@ -101,284 +223,220 @@ public class AllProducts implements Initializable {
 
             while (rs.next()) {
 
-                 productID = rs.getInt("product_id");
-                 productName = rs.getString("product_name");
-                 productDescription = rs.getString("product_description");
-                 productColor = rs.getString("product_color");
-                 productType = rs.getString("product_type");
-                 productCategory = rs.getString("category");
-                 discountID = rs.getInt("discount_id");
-                 taxID = rs.getInt("tax_id");
+                int productID = rs.getInt("product_id");
+                String productName = rs.getString("product_name");
+                String productDescription = rs.getString("product_description");
+                String productColor = rs.getString("product_color");
+                String productType = rs.getString("product_type");
+                String productCategory = rs.getString("category");
+                int productDiscountID = rs.getInt("discount_id");
+                String addedDate = " " + rs.getString("added_date");
+                int productTaxID = rs.getInt("tax_id");
 
-                 discounts = new GetDiscount().get(discountID);
-                 gst = new GetTax().getGst(taxID);
-                 stock = new GetStockData().getStock(productID);
+                // discount
+                int discountID = rs.getInt("discount_id");
+                int totalDiscount = rs.getInt("discount");
 
-                if (null != discounts){
-                    discount = discounts.getDiscount();
-                }
+                // tax
+                int hsnSac = rs.getInt("hsn_sac");
+                int taxId = rs.getInt("tax_id");
+                int sgst = rs.getInt("sgst");
+                int cgst = rs.getInt("cgst");
+                int igst = rs.getInt("igst");
+                String tax_description = rs.getString("description");
+                String gstName = rs.getString("gstName");
 
-                if ( null != gst){
-                    tax  = gst.getSgst()+ gst.getCgst()+gst.getIgst();
-                }
+                String size = " " + rs.getString("height_width");
 
-                if (null != stock){
+                int totalTax = sgst + cgst + igst;
 
-                    productsList.add(new Products(stock.getStockID(),productID, stock.getPurchasePrice(), stock.getProductMRP(),
-                            stock.getMinSellingPrice(),stock.getHeight(),stock.getWidth(),stock.getSizeUnit(),
-                            stock.getQuantityUnit(),stock.getQuantity(),productID,productName,productDescription,productColor,
-                            productType,productCategory,discount,tax,null));
-
-
+                String[] str = addedDate.split("\\.");
 
 
-                }
+                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+              //  Date date = new Date();
+
+              // String date = formatter.format(new Date(addedDate));
+
+                productsList.add(new Products(0, productID, 0, 0,
+                        0, 0, 0, size,
+                        null, 0, productID, productName, productDescription, productColor,
+                        productType, productCategory, discountID, taxId, null, str[0],
+                        String.valueOf(totalDiscount), String.valueOf(totalTax), hsnSac));
 
             }
 
-            tableView.setItems(productsList);
-
+            if (productsList.size()>0){
+                pagination.setVisible(true);
+                search_Item();
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
 
-            CloseConnection.closeConnection(connection,ps,rs);
+            CloseConnection.closeConnection(connection, ps, rs);
 
         }
 
-       setColumnData();
-
         Callback<TableColumn<Products, String>, TableCell<Products, String>>
-                cellFactory = (TableColumn<Products, String> param) -> {
+                cellFactory = (TableColumn<Products, String> param) -> new TableCell<>() {
+            @Override
+            public void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                    setText(null);
 
-            final TableCell<Products, String> cell = new TableCell<Products, String>() {
-                @Override
-                public void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty) {
-                        setGraphic(null);
-                        setText(null);
+                } else {
 
-                    } else {
+                    FileInputStream input_edit, input_delete;
+                    File edit_file, delete_file;
+                    ImageView iv_edit, iv_delete;
+                    Image image_edit = null, image_delete = null;
 
-                        FileInputStream input_edit, input_delete;
-                        File edit_file, delete_file;
-                        ImageView iv_edit , iv_delete;
-                        Image image_edit = null, image_delete = null;
+                    String path = "src/main/resources/com/shop/management/img/icon/";
 
-                        String path = "src/main/resources/com/shop/management/img/icon/";
+                    try {
+                        edit_file = new File(path + "edit_ic.png");
+                        delete_file = new File(path + "delete_ic.png");
 
-                        try {
-                            edit_file = new File(path + "edit_ic.png");
-                            delete_file = new File(path + "delete_ic.png");
+                        input_edit = new FileInputStream(edit_file.getPath());
+                        input_delete = new FileInputStream(delete_file.getPath());
 
-                            input_edit = new FileInputStream(edit_file.getPath());
-                            input_delete = new FileInputStream(delete_file.getPath());
-
-                            image_edit = new Image(input_edit);
-                            image_delete = new Image(input_delete);
+                        image_edit = new Image(input_edit);
+                        image_delete = new Image(input_delete);
 
 
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
+                    iv_edit = new ImageView(image_edit);
+                    iv_edit.setFitHeight(22);
+                    iv_edit.setFitHeight(22);
+                    iv_edit.setPreserveRatio(true);
+
+                    iv_delete = new ImageView(image_delete);
+                    iv_delete.setFitHeight(17);
+                    iv_delete.setFitWidth(17);
+                    iv_delete.setPreserveRatio(true);
+
+                    iv_edit.setStyle(
+                            " -fx-cursor: hand ;"
+                                    + "-fx-fill:#c506fa;"
+                    );
+
+                    iv_delete.setStyle(
+                            " -fx-cursor: hand ;"
+
+                                    + "-fx-fill:#ff0000;"
+                    );
+                    iv_edit.setOnMouseClicked((MouseEvent event) -> {
+
+                        Products edit_selection = tableView.
+                                getSelectionModel().getSelectedItem();
+
+                        if (null == edit_selection) {
+                            method.show_popup("Please Select", tableView);
+                            return;
                         }
 
-                        iv_edit = new ImageView(image_edit);
-                        iv_edit.setFitHeight(22);
-                        iv_edit.setFitHeight(22);
-                        iv_edit.setPreserveRatio(true);
+                        Main.primaryStage.setUserData(edit_selection);
 
-                        iv_delete = new ImageView(image_delete);
-                        iv_delete.setFitHeight(17);
-                        iv_delete.setFitWidth(17);
-                        iv_delete.setPreserveRatio(true);
+                        customDialog.showFxmlDialog("update/productUpdate.fxml", "UPDATE PRODUCT");
+                        bnRefresh(null);
 
-                        iv_edit.setStyle(
-                                " -fx-cursor: hand ;"
-                                        + "-glyph-size:28px;"
-                                        + "-fx-fill:#c506fa;"
-                        );
-
-                        iv_delete.setStyle(
-                                " -fx-cursor: hand ;"
-                                        + "-glyph-size:28px;"
-                                        + "-fx-fill:#ff0000;"
-                        );
-                        iv_edit.setOnMouseClicked((MouseEvent event) -> {
-
-                            Products edit_selection = tableView.
-                                    getSelectionModel().getSelectedItem();
-
-                            if (null == edit_selection) {
-                                method.show_popup("Please Select", tableView);
-                                return;
-                            }
-
-                          /*  Main.primaryStage.setUserData(edit_selection);
-
-                            customDialog.showFxmlDialog("setting/update/gstUpdate.fxml", "GST UPDATE");
-                            setGstTableData();*/
-
-                        });
-
-                        iv_delete.setOnMouseClicked((MouseEvent event) -> {
+                    });
+                    iv_delete.setOnMouseClicked((MouseEvent event) -> {
 
 
-                            Products products = tableView.
-                                    getSelectionModel().getSelectedItem();
+                        Products products = tableView.
+                                getSelectionModel().getSelectedItem();
 
-                            if (null == products) {
-                                method.show_popup("Please Select", tableView);
-                                return;
-                            }
+                        if (null == products) {
+                            method.show_popup("Please Select", tableView);
+                            return;
+                        }
 
 
-                            deleteProduct(products);
+                        deleteProduct(products);
 
-                        });
+                    });
 
-                        HBox managebtn = new HBox(iv_edit, iv_delete);
+                    HBox managebtn = new HBox(iv_edit, iv_delete);
 
-                        managebtn.setStyle("-fx-alignment:center");
-                        HBox.setMargin(iv_edit, new Insets(2, 2, 0, 0));
-                        HBox.setMargin(iv_delete, new Insets(2, 3, 0, 30));
+                    managebtn.setStyle("-fx-alignment:center");
+                    HBox.setMargin(iv_edit, new Insets(0, 2, 0, 0));
+                    HBox.setMargin(iv_delete, new Insets(0, 3, 0, 30));
 
-                        setGraphic(managebtn);
+                    setGraphic(managebtn);
 
-                        setText(null);
+                    setText(null);
 
-                    }
                 }
+            }
 
-            };
-
-            return cell;
         };
 
         Callback<TableColumn<Products, String>, TableCell<Products, String>>
-                cellSize = (TableColumn<Products, String> param) -> {
+                cellSize = (TableColumn<Products, String> param) -> new TableCell<>() {
+            @Override
+            public void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                    setText(null);
 
-            final TableCell<Products, String> cell = new TableCell<Products, String>() {
-                @Override
-                public void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty) {
-                        setGraphic(null);
-                        setText(null);
+                } else {
+                    Label bnCheckPrice = new Label("CHECK PRICE");
 
-                    } else {
-
-
-                        HBox managebtn = null;
-
-                        int productId = productsList.get(getIndex()).getProductID();
-
-                       int count = getSizeLength(productId);
-
-                       if (count > 1){
-
-                           Label button = new Label("Check Price and Size");
-                           managebtn = new HBox(button);
-
-                           button.setStyle("-fx-background-color: #008080; -fx-background-radius: 5 ; " +
-                                   "-fx-padding: 5 ; -fx-text-fill: white");
+                    bnCheckPrice.setStyle("-fx-background-color: #008080; -fx-background-radius: 3 ; " +
+                            "-fx-padding: 5 8 5 8 ; -fx-text-fill: white; -fx-alignment: center;-fx-cursor: hand");
 
 
+                    bnCheckPrice.setOnMouseClicked(event -> {
+                        Products products = tableView.getSelectionModel().getSelectedItem();
 
-                       }else {
-                           Label sizeLabel = new Label();
+                        if (null == tableView) {
+                            {
+                                return;
+                            }
+                        }
 
-                           Label bnCheckPrice = new Label("Check Price");
+                        Main.primaryStage.setUserData(products);
 
-                           BigDecimal h = BigDecimal.valueOf(productsList.get(getIndex()).getHeight());
-                           BigDecimal w = BigDecimal.valueOf(productsList.get(getIndex()).getWidth());
+                        customDialog.showFxmlDialog("ViewSizeAndPrice.fxml", "SIZE AND PRICE CHART");
+                        bnRefresh(null);
+                    });
 
-                           String size =  h.stripTrailingZeros().toPlainString()+" x "
-                                   +w.stripTrailingZeros().toPlainString()+productsList.get(getIndex()).getSizeUnit();
+                    HBox container = new HBox(bnCheckPrice);
+                    container.setStyle("-fx-alignment:center");
+                    HBox.setMargin(bnCheckPrice, new Insets(2, 20, 2, 20));
+                    setGraphic(container);
 
-                           sizeLabel.setText(size);
-
-                          // System.out.println(sizeLabel.getWidth());
-
-                           HBox.setMargin(sizeLabel, new Insets(2, 2, 0, 0));
-                           HBox.setMargin(bnCheckPrice, new Insets(2, 2, 0, 20));
-                           bnCheckPrice.setStyle("-fx-background-color: #008080; -fx-background-radius: 5 ; " +
-                                   "-fx-padding: 5 ; -fx-text-fill: white");
-
-                           managebtn = new HBox(sizeLabel , bnCheckPrice);
-                       }
-
-                        managebtn.setStyle("-fx-alignment:center");
-                       // HBox.setMargin(iv_edit, new Insets(2, 2, 0, 0));
-
-                        setGraphic(managebtn);
-
-                        setText(null);
-
-                    }
+                    setText(null);
                 }
+            }
 
-            };
-
-            return cell;
         };
-
-
         colAction.setCellFactory(cellFactory);
-       colSize .setCellFactory(cellSize);
+        colPrice.setCellFactory(cellSize);
         tableView.setItems(productsList);
 
         customColumn(colProductName);
         customColumn(colDescription);
-    }
+        customColumn(colSize);
+        customColumn(colDate);
+        tableView.getSelectionModel().selectFirst();
 
-    private int getSizeLength (int productid){
-
-        Connection con = dbconnection.getConnection();
-        PreparedStatement p = null;
-        ResultSet r = null;
-        int sizeLenght = 0;
-        try {
-            p = con.prepareStatement("select count(*) from tbl_product_stock where product_id = ?");
-            p.setInt(1,productid);
-
-             r = p.executeQuery();
-
-            while (r.next()){
-
-               sizeLenght = r.getInt(1);
-
-
-            }
-            return sizeLenght;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return 0;
-        }finally {
-            CloseConnection.closeConnection(con,p,r);
-        }
-
-    }
-
-    private void setColumnData() {
-
-        colColor.setCellValueFactory(new PropertyValueFactory<>("productColor"));
-        colProductName.setCellValueFactory(new PropertyValueFactory<>("productName"));
-        colType.setCellValueFactory(new PropertyValueFactory<>("productType"));
-        colCategory.setCellValueFactory(new PropertyValueFactory<>("category"));
-        colDiscount.setCellValueFactory(new PropertyValueFactory<>("discount"));
-        colTax.setCellValueFactory(new PropertyValueFactory<>("tax"));
-        colDescription.setCellValueFactory(new PropertyValueFactory<>("productDescription"));
     }
 
     private void deleteProduct(Products products) {
 
-       /* Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setAlertType(Alert.AlertType.CONFIRMATION);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Warning ");
-        alert.setHeaderText("Are You Sure You Want to Delete This DISCOUNT ( "+discount.getDiscount()+" )");
+        alert.setHeaderText("Are You Sure You Want to Delete This Product ( " + products.getProductName() + " )");
         alert.initModality(Modality.APPLICATION_MODAL);
         alert.initOwner(Main.primaryStage);
         Optional<ButtonType> result = alert.showAndWait();
@@ -387,47 +445,70 @@ public class AllProducts implements Initializable {
             Connection con = null;
             PreparedStatement ps = null;
 
-            try{
+            try {
 
-                con =  dbConnection.getConnection();
+                con = dbconnection.getConnection();
 
-                if (null == con){
+                if (null == con) {
                     return;
                 }
 
-                ps = con.prepareStatement("DELETE FROM TBL_DISCOUNT WHERE DISCOUNT_ID = ?");
-                ps.setInt(1,discount.getDiscount_id());
+                ps = con.prepareStatement("DELETE FROM tbl_product_stock WHERE product_id = ?");
+                ps.setInt(1, products.getProductID());
 
                 int res = ps.executeUpdate();
 
-                if (res > 0){
-                    setDiscountData();
-                    alert.close();
-                }
+                if (res > 0) {
 
-            } catch (SQLException e) {
-                customDialog.showAlertBox("ERROR","You cannot remove this Discount because this Discount has been used in your products.");
+                    ps = null;
+                    ps = con.prepareStatement("select  * from tbl_product_img where product_id = ?");
+                    ps.setInt(1, products.getProductID());
+
+                    ResultSet rs = ps.executeQuery();
+
+                    while (rs.next()) {
+
+                        String path = rs.getString("img_path");
+
+                        File file = new File("src/main/resources/com/shop/management/img/Product_Image/" + path);
+                        if (file.exists()) {
+                            FileUtils.forceDelete(file);
+                        }
+                    }
+                    ps = null;
+
+                    if (null != rs) {
+                        rs.close();
+                    }
+                    ps = con.prepareStatement("DELETE FROM tbl_product_img WHERE product_id = ?");
+                    ps.setInt(1, products.getProductID());
+                    ps.executeUpdate();
+
+                    ps = null;
+
+                    ps = con.prepareStatement("DELETE FROM tbl_products WHERE product_id = ?");
+                    ps.setInt(1, products.getProductID());
+
+                    int i = ps.executeUpdate();
+
+                    if (i > 0) {
+                        bnRefresh(null);
+                        customDialog.showAlertBox("", "Successfully Deleted");
+                        alert.close();
+                    }
+
+                }
+            } catch (SQLException | IOException e) {
+                customDialog.showAlertBox("ERROR", e.getMessage());
                 e.printStackTrace();
-            }finally {
+            } finally {
 
-                try{
-
-                    if (null != con){
-                        con.close();
-                    }
-                    if (null != ps){
-                        ps.close();
-                    }
-
-
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                CloseConnection.closeConnection(con, ps, null);
             }
 
         } else {
             alert.close();
-        }*/
+        }
     }
 
     private void customColumn(TableColumn<Products, String> columnName) {
@@ -445,6 +526,10 @@ public class AllProducts implements Initializable {
         });
     }
 
-
+    public void bnRefresh(MouseEvent event) {
+        getProduct();
+        tableView.refresh();
+        changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);
+    }
 
 }

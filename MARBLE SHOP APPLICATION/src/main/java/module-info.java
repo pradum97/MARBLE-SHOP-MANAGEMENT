@@ -10,7 +10,6 @@ module com.shop.management {
     requires org.controlsfx.controls;
 
 
-    opens com.shop.management to javafx.fxml;
     exports com.shop.management;
 
     opens com.shop.management.Model to javafx.fxml;
@@ -23,4 +22,9 @@ module com.shop.management {
     opens com.shop.management.Controller.Update to javafx.fxml;
     exports com.shop.management.Controller.SettingController;
     opens com.shop.management.Controller.SettingController to javafx.fxml;
+
+    exports com.shop.management.Controller.SellItems;
+    opens com.shop.management.Controller.SellItems to javafx.fxml;
+
+    opens com.shop.management;
 }

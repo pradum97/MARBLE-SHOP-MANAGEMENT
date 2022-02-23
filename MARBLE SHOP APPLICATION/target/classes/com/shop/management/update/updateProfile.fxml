@@ -142,7 +142,7 @@
 
                         <HBox alignment="CENTER" prefWidth="516.0" spacing="30">
 
-                            <Button fx:id="bnCancel" alignment="CENTER" lineSpacing="1.0" onAction="#update_bn" prefHeight="30.0" prefWidth="218.0" style="-fx-cursor: hand;-fx-background-color: #5e0cee;" text="CANCEL" textAlignment="CENTER" textFill="#ffffff" />
+                            <Button fx:id="bnCancel" alignment="CENTER" lineSpacing="1.0" onAction="#bnCancel" prefHeight="30.0" prefWidth="218.0" style="-fx-cursor: hand;-fx-background-color: #5e0cee;" text="CANCEL" textAlignment="CENTER" textFill="#ffffff" />
 
                             <Button fx:id="bnUpdate" alignment="CENTER" lineSpacing="1.0" onAction="#update_bn" prefHeight="30.0" prefWidth="218.0" style="-fx-cursor: hand;-fx-background-color: #5e0cee;" text="UPDATE" textAlignment="CENTER" textFill="#ffffff" />
 

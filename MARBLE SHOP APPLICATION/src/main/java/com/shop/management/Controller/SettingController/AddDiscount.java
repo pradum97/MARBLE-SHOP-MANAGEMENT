@@ -1,8 +1,8 @@
 package com.shop.management.Controller.SettingController;
 
 import com.shop.management.CustomDialog;
-import com.shop.management.Main;
 import com.shop.management.Method.CloseConnection;
+import com.shop.management.Method.GetDiscount;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.Discount;
 import com.shop.management.util.DBConnection;
@@ -28,13 +28,13 @@ public class AddDiscount implements Initializable {
 
     @FXML
     public TextField discountTF;
-    public ComboBox<String> discountTypeCombo;
     public TextArea descriptionTF;
     public Button submitBn;
-    CustomDialog customDialog;
-    Method method;
-    DBConnection dbConnection ;
-    Properties properties;
+    public TextField discountNameC;
+    private CustomDialog customDialog;
+    private Method method;
+    private DBConnection dbConnection;
+    private Properties properties;
 
 
     @Override
@@ -44,23 +44,24 @@ public class AddDiscount implements Initializable {
         method = new Method();
         dbConnection = new DBConnection();
         properties = method.getProperties("query.properties");
-
-        discountTypeCombo.setItems(method.getDiscountType());
-        discountTypeCombo.getSelectionModel().selectFirst();
     }
+
+
 
 
     public void submitBn(ActionEvent event) {
 
         String discountTf = discountTF.getText();
         String descriptionTf = descriptionTF.getText();
+        String discountName = discountNameC.getText();
 
-        if (discountTf.isEmpty()){
-            method.show_popup("Enter Discount ",discountTF);
+        if (discountName.isEmpty()) {
+            method.show_popup("Enter Discount Name ", discountNameC);
+            return;
+        } else if (discountTf.isEmpty()) {
+            method.show_popup("Enter Discount ", discountTF);
             return;
         }
-
-
         int discountD = 0;
         try {
             discountD = Integer.parseInt(discountTf.replaceAll("[^0-9.]", ""));
@@ -68,16 +69,10 @@ public class AddDiscount implements Initializable {
             e.printStackTrace();
         }
 
-        if (discountD > 100){
-            method.show_popup("Enter Discount Less Than 100 ",discountTF);
+        if (discountD > 100) {
+            method.show_popup("Enter Discount Less Than 100 ", discountTF);
             return;
         }
-         if (null == discountTypeCombo.getValue()){
-            method.show_popup("CHOOSE DISCOUNT TYPE ",discountTypeCombo);
-            return;
-        }
-
-        String discountType = discountTypeCombo.getValue();
 
 
         Connection connection = null;
@@ -85,33 +80,33 @@ public class AddDiscount implements Initializable {
 
         try {
             connection = dbConnection.getConnection();
-            if (null == connection){
+            if (null == connection) {
                 return;
             }
 
             ps = connection.prepareStatement(properties.getProperty("ADD_DISCOUNT"));
-            ps.setInt(1,discountD);
-            ps.setString(2,discountType);
-            ps.setString(3,descriptionTf);
+            ps.setInt(1, discountD);
+            ps.setString(2, descriptionTf);
+            ps.setString(3, discountName);
 
             int res = ps.executeUpdate();
 
-            if (res > 0 ){
+            if (res > 0) {
 
-              //  customDialog.showAlertBox("","Successful");
                 Stage stage = CustomDialog.stage;
 
-                if (stage.isShowing()){
+                if (stage.isShowing()) {
                     stage.close();
                 }
             }
 
 
         } catch (SQLException e) {
-            e.printStackTrace();
-        }finally {
+            e.getStackTrace();
 
-            CloseConnection.closeConnection(connection,ps,null);
+        } finally {
+
+            CloseConnection.closeConnection(connection, ps, null);
         }
 
 

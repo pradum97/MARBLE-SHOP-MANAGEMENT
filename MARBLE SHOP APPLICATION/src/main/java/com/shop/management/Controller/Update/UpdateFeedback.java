@@ -2,9 +2,10 @@ package com.shop.management.Controller.Update;
 
 import com.shop.management.CustomDialog;
 import com.shop.management.Main;
+import com.shop.management.Method.Method;
+import com.shop.management.Method.StaticData;
 import com.shop.management.Model.Feedback;
 import com.shop.management.util.DBConnection;
-import com.shop.management.Method.Method;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -18,7 +19,6 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Objects;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
@@ -33,10 +33,10 @@ public class UpdateFeedback implements Initializable {
     public Rating rate;
     public Button bn_feedback_submit;
     private Properties queryProp;
-    DBConnection dbConnection;
-    CustomDialog customDialog;
-    Method method;
-    Feedback feed;
+    private DBConnection dbConnection;
+    private CustomDialog customDialog;
+    private Method method;
+    private Feedback feed;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -46,7 +46,7 @@ public class UpdateFeedback implements Initializable {
         customDialog = new CustomDialog();
         queryProp = method.getProperties("query.properties");
 
-         feed = (Feedback) Main.primaryStage.getUserData();
+        feed = (Feedback) Main.primaryStage.getUserData();
         setData(feed);
     }
 
@@ -67,7 +67,7 @@ public class UpdateFeedback implements Initializable {
         String comment = comments.getText();
         double rating = rate.getRating();
 
-        Pattern pattern = Pattern.compile(method.emailRegex);
+        Pattern pattern = Pattern.compile(new StaticData().emailRegex);
         Matcher matcher = pattern.matcher(emailID);
 
         if (fullname.isEmpty()) {
@@ -114,7 +114,7 @@ public class UpdateFeedback implements Initializable {
             ps.setString(3, phoneNum);
             ps.setString(4, String.valueOf(rating));
             ps.setString(5, comment);
-            ps.setInt(6,feed.getFeed_id() );
+            ps.setInt(6, feed.getFeed_id());
 
             int res = ps.executeUpdate();
 
@@ -126,9 +126,9 @@ public class UpdateFeedback implements Initializable {
                 fullName.setText("");
 
 
-                Stage stage = CustomDialog.stage;
+                Stage stage = new CustomDialog().stage;
 
-                if (stage.isShowing()){
+                if (stage.isShowing()) {
                     stage.close();
                 }
 

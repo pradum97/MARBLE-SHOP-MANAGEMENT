@@ -1,6 +1,5 @@
 package com.shop.management.Method;
 
-import com.shop.management.Controller.AddProducts;
 import com.shop.management.Model.UserDetails;
 import com.shop.management.util.DBConnection;
 import javafx.collections.FXCollections;
@@ -77,7 +76,7 @@ public class GetUserProfile {
             return null;
         }finally {
 
-            AddProducts.closeConnection(connection, userPs, userRs);
+            CloseConnection.closeConnection(connection, userPs, userRs);
         }
     }
 
@@ -138,7 +137,7 @@ public class GetUserProfile {
             return null;
         }finally {
 
-            AddProducts.closeConnection(connection, userPs, userRs);
+            CloseConnection.closeConnection(connection, userPs, userRs);
         }
     }
 }

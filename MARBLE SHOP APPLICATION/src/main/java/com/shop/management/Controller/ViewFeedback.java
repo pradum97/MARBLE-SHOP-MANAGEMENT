@@ -2,11 +2,16 @@ package com.shop.management.Controller;
 
 import com.shop.management.CustomDialog;
 import com.shop.management.Main;
+import com.shop.management.Method.CloseConnection;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.Feedback;
+import com.shop.management.Model.Products;
 import com.shop.management.util.DBConnection;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -33,6 +38,10 @@ import java.util.ResourceBundle;
 
 public class ViewFeedback implements Initializable {
 
+    public Pagination pagination;
+    public TextField searchTf;
+    int rowsPerPage = 10;
+
     public TableColumn<Feedback, String> col_action;
     private Method method;
     private DBConnection dbConnection;
@@ -46,9 +55,10 @@ public class ViewFeedback implements Initializable {
     public TableColumn<Feedback, String> col_star;
     public TableColumn<Feedback, String> col_message;
     public TableColumn<Feedback, String> col_date;
-    public TableView<Feedback> tableView ;
+    public TableView<Feedback> tableView;
 
-    ObservableList<Feedback> feedList = FXCollections.observableArrayList();
+    private ObservableList<Feedback> feedList = FXCollections.observableArrayList();
+    FilteredList<Feedback> filteredData;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -59,11 +69,12 @@ public class ViewFeedback implements Initializable {
         properties = method.getProperties("query.properties");
 
         setData();
+
     }
 
     private void setData() {
 
-        if (null != feedList){
+        if (null != feedList) {
 
             feedList.clear();
         }
@@ -75,7 +86,7 @@ public class ViewFeedback implements Initializable {
         try {
             connection = dbConnection.getConnection();
 
-            if (null == connection){
+            if (null == connection) {
                 return;
             }
 
@@ -83,7 +94,7 @@ public class ViewFeedback implements Initializable {
 
             rs = ps.executeQuery();
 
-            while (rs.next()){
+            while (rs.next()) {
 
                 int feedId = rs.getInt("feedback_id");
                 String fullName = rs.getString("full_name");
@@ -93,17 +104,64 @@ public class ViewFeedback implements Initializable {
                 String message = rs.getString("message");
                 String date = rs.getString("feedback_date");
 
-                feedList.add(new Feedback(feedId,phone,fullName,email,star,message,date));
+                feedList.add(new Feedback(feedId, phone, fullName, email, star, message, date));
             }
 
-            tableView.setItems(feedList);
+            if (feedList.size()>0){
+                pagination.setVisible(true);
+                search_Item();
+            }
+
 
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
 
-            AddProducts.closeConnection(connection, ps, rs);
+            CloseConnection.closeConnection(connection, ps, rs);
         }
+
+
+    }
+
+    private void search_Item() {
+
+        filteredData = new FilteredList<>(feedList, p -> true);
+
+        searchTf.textProperty().addListener((observable, oldValue, newValue) -> {
+
+            filteredData.setPredicate(feed -> {
+
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                String lowerCaseFilter = newValue.toLowerCase();
+
+                if (feed.getFullName().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+
+                } else if (feed.getEmail().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                } else if (feed.getFeed_phone().toLowerCase().contains(lowerCaseFilter)) {
+                }
+                return false;
+            });
+
+            changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);
+        });
+
+        pagination.setCurrentPageIndex(0);
+        changeTableView(0, rowsPerPage);
+        pagination.currentPageIndexProperty().addListener(
+                (observable1, oldValue1, newValue1) -> changeTableView(newValue1.intValue(), rowsPerPage));
+
+    }
+    private void changeTableView(int index, int limit) {
+
+        int totalPage = (int) (Math.ceil(filteredData.size() * 1.0 / rowsPerPage));
+        pagination.setPageCount(totalPage);
+
+
         col_id.setCellValueFactory(new PropertyValueFactory<>("feed_id"));
         col_name.setCellValueFactory(new PropertyValueFactory<>("fullName"));
         col_phone.setCellValueFactory(new PropertyValueFactory<>("feed_phone"));
@@ -158,7 +216,6 @@ public class ViewFeedback implements Initializable {
                         iv_delete.setFitHeight(17);
                         iv_delete.setFitWidth(17);
                         iv_delete.setPreserveRatio(true);
-
 
 
                         iv_edit.setStyle(
@@ -227,11 +284,26 @@ public class ViewFeedback implements Initializable {
         customColumn(col_email);
         customColumn(col_message);
         customColumn(col_date);
+
+
+        int fromIndex = index * limit;
+        int toIndex = Math.min(fromIndex + limit, feedList.size());
+
+        int minIndex = Math.min(toIndex, filteredData.size());
+        SortedList<Feedback> sortedData = new SortedList<>(
+                FXCollections.observableArrayList(filteredData.subList(Math.min(fromIndex, minIndex), minIndex)));
+        sortedData.comparatorProperty().bind(tableView.comparatorProperty());
+
+        tableView.setItems(sortedData);
+
     }
+
 
     private void refreshTableData() {
 
         setData();
+        changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);
+
     }
 
     private void deleteFeedback(Feedback feed) {
@@ -248,34 +320,34 @@ public class ViewFeedback implements Initializable {
             Connection con = null;
             PreparedStatement ps = null;
 
-            try{
+            try {
 
-                con =  dbConnection.getConnection();
+                con = dbConnection.getConnection();
 
-                if (null == con){
+                if (null == con) {
                     return;
                 }
 
                 ps = con.prepareStatement("DELETE FROM TBL_FEEDBACK WHERE feedback_id = ?");
-                ps.setInt(1,feed.getFeed_id());
+                ps.setInt(1, feed.getFeed_id());
 
                 int res = ps.executeUpdate();
 
-                if (res > 0){
+                if (res > 0) {
                     refreshTableData();
                     alert.close();
                 }
 
             } catch (SQLException e) {
                 e.printStackTrace();
-            }finally {
+            } finally {
 
-                try{
+                try {
 
-                    if (null != con){
+                    if (null != con) {
                         con.close();
                     }
-                    if (null != ps){
+                    if (null != ps) {
                         ps.close();
                     }
 
@@ -305,5 +377,10 @@ public class ViewFeedback implements Initializable {
             text.textProperty().bind(cell.itemProperty());
             return cell;
         });
+    }
+
+    public void bnRefresh(MouseEvent event) {
+
+
     }
 }

@@ -2,8 +2,8 @@ package com.shop.management.Model;
 
 public class Product_Images {
 
-    int imageID , productID;
-    String imagePath;
+    private int imageID, productID;
+    private String imagePath;
 
     public Product_Images(int imageID, int productID, String imagePath) {
         this.imageID = imageID;

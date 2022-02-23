@@ -7,7 +7,6 @@ import com.shop.management.Model.TAX;
 import com.shop.management.util.DBConnection;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -26,18 +25,19 @@ public class GstUpdate implements Initializable {
     public TextField igstTF;
     public TextField gstNameTF;
     public TextField descriptionTF;
+    public TextField hsn_sacTf;
 
     private Method method;
     private DBConnection dbConnection;
     private Properties properties;
     private CustomDialog customDialog;
-    TAX tax ;
+    private TAX tax;
 
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-         tax =(TAX) Main.primaryStage.getUserData();
-        if (null == tax){
+        tax = (TAX) Main.primaryStage.getUserData();
+        if (null == tax) {
             return;
         }
 
@@ -52,6 +52,7 @@ public class GstUpdate implements Initializable {
 
     private void setPreviousData(TAX tax) {
 
+        hsn_sacTf.setText(String.valueOf(tax.getHsn_sac()));
         sgstTF.setText(String.valueOf(tax.getSgst()));
         cgstTF.setText(String.valueOf(tax.getCgst()));
         igstTF.setText(String.valueOf(tax.getIgst()));
@@ -67,8 +68,12 @@ public class GstUpdate implements Initializable {
         String igst = igstTF.getText();
         String gstName = gstNameTF.getText();
         String description = descriptionTF.getText();
+        String hsn_sacS = hsn_sacTf.getText();
 
-        if (sgst.isEmpty()) {
+        if (hsn_sacS.isEmpty()) {
+            method.show_popup("Enter HSN / SAC", hsn_sacTf);
+            return;
+        } else if (sgst.isEmpty()) {
             method.show_popup("Enter sgst", sgstTF);
             return;
         } else if (cgst.isEmpty()) {
@@ -77,10 +82,42 @@ public class GstUpdate implements Initializable {
         } else if (igst.isEmpty()) {
             method.show_popup("Enter igst", igstTF);
             return;
-        } else if (gstName.isEmpty()) {
-            method.show_popup("Enter GST Name", gstNameTF);
+        }
+
+        int sGst = 0, cGst = 0, iGst = 0, hsn_sac = 0;
+
+        try {
+            hsn_sac = Integer.parseInt(hsn_sacS.replaceAll("[^0-9.]", ""));
+        } catch (NumberFormatException e) {
+            hsn_sacTf.setText("");
+
             return;
         }
+
+        try {
+            sGst = Integer.parseInt(sgst);
+        } catch (NumberFormatException e) {
+            customDialog.showAlertBox("Validation Failed", "Please Enter Valid SGST");
+
+            return;
+        }
+
+        try {
+            iGst = Integer.parseInt(igst);
+        } catch (NumberFormatException e) {
+            customDialog.showAlertBox("Validation Failed", "Please Enter Valid IGST");
+
+            return;
+        }
+
+        try {
+            cGst = Integer.parseInt(cgst);
+        } catch (NumberFormatException e) {
+            customDialog.showAlertBox("Validation Failed", "Please Enter Valid CGST");
+
+            return;
+        }
+
         Connection connection = null;
         PreparedStatement ps = null;
 
@@ -90,54 +127,40 @@ public class GstUpdate implements Initializable {
             if (null == connection) {
                 return;
             }
-            int sGst = 0, cGst = 0, iGst = 0;
-            try {
-                sGst = Integer.parseInt(sgst);
-            } catch (NumberFormatException e) {
-                customDialog.showAlertBox("Validation Failed", "Please Enter Valid SGST");
-                e.printStackTrace();
-            }
-
-            try {
-                iGst = Integer.parseInt(igst);
-            } catch (NumberFormatException e) {
-                customDialog.showAlertBox("Validation Failed", "Please Enter Valid IGST");
-                e.printStackTrace();
-            }
-
-            try {
-                cGst = Integer.parseInt(cgst);
-            } catch (NumberFormatException e) {
-                customDialog.showAlertBox("Validation Failed", "Please Enter Valid CGST");
-                e.printStackTrace();
-            }
 
             ps = connection.prepareStatement(properties.getProperty("UPDATE_GST"));
             ps.setInt(1, sGst);
             ps.setInt(2, cGst);
             ps.setInt(3, iGst);
-            ps.setString(4, gstName);
 
-            if (null == description) {
+            if (null == gstName) {
+                ps.setNull(4, Types.NULL);
+            }else {
+                ps.setString(4, gstName);
+            }
+
+                if (null == description) {
                 ps.setNull(5, Types.NULL);
             } else {
                 ps.setString(5, description);
             }
-            ps.setInt(6,tax.getTaxID());
+            ps.setInt(6, hsn_sac);
+            ps.setInt(7, tax.getTaxID());
 
             int res = ps.executeUpdate();
 
             if (res > 0) {
 
                 sgstTF.setText("");
+                hsn_sacTf.setText("");
                 cgstTF.setText("");
                 igstTF.setText("");
                 gstNameTF.setText("");
                 descriptionTF.setText("");
 
-                Stage stage = CustomDialog.stage;
+                Stage stage = new CustomDialog().stage;
 
-                if (stage.isShowing()){
+                if (stage.isShowing()) {
                     stage.close();
                 }
 
@@ -145,13 +168,13 @@ public class GstUpdate implements Initializable {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
 
             try {
-                if (null != connection){
+                if (null != connection) {
                     connection.close();
                 }
-                if (null != ps){
+                if (null != ps) {
                     ps.close();
                 }
             } catch (SQLException e) {

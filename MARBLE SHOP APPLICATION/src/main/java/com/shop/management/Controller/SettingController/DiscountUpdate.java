@@ -3,9 +3,12 @@ package com.shop.management.Controller.SettingController;
 import com.shop.management.CustomDialog;
 import com.shop.management.Main;
 import com.shop.management.Method.CloseConnection;
+import com.shop.management.Method.GetDiscount;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.Discount;
 import com.shop.management.util.DBConnection;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -26,14 +29,14 @@ public class DiscountUpdate implements Initializable {
 
     @FXML
     public TextField discountTF;
-    public ComboBox<String> discountTypeCombo;
     public TextArea descriptionTF;
     public Button submitBn;
-    CustomDialog customDialog;
-    Method method;
-    DBConnection dbConnection ;
-    Properties properties;
-    Discount discount;
+    public TextField discountNameC;
+    private CustomDialog customDialog;
+    private Method method;
+    private DBConnection dbConnection;
+    private Properties properties;
+    private Discount discount;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -43,7 +46,7 @@ public class DiscountUpdate implements Initializable {
         dbConnection = new DBConnection();
         properties = method.getProperties("query.properties");
 
-         discount = (Discount) Main.primaryStage.getUserData();
+        discount = (Discount) Main.primaryStage.getUserData();
 
         setPreviousData(discount);
 
@@ -53,24 +56,23 @@ public class DiscountUpdate implements Initializable {
 
         discountTF.setText(String.valueOf(discount.getDiscount()));
         descriptionTF.setText(discount.getDescription());
-        discountTypeCombo.getItems().add(discount.getDiscountType());
-        discountTypeCombo.getSelectionModel().selectFirst();
+        discountNameC.setText(discount.getDiscountName());
 
-        discountTypeCombo.setItems(method.getDiscountType());
     }
 
     public void updateBn(ActionEvent event) {
 
-
         String discountTf = discountTF.getText();
         String descriptionTf = descriptionTF.getText();
+        String discountName = discountNameC.getText();
 
-        if (discountTf.isEmpty()){
-            method.show_popup("Enter Discount ",discountTF);
+        if (discountName.isEmpty()) {
+            method.show_popup("Enter Discount Name ", discountNameC);
+            return;
+        } else if (discountTf.isEmpty()) {
+            method.show_popup("Enter Discount ", discountTF);
             return;
         }
-
-
         int discountD = 0;
         try {
             discountD = Integer.parseInt(discountTf.replaceAll("[^0-9.]", ""));
@@ -78,16 +80,10 @@ public class DiscountUpdate implements Initializable {
             e.printStackTrace();
         }
 
-        if (discountD > 100){
-            method.show_popup("Enter Discount Less Than 100 ",discountTF);
+        if (discountD > 100) {
+            method.show_popup("Enter Discount Less Than 100 ", discountTF);
             return;
         }
-        if (null == discountTypeCombo.getValue()){
-            method.show_popup("CHOOSE DISCOUNT TYPE ",discountTypeCombo);
-            return;
-        }
-
-        String discountType = discountTypeCombo.getValue();
 
 
         Connection connection = null;
@@ -95,33 +91,33 @@ public class DiscountUpdate implements Initializable {
 
         try {
             connection = dbConnection.getConnection();
-            if (null == connection){
+            if (null == connection) {
                 return;
             }
 
             ps = connection.prepareStatement(properties.getProperty("UPDATE_DISCOUNT"));
-            ps.setInt(1,discountD);
-            ps.setString(2,discountType);
-            ps.setString(3,descriptionTf);
-            ps.setInt(4,discount.getDiscount_id());
+            ps.setInt(1, discountD);
+            ps.setString(2, descriptionTf);
+            ps.setString(3, discountName);
+            ps.setInt(4, discount.getDiscount_id());
 
             int res = ps.executeUpdate();
 
-            if (res > 0 ){
+            if (res > 0) {
 
                 Stage stage = CustomDialog.stage;
 
-                if (stage.isShowing()){
+                if (stage.isShowing()) {
                     stage.close();
                 }
             }
 
 
         } catch (SQLException e) {
-            e.printStackTrace();
-        }finally {
+            customDialog.showAlertBox("Failed","Duplicate Entry Not Allow");
+        } finally {
 
-            CloseConnection.closeConnection(connection,ps,null);
+            CloseConnection.closeConnection(connection, ps, null);
         }
 
     }

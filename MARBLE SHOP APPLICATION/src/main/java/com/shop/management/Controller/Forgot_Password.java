@@ -37,7 +37,7 @@ public class Forgot_Password implements Initializable {
     private PreparedStatement ps;
     private Properties properties;
     private DBConnection dbConnection;
-    CustomDialog customDialog;
+    private CustomDialog customDialog;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -86,9 +86,9 @@ public class Forgot_Password implements Initializable {
                 confirm_password.setText("");
                 error_label.setVisible(true);
                 error_label.setTextFill(Color.GREEN);
-                customDialog.showAlertBox("Congratulations🎉🎉🎉","Successfully Updated");
+                customDialog.showAlertBox("Congratulations🎉🎉🎉", "Successfully Updated");
 
-                Stage stage = CustomDialog.stage;
+                Stage stage = new CustomDialog().stage;
 
                 email_f.setText("");
                 new_password.setText("");
@@ -127,20 +127,24 @@ public class Forgot_Password implements Initializable {
             return;
         }
         try {
-            String query = "SELECT email FROM TBL_USERS WHERE email = ?";
+            String query = "SELECT email , user_id FROM TBL_USERS WHERE email = ?";
             connection = dbConnection.getConnection();
             ps = connection.prepareStatement(query);
             ps.setString(1, email);
             ResultSet resultSet = ps.executeQuery();
 
             if (resultSet.next()) {
-                error_label.setVisible(false);
-                verification_container.setVisible(false);
-                verification_container.managedProperty().bind(verification_container.visibleProperty());
-                password_container.setVisible(true);
+
+                int userId = resultSet.getInt("user_id");
+                    error_label.setVisible(false);
+                    verification_container.setVisible(false);
+                    verification_container.managedProperty().bind(verification_container.visibleProperty());
+                    password_container.setVisible(true);
+
+
 
             } else {
-                customDialog.showAlertBox("Failed","Invalid Email !");
+                customDialog.showAlertBox("Failed", "Invalid Email !");
             }
 
         } catch (Exception e) {

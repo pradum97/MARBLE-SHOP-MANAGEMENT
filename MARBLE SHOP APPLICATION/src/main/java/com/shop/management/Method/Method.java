@@ -1,6 +1,5 @@
 package com.shop.management.Method;
 
-import com.shop.management.Controller.AddProducts;
 import com.shop.management.util.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,52 +18,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
-public class Method {
+public class Method extends StaticData {
 
-   public String emailRegex = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^-]+(?:\\.[a-zA-Z0-9_!#$%&'*+/=?`{|}~^-]+)*@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$";
-
-    public ObservableList<String> getGender() {
-
-        return FXCollections.observableArrayList("Male", "Female", "Other");
-    }
-
-    public ObservableList<String> getProductType() {
-
-        return FXCollections.observableArrayList("Wall", "Floor");
-    }
-
-    public ObservableList<String> getDiscountType() {
-
-        return FXCollections.observableArrayList("PERCENTAGE","FLAT");
-    }
-
-    public ObservableList<String> getProductCategory() {
-
-        return FXCollections.observableArrayList("Tiles", "Marble","Granite","Other");
-    }
-
-    public ObservableList<String> getSizeUnit() {
-
-        return FXCollections.observableArrayList("MM", "CM","INCH","FT");
-    }
-    public ObservableList<String> getSizeQuantityUnit() {
-
-        return FXCollections.observableArrayList("PCS", "PKT");
-    }
-
-    public ObservableList<String> getProductColor() {
-
-        return FXCollections.observableArrayList("White", "Dark grey","Blue" ,"Brown"
-                ,"Black" ,"Gold " ,"Orange" , "Red" ,"Green", "Black porcelain","Multicolour");
-
-    }
-
-
-
-    public ObservableList<String> getAccountStatus() {
-
-        return FXCollections.observableArrayList("Inactive","Active" );
-    }
 
     public ObservableList<String> getRole(){
 
@@ -100,7 +55,7 @@ public class Method {
             return  null;
         } finally {
 
-            AddProducts.closeConnection(connection, ps, rs);
+            CloseConnection.closeConnection(connection, ps, rs);
         }
 
 

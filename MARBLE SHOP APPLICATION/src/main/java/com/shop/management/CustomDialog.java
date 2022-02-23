@@ -18,19 +18,24 @@ public class CustomDialog {
     public static Stage stage;
     public static Stage stage2;
 
+    private double xOffset = 0;
+    private double yOffset = 0;
+
     public void showFxmlDialog(String fxml_file, String title)  {
 
         try {
-            Parent  parent = FXMLLoader.load(CustomDialog.class.getResource(fxml_file));
+
+            Parent root = FXMLLoader.load(Objects.requireNonNull(Main.class.getResource(fxml_file)));
+
             stage = new Stage();
             stage.getIcons().add(new Image(getClass().getResourceAsStream(AppConfig.APPLICATION_ICON)));
-            stage.initStyle(StageStyle.UTILITY);
             stage.setTitle(title);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            Scene scene = new Scene(parent);
+            stage.initOwner(Main.primaryStage);
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.initStyle(StageStyle.UTILITY);
+            Scene scene = new Scene(root);
             scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/main.css")).toExternalForm());
             stage.setScene(scene);
-            stage.setResizable(false);
             stage.showAndWait();
 
         } catch (IOException e) {
@@ -50,16 +55,20 @@ public class CustomDialog {
     public void showFxmlDialog2(String fxml_file, String title)  {
 
         try {
-            Parent  parent = FXMLLoader.load(CustomDialog.class.getResource(fxml_file));
+            Parent root = FXMLLoader.load(Objects.requireNonNull(Main.class.getResource(fxml_file)));
             stage2 = new Stage();
             stage2.getIcons().add(new Image(getClass().getResourceAsStream(AppConfig.APPLICATION_ICON)));
+            stage2.initOwner(Main.primaryStage);
             stage2.initStyle(StageStyle.UTILITY);
             stage2.setTitle(title);
             stage2.initModality(Modality.APPLICATION_MODAL);
-            Scene scene = new Scene(parent);
+            Scene scene = new Scene(root);
             scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/main.css")).toExternalForm());
             stage2.setScene(scene);
             stage2.setResizable(false);
+
+
+
             stage2.showAndWait();
 
         } catch (IOException e) {

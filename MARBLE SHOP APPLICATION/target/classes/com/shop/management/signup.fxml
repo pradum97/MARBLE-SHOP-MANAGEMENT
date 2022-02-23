@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox onKeyReleased="#enterPress" alignment="CENTER" fillWidth="false" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.SignUp">
+<VBox onKeyReleased="#enterPress" minHeight="650" prefHeight="-Infinity" alignment="CENTER" fillWidth="false" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.SignUp">
 
     <StackPane style="-fx-background-color: white; -fx-background-radius: 10;">
 

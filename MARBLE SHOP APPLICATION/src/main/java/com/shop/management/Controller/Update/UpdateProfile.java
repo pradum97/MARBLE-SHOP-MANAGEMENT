@@ -6,22 +6,24 @@ import com.shop.management.Main;
 import com.shop.management.Method.CopyImage;
 import com.shop.management.Method.GetUserProfile;
 import com.shop.management.Method.Method;
+import com.shop.management.Method.StaticData;
 import com.shop.management.Model.UserDetails;
 import com.shop.management.util.DBConnection;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
-import javafx.scene.image.Image;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import org.apache.commons.io.FileUtils;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -49,11 +51,11 @@ public class UpdateProfile implements Initializable {
     private Method method;
     private Properties properties;
     private DBConnection dbConnection;
-    private String imgAvatarPath, imageName , oldImagePath;
+    private String imgAvatarPath, imageName, oldImagePath;
     private CustomDialog customDialog;
-     Main main;
-    private  int userId ;
-    String rootPath = "src/main/resources/com/shop/management/img/userImages/";
+    private Main main;
+    private int userId;
+    private String rootPath = "src/main/resources/com/shop/management/img/userImages/";
 
 
     @Override
@@ -64,7 +66,7 @@ public class UpdateProfile implements Initializable {
         main = new Main();
         properties = method.getProperties("query.properties");
 
-         userId = ((UserDetails) Main.primaryStage.getUserData()).getUserID();
+        userId = ((int) Main.primaryStage.getUserData());
 
         setUserDetails(userId);
 
@@ -75,8 +77,8 @@ public class UpdateProfile implements Initializable {
         GetUserProfile getUserProfile = new GetUserProfile();
         UserDetails userDetails = getUserProfile.getUser(userId);
 
-        if (null == userDetails){
-            customDialog.showAlertBox("Failed","User Not Find Please Re-Login");
+        if (null == userDetails) {
+            customDialog.showAlertBox("Failed", "User Not Find Please Re-Login");
             return;
         }
         first_name_f.setText(userDetails.getFirstName());
@@ -102,7 +104,7 @@ public class UpdateProfile implements Initializable {
 
         switch (userDetails.getAccountStatus()) {
 
-            case "Active" ->{
+            case "Active" -> {
                 combo_accountStatus.getSelectionModel().select(1);
             }
             case "Inactive" -> {
@@ -110,9 +112,10 @@ public class UpdateProfile implements Initializable {
             }
         }
 
-        profile_photo.setImage(method.getImage(rootPath+oldImagePath));
+        profile_photo.setImage(method.getImage(rootPath + oldImagePath));
 
     }
+
     public void update_bn(ActionEvent event) {
 
         Connection connection = null;
@@ -125,7 +128,7 @@ public class UpdateProfile implements Initializable {
         String email = email_f.getText();
         String full_address = full_address_f.getText();
 
-        Pattern pattern = Pattern.compile(method.emailRegex);
+        Pattern pattern = Pattern.compile(new StaticData().emailRegex);
 
         Matcher matcher = pattern.matcher(email);
 
@@ -146,17 +149,16 @@ public class UpdateProfile implements Initializable {
         try {
             phoneNum = Long.parseLong(phone);
         } catch (NumberFormatException e) {
-            customDialog.showAlertBox("Registration Failed ","Enter 10-digit Phone Number Without Country Code");
+            customDialog.showAlertBox("Registration Failed ", "Enter 10-digit Phone Number Without Country Code");
             return;
         }
         Pattern phone_pattern = Pattern.compile("^\\d{10}$");
         Matcher phone_matcher = phone_pattern.matcher(phone);
 
-        if (!phone_matcher.matches()){
-            customDialog.showAlertBox("Registration Failed ","Enter 10-digit Phone Number Without Country Code");
+        if (!phone_matcher.matches()) {
+            customDialog.showAlertBox("Registration Failed ", "Enter 10-digit Phone Number Without Country Code");
             return;
-        }
-        else if (email.isEmpty()) {
+        } else if (email.isEmpty()) {
             method.show_popup("Enter Valid Email", email_f);
             return;
 
@@ -168,8 +170,7 @@ public class UpdateProfile implements Initializable {
             method.show_popup("Choose Your Gender", gender_comboBox);
             return;
 
-        }
-        else if (null == role_combobox.getValue()) {
+        } else if (null == role_combobox.getValue()) {
             method.show_popup("Choose role_combobox", role_combobox);
             return;
         } else if (full_address.isEmpty()) {
@@ -195,7 +196,7 @@ public class UpdateProfile implements Initializable {
                 ps_insert_data.setString(9, oldImagePath); // user image
 
             } else {
-                imageName = new CopyImage().copy(new File("src/main/resources/com/shop/management/img/Avatar/"+imgAvatarPath).getAbsolutePath(), "userImages/profileImg");
+                imageName = new CopyImage().copy(new File("src/main/resources/com/shop/management/img/Avatar/" + imgAvatarPath).getAbsolutePath(), "userImages/profileImg");
                 ps_insert_data.setString(9, imageName); // user image
 
                 // delete previous image
@@ -210,8 +211,8 @@ public class UpdateProfile implements Initializable {
                     }
                 }
             }
-            ps_insert_data.setInt(10,combo_accountStatus.getSelectionModel().getSelectedIndex() );
-            ps_insert_data.setInt(11,userId );
+            ps_insert_data.setInt(10, combo_accountStatus.getSelectionModel().getSelectedIndex());
+            ps_insert_data.setInt(11, userId);
 
             int result = ps_insert_data.executeUpdate();
 
@@ -219,26 +220,22 @@ public class UpdateProfile implements Initializable {
 
                 customDialog.showAlertBox("Congratulations 🎉🎉🎉", "Successfully Updated");
 
-                Stage stage = CustomDialog.stage;
 
                 int login_id = Login.currentlyLogin_Id;
 
-                if (login_id > 0){
+                if (login_id > 0) {
 
-                    if (login_id == userId){
+                    if (login_id == userId) {
                         new Main().changeScene("login.fxml", "Re-Login");
                     }
 
                 }
+                Stage stage = CustomDialog.stage;
 
-                if (null != stage) {
+                if (stage.isShowing()) {
 
-                    if (stage.isShowing()) {
-
-                        stage.close();
-                    }
+                    stage.close();
                 }
-
 
             } else {
                 customDialog.showAlertBox("", "Updating Failed");
@@ -263,22 +260,31 @@ public class UpdateProfile implements Initializable {
 
     public void chooseAvatar(ActionEvent event) {
 
-        customDialog.showFxmlDialog2("avatar.fxml","CHOOSE YOUR PROFILE AVATAR");
+        customDialog.showFxmlDialog2("avatar.fxml", "CHOOSE YOUR PROFILE AVATAR");
         setAvatar();
 
     }
 
-    public void setAvatar(){
+    public void setAvatar() {
         String path = "src/main/resources/com/shop/management/img/Avatar/";
         try {
             imgAvatarPath = (String) Main.primaryStage.getUserData();
         } catch (ClassCastException e) {
-          //  e.printStackTrace();
+            //  e.printStackTrace();
         }
-        String img = path+imgAvatarPath;
+        String img = path + imgAvatarPath;
 
-        if (null != imgAvatarPath){
+        if (null != imgAvatarPath) {
             profile_photo.setImage(new Method().getImage(img));
+        }
+    }
+
+    public void bnCancel(ActionEvent event) {
+
+        Stage stage = (Stage)((Node) event.getSource()).getScene().getWindow();
+
+        if (stage.isShowing()){
+            stage.close();
         }
     }
 }
