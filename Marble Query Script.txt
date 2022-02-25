@@ -1,13 +1,20 @@
+//DROP TABLE
+
 CREATE TABLE TBL_SHOP_DETAILS
 (
 
-    SHOP_NAME          VARCHAR(100) NOT NULL,
-    SHOP_EMAIL         VARCHAR(100) NOT NULL,
-    SHOP_PHONE         INTEGER      NOT NULL,
-    SHOP_GST_ID        VARCHAR(100),
-    SHOP_ADDRESS       VARCHAR(200) NOT NULL,
-    SHOP_LOGO_IMG_PATH VARCHAR(1000)
+    SHOP_NAME       VARCHAR(100) NOT NULL,
+    SHOP_EMAIL      VARCHAR(100) NOT NULL,
+    SHOP_PHONE_1    VARCHAR(10)      NOT NULL,
+    SHOP_PHONE_2    VARCHAR(10),
+    SHOP_GST_NUMBER VARCHAR(100),
+    SHOP_ADDRESS    VARCHAR(200) NOT NULL
 )
+
+
+INSERT INTO TBL_SHOP_DETAILS (SHOP_NAME, SHOP_EMAIL, SHOP_PHONE_1, SHOP_PHONE_2, SHOP_GST_NUMBER, SHOP_ADDRESS)
+                        VALUES ('SUMA MARBAL & TIELS','devrajimas@gmail.com',9570294565 , 9122383010 ,
+                                '10DGBPK6505G1ZY','छोटी बलिया ,  NH-31 , पानी टंकी से पूरब ( बेगूसराय ) ,851211 , BIHAR')
 
 
 CREATE TABLE TBL_MENU
@@ -24,12 +31,14 @@ INSERT INTO TBL_MENU(MENU_ICON_PATH ,MENU_NAME, MENU_LOCATION)
 VALUES ('home_icon.png','HOME', 'SIDE'),
        ('profile_ic.png','PROFILE', 'SIDE'),
        ('employ.png','USERS', 'SIDE'),
-       ('settings_ic.png','SETTING', 'SIDE'),
+       ('settings_ic.png','SETTING', 'TOP'),
        ('shop_icon.png','ALL PRODUCT', 'SIDE'),
-       ('sell_ic.png','SELL PRODUCT', 'SIDE'),
+       ('sell_ic.png','SALE REPORT', 'SIDE'),
        ('viewReport_icon.png','SELL REPORT', 'SIDE'),
-       ('viewReport_icon.png','STOCK REPORT', 'SIDE'),
-       ('add_icon.png','ADD PRODUCT', 'TOP')
+       ('stock_ic.png','STOCK REPORT', 'SIDE'),
+       ('add_icon.png','ADD PRODUCT', 'TOP'),
+       ('feedback_ic.png','FEEDBACK', 'TOP')
+
 
 CREATE TABLE TBL_USERS
 (
@@ -49,34 +58,20 @@ CREATE TABLE TBL_USERS
     MAC_ADDRESS    VARCHAR(30)           NOT NULL
 )
 
-CREATE TABLE TBLS_PRODUCT_MES_UNIT
-(
+ALTER TABLE TBL_USERS ADD UNIQUE (email)
+ALTER TABLE TBL_USERS ADD UNIQUE (username)
+ALTER TABLE TBL_USERS ADD UNIQUE (phone)
 
-    UNIT_CODE        SERIAL PRIMARY KEY NOT NULL,
-    UNIT_NAME        VARCHAR(10)        NOT NULL,
-    UNIT_DESCRIPTION VARCHAR(200)
-
-
-)
-
-INSERT INTO TBLS_PRODUCT_MES_UNIT (UNIT_NAME)
-VALUES ('PCS'),
-       ('PKT'),
-       ('CM'),
-       ('MM'),
-       ('INCH'),
-       ('FT')
 
 CREATE TABLE TBL_FEEDBACK
 (
-
     FEEDBACK_ID SERIAL PRIMARY KEY NOT NULL,
     FULL_NAME   VARCHAR(50)        NOT NULL,
-    EMAIL       VARCHAR(200)       NOT NULL,
-    PHONE       BIGINT             NOT NULL,
-    SUBJECT     VARCHAR(200)       NOT NULL,
+    EMAIL       VARCHAR(200)      ,
+    PHONE       VARCHAR(15)             ,
+    STAR     VARCHAR(200)       NOT NULL,
     MESSAGE     VARCHAR(1000)      NOT NULL,
-    FEEDBACK    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    FEEDBACK_DATE  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
 )
 
@@ -115,22 +110,10 @@ CREATE TABLE TBL_DISCOUNT
 (
 
     DISCOUNT_ID   SERIAL PRIMARY KEY NOT NULL,
-    DISCOUNT      NUMERIC            NOT NULL,
-    DISCOUNT_TYPE VARCHAR(50)        NOT NULL,
-    DESCRIPTION   VARCHAR(200)
+    DISCOUNT      NUMERIC            NOT NULL
 
 )
 
-CREATE TABLE TBL_PRODUCT_PROP
-(
-
-    PROP_ID            SERIAL PRIMARY KEY NOT NULL,
-    PRODUCT_COLOR_CODE CHAR(10)           NOT NULL,
-    PRODUCT_COLOR_NAME VARCHAR(50)        NOT NULL,
-    PRODUCT_TYPE       VARCHAR(100)       NOT NULL,
-    DESCRIPTION        VARCHAR(200)
-
-)
 
 CREATE TABLE TBL_PRODUCT_TAX
 (
@@ -142,6 +125,9 @@ CREATE TABLE TBL_PRODUCT_TAX
     DESCRIPTION VARCHAR(200)
 
 )
+
+alter table tbl_product_tax
+	add "gstName" VARCHAR(100);
 
 CREATE TABLE TBL_ROLE
 (
@@ -163,36 +149,29 @@ CREATE TABLE TBL_PRODUCTS
     PRODUCT_ID          SERIAL PRIMARY KEY NOT NULL,
     PRODUCT_NAME        VARCHAR(200)       NOT NULL,
     PRODUCT_DESCRIPTION VARCHAR(1000),
-    PURCHASE_PRICE      NUMERIC            NOT NULL,
-    PRODUCT_MRP         NUMERIC            NOT NULL,
-    MIN_SELLING         NUMERIC            NOT NULL,
-    DISCOUNT_ID         INTEGER            NOT NULL,
-    TAX_ID              INTEGER            NOT NULL,
-    PRODUCT_PROP_ID     INTEGER            NOT NULL,
+    PRODUCT_COLOR VARCHAR(50)        NOT NULL,
+    PRODUCT_TYPE       VARCHAR(100)       NOT NULL,
+    CATEGORY            VARCHAR(100)       NOT NULL,
+    DISCOUNT_ID         INTEGER           ,
+    ADDED_DATE timestamp default CURRENT_TIMESTAMP not null,
+    TAX_ID              INTEGER           ,
 
     FOREIGN KEY (DISCOUNT_ID)
         REFERENCES TBL_DISCOUNT (DISCOUNT_ID),
 
     FOREIGN KEY (TAX_ID)
-        REFERENCES TBL_PRODUCT_TAX (TAX_ID),
-
-    FOREIGN KEY (PRODUCT_PROP_ID)
-        REFERENCES TBL_PRODUCT_PROP (PROP_ID)
+        REFERENCES TBL_PRODUCT_TAX (TAX_ID)
 
 )
 
 CREATE TABLE TBL_PRODUCT_IMG
 (
-
+    IMG_ID          SERIAL PRIMARY KEY NOT NULL,
     PRODUCT_ID       INTEGER      NOT NULL,
-    PROP_ID          INTEGER      NOT NULL,
-    PRODUCT_IMG_PATH VARCHAR(500) NOT NULL,
-    DESCRIPTION      VARCHAR(200),
+    IMG_PATH VARCHAR(500) NOT NULL,
 
     FOREIGN KEY (PRODUCT_ID)
-        REFERENCES TBL_PRODUCTS (PRODUCT_ID),
-    FOREIGN KEY (PROP_ID)
-        REFERENCES TBL_PRODUCT_PROP (PROP_ID)
+        REFERENCES TBL_PRODUCTS (PRODUCT_ID)
 
 )
 
@@ -210,86 +189,109 @@ CREATE TABLE TBL_PRODUCT_BILL
         REFERENCES TBL_USERS (USER_ID)
 )
 
+
+
 CREATE TABLE TBL_CART
 (
 
-    CART_ID      SERIAL PRIMARY KEY NOT NULL,
-    PRODUCT_ID   INTEGER            NOT NULL,
-    PRODUCT_NAME VARCHAR(200),
-    QUANTITY     NUMERIC            NOT NULL,
-    UNIT         VARCHAR(50),
-    MRP          NUMERIC,
-    TOTAL_MRP    NUMERIC            NOT NULL,
-    SELLER_ID    INTEGER,
+    CART_ID        BIGSERIAL PRIMARY KEY NOT NULL,
+    PRODUCT_ID     INTEGER               NOT NULL,
+    SELLER_ID      INTEGER               NOT NULL,
+    SELLPrice      NUMERIC               NOT NULL,
+    STOCK_ID       INTEGER               NOT NULL,
+    QUANTITY       NUMERIC               NOT NULL,
+    QUANTITY_UNIT  VARCHAR(100)          NOT NULL,
 
-    FOREIGN KEY (PRODUCT_ID)
-        REFERENCES TBL_PRODUCTS (PRODUCT_ID),
     FOREIGN KEY (SELLER_ID)
         REFERENCES TBL_USERS (USER_ID)
 )
+
 
 CREATE TABLE TBL_PRODUCT_STOCK
 (
-
+    STOCK_ID   SERIAL PRIMARY KEY NOT NULL,
+    PURCHASE_PRICE      NUMERIC            NOT NULL,
+    PRODUCT_MRP         NUMERIC            NOT NULL,
+    min_sellingPrice         NUMERIC            NOT NULL,
     PRODUCT_ID INTEGER       NOT NULL,
-    PROP_ID    INTEGER       NOT NULL,
-    LENGTH     NUMERIC       NOT NULL,
+    HEIGHT     NUMERIC       NOT NULL,
     WIDTH      NUMERIC       NOT NULL,
     QUANTITY   NUMERIC       NOT NULL,
-    UNIT_CODE  INTEGER       NOT NULL,
+    STORE_DATE timestamp default CURRENT_TIMESTAMP not null,
+    SIZE_UNIT  VARCHAR(100)       NOT NULL,
+    QUANTITY_UNIT  VARCHAR(100)       NOT NULL,
     IS_ACTIVE  INT DEFAULT 1 NOT NULL,
 
     FOREIGN KEY (PRODUCT_ID)
-        REFERENCES TBL_PRODUCTS (PRODUCT_ID),
-    FOREIGN KEY (PROP_ID)
-        REFERENCES TBL_PRODUCT_PROP (PROP_ID),
-
-    FOREIGN KEY (UNIT_CODE)
-        REFERENCES TBLS_PRODUCT_MES_UNIT (UNIT_CODE)
+        REFERENCES TBL_PRODUCTS (PRODUCT_ID)
+    
 )
 
-CREATE TABLE TBL_SELL_ITEM_MAIN
-(
 
-    SELL_ITEM_MAIN_ID  SERIAL PRIMARY KEY NOT NULL,
-    CUSTOMER_NAME      VARCHAR(100)       NOT NULL,
-    CUSTOMER_PHONE     VARCHAR(20),
-    CUSTOMER_ADDRESS   VARCHAR(200),
-    PRODUCT_AMOUNT     NUMERIC            NOT NULL,
-    TAX                NUMERIC            NOT NULL,
-    PRODUCT_NET_AMOUNT NUMERIC            NOT NULL,
-    DUES_AMOUNT        NUMERIC            NOT NULL,
-    PRODUCT_SALE_DATE  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    SELLER_ID          INTEGER            NOT NULL,
-    NOTES              VARCHAR(300),
-    DESCRIPTION        VARCHAR(300),
+
+
+CREATE TABLE TBL_CUSTOMER
+(
+    CUSTOMER_ID      SERIAL  PRIMARY KEY     NOT NULL,
+    CUSTOMER_NAME    VARCHAR(100) NOT NULL,
+    CUSTOMER_PHONE   NUMERIC UNIQUE NOT NULL,
+    CUSTOMER_ADDRESS VARCHAR(200)  NOT NULL ,
+    DUES_AMOUNT      NUMERIC  ,
+    NOTES            VARCHAR(300),
+    DESCRIPTION      VARCHAR(300)
+)
+
+
+
+CREATE TABLE tbl_saleItems
+(
+    sales_id         SERIAL PRIMARY KEY                  NOT NULL,
+    CUSTOMER_ID      INTEGER                             NOT NULL,
+    PRODUCT_ID       INTEGER                             NOT NULL,
+    STOCK_ID         INTEGER                             NOT NULL,
+    SELLER_ID        INTEGER                             NOT NULL,
+    INVOICE_NUMBER   VARCHAR(50)                         NOT NULL,
+    PRODUCT_NAME     VARCHAR(200)                        NOT NULL,
+    PRODUCT_COLOR    VARCHAR(100)                        NOT NULL,
+    PRODUCT_CATEGORY VARCHAR(100)                        NOT NULL,
+    PRODUCT_TYPE     VARCHAR(100)                        NOT NULL,
+    PRODUCT_SIZE     VARCHAR(100)                        NOT NULL,
+    PURCHASE_PRICE   NUMERIC                             NOT NULL,
+    PRODUCT_MRP      NUMERIC                             NOT NULL,
+    SELL_PRICE       NUMERIC                             NOT NULL,
+    PRODUCT_QUANTITY VARCHAR(100)                        NOT NULL,
+    DISCOUNT_NAME    VARCHAR(100)                        ,
+    DISCOUNT_AMOUNT  NUMERIC                             ,
+    BILL_TYPE        VARCHAR(100)                        NOT NULL,
+    HSN_SAC          NUMERIC                            ,
+    PRODUCT_TAX      NUMERIC                            ,
+    NET_AMOUNT       NUMERIC                             NOT NULL,
+    TAX_AMOUNT       NUMERIC                             ,
+    DATE             timestamp default CURRENT_TIMESTAMP NOT NULL,
+
+    FOREIGN KEY (CUSTOMER_ID)
+        REFERENCES tbl_customer (CUSTOMER_ID),
+
     FOREIGN KEY (SELLER_ID)
-        REFERENCES TBL_USERS (USER_ID)
-
+        REFERENCES tbl_users (user_id)
 )
 
-CREATE TABLE TBL_SELL_ITEMS_DETAILS
-(
 
-    SELL_ITEM_DETAILS_ID SERIAL PRIMARY KEY NOT NULL,
-    SELL_ITEM_MAIN_ID    INTEGER            NOT NULL,
-    PRODUCT_ID           INTEGER            NOT NULL,
-    PRODUCT_PROP_ID      INTEGER            NOT NULL,
-    PRODUCT_NAME         VARCHAR(200),
-    PRODUCT_MRP          NUMERIC            NOT NULL,
-    PRODUCT_SELL_MRP     NUMERIC            NOT NULL,
-    PRODUCT_QUANTITY     NUMERIC            NOT NULL,
-    PRODUCT_DISCOUNT     NUMERIC            NOT NULL,
+alter table tbl_product_tax
+	add HSN_SAC NUMERIC not null;
 
-    FOREIGN KEY (SELL_ITEM_MAIN_ID)
-        REFERENCES TBL_SELL_ITEM_MAIN (SELL_ITEM_MAIN_ID),
-
-    FOREIGN KEY (PRODUCT_ID)
-        REFERENCES TBL_PRODUCTS (PRODUCT_ID),
-
-    FOREIGN KEY (PRODUCT_PROP_ID)
-        REFERENCES TBL_PRODUCT_PROP (PROP_ID)
+create unique index tbl_product_tax_hsn_sac_uindex
+	on tbl_product_tax (HSN_SAC);
 
 
-)
+alter table tbl_discount
+	add DISCOUNT_NAME VARCHAR(200) not null;
 
+alter table tbl_saleitems
+	add igst NUMERIC;
+
+alter table tbl_saleitems
+	add sgst NUMERIC;
+
+alter table tbl_saleitems
+	add cgst NUMERIC;

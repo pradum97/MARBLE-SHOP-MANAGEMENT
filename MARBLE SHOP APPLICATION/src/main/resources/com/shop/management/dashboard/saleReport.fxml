@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Pagination?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.Blend?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.SellReport">
+
+    <center>
+        <StackPane BorderPane.alignment="CENTER">
+            <children>
+                <VBox>
+                    <children>
+                        <HBox VBox.vgrow="ALWAYS">
+                            <children>
+
+                                <TableView fx:id="tableView" focusTraversable="false" tableMenuButtonVisible="true" BorderPane.alignment="CENTER">
+                                    <columns>
+
+                                        <TableColumn fx:id="col_sno" prefWidth="75.0" text="Sr.No" />
+                                        <TableColumn fx:id="c_name" prefWidth="100.0" text="C-NAME" />
+                                        <TableColumn fx:id="c_phone" prefWidth="85.0" text="C-PHONE" />
+                                        <TableColumn fx:id="c_address" prefWidth="150.0" text="C-ADDRESS" />
+                                        <TableColumn fx:id="colName" editable="false" prefWidth="200.0" sortable="false" text="P-NAME" />
+                                        <TableColumn fx:id="colColor" editable="false" prefWidth="100.0" sortable="false" text="COLOR" />
+                                        <TableColumn fx:id="colSize" editable="false" prefWidth="100.0" sortable="false" text="SIZE" />
+                                        <TableColumn fx:id="colProductType" editable="false" prefWidth="100.0" sortable="false" text="TYPE" />
+                                        <TableColumn fx:id="colCategory" editable="false" prefWidth="100.0" sortable="false" text="CATEGORY" />
+                                        <TableColumn fx:id="colPurchasePrice" editable="false" prefWidth="150" sortable="false" text="PUR PRICE" />
+                                        <TableColumn fx:id="colMrp" editable="false" prefWidth="81" sortable="false" text="MRP" />
+                                        <TableColumn fx:id="colRate" editable="false" prefWidth="81" sortable="false" text="RATE" />
+                                        <TableColumn fx:id="colQuantity" editable="false" prefWidth="90.0" sortable="false" text="QUANTITY" />
+                                        <TableColumn fx:id="colDiscName" editable="false" minWidth="-Infinity" sortable="false" text="DISC NAME" />
+                                        <TableColumn fx:id="colDiscount" editable="false" prefWidth="100" sortable="false" text="DISC AMOUNT" />
+                                        <TableColumn fx:id="colHsnSac" editable="false" prefWidth="100" sortable="false" text="HSN/SAC" />
+                                        <TableColumn fx:id="colTax" editable="false" prefWidth="100" sortable="false" text="TAX" />
+                                        <TableColumn fx:id="colNetAmount" editable="false" minWidth="-Infinity" sortable="false" text="NET AMOUNT" />
+                                        <TableColumn fx:id="colInvoiceNumber" editable="false" minWidth="-Infinity" sortable="false" text="INVOICE NUM" />
+                                        <TableColumn fx:id="colSellerName" prefWidth="120.0" text="SELLER NAME" />
+                                        <TableColumn fx:id="colBillType" editable="false" prefWidth="90.0" sortable="false" text="Bill Type" />
+                                        <TableColumn fx:id="colDate" prefWidth="200.0" text="DATE" />
+
+                                    </columns>
+                                </TableView>
+
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+            </children></StackPane>
+    </center>
+    <top>
+        <HBox alignment="CENTER" BorderPane.alignment="CENTER">
+            <children>
+                <Label lineSpacing="1.0" text="SALE REPORTS" textAlignment="CENTER">
+                    <font>
+                        <Font name="Bookman Old Style" size="17.0" />
+                    </font>
+                </Label>
+            </children>
+            <BorderPane.margin>
+                <Insets />
+            </BorderPane.margin>
+            <padding>
+                <Insets bottom="8.0" top="5.0" />
+            </padding>
+        </HBox>
+    </top>
+    <bottom>
+        <HBox alignment="CENTER" fillHeight="false" spacing="23.0" style="-fx-background-color: white;">
+            <children>
+            <HBox HBox.hgrow="ALWAYS">
+               <children>
+                  <Pagination visible="false" fx:id="pagination" maxPageIndicatorCount="0" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+                <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+                    <children>
+
+                        <HBox alignment="CENTER_RIGHT" minHeight="40.0" prefHeight="38.0" prefWidth="280.0" spacing="10.0" style="-fx-border-color: transparent transparent                                white transparent; -fx-background-color: #008080; -fx-background-radius: 5;">
+                            <children>
+                                <ImageView cache="true" fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                                    <Image url="@../img/icon/search_icon.png" />
+                                    <effect>
+                                        <Blend />
+                                    </effect>
+                                    <HBox.margin>
+                                        <Insets left="10.0" />
+                                    </HBox.margin>
+                                </ImageView>
+                                <TextField fx:id="searchTf" promptText="FIND PRODUCT.. " style="-fx-background-color: transparent; -fx-text-inner-color: white;" HBox.hgrow="ALWAYS" />
+                            </children>
+                            <HBox.margin>
+                                <Insets />
+                            </HBox.margin>
+                        </HBox>
+                    </children>
+                    <HBox.margin>
+                        <Insets />
+                    </HBox.margin>
+                </HBox>
+
+                <HBox alignment="CENTER" fillHeight="false">
+
+                    <HBox alignment="CENTER" fillHeight="false" minHeight="35.0" onMouseClicked="#bnRefresh" prefHeight="38.0" prefWidth="60.0" style="-fx-cursor: hand; -fx-background-color: RED; -fx-background-radius: 3;">
+
+                        <ImageView fx:id="refresh_img" fitHeight="15.0" fitWidth="15.0" onMouseClicked="#bnRefresh">
+                            <Image url="@../img/icon/refresh_ic.png" />
+                            <HBox.margin>
+                                <Insets left="7.0" right="7.0" />
+                            </HBox.margin>
+                        </ImageView>
+                        <HBox.margin>
+                            <Insets right="40.0" />
+                        </HBox.margin>
+                    </HBox>
+
+                </HBox>
+            </children>
+            <padding>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </padding>
+        </HBox>
+    </bottom>
+
+</BorderPane>

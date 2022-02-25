@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane maxWidth="550.0" prefHeight="423.0" prefWidth="550.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.Update.ProductUpdate">
+
+
+    <VBox alignment="CENTER" fillWidth="false" spacing="10.0" style="-fx-background-color: white; -fx-background-radius: 10;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <children>
+            <VBox spacing="5.0">
+                <children>
+                    <Label text="PRODUCT NAME ( Max 200 Characters  ) :">
+                        <font>
+                            <Font name="System Bold" size="12.0" />
+                        </font>
+                    </Label>
+                    <TextField fx:id="productName" minHeight="60.0" minWidth="510.0" onKeyReleased="#enterPress" prefHeight="60.0" prefWidth="510.0" promptText="Enter Product Name" text="Indian Marble" />
+                </children>
+            </VBox>
+            <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="25.0" layoutY="118.0" spacing="20.0">
+                <children>
+                    <VBox spacing="5.0">
+                        <children>
+                            <Label text="CATEGORY :">
+                                <font>
+                                    <Font name="System Bold" size="12.0" />
+                                </font>
+                                <VBox.margin>
+                                    <Insets left="5.0" />
+                                </VBox.margin>
+                            </Label>
+                            <ComboBox fx:id="productCategory" minHeight="40.0" minWidth="162.0" onKeyReleased="#enterPress" prefWidth="200.0" promptText="CHOOSE CATEGORY" />
+                        </children>
+                    </VBox>
+                    <VBox fillWidth="false" layoutX="10.0" layoutY="10.0" spacing="5.0">
+                        <children>
+                            <Label text="DISCOUNT :">
+                                <font>
+                                    <Font name="System Bold" size="12.0" />
+                                </font>
+                                <VBox.margin>
+                                    <Insets left="5.0" />
+                                </VBox.margin>
+                            </Label>
+                            <ComboBox fx:id="productDiscount" minHeight="40.0" minWidth="120.0" onKeyReleased="#enterPress" prefWidth="135.0" promptText="0" />
+                        </children>
+                    </VBox>
+                    <VBox layoutX="271.0" layoutY="10.0" spacing="5.0">
+                        <children>
+                            <Label text="HSN/SAC :">
+                                <font>
+                                    <Font name="System Bold" size="12.0" />
+                                </font>
+                                <VBox.margin>
+                                    <Insets left="5.0" />
+                                </VBox.margin>
+                            </Label>
+                            <ComboBox fx:id="productTax" minHeight="40.0" onKeyReleased="#enterPress" prefWidth="130.0" promptText="0" />
+                        </children>
+                    </VBox>
+                </children>
+            </HBox>
+            <HBox alignment="CENTER" fillHeight="false" layoutX="25.0" layoutY="192.0" spacing="30.0">
+                <children>
+                    <VBox layoutX="10.0" layoutY="10.0" spacing="5.0">
+                        <children>
+                            <Label text="COLOR :">
+                                <font>
+                                    <Font name="System Bold" size="12.0" />
+                                </font>
+                            </Label>
+                            <ComboBox fx:id="productColor" minHeight="40.0" minWidth="164.0" onKeyReleased="#enterPress" prefWidth="240.0" promptText="CHOOSE COLOR" />
+                        </children>
+                    </VBox>
+                    <VBox layoutX="10.0" layoutY="10.0" spacing="5.0">
+                        <children>
+                            <Label text="PRODUCT TYPE :">
+                                <font>
+                                    <Font name="System Bold" size="12.0" />
+                                </font>
+                            </Label>
+                            <ComboBox fx:id="productType" minHeight="40.0" minWidth="162.0" onKeyReleased="#enterPress" prefWidth="230.0" promptText="PRODUCT TYPE" />
+                        </children>
+                    </VBox>
+                </children>
+            </HBox>
+            <VBox spacing="5.0">
+                <children>
+                    <Label text="Description :">
+                        <font>
+                            <Font name="System Bold" size="12.0" />
+                        </font>
+                    </Label>
+                    <TextField fx:id="productDescription" minHeight="70.0" minWidth="510.0" prefHeight="70.0" prefWidth="508.0" promptText="Enter Descrption :" />
+                </children>
+            </VBox>
+            <HBox alignment="BOTTOM_CENTER" fillHeight="false" spacing="10.0">
+            <children>
+               <Button fx:id="bnUpdate" mnemonicParsing="false" onAction="#bnUpdate" prefHeight="26.0" prefWidth="99.0" style="-fx-cursor: hand;-fx-background-color: #008080; -fx-text-fill: WHITE;" text="UPDATE" />
+            </children>
+            <VBox.margin>
+               <Insets bottom="10.0" top="30.0" />
+            </VBox.margin>
+         </HBox>
+        </children>
+        <padding>
+            <Insets left="60.0" right="60.0" top="15.0" />
+        </padding>
+        <HBox.margin>
+            <Insets top="10.0" />
+        </HBox.margin>
+    </VBox>
+
+
+</AnchorPane>
