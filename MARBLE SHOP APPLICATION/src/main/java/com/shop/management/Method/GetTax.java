@@ -56,7 +56,7 @@ public class GetTax {
             return null;
         } finally {
 
-            CloseConnection.closeConnection(connection, ps, rs);
+            DBConnection.closeConnection(connection, ps, rs);
         }
 
     }

@@ -2,7 +2,6 @@ package com.shop.management.Controller;
 
 import com.shop.management.CustomDialog;
 import com.shop.management.Main;
-import com.shop.management.Method.CloseConnection;
 import com.shop.management.Method.Method;
 import com.shop.management.Method.StaticData;
 import com.shop.management.Model.CartModel;
@@ -230,7 +229,7 @@ public class Cart implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            CloseConnection.closeConnection(connection, ps, rs);
+            DBConnection.closeConnection(connection, ps, rs);
         }
 
         Callback<TableColumn<CartModel, String>, TableCell<CartModel, String>>
@@ -343,7 +342,7 @@ public class Cart implements Initializable {
                 e.printStackTrace();
             } finally {
 
-                CloseConnection.closeConnection(con, ps, null);
+                DBConnection.closeConnection(con, ps, null);
             }
 
         } else {
@@ -430,7 +429,7 @@ public class Cart implements Initializable {
             e.printStackTrace();
         } finally {
 
-            CloseConnection.closeConnection(con, null, null);
+            DBConnection.closeConnection(con, null, null);
             try {
                 ps.close();
             } catch (SQLException e) {
@@ -581,7 +580,7 @@ public class Cart implements Initializable {
             e.printStackTrace();
         } finally {
 
-            CloseConnection.closeConnection(connection, ps, null);
+            DBConnection.closeConnection(connection, ps, null);
         }
         //}
 

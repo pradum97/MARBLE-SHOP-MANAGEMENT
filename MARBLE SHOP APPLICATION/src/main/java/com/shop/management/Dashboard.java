@@ -211,7 +211,6 @@ public class Dashboard implements Initializable {
                     case "SIDE" -> {
 
                         Hyperlink menu_button = new Hyperlink();
-
                         menu_button.setId("menu_button");
 
                         main_container.getStylesheets().add(String.valueOf(Main.class.getResource("css/menu.css")));
@@ -300,7 +299,7 @@ public class Dashboard implements Initializable {
                                 MenuButton menu_button = new MenuButton("");
 
                                 MenuItem addFeedback = new MenuItem("➕ ADD FEEDBACK");
-                                MenuItem view_feedback = new MenuItem("🪟 VIEW FEEDBACK");
+                                MenuItem view_feedback = new MenuItem("VIEW FEEDBACK");
 
 
                                 menu_button.getItems().addAll(addFeedback, view_feedback);

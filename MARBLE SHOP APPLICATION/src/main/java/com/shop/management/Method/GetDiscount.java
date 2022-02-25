@@ -53,7 +53,7 @@ public class GetDiscount {
             return null;
         } finally {
 
-            CloseConnection.closeConnection(connection, ps, rs);
+            DBConnection.closeConnection(connection, ps, rs);
         }
     }
 }

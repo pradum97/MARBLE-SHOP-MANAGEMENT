@@ -1,5 +1,6 @@
 .hyperlink {
     -fx-underline: false;
+    -fx-font-family: "Bookman Old Style";
     -fx-background-color: transparent;
     -fx-border-style: solid;
     -fx-border-width: 3px;
@@ -9,6 +10,7 @@
     -fx-background-insets: 5px;
     -fx-cursor: hand;
 }
+
 
 .hyperlink:focused{
 

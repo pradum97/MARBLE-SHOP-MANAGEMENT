@@ -2,7 +2,6 @@ package com.shop.management.Controller;
 
 import com.shop.management.CustomDialog;
 import com.shop.management.Main;
-import com.shop.management.Method.CloseConnection;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.Shop;
 import com.shop.management.util.DBConnection;
@@ -79,7 +78,7 @@ public class ShopDetails implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            CloseConnection.closeConnection(connection, ps, rs);
+            DBConnection.closeConnection(connection, ps, rs);
         }
     }
 

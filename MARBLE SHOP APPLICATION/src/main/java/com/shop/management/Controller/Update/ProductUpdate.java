@@ -2,7 +2,6 @@ package com.shop.management.Controller.Update;
 
 import com.shop.management.CustomDialog;
 import com.shop.management.Main;
-import com.shop.management.Method.CloseConnection;
 import com.shop.management.Method.GetDiscount;
 import com.shop.management.Method.GetTax;
 import com.shop.management.Method.Method;
@@ -119,7 +118,7 @@ public class ProductUpdate implements Initializable {
             e.printStackTrace();
         }finally {
 
-            CloseConnection.closeConnection(connection,ps,rs);
+            DBConnection.closeConnection(connection,ps,rs);
         }
 
 

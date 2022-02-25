@@ -2,9 +2,7 @@ package com.shop.management.util;
 
 import com.shop.management.Method.Method;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Properties;
 
 public class DBConnection {
@@ -31,5 +29,20 @@ public class DBConnection {
 
     }
 
+    public static void closeConnection(Connection connection, PreparedStatement ps, ResultSet rs) {
+        try {
+            if (null != connection) {
+                connection.close();
+            }
+            if (null != ps) {
+                ps.close();
+            }
+            if (null != rs) {
+                rs.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

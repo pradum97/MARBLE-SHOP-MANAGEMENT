@@ -2,9 +2,7 @@ package com.shop.management.Controller;
 
 import com.shop.management.CustomDialog;
 import com.shop.management.Main;
-import com.shop.management.Method.CloseConnection;
 import com.shop.management.Method.Method;
-import com.shop.management.Model.DailySaleReport;
 import com.shop.management.Model.Products;
 import com.shop.management.util.DBConnection;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -19,7 +17,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 
@@ -157,7 +154,7 @@ public class SellProduct implements Initializable {
             e.printStackTrace();
         } finally {
 
-            CloseConnection.closeConnection(connection, ps, rs);
+            DBConnection.closeConnection(connection, ps, rs);
 
         }
         Callback<TableColumn<Products, String>, TableCell<Products, String>>
@@ -321,7 +318,7 @@ public class SellProduct implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            CloseConnection.closeConnection(connection, ps, rs);
+            DBConnection.closeConnection(connection, ps, rs);
         }
     }
 

@@ -1,6 +1,5 @@
 package com.shop.management.Controller;
 
-import com.shop.management.Method.CloseConnection;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.SaleItems;
 import com.shop.management.util.DBConnection;
@@ -159,7 +158,7 @@ public class SellReport implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            CloseConnection.closeConnection(connection, ps, rs);
+            DBConnection.closeConnection(connection, ps, rs);
         }
         customColumn(colName);
         customColumn(c_name);

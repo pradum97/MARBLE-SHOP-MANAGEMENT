@@ -2,7 +2,6 @@ package com.shop.management.Controller;
 
 import com.shop.management.CustomDialog;
 import com.shop.management.Main;
-import com.shop.management.Method.CloseConnection;
 import com.shop.management.Method.GetUserProfile;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.UserDetails;
@@ -16,12 +15,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Properties;
-import java.util.ResourceBundle;
+import java.sql.*;
+import java.util.*;
 
 public class Login implements Initializable {
     public TextField email_f;
@@ -41,8 +36,6 @@ public class Login implements Initializable {
         customDialog = new CustomDialog();
         properties = method.getProperties("query.properties");
         dbConnection = new DBConnection();
-
-
     }
 
     @FXML
@@ -85,6 +78,7 @@ public class Login implements Initializable {
     }
 
     public void create_new_account(ActionEvent event) {
+        Main.primaryStage.setUserData("newUser");
         main.changeScene("signup.fxml", "Signup Here");
 
     }
@@ -123,9 +117,14 @@ public class Login implements Initializable {
                 return;
             }
             // Email Login
-
-            ps = connection.prepareStatement(properties.getProperty("LOGIN_WITH_EMAIL"));
-            ps.setString(1, inputValue);
+            long phoneNum = 0;
+            try {
+                phoneNum = Long.parseLong(inputValue);
+            } catch (NumberFormatException e) {
+                // e.printStackTrace();
+            }
+            ps = connection.prepareStatement(properties.getProperty("LOGIN_WITH_PHONE"));
+            ps.setLong(1, phoneNum);
             ps.setString(2, password);
             rs = ps.executeQuery();
             if (rs.next()) {
@@ -139,15 +138,9 @@ public class Login implements Initializable {
                 if (rs.next()) {
                     getProfileDetails(rs,ps);
                 } else {
-                    long phoneNum = 0;
-                    try {
-                        phoneNum = Long.parseLong(inputValue);
-                    } catch (NumberFormatException e) {
-                        // e.printStackTrace();
-                    }
-                    ;
-                    ps = connection.prepareStatement(properties.getProperty("LOGIN_WITH_PHONE"));
-                    ps.setLong(1, phoneNum);
+
+                    ps = connection.prepareStatement(properties.getProperty("LOGIN_WITH_EMAIL"));
+                    ps.setString(1, inputValue);
                     ps.setString(2, password);
                     rs = ps.executeQuery();
 
@@ -164,7 +157,7 @@ public class Login implements Initializable {
             customDialog.showAlertBox("Authentication Failed", e.getMessage());
         } finally {
 
-            CloseConnection.closeConnection(connection,ps,rs);
+            DBConnection.closeConnection(connection,ps,rs);
 
         }
 

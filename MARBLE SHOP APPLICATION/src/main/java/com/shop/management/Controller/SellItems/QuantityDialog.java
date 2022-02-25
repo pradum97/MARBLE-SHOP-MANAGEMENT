@@ -2,7 +2,6 @@ package com.shop.management.Controller.SellItems;
 
 import com.shop.management.CustomDialog;
 import com.shop.management.Main;
-import com.shop.management.Method.CloseConnection;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.Quantity;
 import com.shop.management.Model.Stock;
@@ -122,7 +121,7 @@ public class QuantityDialog implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            CloseConnection.closeConnection(connection, ps, rs);
+            DBConnection.closeConnection(connection, ps, rs);
         }
     }
 
@@ -251,7 +250,7 @@ public class QuantityDialog implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            CloseConnection.closeConnection(connection, ps, rs);
+            DBConnection.closeConnection(connection, ps, rs);
         }
     }
 

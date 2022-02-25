@@ -1,10 +1,7 @@
 package com.shop.management.Controller;
 
-import com.shop.management.Method.CloseConnection;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.DailySaleReport;
-import com.shop.management.Model.Products;
-import com.shop.management.Model.SaleItems;
 import com.shop.management.util.DBConnection;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -17,14 +14,13 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 import java.net.URL;
-import java.sql.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class Home implements Initializable {
@@ -141,7 +137,7 @@ public class Home implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            CloseConnection.closeConnection(connection, ps, rs);
+            DBConnection.closeConnection(connection, ps, rs);
         }
 
         if (reportList.size() > 0){

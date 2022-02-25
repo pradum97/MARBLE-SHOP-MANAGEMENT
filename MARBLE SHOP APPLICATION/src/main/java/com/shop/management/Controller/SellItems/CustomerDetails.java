@@ -1,7 +1,6 @@
 package com.shop.management.Controller.SellItems;
 
 import com.shop.management.Main;
-import com.shop.management.Method.CloseConnection;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.Customer;
 import com.shop.management.util.DBConnection;
@@ -174,7 +173,7 @@ public class CustomerDetails implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            CloseConnection.closeConnection(connection, ps, rs);
+            DBConnection.closeConnection(connection, ps, rs);
         }
     }
 
@@ -257,7 +256,7 @@ public class CustomerDetails implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            CloseConnection.closeConnection(connection, ps, rs);
+            DBConnection.closeConnection(connection, ps, rs);
         }
 
     }

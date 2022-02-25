@@ -2,12 +2,9 @@ package com.shop.management.Controller;
 
 import com.shop.management.CustomDialog;
 import com.shop.management.Main;
-import com.shop.management.Method.CloseConnection;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.Feedback;
-import com.shop.management.Model.Products;
 import com.shop.management.util.DBConnection;
-import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -117,7 +114,7 @@ public class ViewFeedback implements Initializable {
             e.printStackTrace();
         } finally {
 
-            CloseConnection.closeConnection(connection, ps, rs);
+            DBConnection.closeConnection(connection, ps, rs);
         }
 
 

@@ -55,7 +55,7 @@ public class Method extends StaticData {
             return  null;
         } finally {
 
-            CloseConnection.closeConnection(connection, ps, rs);
+            DBConnection.closeConnection(connection, ps, rs);
         }
 
 

@@ -2,7 +2,6 @@ package com.shop.management.Controller;
 
 import com.shop.management.CustomDialog;
 import com.shop.management.Main;
-import com.shop.management.Method.CloseConnection;
 import com.shop.management.Method.GetStockData;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.Products;
@@ -228,7 +227,7 @@ public class ViewSizeAndPrice implements Initializable {
                 e.printStackTrace();
             } finally {
 
-                CloseConnection.closeConnection(con, ps, null);
+                DBConnection.closeConnection(con, ps, null);
             }
 
         } else {

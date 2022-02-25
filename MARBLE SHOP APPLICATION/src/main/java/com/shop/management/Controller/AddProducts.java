@@ -420,7 +420,7 @@ public class AddProducts implements Initializable {
 
         } finally {
 
-            CloseConnection.closeConnection(connection, ps, rs);
+            DBConnection.closeConnection(connection, ps, rs);
         }
     }
 
@@ -623,7 +623,7 @@ public class AddProducts implements Initializable {
                         stage.close();
                     }
 
-                    CloseConnection.closeConnection(connection, ps, rs);
+                    DBConnection.closeConnection(connection, ps, rs);
                 }
             }
 

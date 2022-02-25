@@ -2,7 +2,6 @@ package com.shop.management.Controller.Update;
 
 import com.shop.management.CustomDialog;
 import com.shop.management.Main;
-import com.shop.management.Method.CloseConnection;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.Stock;
 import com.shop.management.util.DBConnection;
@@ -235,7 +234,7 @@ public class UpdateSize implements Initializable {
             e.printStackTrace();
         } finally {
 
-            CloseConnection.closeConnection(connection, ps, null);
+            DBConnection.closeConnection(connection, ps, null);
         }
 
     }

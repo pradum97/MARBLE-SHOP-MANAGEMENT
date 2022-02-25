@@ -67,7 +67,7 @@ public class GetStockData {
             return null;
         } finally {
 
-            CloseConnection.closeConnection(connection, ps, rs);
+            DBConnection.closeConnection(connection, ps, rs);
         }
     }
 
@@ -132,7 +132,7 @@ public class GetStockData {
             return null;
         } finally {
 
-            CloseConnection.closeConnection(connection, ps, rs);
+            DBConnection.closeConnection(connection, ps, rs);
         }
     }
 }

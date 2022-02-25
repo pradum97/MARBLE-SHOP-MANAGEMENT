@@ -1,18 +1,12 @@
 package com.shop.management.Controller.SettingController;
 
 import com.shop.management.CustomDialog;
-import com.shop.management.Method.CloseConnection;
-import com.shop.management.Method.GetDiscount;
 import com.shop.management.Method.Method;
-import com.shop.management.Model.Discount;
 import com.shop.management.util.DBConnection;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -106,7 +100,7 @@ public class AddDiscount implements Initializable {
 
         } finally {
 
-            CloseConnection.closeConnection(connection, ps, null);
+            DBConnection.closeConnection(connection, ps, null);
         }
 
 

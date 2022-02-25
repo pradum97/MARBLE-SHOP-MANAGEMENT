@@ -29,8 +29,14 @@
                                 <Image url="@img/icon/person_ic.png" />
                             </image>
                         </ImageView>
-                        <Label fx:id="fullName" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="PRADUM KUMAR" wrapText="true" />
-                        <Label fx:id="userRole" layoutX="44.0" layoutY="110.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="ADMIN" wrapText="true" />
+                        <Label fx:id="fullName" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="PRADUM KUMAR" wrapText="true">
+                     <font>
+                        <Font name="Bookman Old Style" size="13.0" />
+                     </font></Label>
+                        <Label fx:id="userRole" layoutX="44.0" layoutY="110.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="ADMIN" wrapText="true">
+                     <font>
+                        <Font name="Bookman Old Style" size="14.0" />
+                     </font></Label>
                         <Line endX="15.2929048538208" endY="0.09290238469839096" startX="-100.0" />
                     </children>
                     <padding>

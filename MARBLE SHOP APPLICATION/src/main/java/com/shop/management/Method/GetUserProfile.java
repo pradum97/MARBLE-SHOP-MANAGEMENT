@@ -76,7 +76,7 @@ public class GetUserProfile {
             return null;
         }finally {
 
-            CloseConnection.closeConnection(connection, userPs, userRs);
+            DBConnection.closeConnection(connection, userPs, userRs);
         }
     }
 
@@ -137,7 +137,7 @@ public class GetUserProfile {
             return null;
         }finally {
 
-            CloseConnection.closeConnection(connection, userPs, userRs);
+            DBConnection.closeConnection(connection, userPs, userRs);
         }
     }
 }
