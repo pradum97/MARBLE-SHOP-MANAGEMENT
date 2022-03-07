@@ -23,7 +23,8 @@
               <columns>
 
                   <TableColumn fx:id="colSrNo" editable="false" minWidth="-Infinity" sortable="false" text="SrNo" />
-                  <TableColumn fx:id="colProductName" editable="false" minWidth="200.0" prefWidth="200.0" sortable="false" text="PROD-NAME" />
+                  <TableColumn fx:id="colProductName" editable="false" minWidth="200.0" prefWidth="200.0" sortable="false" text="PRODUCT NAME" />
+                  <TableColumn fx:id="colProductCode" editable="false" minWidth="-Infinity" maxWidth="100" sortable="false" text="P-CODE" />
                   <TableColumn fx:id="colType" editable="false" minWidth="115.0" prefWidth="115.0" sortable="false" text="PROD-TYPE" />
                   <TableColumn fx:id="colCategory" editable="false" minWidth="120.0" prefWidth="120.0" sortable="false" text="CATEGORY" />
                   <TableColumn fx:id="colColor" editable="false" prefWidth="120.0" sortable="false" text="COLOR" />

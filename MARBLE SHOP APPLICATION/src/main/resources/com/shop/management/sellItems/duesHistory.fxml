@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane fx:id="main" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.SellItems.DuesHistory">
+    <center>
+        <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <children>
+                <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0">
+                    <children>
+                        <TableView fx:id="tableView" VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn fx:id="colSrNo" editable="false" prefWidth="75.0" sortable="false" text="SrNo" />
+                                <TableColumn fx:id="colPreDues" editable="false" minWidth="-Infinity" prefWidth="114.0" sortable="false" text="PREVIOUS DUES " />
+                                <TableColumn fx:id="colPaid" editable="false" minWidth="-Infinity" prefWidth="129.60003662109375" sortable="false" text="PAID AMOUNT " />
+                                <TableColumn fx:id="colCurrentDues" editable="false" minWidth="-Infinity" prefWidth="130.4000244140625" sortable="false" text="CURRENT DUES" />
+                                <TableColumn fx:id="colPaymentMode" editable="false" minWidth="-Infinity" prefWidth="139.99996948242188" sortable="false" text="PAYMENT MODE" />
+                                <TableColumn fx:id="colDate" editable="false" minWidth="-Infinity" prefWidth="135.0" sortable="false" text="DATE" />
+                            </columns>
+                        </TableView>
+                    </children>
+                </VBox>
+            </children>
+        </AnchorPane>
+    </center>
+    <top>
+        <HBox spacing="20.0" BorderPane.alignment="CENTER">
+            <children>
+                <VBox alignment="CENTER" spacing="15.0">
+                    <children>
+                        <HBox>
+                            <children>
+                                <Label text="CUSTOMER NAME :">
+                                    <font>
+                                        <Font name="Bookman Old Style Bold" size="11.0" />
+                                    </font>
+                                </Label>
+                                <Label fx:id="cusNameL" layoutX="10.0" layoutY="10.0">
+                                    <HBox.margin>
+                                        <Insets left="5.0" />
+                                    </HBox.margin>
+                                </Label>
+                            </children>
+                        </HBox>
+                        <HBox layoutX="10.0" layoutY="10.0">
+                            <children>
+                                <Label text="CUSTOMER PHONE : ">
+                                    <font>
+                                        <Font name="Bookman Old Style Bold" size="11.0" />
+                                    </font>
+                                </Label>
+                                <Label fx:id="cusPhoneL" layoutX="10.0" layoutY="10.0">
+                                    <HBox.margin>
+                                        <Insets left="5.0" />
+                                    </HBox.margin>
+                                </Label>
+                            </children>
+                        </HBox>
+                    </children>
+                    <HBox.margin>
+                        <Insets left="10.0" />
+                    </HBox.margin>
+                </VBox>
+                <Separator orientation="VERTICAL" />
+                <VBox alignment="CENTER" layoutX="20.0" layoutY="10.0" spacing="15.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <HBox alignment="CENTER_LEFT">
+                            <children>
+                                <Label minWidth="80.0" text="ADDRESS : ">
+                                    <font>
+                                        <Font name="Bookman Old Style Bold" size="11.0" />
+                                    </font>
+                                </Label>
+                                <Label fx:id="cusAddressL" alignment="CENTER" layoutX="10.0" layoutY="10.0" textAlignment="CENTER" wrapText="true" />
+                            </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="27.0">
+                            <children>
+                                <Label minWidth="80.0" text="INVOICE NUM : ">
+                                    <font>
+                                        <Font name="Bookman Old Style Bold" size="11.0" />
+                                    </font>
+                                </Label>
+                                <Label fx:id="invoiceNumL" alignment="CENTER" layoutX="10.0" layoutY="10.0" textAlignment="CENTER" textFill="#e70303" wrapText="true" />
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+            </children>
+            <padding>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </padding>
+        </HBox>
+    </top>
+</BorderPane>

@@ -2,392 +2,301 @@
 
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<HBox alignment="CENTER" minHeight="650" onKeyReleased="#enterPress" prefHeight="650"
-      xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.shop.management.Controller.AddProducts">
-    <children>
-        <VBox HBox.hgrow="ALWAYS">
-            <children>
-                <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
-                    <content>
-                        <HBox alignment="TOP_CENTER">
-                            <children>
-                                <VBox alignment="CENTER" spacing="10.0"
-                                      style="-fx-background-color: white; -fx-background-radius: 10;">
-                                    <children>
-                                        <VBox spacing="5.0">
-                                            <children>
-                                                <Label text="PRODUCT NAME ( Max 200 Characters  ) :">
-                                                    <font>
-                                                        <Font name="System Bold" size="12.0"/>
-                                                    </font>
+<BorderPane prefHeight="670.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.AddProducts">
+   <center>
+      <HBox alignment="CENTER">
+          <children>
+              <VBox HBox.hgrow="ALWAYS">
+                  <children>
+                      <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+                          <content>
+                              <HBox alignment="TOP_CENTER">
+                                  <children>
+                                      <VBox alignment="CENTER" spacing="10.0" style="-fx-background-color: white; -fx-background-radius: 10;">
+                                          <children>
+                                              <VBox spacing="5.0">
+                                                  <children>
+                                                      <Label text="PRODUCT NAME ( Max 200 CHAR.) :">
+                                                          <font>
+                                                              <Font name="Bookman Old Style Bold" size="12.0" />
+                                                          </font>
+                                                      </Label>
+                                                      <TextField fx:id="productName" minHeight="60.0" minWidth="510.0" onKeyReleased="#enterPress" prefHeight="60.0" prefWidth="510.0" promptText="Enter Product Name" text="Indian Marble" />
+                                                  </children>
+                                              </VBox>
+                                              <HBox alignment="TOP_CENTER" fillHeight="false" spacing="30.0">
+                                       <children>
+                                                      <VBox spacing="5.0">
+                                                          <children>
+                                                              <Label text="PRODUCT ID :">
+                                                                  <font>
+                                                                      <Font name="Bookman Old Style Bold" size="12.0" />
+                                                                  </font>
+                                                                  <VBox.margin>
+                                                                      <Insets left="5.0" />
+                                                                  </VBox.margin>
+                                                              </Label>
+                                                <TextField fx:id="productCodeTF" minHeight="42.0" minWidth="240.0" prefHeight="40.0" prefWidth="290.0" promptText="Enter Product Code :" />
+                                                          </children>
+                                                      </VBox>
+                                          <VBox layoutX="145.0" layoutY="10.0" spacing="5.0">
+                                             <children>
+                                                <Label text="HSN CODE :">
+                                                   <font>
+                                                      <Font name="Bookman Old Style Bold" size="12.0" />
+                                                   </font>
+                                                   <VBox.margin>
+                                                      <Insets left="5.0" />
+                                                   </VBox.margin>
                                                 </Label>
-                                                <TextField fx:id="productName" minHeight="60.0" minWidth="510.0"
-                                                           onKeyReleased="#enterPress" prefHeight="60.0"
-                                                           prefWidth="510.0" promptText="Enter Product Name"
-                                                           text="Indian Marble"/>
-                                            </children>
-                                        </VBox>
-                                        <HBox alignment="TOP_CENTER" fillHeight="false" spacing="10.0"/>
-                                        <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="25.0" layoutY="118.0"
-                                              spacing="20.0">
+                                                <ComboBox fx:id="productTax" minHeight="42.0" onKeyReleased="#enterPress" prefWidth="290.0" promptText="Not Applicable" />
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </HBox>
+                                              <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="25.0" layoutY="118.0" spacing="30.0">
+                                                  <children>
+                                                      <VBox spacing="5.0">
+                                                          <children>
+                                                              <Label text="CATEGORY :">
+                                                                  <font>
+                                                                      <Font name="Bookman Old Style Bold" size="12.0" />
+                                                                  </font>
+                                                                  <VBox.margin>
+                                                                      <Insets left="5.0" />
+                                                                  </VBox.margin>
+                                                              </Label>
+                                                              <ComboBox fx:id="productCategory" minHeight="42.0" minWidth="162.0" onKeyReleased="#enterPress" prefWidth="290.0" promptText="CHOOSE CATEGORY" />
+                                                          </children>
+                                                      </VBox>
+                                                      <VBox fillWidth="false" layoutX="10.0" layoutY="10.0" spacing="5.0">
+                                                          <children>
+                                                              <Label text="DISCOUNT :">
+                                                                  <font>
+                                                                      <Font name="Bookman Old Style Bold" size="12.0" />
+                                                                  </font>
+                                                                  <VBox.margin>
+                                                                      <Insets left="5.0" />
+                                                                  </VBox.margin>
+                                                              </Label>
+                                                              <ComboBox fx:id="productDiscount" minHeight="42.0" minWidth="120.0" onKeyReleased="#enterPress" prefWidth="290.0" promptText="Not Applicable" />
+                                                          </children>
+                                                      </VBox>
+                                                  </children>
+                                              </HBox>
+                                              <HBox alignment="CENTER" fillHeight="false" layoutX="25.0" layoutY="192.0" spacing="30.0">
+                                                  <children>
+                                                      <VBox layoutX="10.0" layoutY="10.0" spacing="5.0">
+                                                          <children>
+                                                              <Label text="COLOR :">
+                                                                  <font>
+                                                                      <Font name="Bookman Old Style Bold" size="12.0" />
+                                                                  </font>
+                                                              </Label>
+                                                              <ComboBox fx:id="productColor" minHeight="42.0" minWidth="164.0" onKeyReleased="#enterPress" prefWidth="290.0" promptText="CHOOSE COLOR" />
+                                                          </children>
+                                                      </VBox>
+                                                      <VBox layoutX="10.0" layoutY="10.0" spacing="5.0">
+                                                          <children>
+                                                              <Label text="PRODUCT TYPE :">
+                                                                  <font>
+                                                                      <Font name="Bookman Old Style Bold" size="12.0" />
+                                                                  </font>
+                                                              </Label>
+                                                              <ComboBox fx:id="productType" minHeight="42.0" minWidth="162.0" onKeyReleased="#enterPress" prefWidth="290.0" promptText="PRODUCT TYPE" />
+                                                          </children>
+                                                      </VBox>
+                                                  </children>
+                                              </HBox>
+                                              <VBox spacing="10.0" style="-fx-border-color: linear-gradient(from 25% 25% to 100% 100%, #dc143c, #32cd32); -fx-border-radius: 3;">
+                                                  <children>
+                                                      <HBox spacing="10.0">
+                                                          <children>
+                                                              <VBox minWidth="155.0" prefWidth="155.0" spacing="5.0" HBox.hgrow="ALWAYS">
+                                                                  <children>
+                                                                      <Label text="PURCHASE PRICE :">
+                                                                          <font>
+                                                                              <Font name="Bookman Old Style Bold" size="12.0" />
+                                                                          </font>
+                                                                      </Label>
+                                                                      <TextField fx:id="productPurchasePrice" minHeight="40.0" prefHeight="40.0" promptText="Enter purchase price" />
+                                                                  </children>
+                                                              </VBox>
+                                                              <VBox minWidth="155.0" prefWidth="155.0" spacing="5.0" HBox.hgrow="ALWAYS">
+                                                                  <children>
+                                                                      <Label text="MRP :">
+                                                                          <font>
+                                                                              <Font name="Bookman Old Style Bold" size="12.0" />
+                                                                          </font>
+                                                                      </Label>
+                                                                      <TextField fx:id="productMrp" minHeight="40.0" onKeyReleased="#enterPress" prefHeight="40.0" promptText="Enter MRP" />
+                                                                  </children>
+                                                              </VBox>
+                                                              <VBox minWidth="155.0" prefWidth="155.0" spacing="5.0" HBox.hgrow="ALWAYS">
+                                                                  <children>
+                                                                      <Label text="MIN SELLING PRICE :">
+                                                                          <font>
+                                                                              <Font name="Bookman Old Style Bold" size="12.0" />
+                                                                          </font>
+                                                                      </Label>
+                                                                      <TextField fx:id="productMinSellPrice" minHeight="40.0" onKeyReleased="#enterPress" prefHeight="40.0" promptText="Enter Min Selling Price" />
+                                                                  </children>
+                                                              </VBox>
+                                                          </children>
+                                                      </HBox>
+                                                      <HBox fillHeight="false" spacing="10.0">
+                                                          <children>
+                                                              <VBox layoutX="10.0" layoutY="10.0" spacing="5.0" HBox.hgrow="ALWAYS">
+                                                                  <children>
+                                                                      <Label text="HEIGHT :">
+                                                                          <font>
+                                                                              <Font name="Bookman Old Style Bold" size="12.0" />
+                                                                          </font>
+                                                                      </Label>
+                                                                      <TextField fx:id="productHeight" minHeight="40.0" minWidth="185.0" onKeyReleased="#enterPress" prefHeight="40.0" prefWidth="222.0" promptText="Enter Height : " text="234" />
+                                                                  </children>
+                                                              </VBox>
+                                                              <VBox layoutX="10.0" layoutY="10.0" spacing="5.0" HBox.hgrow="ALWAYS">
+                                                                  <children>
+                                                                      <Label text="WIDTH :">
+                                                                          <font>
+                                                                              <Font name="Bookman Old Style Bold" size="12.0" />
+                                                                          </font>
+                                                                      </Label>
+                                                                      <TextField fx:id="productWidth" minHeight="40.0" minWidth="185.0" onKeyReleased="#enterPress" prefHeight="40.0" prefWidth="222.0" promptText="Enter Width :" text="234" />
+                                                                  </children>
+                                                              </VBox>
+                                                              <VBox alignment="CENTER_LEFT" layoutX="271.0" layoutY="10.0" spacing="5.0" HBox.hgrow="ALWAYS">
+                                                                  <children>
+                                                                      <Label text="UNIT">
+                                                                          <font>
+                                                                              <Font name="Bookman Old Style Bold" size="12.0" />
+                                                                          </font>
+                                                                      </Label>
+                                                                      <ComboBox fx:id="productSizeUnit" minHeight="40.0" minWidth="100.0" prefHeight="40.0" prefWidth="100.0" VBox.vgrow="ALWAYS" />
+                                                                  </children>
+                                                              </VBox>
+                                                          </children>
+                                                      </HBox>
+                                                      <HBox alignment="TOP_CENTER" fillHeight="false" spacing="25.0">
+                                                          <children>
+                                                              <HBox spacing="5.0">
+                                                                  <children>
+                                                                      <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                                                          <children>
+                                                                              <Label text="QUANTITY :">
+                                                                                  <font>
+                                                                                      <Font name="Bookman Old Style Bold" size="12.0" />
+                                                                                  </font>
+                                                                              </Label>
+                                                                              <TextField fx:id="productQuantity" minHeight="40.0" minWidth="188.0" onKeyReleased="#enterPress" prefHeight="40.0" prefWidth="250.0" promptText="Enter Quantity :" text="50" />
+                                                                          </children>
+                                                                      </VBox>
+                                                                      <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                                                          <children>
+                                                                              <Label>
+                                                                                  <font>
+                                                                                      <Font name="System Bold" size="12.0" />
+                                                                                  </font>
+                                                                              </Label>
+                                                                              <ComboBox fx:id="productQuantityUnit" minHeight="40.0" minWidth="100.0" onKeyReleased="#enterPress" prefWidth="100.0" />
+                                                                          </children>
+                                                                      </VBox>
+                                                                  </children>
+                                                              </HBox>
+                                                              <VBox alignment="CENTER" layoutX="271.0" layoutY="10.0" spacing="5.0" HBox.hgrow="ALWAYS">
+                                                                  <children>
+                                                                      <Button fx:id="bnAddSize" alignment="CENTER" minHeight="30.0" minWidth="100.0" mnemonicParsing="false" onAction="#bnAddSize" onKeyReleased="#enterPress" prefHeight="30.0" prefWidth="130.0" style="-fx-background-color: BLUE; -fx-text-fill: WHITE; -fx-cursor: hand; -fx-background-radius: 2;" text="ADD" textAlignment="CENTER">
+                                                                          <VBox.margin>
+                                                                              <Insets top="26.0" />
+                                                                          </VBox.margin>
+                                                         <font>
+                                                            <Font name="Bookman Old Style" size="14.0" />
+                                                         </font>
+                                                                      </Button>
+                                                                  </children>
+                                                              </VBox>
+                                                          </children>
+                                                      </HBox>
+                                                  </children>
+                                                  <padding>
+                                                      <Insets bottom="10.0" left="10.0" right="10.0" top="15.0" />
+                                                  </padding>
+                                              </VBox>
+                                              <VBox alignment="CENTER" minWidth="510.0" prefWidth="510.0">
+                                                  <children>
+                                                      <Separator prefWidth="200.0">
+                                                          <VBox.margin>
+                                                              <Insets top="5.0" />
+                                                          </VBox.margin>
+                                                      </Separator>
+                                                      <TableView fx:id="sizeTableView" onKeyReleased="#enterPress" prefWidth="494.0" VBox.vgrow="ALWAYS">
+                                                          <columns>
+                                                              <TableColumn fx:id="col_action" editable="false" reorderable="false" sortable="false" text="SrNo" />
+                                                              <TableColumn fx:id="col_PurchasePrice" editable="false" prefWidth="120.0" reorderable="false" sortable="false" text="PURCHASE PRICE" />
+                                                              <TableColumn fx:id="col_mrp" editable="false" prefWidth="100.0" reorderable="false" sortable="false" text="MRP" />
+                                                              <TableColumn fx:id="col_minSelPrice" editable="false" prefWidth="120.0" reorderable="false" sortable="false" text="MIN SELL PRICE" />
+                                                              <TableColumn fx:id="col_Height" editable="false" reorderable="false" sortable="false" text="HEIGHT" />
+                                                              <TableColumn fx:id="col_Width" editable="false" reorderable="false" sortable="false" text="WIDTH" />
+                                                              <TableColumn fx:id="col_SizeUit" editable="false" reorderable="false" sortable="false" text="UNIT" />
+                                                              <TableColumn fx:id="col_Quantity" editable="false" reorderable="false" sortable="false" text="QUANTITY" />
+                                                              <TableColumn fx:id="col_QuantityUnit" editable="false" reorderable="false" sortable="false" />
+      
+                                                                </columns>
+                                                          <VBox.margin>
+                                                              <Insets top="15.0" />
+                                                          </VBox.margin>
+                                                      </TableView>
+                                                  </children>
+                                              </VBox>
+                                              <VBox spacing="5.0">
+                                                  <children>
+                                                      <Label text="Description :">
+                                                          <font>
+                                                              <Font name="Bookman Old Style Bold" size="12.0" />
+                                                          </font>
+                                                      </Label>
+                                          <TextArea fx:id="productDescription" minHeight="75.0" prefHeight="75.0" promptText="Enter Description  ( Max 1000 Characters  ) :" wrapText="true">
+                                             <padding>
+                                                <Insets right="5.0" />
+                                             </padding></TextArea>
+                                                  </children>
+                                              </VBox>
+                                        <HBox alignment="CENTER" prefHeight="50.0" spacing="50.0">
                                             <children>
-                                                <VBox spacing="5.0">
-                                                    <children>
-                                                        <Label text="CATEGORY :">
-                                                            <font>
-                                                                <Font name="System Bold" size="12.0"/>
-                                                            </font>
-                                                            <VBox.margin>
-                                                                <Insets left="5.0"/>
-                                                            </VBox.margin>
-                                                        </Label>
-                                                        <ComboBox fx:id="productCategory" minHeight="40.0"
-                                                                  minWidth="162.0" onKeyReleased="#enterPress"
-                                                                  prefWidth="200.0" promptText="CHOOSE CATEGORY"/>
-                                                    </children>
-                                                </VBox>
-                                                <VBox fillWidth="false" layoutX="10.0" layoutY="10.0" spacing="5.0">
-                                                    <children>
-                                                        <Label text="DISCOUNT :">
-                                                            <font>
-                                                                <Font name="System Bold" size="12.0"/>
-                                                            </font>
-                                                            <VBox.margin>
-                                                                <Insets left="5.0"/>
-                                                            </VBox.margin>
-                                                        </Label>
-                                                        <ComboBox fx:id="productDiscount" minHeight="40.0"
-                                                                  minWidth="120.0" onKeyReleased="#enterPress"
-                                                                  prefWidth="135.0" promptText="0"/>
-                                                    </children>
-                                                </VBox>
-                                                <VBox layoutX="271.0" layoutY="10.0" spacing="5.0">
-                                                    <children>
-                                                        <Label text="HSN/SAC :">
-                                                            <font>
-                                                                <Font name="System Bold" size="12.0"/>
-                                                            </font>
-                                                            <VBox.margin>
-                                                                <Insets left="5.0"/>
-                                                            </VBox.margin>
-                                                        </Label>
-                                                        <ComboBox fx:id="productTax" minHeight="40.0"
-                                                                  onKeyReleased="#enterPress" prefWidth="130.0"
-                                                                  promptText="0"/>
-                                                    </children>
-                                                </VBox>
-                                            </children>
-                                        </HBox>
-                                        <HBox alignment="CENTER" fillHeight="false" layoutX="25.0" layoutY="192.0"
-                                              spacing="30.0">
-                                            <children>
-                                                <VBox layoutX="10.0" layoutY="10.0" spacing="5.0">
-                                                    <children>
-                                                        <Label text="COLOR :">
-                                                            <font>
-                                                                <Font name="System Bold" size="12.0"/>
-                                                            </font>
-                                                        </Label>
-                                                        <ComboBox fx:id="productColor" minHeight="40.0" minWidth="164.0"
-                                                                  onKeyReleased="#enterPress" prefWidth="240.0"
-                                                                  promptText="CHOOSE COLOR"/>
-                                                    </children>
-                                                </VBox>
-                                                <VBox layoutX="10.0" layoutY="10.0" spacing="5.0">
-                                                    <children>
-                                                        <Label text="PRODUCT TYPE :">
-                                                            <font>
-                                                                <Font name="System Bold" size="12.0"/>
-                                                            </font>
-                                                        </Label>
-                                                        <ComboBox fx:id="productType" minHeight="40.0" minWidth="162.0"
-                                                                  onKeyReleased="#enterPress" prefWidth="230.0"
-                                                                  promptText="PRODUCT TYPE"/>
-                                                    </children>
-                                                </VBox>
-                                            </children>
-                                        </HBox>
-                                        <Separator prefWidth="200.0"/>
-                                        <VBox spacing="10.0" style="-fx-border-color: red; -fx-border-radius: 3;">
-                                            <children>
-                                                <HBox spacing="10.0">
-                                                    <children>
-                                                        <VBox minWidth="155.0" prefWidth="155.0" spacing="5.0">
-                                                            <children>
-                                                                <Label text="PURCHASE PRICE :">
-                                                                    <font>
-                                                                        <Font name="System Bold" size="12.0"/>
-                                                                    </font>
-                                                                </Label>
-                                                                <TextField fx:id="productPurchasePrice" minHeight="40.0"
-                                                                           prefHeight="40.0"
-                                                                           promptText="Enter purchase price"/>
-                                                            </children>
-                                                        </VBox>
-                                                        <VBox minWidth="155.0" prefWidth="155.0" spacing="5.0">
-                                                            <children>
-                                                                <Label text="MRP :">
-                                                                    <font>
-                                                                        <Font name="System Bold" size="12.0"/>
-                                                                    </font>
-                                                                </Label>
-                                                                <TextField fx:id="productMrp" minHeight="40.0"
-                                                                           onKeyReleased="#enterPress" prefHeight="40.0"
-                                                                           promptText="Enter MRP"/>
-                                                            </children>
-                                                        </VBox>
-                                                        <VBox minWidth="155.0" prefWidth="155.0" spacing="5.0">
-                                                            <children>
-                                                                <Label text="MIN SELLING PRICE :">
-                                                                    <font>
-                                                                        <Font name="System Bold" size="12.0"/>
-                                                                    </font>
-                                                                </Label>
-                                                                <TextField fx:id="productMinSellPrice" minHeight="40.0"
-                                                                           onKeyReleased="#enterPress" prefHeight="40.0"
-                                                                           promptText="Enter Min Selling Price"/>
-                                                            </children>
-                                                        </VBox>
-                                                    </children>
-                                                </HBox>
-                                                <HBox fillHeight="false" spacing="10.0">
-                                                    <children>
-                                                        <VBox layoutX="10.0" layoutY="10.0" spacing="5.0">
-                                                            <children>
-                                                                <Label text="HEIGHT :">
-                                                                    <font>
-                                                                        <Font name="System Bold" size="12.0"/>
-                                                                    </font>
-                                                                </Label>
-                                                                <TextField fx:id="productHeight" minHeight="40.0"
-                                                                           minWidth="185.0" onKeyReleased="#enterPress"
-                                                                           prefHeight="40.0" prefWidth="185.0"
-                                                                           promptText="Enter Height : " text="234"/>
-                                                            </children>
-                                                        </VBox>
-                                                        <VBox layoutX="10.0" layoutY="10.0" spacing="5.0">
-                                                            <children>
-                                                                <Label text="WIDTH :">
-                                                                    <font>
-                                                                        <Font name="System Bold" size="12.0"/>
-                                                                    </font>
-                                                                </Label>
-                                                                <TextField fx:id="productWidth" minHeight="40.0"
-                                                                           minWidth="185.0" onKeyReleased="#enterPress"
-                                                                           prefHeight="40.0" prefWidth="1.0"
-                                                                           promptText="Enter Width :" text="234"/>
-                                                            </children>
-                                                        </VBox>
-                                                        <VBox layoutX="271.0" layoutY="10.0" spacing="5.0">
-                                                            <children>
-                                                                <Label text="UNIT">
-                                                                    <font>
-                                                                        <Font name="System Bold" size="12.0"/>
-                                                                    </font>
-                                                                </Label>
-                                                                <ComboBox fx:id="productSizeUnit" minHeight="40.0"
-                                                                          minWidth="92.0" prefWidth="92.0"/>
-                                                            </children>
-                                                        </VBox>
-                                                    </children>
-                                                </HBox>
-                                                <HBox alignment="TOP_CENTER" fillHeight="false" spacing="25.0">
-                                                    <children>
-                                                        <HBox spacing="5.0">
-                                                            <children>
-                                                                <VBox spacing="5.0">
-                                                                    <children>
-                                                                        <Label text="QUANTITY :">
-                                                                            <font>
-                                                                                <Font name="System Bold" size="12.0"/>
-                                                                            </font>
-                                                                        </Label>
-                                                                        <TextField fx:id="productQuantity"
-                                                                                   minHeight="40.0" minWidth="188.0"
-                                                                                   onKeyReleased="#enterPress"
-                                                                                   prefHeight="40.0" prefWidth="250.0"
-                                                                                   promptText="Enter Quantity :"
-                                                                                   text="50"/>
-                                                                    </children>
-                                                                </VBox>
-                                                                <VBox spacing="5.0">
-                                                                    <children>
-                                                                        <Label>
-                                                                            <font>
-                                                                                <Font name="System Bold" size="12.0"/>
-                                                                            </font>
-                                                                        </Label>
-                                                                        <ComboBox fx:id="productQuantityUnit"
-                                                                                  minHeight="40.0" minWidth="100.0"
-                                                                                  onKeyReleased="#enterPress"
-                                                                                  prefWidth="100.0"/>
-                                                                    </children>
-                                                                </VBox>
-                                                            </children>
-                                                        </HBox>
-                                                        <VBox alignment="CENTER" layoutX="271.0" layoutY="10.0"
-                                                              spacing="5.0">
-                                                            <children>
-                                                                <Button fx:id="bnAddSize" alignment="CENTER"
-                                                                        minHeight="30.0" minWidth="100.0"
-                                                                        mnemonicParsing="false" onAction="#bnAddSize"
-                                                                        onKeyReleased="#enterPress" prefHeight="30.0"
-                                                                        prefWidth="100.0"
-                                                                        style="-fx-background-color: BLUE; -fx-text-fill: WHITE; -fx-cursor: hand;"
-                                                                        text="ADD" textAlignment="CENTER">
-                                                                    <VBox.margin>
-                                                                        <Insets top="26.0"/>
-                                                                    </VBox.margin>
-                                                                </Button>
-                                                            </children>
-                                                        </VBox>
-                                                    </children>
-                                                </HBox>
+                                                <Button fx:id="bnSubmit" layoutX="10.0" layoutY="22.0" minHeight="30.0" minWidth="150.0" mnemonicParsing="false" onAction="#submit_bn" onKeyReleased="#enterPress" prefHeight="30.0" prefWidth="180.0" style="-fx-background-color: #008080; -fx-text-fill: WHITE; -fx-font-weight: BOLD; -fx-cursor: hand; -fx-background-radius: 2;" text="SUBMIT">
+                                             <font>
+                                                <Font name="Bookman Old Style" size="14.0" />
+                                             </font></Button>
                                             </children>
                                             <padding>
-                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="8.0" />
                                             </padding>
-                                        </VBox>
-                                        <VBox alignment="CENTER" minWidth="510.0" prefWidth="510.0">
-                                            <children>
-                                                <Separator prefWidth="200.0">
-                                                    <VBox.margin>
-                                                        <Insets top="5.0"/>
-                                                    </VBox.margin>
-                                                </Separator>
-                                                <TableView fx:id="sizeTableView" onKeyReleased="#enterPress"
-                                                           prefWidth="494.0" VBox.vgrow="ALWAYS">
-                                                    <columns>
-                                                        <TableColumn fx:id="col_action" editable="false"
-                                                                     reorderable="false" sortable="false"/>
-                                                        <TableColumn fx:id="col_PurchasePrice" editable="false"
-                                                                     prefWidth="120.0" reorderable="false"
-                                                                     sortable="false" text="PURCHASE PRICE"/>
-                                                        <TableColumn fx:id="col_mrp" editable="false" prefWidth="100.0"
-                                                                     reorderable="false" sortable="false" text="MRP"/>
-                                                        <TableColumn fx:id="col_minSelPrice" editable="false"
-                                                                     prefWidth="120.0" reorderable="false"
-                                                                     sortable="false" text="MIN SELL PRICE"/>
-                                                        <TableColumn fx:id="col_Height" editable="false"
-                                                                     reorderable="false" sortable="false"
-                                                                     text="HEIGHT"/>
-                                                        <TableColumn fx:id="col_Width" editable="false"
-                                                                     reorderable="false" sortable="false" text="WIDTH"/>
-                                                        <TableColumn fx:id="col_SizeUit" editable="false"
-                                                                     reorderable="false" sortable="false" text="UNIT"/>
-                                                        <TableColumn fx:id="col_Quantity" editable="false"
-                                                                     reorderable="false" sortable="false"
-                                                                     text="QUANTITY"/>
-                                                        <TableColumn fx:id="col_QuantityUnit" editable="false"
-                                                                     reorderable="false" sortable="false"/>
-
-                                                    </columns>
-                                                    <VBox.margin>
-                                                        <Insets top="15.0"/>
-                                                    </VBox.margin>
-                                                </TableView>
-                                            </children>
-                                        </VBox>
-                                        <VBox spacing="5.0">
-                                            <children>
-                                                <Label text="Description :">
-                                                    <font>
-                                                        <Font name="System Bold" size="12.0"/>
-                                                    </font>
-                                                </Label>
-                                                <TextField fx:id="productDescription" minHeight="70.0" minWidth="510.0"
-                                                           prefHeight="70.0" prefWidth="510.0"
-                                                           promptText="Enter Description  ( Max 1000 Characters  ) :"/>
-                                            </children>
-                                        </VBox>
-                                        <VBox alignment="CENTER" fillWidth="false" spacing="5.0">
-                                            <children>
-                                                <Label text="IMAGES">
-                                                    <VBox.margin>
-                                                        <Insets top="10.0"/>
-                                                    </VBox.margin>
-                                                </Label>
-                                                <Separator prefWidth="300.0"/>
-                                                <GridPane fx:id="gridImage" alignment="CENTER_RIGHT" hgap="30.0"
-                                                          style="-fx-background-color: transparent;" vgap="30.0">
-                                                    <columnConstraints>
-
-                                                        <ColumnConstraints halignment="LEFT" hgrow="ALWAYS"/>
-                                                    </columnConstraints>
-                                                    <rowConstraints>
-                                                        <RowConstraints minHeight="10.0" prefHeight="30.0"
-                                                                        vgrow="SOMETIMES"/>
-                                                    </rowConstraints>
-                                                    <padding>
-                                                        <Insets left="8.0"/>
-                                                    </padding>
-                                                    <opaqueInsets>
-                                                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
-                                                    </opaqueInsets>
-                                                    <VBox.margin>
-                                                        <Insets bottom="30.0" top="30.0"/>
-                                                    </VBox.margin>
-                                                    <children>
-                                                        <ImageView fitHeight="70.0" fitWidth="70.0" pickOnBounds="true"
-                                                                   preserveRatio="true">
-                                                            <image>
-                                                                <Image url="@../img/icon/img_preview.png"/>
-                                                            </image>
-                                                            <GridPane.margin>
-                                                                <Insets bottom="10.0" top="10.0"/>
-                                                            </GridPane.margin>
-                                                        </ImageView>
-                                                    </children>
-                                                </GridPane>
-                                                <Button fx:id="bn_UploadImage" mnemonicParsing="false"
-                                                        onAction="#uploadImage_bn" prefWidth="138.0"
-                                                        style="-fx-cursor: hand; -fx-background-color: #444546; -fx-text-fill: white;"
-                                                        text="UPLOAD IMAGE">
-                                                    <padding>
-                                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                                                    </padding>
-                                                </Button>
-                                            </children>
-                                            <VBox.margin>
-                                                <Insets bottom="10.0"/>
-                                            </VBox.margin>
-                                        </VBox>
-                                    </children>
-                                    <padding>
-                                        <Insets left="60.0" right="60.0" top="15.0"/>
-                                    </padding>
-                                    <HBox.margin>
-                                        <Insets top="10.0"/>
-                                    </HBox.margin>
-                                </VBox>
-                            </children>
-                            <padding>
-                                <Insets right="20.0"/>
-                            </padding>
-                        </HBox>
-                    </content>
-                    <padding>
-                        <Insets left="20.0" right="20.0"/>
-                    </padding>
-                </ScrollPane>
-                <HBox alignment="CENTER" prefHeight="50.0" spacing="50.0">
-                    <children>
-                        <Button fx:id="bnSubmit" layoutX="10.0" layoutY="22.0" minHeight="30.0" minWidth="150.0"
-                                mnemonicParsing="false" onAction="#submit_bn" onKeyReleased="#enterPress"
-                                prefHeight="30.0" prefWidth="150.0"
-                                style="-fx-background-color: #008080; -fx-text-fill: WHITE; -fx-font-weight: BOLD; -fx-cursor: hand;"
-                                text="SUBMIT"/>
-                    </children>
-                    <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="8.0"/>
-                    </padding>
-                </HBox>
-            </children>
-        </VBox>
-    </children>
-</HBox>
+                                        </HBox>
+                                          </children>
+                                          <padding>
+                                              <Insets left="60.0" right="60.0" top="15.0" />
+                                          </padding>
+                                          <HBox.margin>
+                                              <Insets top="10.0" />
+                                          </HBox.margin>
+                                      </VBox>
+                                  </children>
+                                  <padding>
+                                      <Insets right="20.0" />
+                                  </padding>
+                              </HBox>
+                          </content>
+                          <padding>
+                              <Insets left="20.0" right="20.0" />
+                          </padding>
+                      </ScrollPane>
+                  </children>
+              </VBox>
+          </children>
+      </HBox>
+   </center>
+</BorderPane>

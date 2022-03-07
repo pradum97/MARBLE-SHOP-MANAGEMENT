@@ -87,11 +87,11 @@ public class GetStockData {
                 return null;
             }
 
+
             ps = connection.prepareStatement(new Method().getProperties("query.properties")
                     .getProperty("GET_STOCK"));
             ps.setInt(1, productID);
             rs = ps.executeQuery();
-
 
             while (rs.next()) {
 
@@ -110,7 +110,6 @@ public class GetStockData {
                 String sizeUnit = rs.getString("size_unit");
                 String quantityUnit = rs.getString("quantity_unit");
 
-                int isActive = rs.getInt("is_active");
 
                 String fullQuantity = quantity+" - "+quantityUnit;
 

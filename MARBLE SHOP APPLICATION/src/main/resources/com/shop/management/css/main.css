@@ -68,6 +68,10 @@
     -fx-font-size: 13;
 }
 
+.table-view .table-row-cell:selected{
+    -fx-background-color: #c8cacb;
+}
+
 /* Remove spacing */
 .pagination > .pagination-control > .control-box {
     -fx-spacing: 0;

@@ -4,27 +4,40 @@ import com.shop.management.CustomDialog;
 import com.shop.management.Main;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.Products;
+import com.shop.management.util.AppConfig;
 import com.shop.management.util.DBConnection;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Callback;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
@@ -32,13 +45,13 @@ public class SellProduct implements Initializable {
     int rowsPerPage = 15;
 
     public TableColumn<Products, String> colColor;
-    public TableColumn<Products , Integer> colSrNo;
+    public TableColumn<Products, Integer> colSrNo;
     public TableColumn<Products, String> colProductName;
+    public TableColumn<Products, String> colProductCode;
     public TableColumn<Products, String> colType;
     public TableColumn<Products, String> colCategory;
     public TableColumn<Products, String> colDiscount;
     public TableColumn<Products, String> colTax;
-    public TableColumn<Products, String> colAction;
     public TableColumn<Products, String> colPrice;
     public TableView<Products> tableView;
     public TableColumn<Products, String> colSize;
@@ -54,9 +67,6 @@ public class SellProduct implements Initializable {
     private Properties properties;
 
     private ObservableList<Products> productsList = FXCollections.observableArrayList();
-    private double xOffset = 0;
-    private double yOffset = 0;
-
     FilteredList<Products> filteredData;
 
 
@@ -85,17 +95,18 @@ public class SellProduct implements Initializable {
 
         try {
 
-            String query = "SELECT tp.product_id,tp.added_date , tp.product_name , tp.product_description\n" +
-                    "       ,tp.product_color,tp.product_type,tp.category,\n" +
+            String query = "SELECT tp.product_id,tp.added_date , tp.product_name ,tp.product_code, tp.product_description\n" +
+                    "        ,tp.product_color,tp.product_type,tc.category_id, tc.category_name,\n" +
                     "       tp.discount_id ,tp.tax_id ,\n" +
                     "       td.discount_id ,td.discount,tpt.tax_id ,\n" +
                     "       tpt.tax_id ,tpt.sgst,tpt.cgst,tpt.igst , tpt.hsn_sac,tpt.description,tpt.\"gstName\",\n" +
                     "       (select string_agg(concat(tps.height , 'x' , tps.width ,' ', tps.size_unit ),', ' ) as height_width\n" +
-                    "       from tbl_product_stock as tps where  tps.product_id = tp.product_id group by tp.product_id )\n" +
+                    "        from tbl_product_stock as tps where  tps.product_id = tp.product_id group by tp.product_id )\n" +
                     "\n" +
                     "FROM   tbl_products as tp\n" +
-                    "         Left JOIN tbl_discount as td  ON ( tp.discount_id = td.discount_id )\n" +
-                    "         Left Join tbl_product_tax as tpt  on ( tp.tax_id = tpt.tax_id ) ORDER BY tp.product_id DESC";
+                    "    LEFT JOIN tbl_category as tc ON tp.category_id = tc.category_id\n" +
+                    "           Left JOIN tbl_discount as td  ON ( tp.discount_id = td.discount_id )\n" +
+                    "           Left Join tbl_product_tax as tpt  on ( tp.tax_id = tpt.tax_id ) ORDER BY tp.product_id DESC";
 
 
             connection = dbconnection.getConnection();
@@ -114,9 +125,10 @@ public class SellProduct implements Initializable {
                 String productDescription = rs.getString("product_description");
                 String productColor = rs.getString("product_color");
                 String productType = rs.getString("product_type");
-                String productCategory = rs.getString("category");
+                String productCategory = rs.getString("category_name");
                 int productDiscountID = rs.getInt("discount_id");
                 String addedDate = " " + rs.getString("added_date");
+                String productCode = " " + rs.getString("product_code");
                 int productTaxID = rs.getInt("tax_id");
 
                 // discount
@@ -142,10 +154,10 @@ public class SellProduct implements Initializable {
                         0, 0, 0, size,
                         null, 0, productID, productName, productDescription, productColor,
                         productType, productCategory, discountID, taxId, null, addedDate,
-                        String.valueOf(totalDiscount), String.valueOf(totalTax),hsnSac));
+                        String.valueOf(totalDiscount), String.valueOf(totalTax), hsnSac, productCode));
             }
 
-            if (productsList.size()>0){
+            if (productsList.size() > 0) {
                 pagination.setVisible(true);
                 search_Item();
             }
@@ -157,105 +169,7 @@ public class SellProduct implements Initializable {
             DBConnection.closeConnection(connection, ps, rs);
 
         }
-        Callback<TableColumn<Products, String>, TableCell<Products, String>>
-                cellFactory = (TableColumn<Products, String> param) -> new TableCell<>() {
-            @Override
-            public void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setGraphic(null);
-                    setText(null);
 
-                } else {
-
-                    Label bnAddCart = new Label("➕ ADD TO CART");
-                    Label bnSellNow = new Label("SELL NOW");
-
-                    bnAddCart.setStyle("-fx-background-color: #625603;" +
-                            "-fx-padding: 5 15 5 15 ; -fx-background-radius: 30; -fx-text-fill: white; " +
-                            "-fx-alignment: center;-fx-cursor: hand");
-
-                    bnSellNow.setStyle("-fx-background-color: green;" +
-                            "-fx-padding: 5 15 5 15 ; -fx-background-radius: 20; -fx-text-fill: white; " +
-                            "-fx-alignment: center;-fx-cursor: hand");
-
-                    bnSellNow.setVisible(false);
-
-                    bnAddCart.setOnMouseClicked(event -> {
-
-                        Products products = tableView.getSelectionModel().getSelectedItem();
-
-                        if (null != products) {
-                            Main.primaryStage.setUserData(products);
-
-                            customDialog.showFxmlDialog("sellItems/selectSize.fxml", "Select Size");
-
-                            countCart();
-
-                        }
-
-                    });
-
-                    HBox managebtn = new HBox(bnAddCart, bnSellNow);
-                    managebtn.setStyle("-fx-alignment:center");
-                    HBox.setMargin(bnAddCart, new Insets(2, 2, 0, 10));
-                    HBox.setMargin(bnSellNow, new Insets(2, 20, 0, 20));
-
-                    setGraphic(managebtn);
-                    setText(null);
-                }
-            }
-
-        };
-
-        Callback<TableColumn<Products, String>, TableCell<Products, String>>
-                cellSize = (TableColumn<Products, String> param) -> new TableCell<>() {
-            @Override
-            public void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setGraphic(null);
-                    setText(null);
-
-                } else {
-
-
-                    Label bnCheckPrice = new Label("CHECK PRICE");
-                    bnCheckPrice.setStyle("-fx-background-color: #008080; -fx-background-radius: 8  ; " +
-                            "-fx-padding: 5 8 5 8 ; -fx-text-fill: white; -fx-alignment: center;-fx-cursor: hand");
-
-                    bnCheckPrice.setOnMouseClicked(event -> {
-                        Products products = tableView.getSelectionModel().getSelectedItem();
-
-                        if (null == tableView) {
-                            {
-                                return;
-                            }
-                        }
-
-                        Main.primaryStage.setUserData(products);
-
-                        customDialog.showFxmlDialog("ViewSizeAndPrice.fxml", "SIZE AND PRICE CHART");
-                        bnRefresh(null);
-                    });
-
-
-                    HBox container = new HBox(bnCheckPrice);
-                    container.setStyle("-fx-alignment:center");
-                    HBox.setMargin(bnCheckPrice, new Insets(2, 20, 2, 20));
-                    setGraphic(container);
-                    setText(null);
-
-                }
-            }
-
-        };
-
-        colAction.setCellFactory(cellFactory);
-        colPrice.setCellFactory(cellSize);
-        customColumn(colProductName);
-        customColumn(colSize);
-        countCart();
     }
 
     private void customColumn(TableColumn<Products, String> columnName) {
@@ -282,7 +196,27 @@ public class SellProduct implements Initializable {
 
     public void bnViewCart(MouseEvent event) {
 
-        customDialog.showFxmlDialog("dashboard/cart.fxml", "CART");
+        File file = new File("src/main/resources/com/shop/management/"+AppConfig.APPLICATION_ICON);
+
+
+        try {
+            InputStream is = new FileInputStream(file.getAbsolutePath());
+            Stage stage = new Stage();
+            Parent parent = FXMLLoader.load(Objects.requireNonNull(CustomDialog.class.getResource("dashboard/cart.fxml")));
+            stage.getIcons().add(new Image(is));
+
+            stage.setTitle("YOUR CART");
+            stage.setMaximized(false);
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.initOwner(Main.primaryStage);
+            stage.showAndWait();
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         countCart();
         bnRefresh(null);
     }
@@ -292,7 +226,6 @@ public class SellProduct implements Initializable {
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-
         try {
 
             connection = dbconnection.getConnection();
@@ -324,7 +257,7 @@ public class SellProduct implements Initializable {
 
     private void search_Item() {
 
-         filteredData = new FilteredList<>(productsList, p -> true);
+        filteredData = new FilteredList<>(productsList, p -> true);
 
         searchTf.textProperty().addListener((observable, oldValue, newValue) -> {
 
@@ -339,6 +272,8 @@ public class SellProduct implements Initializable {
                 if (products.getProductName().toLowerCase().contains(lowerCaseFilter)) {
                     return true;
 
+                } else if (products.getProductCode().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
                 } else if (products.getProductType().toLowerCase().contains(lowerCaseFilter)) {
                     return true;
                 } else if (products.getCategory().toLowerCase().contains(lowerCaseFilter)) {
@@ -346,17 +281,16 @@ public class SellProduct implements Initializable {
                 } else if (products.getProductColor().toLowerCase().contains(lowerCaseFilter)) {
 
                     return true;
-                }else if (products.getAdded_date().toLowerCase().contains(lowerCaseFilter)) {
+                } else if (products.getAdded_date().toLowerCase().contains(lowerCaseFilter)) {
 
                     return true;
-                }else if (products.getTotalDiscount().toLowerCase().contains(lowerCaseFilter)) {
+                } else if (products.getTotalDiscount().toLowerCase().contains(lowerCaseFilter)) {
 
                     return true;
-                }else if (products.getTotalTax().toLowerCase().contains(lowerCaseFilter)) {
+                } else if (products.getTotalTax().toLowerCase().contains(lowerCaseFilter)) {
 
                     return true;
-                }
-                else if (String.valueOf(products.getHsn_sac()).toLowerCase().contains(lowerCaseFilter)) {
+                } else if (String.valueOf(products.getHsn_sac()).toLowerCase().contains(lowerCaseFilter)) {
 
                     return true;
                 }
@@ -383,6 +317,7 @@ public class SellProduct implements Initializable {
                 tableView.getItems().indexOf(cellData.getValue()) + 1));
         colColor.setCellValueFactory(new PropertyValueFactory<>("productColor"));
         colProductName.setCellValueFactory(new PropertyValueFactory<>("productName"));
+        colProductCode.setCellValueFactory(new PropertyValueFactory<>("productCode"));
         colType.setCellValueFactory(new PropertyValueFactory<>("productType"));
         colCategory.setCellValueFactory(new PropertyValueFactory<>("category"));
         colDiscount.setCellValueFactory(new PropertyValueFactory<>("totalDiscount"));
@@ -399,6 +334,76 @@ public class SellProduct implements Initializable {
         sortedData.comparatorProperty().bind(tableView.comparatorProperty());
 
         tableView.setItems(sortedData);
+
+
+        Callback<TableColumn<Products, String>, TableCell<Products, String>>
+                cellSize = (TableColumn<Products, String> param) -> new TableCell<>() {
+            @Override
+            public void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                    setText(null);
+
+                } else {
+
+                    Label bnCheckPrice = new Label("CHECK PRICE");
+                    Label bnAddCart = new Label("➕ ADD TO CART");
+
+
+                    bnCheckPrice.setStyle("-fx-background-color: #008080; -fx-background-radius: 20  ; " +
+                            "-fx-padding: 5 11 5 11 ; -fx-text-fill: white; -fx-alignment: center;-fx-cursor: hand");
+                    bnAddCart.setStyle("-fx-background-color: #625603;" +
+                            "-fx-padding: 5 15 5 15 ; -fx-background-radius: 30; -fx-text-fill: white; " +
+                            "-fx-alignment: center;-fx-cursor: hand");
+                    bnAddCart.setOnMouseClicked(event -> {
+
+                        Products products = tableView.getSelectionModel().getSelectedItem();
+
+                        if (null != products) {
+                            Main.primaryStage.setUserData(products);
+
+                            customDialog.showFxmlDialog("sellItems/selectSize.fxml", "Select Size");
+
+                            countCart();
+
+                        }
+
+                    });
+
+                    bnCheckPrice.setOnMouseClicked(event -> {
+                        Products products = tableView.getSelectionModel().getSelectedItem();
+
+                        if (null == tableView) {
+                            {
+                                return;
+                            }
+                        }
+
+                        Main.primaryStage.setUserData(products);
+
+                        customDialog.showFxmlDialog("ViewSizeAndPrice.fxml", "SIZE AND PRICE CHART");
+                        bnRefresh(null);
+                    });
+
+
+                    HBox container = new HBox(bnCheckPrice, bnAddCart);
+                    container.setStyle("-fx-alignment:center");
+                    HBox.setMargin(bnCheckPrice, new Insets(2, 20, 2, 20));
+                    HBox.setMargin(bnAddCart, new Insets(2, 20, 2, 0));
+                    setGraphic(container);
+                    setText(null);
+
+                }
+            }
+
+        };
+
+        colPrice.setCellFactory(cellSize);
+        customColumn(colProductName);
+        customColumn(colSize);
+        customColumn(colProductCode);
+        countCart();
 
     }
 }

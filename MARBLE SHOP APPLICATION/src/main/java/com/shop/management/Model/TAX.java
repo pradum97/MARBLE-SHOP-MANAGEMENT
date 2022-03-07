@@ -67,10 +67,6 @@ public class TAX {
 
     public String getTaxDescription() {
 
-        if (null == taxDescription) {
-            taxDescription = "-";
-        }
-
         return taxDescription;
     }
 

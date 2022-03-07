@@ -36,16 +36,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Dashboard implements Initializable {
-
+    @FXML
     public GridPane gridTopMenu;
     public Label dateL;
     @FXML
@@ -72,7 +70,7 @@ public class Dashboard implements Initializable {
         properties = method.getProperties("query.properties");
         customDialog = new CustomDialog();
         main = new Main();
-        replaceScene("dashboard/home.fxml");
+        replaceScene("dashboard/sellProducts.fxml");
         getMenuData();
         setCustomImage();
         setUserData();
@@ -93,7 +91,7 @@ public class Dashboard implements Initializable {
 
         scene.getAccelerators().put(
                 KeyCombination.keyCombination("CTRL+A"),
-                () -> showDialog("dashboard/addProduct.fxml", "ADD NEW PRODUCT", 685, 650, StageStyle.UTILITY)
+                () -> showAddProductDialog()
         );
 
         scene.getAccelerators().put(
@@ -107,6 +105,28 @@ public class Dashboard implements Initializable {
         );
     }
 
+    private void showAddProductDialog() {
+
+        try {
+            Parent parent = FXMLLoader.load(Objects.requireNonNull(CustomDialog.class.getResource("dashboard/addProduct.fxml")));
+            stage = new Stage();
+            stage.getIcons().add(new Image(getClass().getResourceAsStream(AppConfig.APPLICATION_ICON)));
+            stage.setTitle("ADD NEW PRODUCT");
+            stage.setMaximized(false);
+            Scene scene = new Scene(parent);
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/main.css")).toExternalForm());
+            stage.setScene(scene);
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.initOwner(Main.primaryStage);
+            stage.showAndWait();
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     private void addFeedback() {
 
         customDialog.showFxmlDialog("feedbackDialog.fxml", "FEEDBACK");
@@ -114,9 +134,8 @@ public class Dashboard implements Initializable {
     }
 
 
-    private void onClickAction(MenuItem gen, MenuItem appearance, Menu product, MenuItem gst, MenuItem discount, MenuItem help, MenuItem shopData) {
-
-        gen.setOnAction(event -> customDialog.showFxmlDialog2("setting/general.fxml", "GENERAL"));
+    private void onClickAction( MenuItem appearance, Menu product, MenuItem gst, MenuItem discount, MenuItem help,
+                               MenuItem shopData, MenuItem category) {
 
         appearance.setOnAction(event -> customDialog.showFxmlDialog2("setting/appearance.fxml", "APPEARANCE"));
 
@@ -132,6 +151,7 @@ public class Dashboard implements Initializable {
 
         help.setOnAction(event -> customDialog.showFxmlDialog2("setting/help.fxml", "HELP"));
         shopData.setOnAction(event -> customDialog.showFxmlDialog2("shopDetails.fxml", ""));
+        category.setOnAction(event -> customDialog.showFxmlDialog2("category.fxml", "CATEGORY"));
 
 
 
@@ -145,8 +165,6 @@ public class Dashboard implements Initializable {
             stage = new Stage();
             stage.getIcons().add(new Image(getClass().getResourceAsStream(AppConfig.APPLICATION_ICON)));
             stage.setTitle(title);
-            stage.setMinHeight(height);
-            stage.setMinWidth(width);
             stage.setMaximized(false);
             Scene scene = new Scene(parent, width, height);
             scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/main.css")).toExternalForm());
@@ -255,24 +273,30 @@ public class Dashboard implements Initializable {
 
                                 MenuButton menu_button = new MenuButton();
 
-                                MenuItem gen = new MenuItem("GENERAL");
+                                // general --start
+                                Menu gen = new Menu("GENERAL");
+                                MenuItem category = new MenuItem("CATEGORY");
                                 MenuItem appearance = new MenuItem("APPEARANCE");
-
-                                gen.setVisible(false);
                                 appearance.setVisible(false);
+                                gen.getItems().addAll(category,appearance);
+
+                               // general -- end
 
                                 MenuItem shopData = new MenuItem("SHOP DETAILS");
                                 MenuItem help = new MenuItem("HELP");
-                                Menu product = new Menu("PRODUCT");
 
+
+                                // product -- start
+                                Menu product = new Menu("PRODUCT");
                                 MenuItem gst = new MenuItem("GST");
                                 MenuItem discount = new MenuItem("DISCOUNT");
-
                                 product.getItems().addAll(gst, discount);
 
-                                menu_button.getItems().addAll(gen, appearance, product,shopData, help);
+                                // product --  end
 
-                                onClickAction(gen, appearance, product, gst, discount, help,shopData);
+                                menu_button.getItems().addAll(gen, product,shopData, help);
+
+                                onClickAction( appearance, product, gst, discount, help,shopData,category);
 
 
                                 ImageView icon = new ImageView();
@@ -335,7 +359,7 @@ public class Dashboard implements Initializable {
                                 button.setStyle("-fx-padding: 5 10 5 10 ; -fx-background-color: #0881ea ; -fx-text-fill: white;" +
                                         "-fx-background-radius: 5 ; -fx-cursor: hand");
 
-                                button.setOnMouseClicked(event -> showDialog("dashboard/addProduct.fxml", "ADD NEW PRODUCT", 660, 650, StageStyle.DECORATED));
+                                button.setOnMouseClicked(event ->  showAddProductDialog());
 
                                 gridTopMenu.add(button, colCnt, rowCnt);
                                 colCnt++;

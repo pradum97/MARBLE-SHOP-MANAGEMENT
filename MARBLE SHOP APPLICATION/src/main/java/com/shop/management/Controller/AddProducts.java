@@ -4,6 +4,7 @@ import com.shop.management.CustomDialog;
 import com.shop.management.Dashboard;
 import com.shop.management.Main;
 import com.shop.management.Method.*;
+import com.shop.management.Model.CategoryModel;
 import com.shop.management.Model.Discount;
 import com.shop.management.Model.ProductSize;
 import com.shop.management.Model.TAX;
@@ -46,7 +47,7 @@ public class AddProducts implements Initializable {
     public ComboBox<Discount> productDiscount;
     public ComboBox<String> productColor;
     public ComboBox<String> productType;
-    public ComboBox<String> productCategory;
+    public ComboBox<CategoryModel> productCategory;
     public TextField productHeight;
     public TextField productWidth;
     public ComboBox<String> productSizeUnit;
@@ -60,17 +61,15 @@ public class AddProducts implements Initializable {
     public TableColumn<ProductSize, String> col_SizeUit;
     public TableColumn<ProductSize, String> col_QuantityUnit;
 
-    public TextField productDescription;
-    public Button bn_UploadImage;
+    public TextArea productDescription;
     public Button bnSubmit;
     public ComboBox<TAX> productTax;
-    public GridPane gridImage;
     public TableColumn<ProductSize, String> col_PurchasePrice;
     public TableColumn<ProductSize, String> col_mrp;
     public TableColumn<ProductSize, String> col_minSelPrice;
+    public TextField productCodeTF;
 
     double tableViewSize = 70;
-    private List<String> imagePath;
 
     private Method method;
     private CustomDialog customDialog;
@@ -82,6 +81,7 @@ public class AddProducts implements Initializable {
     private ObservableList<ProductSize> sizeList = FXCollections.observableArrayList();
     private ObservableList<Discount> discountList = FXCollections.observableArrayList();
     private ObservableList<TAX> taxList = FXCollections.observableArrayList();
+    private ObservableList<CategoryModel> categoryList = FXCollections.observableArrayList();
 
     double profitPrice = 20; // in %
 
@@ -92,7 +92,6 @@ public class AddProducts implements Initializable {
         customDialog = new CustomDialog();
         dbConnection = new DBConnection();
         properties = method.getProperties("query.properties");
-        imagePath = new ArrayList<>();
 
         connection = new DBConnection().getConnection();
 
@@ -104,6 +103,7 @@ public class AddProducts implements Initializable {
         setComboBoxData();
         setDiscount();
         textChangeListener();
+
     }
 
     private void textChangeListener() {
@@ -111,13 +111,13 @@ public class AddProducts implements Initializable {
         productDiscount.setOnMouseClicked(event -> {
 
             productDiscount.getSelectionModel().clearSelection();
-            productDiscount.setPromptText("Not applicable");
+            productDiscount.setPromptText("Not Applicable");
 
         });
 
         productTax.setOnMouseClicked(event -> {
                     productTax.getSelectionModel().clearSelection();
-                    productTax.setPromptText("Not applicable");
+                    productTax.setPromptText("Not Applicable");
                 }
 
         );
@@ -143,14 +143,43 @@ public class AddProducts implements Initializable {
         });
     }
 
-
     private void setComboBoxData() {
 
         productColor.setItems(method.getProductColor());
         productType.setItems(method.getProductType());
-        productCategory.setItems(method.getProductCategory());
         productSizeUnit.setItems(method.getSizeUnit());
         productQuantityUnit.setItems(method.getSizeQuantityUnit());
+
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            connection = dbConnection.getConnection();
+
+            if (null == connection){
+                return;
+            }
+
+            ps = connection.prepareStatement("SELECT * FROM tbl_category");
+
+            rs = ps.executeQuery();
+
+            while (rs.next()){
+                int categoryId = rs.getInt("category_id");
+                String cName = rs.getString("category_name");
+
+                categoryList.add(new CategoryModel(categoryId , cName));
+
+            }
+
+            productCategory.setItems(categoryList);
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }finally {
+            DBConnection.closeConnection(connection,ps,rs);
+        }
 
     }
 
@@ -193,7 +222,10 @@ public class AddProducts implements Initializable {
             e.printStackTrace();
             return;
         }
-        if (minSellPrice.isEmpty()) {
+        if (purchase_price > mrp) {
+            method.show_popup("ENTER MRP MORE THAN PURCHASE PRICE", productMrp);
+            return;
+        } else if (minSellPrice.isEmpty()) {
             method.show_popup("ENTER MIN SELLING PRICE ", productMinSellPrice);
             return;
         }
@@ -204,9 +236,15 @@ public class AddProducts implements Initializable {
             customDialog.showAlertBox("INVALID MIN SELL PRICE", "ENTER VALID INVALID MIN SELL PRICE");
             e.printStackTrace();
             return;
+        } if (purchase_price >min_Sell_Price ) {
+            method.show_popup("ENTER MINIMUM SELLING PRICE MORE THAN PURCHASE PRICE", productMinSellPrice);
+            return;
         }
+        else if ( min_Sell_Price > mrp){
+            method.show_popup("ENTER MINIMUM SELLING PRICE LESS THAN MRP", productMinSellPrice);
+            return;
 
-        if (heightS.isEmpty()) {
+        }else if (heightS.isEmpty()) {
             method.show_popup("ENTER PRODUCT HEIGHT", productHeight);
             return;
         } else if (widthS.isEmpty()) {
@@ -225,6 +263,7 @@ public class AddProducts implements Initializable {
             method.show_popup("CHOOSE QUANTITY UNIT", productQuantityUnit);
             return;
         }
+
 
         int height = 0, width = 0;
         long quantity = 0;
@@ -374,7 +413,7 @@ public class AddProducts implements Initializable {
                 int discount = rs.getInt("discount");
                 String description = rs.getString("description");
                 String discountName = rs.getString("discount_name");
-                discountList.addAll(new Discount(discountID,discountName ,discount, description));
+                discountList.addAll(new Discount(discountID, discountName, discount, description));
 
             }
 
@@ -424,65 +463,6 @@ public class AddProducts implements Initializable {
         }
     }
 
-    public void uploadImage_bn(ActionEvent event) {
-
-        switch (bn_UploadImage.getText()) {
-            case "CLEAR IMAGE" -> {
-                gridImage.getChildren().clear();
-                bn_UploadImage.setText("UPLOAD IMAGE");
-            }
-            case "UPLOAD IMAGE" -> {
-
-                FileChooser fileChooser = new FileChooser();
-                fileChooser.setTitle("Choose Image");
-                fileChooser.getExtensionFilters().addAll(new FileChooser
-                        .ExtensionFilter("JPG , PNG , JPEG", "*.JPG", "*.PNG", "*.JPEG"));
-
-                List<File> f = fileChooser.showOpenMultipleDialog(Main.primaryStage);
-
-                if (null != f) {
-                    int cols = 3, colCnt = 0, rowCnt = 0;
-                    gridImage.getChildren().clear();
-
-                    for (File file : f) {
-
-                        imagePath.add(file.getAbsolutePath());
-
-                        ImageView img = new ImageView();
-                        img.setFitWidth(80);
-                        img.setFitHeight(80);
-                        img.setSmooth(true);
-                        img.setCache(true);
-                        img.setPreserveRatio(true);
-
-                        img.setOnMouseClicked(event1 -> {
-
-                            Main.primaryStage.setUserData((String) file.getAbsolutePath());
-
-                            customDialog.showFxmlDialog2("full_Image.fxml", file.getName());
-
-                        });
-
-
-                        img.setImage(method.getImage(file.getAbsolutePath()));
-
-                        gridImage.add(img, colCnt, rowCnt);
-                        colCnt++;
-
-                        if (colCnt > cols) {
-                            rowCnt++;
-                            colCnt = 0;
-                        }
-                    }
-
-                    bn_UploadImage.setText("CLEAR IMAGE");
-                }
-            }
-        }
-
-
-    }
-
     public void enterPress(KeyEvent e) {
 
         if (e.getCode() == KeyCode.ENTER) {
@@ -495,6 +475,7 @@ public class AddProducts implements Initializable {
 
         // textField
         String prodName = productName.getText();
+        String prodCode = productCodeTF.getText();
         String prodDescription = productDescription.getText();
 
         Discount discount = productDiscount.getSelectionModel().getSelectedItem();
@@ -507,25 +488,25 @@ public class AddProducts implements Initializable {
         if (prodName.isEmpty()) {
             method.show_popup("ENTER PRODUCT NAME ", productName);
             return;
+        } else if (prodCode.isEmpty()) {
+            method.show_popup("Enter Product Code", productCodeTF);
+            return;
         } else if (null == productCategory.getValue()) {
             method.show_popup("CHOOSE PRODUCT CATEGORY", productCategory);
             return;
-        }
-        else if (null == productColor.getValue()) {
+        } else if (null == productColor.getValue()) {
             method.show_popup("CHOOSE PRODUCT COLOR ", productColor);
             return;
         } else if (null == productType.getValue()) {
             method.show_popup("CHOOSE PRODUCT TYPE ", productType);
             return;
-        }
-        else if (tableData.isEmpty()) {
+        } else if (tableData.isEmpty()) {
             method.show_popup("ADD AT LEAST 1 SIZE", bnAddSize);
             return;
         }
-
         String prodColor = productColor.getValue();
         String prodType = productType.getValue();
-        String prodCategory = productCategory.getValue();
+        int categoryId = productCategory.getSelectionModel().getSelectedItem().getCategoryId();
 
 
         Connection connection;
@@ -541,15 +522,15 @@ public class AddProducts implements Initializable {
             }
 
             String productQuery = "INSERT INTO TBL_PRODUCTS(PRODUCT_NAME, PRODUCT_DESCRIPTION, PRODUCT_COLOR, PRODUCT_TYPE,\n" +
-                    "                         CATEGORY, DISCOUNT_ID, TAX_ID)\n" +
-                    " VALUES(?,?,?,?,?,?,?)";
+                    "                         CATEGORY_ID, DISCOUNT_ID, TAX_ID,PRODUCT_CODE)\n" +
+                    " VALUES(?,?,?,?,?,?,?,?)";
 
             ps = connection.prepareStatement(productQuery, new String[]{"product_id"});
             ps.setString(1, prodName);
             ps.setString(2, prodDescription);
             ps.setString(3, prodColor);
             ps.setString(4, prodType);
-            ps.setString(5, prodCategory);
+            ps.setInt(5, categoryId);
 
             if (null == discount) {
                 ps.setNull(6, Types.NULL);
@@ -561,7 +542,7 @@ public class AddProducts implements Initializable {
             } else {
                 ps.setInt(7, tax.getTaxID()); //tax
             }
-
+            ps.setString(8, prodCode);
             int productResult = ps.executeUpdate();
 
             if (productResult > 0) {
@@ -571,25 +552,6 @@ public class AddProducts implements Initializable {
                 if (rs.next()) {
 
                     int productID = rs.getInt(1);
-
-                    if (!imagePath.isEmpty()) {
-
-                        String imgQuery = "INSERT INTO  TBL_PRODUCT_IMG(PRODUCT_ID, IMG_PATH) VALUES (?,?)";
-
-                        ps = null;
-
-                        for (String str : imagePath) {
-
-                            String fileName = new CopyImage().copy(str, "Product_Image/prod-ID-" + productID + "-");
-                            ps = connection.prepareStatement(imgQuery);
-                            ps.setInt(1, productID);
-                            ps.setString(2, fileName);
-
-                            ps.executeUpdate();
-
-                        }
-                    }
-
                     ps = null;
 
                     String stockQuery = "INSERT INTO TBL_PRODUCT_STOCK (PURCHASE_PRICE, PRODUCT_MRP, min_sellingPrice, PRODUCT_ID, HEIGHT," +
@@ -614,67 +576,17 @@ public class AddProducts implements Initializable {
                             return;
                         }
                     }
-                    // clearAllField();
-
                     customDialog.showAlertBox("", "Product Successfully Added");
                     Stage stage = Dashboard.stage;
 
                     if (null != stage && stage.isShowing()) {
                         stage.close();
                     }
-
                     DBConnection.closeConnection(connection, ps, rs);
                 }
             }
-
         } catch (SQLException e) {
-            customDialog.showAlertBox("Failed..",e.getMessage());
+            customDialog.showAlertBox("Failed..", e.getMessage());
         }
-    }
-
-    private void clearAllField() {
-
-
-        productName.setText("");
-        productPurchasePrice.setText("");
-        productMrp.setText("");
-        productMinSellPrice.setText("");
-        productDescription.setText("");
-        productQuantity.setText("");
-        productHeight.setText("");
-        productWidth.setText("");
-
-        productCategory.getSelectionModel().clearSelection();
-        productDiscount.getSelectionModel().clearSelection();
-        productTax.getSelectionModel().clearSelection();
-        productColor.getSelectionModel().clearSelection();
-        productType.getSelectionModel().clearSelection();
-
-        if (null != sizeTableView) {
-            sizeTableView.getItems().clear();
-        }
-
-        if (null != imagePath) {
-            imagePath.clear();
-        }
-
-        if (null != gridImage) {
-            gridImage.getChildren().clear();
-        }
-        if (null != discountList) {
-            discountList.clear();
-        }
-
-        if (null != sizeList) {
-            sizeList.clear();
-        }
-
-        if (null != taxList) {
-            taxList.clear();
-
-        }
-
-        productSizeUnit.getSelectionModel().clearSelection();
-        productQuantityUnit.getSelectionModel().clearSelection();
     }
 }

@@ -8,9 +8,11 @@ public class Products extends Stock {
    private Product_Images productImages;
    private String added_date , totalDiscount , totalTax ;
    private int hsn_sac;
+   private String productCode;
 
     public Products(int stockID, int productID, double purchasePrice, double productMRP, double minSellingPrice, double height, double width, String sizeUnit, String quantityUnit, int quantity, int productID1, String productName,
-                    String productDescription, String productColor, String productType, String category, int discountId, int taxId, Product_Images productImages, String added_date, String totalDiscount, String totalTax, int hsn_sac) {
+                    String productDescription, String productColor, String productType, String category, int discountId, int taxId,
+                    Product_Images productImages, String added_date, String totalDiscount, String totalTax, int hsn_sac , String productCode) {
         super(stockID, productID, purchasePrice, productMRP, minSellingPrice, height, width, sizeUnit, quantityUnit, quantity);
         this.productID = productID1;
         this.productName = productName;
@@ -25,6 +27,15 @@ public class Products extends Stock {
         this.totalDiscount = totalDiscount;
         this.totalTax = totalTax;
         this.hsn_sac = hsn_sac;
+        this.productCode = productCode;
+    }
+
+    public String getProductCode() {
+        return productCode;
+    }
+
+    public void setProductCode(String productCode) {
+        this.productCode = productCode;
     }
 
     public int getHsn_sac() {

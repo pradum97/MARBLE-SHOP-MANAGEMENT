@@ -28,28 +28,24 @@
                                 <TableView fx:id="tableView" focusTraversable="false" tableMenuButtonVisible="true" BorderPane.alignment="CENTER">
                                     <columns>
 
-                                        <TableColumn fx:id="col_sno" prefWidth="75.0" text="Sr.No" />
-                                        <TableColumn fx:id="c_name" prefWidth="100.0" text="C-NAME" />
-                                        <TableColumn fx:id="c_phone" prefWidth="85.0" text="C-PHONE" />
-                                        <TableColumn fx:id="c_address" prefWidth="150.0" text="C-ADDRESS" />
-                                        <TableColumn fx:id="colName" editable="false" prefWidth="200.0" sortable="false" text="P-NAME" />
-                                        <TableColumn fx:id="colColor" editable="false" prefWidth="100.0" sortable="false" text="COLOR" />
-                                        <TableColumn fx:id="colSize" editable="false" prefWidth="100.0" sortable="false" text="SIZE" />
-                                        <TableColumn fx:id="colProductType" editable="false" prefWidth="100.0" sortable="false" text="TYPE" />
-                                        <TableColumn fx:id="colCategory" editable="false" prefWidth="100.0" sortable="false" text="CATEGORY" />
-                                        <TableColumn fx:id="colPurchasePrice" editable="false" prefWidth="150" sortable="false" text="PUR PRICE" />
-                                        <TableColumn fx:id="colMrp" editable="false" prefWidth="81" sortable="false" text="MRP" />
-                                        <TableColumn fx:id="colRate" editable="false" prefWidth="81" sortable="false" text="RATE" />
-                                        <TableColumn fx:id="colQuantity" editable="false" prefWidth="90.0" sortable="false" text="QUANTITY" />
-                                        <TableColumn fx:id="colDiscName" editable="false" minWidth="-Infinity" sortable="false" text="DISC NAME" />
-                                        <TableColumn fx:id="colDiscount" editable="false" prefWidth="100" sortable="false" text="DISC AMOUNT" />
-                                        <TableColumn fx:id="colHsnSac" editable="false" prefWidth="100" sortable="false" text="HSN/SAC" />
-                                        <TableColumn fx:id="colTax" editable="false" prefWidth="100" sortable="false" text="TAX" />
+                                        <TableColumn fx:id="col_sno" editable="false" minWidth="-Infinity" sortable="false" text="Sr.No" />
+                                        <TableColumn fx:id="c_name" editable="false" minWidth="-Infinity" sortable="false" text="C-NAME" />
+                                        <TableColumn fx:id="c_phone" editable="false" minWidth="-Infinity" sortable="false" text="C-PHONE" />
+                                        <TableColumn fx:id="c_address" editable="false" minWidth="-Infinity" sortable="false" text="C-ADDRESS" />
+                                        <TableColumn fx:id="colCheck" editable="false" minWidth="-Infinity" sortable="false" text=" ITEMS" />
+                                        <TableColumn fx:id="colTotItem" editable="false" minWidth="-Infinity" sortable="false" text="NO OF ITEMS"/>
+                                        <TableColumn fx:id="colReceivedAmt" editable="false" prefWidth="145.0" sortable="false" text="PAID AMOUNT" />
+                                        <TableColumn fx:id="colPayDues" editable="false" minWidth="-Infinity" sortable="false" />
+                                        <TableColumn fx:id="colDuesAmt" editable="false" minWidth="-Infinity" sortable="false" text="DUES AMOUNT" />
                                         <TableColumn fx:id="colNetAmount" editable="false" minWidth="-Infinity" sortable="false" text="NET AMOUNT" />
+                                        <TableColumn fx:id="colAddiDisc" editable="false" minWidth="-Infinity" prefWidth="100.0" sortable="false" text="ADDI DISC" />
+                                        <TableColumn fx:id="colTotDisc" editable="false" minWidth="-Infinity" sortable="false" text="TOT DISC ₹" />
+                                        <TableColumn fx:id="colTotTax" editable="false" minWidth="-Infinity" sortable="false" text=" TOT TAX ₹" />
                                         <TableColumn fx:id="colInvoiceNumber" editable="false" minWidth="-Infinity" sortable="false" text="INVOICE NUM" />
-                                        <TableColumn fx:id="colSellerName" prefWidth="120.0" text="SELLER NAME" />
-                                        <TableColumn fx:id="colBillType" editable="false" prefWidth="90.0" sortable="false" text="Bill Type" />
-                                        <TableColumn fx:id="colDate" prefWidth="200.0" text="DATE" />
+                                        <TableColumn fx:id="colPaymentMode" editable="false" minWidth="-Infinity" sortable="false" text="PAYMENT MODE" />
+                                        <TableColumn fx:id="colBillType" editable="false" prefWidth="90.0" sortable="false" text="BILL TYPE" />
+                                        <TableColumn fx:id="colSellerName" editable="false" minWidth="-Infinity" sortable="false" text="SELLER NAME" />
+                                        <TableColumn fx:id="colDate" editable="false" minWidth="-Infinity" sortable="false" text="DATE" />
 
                                     </columns>
                                 </TableView>
@@ -82,7 +78,7 @@
             <children>
             <HBox HBox.hgrow="ALWAYS">
                <children>
-                  <Pagination visible="false" fx:id="pagination" maxPageIndicatorCount="0" HBox.hgrow="ALWAYS" />
+                  <Pagination fx:id="pagination" maxPageIndicatorCount="0" visible="false" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>
                 <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">

@@ -50,12 +50,10 @@ public class Main extends Application {
     public void changeScene(String fxml, String title) {
 
         try {
-
             if (null != primaryStage && primaryStage.isShowing()) {
                 Parent pane = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(fxml)));
                 primaryStage.getScene().setRoot(pane);
                 primaryStage.setTitle(AppConfig.APPLICATION_NAME + " ( " + title + " ) ");
-
                 /*pane.setOnMousePressed(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
@@ -71,14 +69,12 @@ public class Main extends Application {
                     }
                 });*/
                 primaryStage.show();
-
             }
-
         } catch (IOException | NullPointerException e) {
             e.printStackTrace();
         }
     }
-    public static void main(String[] args) {
+    public static void main(String... args) {
         launch(args);
     }
 }

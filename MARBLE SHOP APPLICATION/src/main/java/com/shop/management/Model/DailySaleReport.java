@@ -10,11 +10,12 @@ public class DailySaleReport {
   private   String tax_amount;
 
     private int product_tax;
-    private String billType;
+    private String billType , category;
 
     public DailySaleReport(int sales_id, String product_name,
                            String product_type, String product_size, String quantity,
-                           double purchase_price, double product_mrp, double sell_price, double discount_amount, double net_amount, String tax_amount, int product_tax, String billType) {
+                           double purchase_price, double product_mrp, double sell_price,
+                           double discount_amount, double net_amount, String tax_amount, int product_tax, String billType , String category) {
         this.sales_id = sales_id;
         this.product_name = product_name;
         this.product_type = product_type;
@@ -28,6 +29,7 @@ public class DailySaleReport {
         this.tax_amount = tax_amount;
         this.product_tax = product_tax;
         this.billType = billType;
+        this.category = category;
     }
 
     @Override
@@ -43,6 +45,13 @@ public class DailySaleReport {
         this.billType = billType;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
 
     public int getSales_id() {
         return sales_id;

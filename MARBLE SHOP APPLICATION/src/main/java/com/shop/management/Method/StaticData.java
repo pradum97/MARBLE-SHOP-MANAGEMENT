@@ -18,9 +18,9 @@ public class StaticData {
         return FXCollections.observableArrayList("REGULAR", "GST", "PROPOSAL");
     }
 
-    public  ObservableList<Object> getLimit(){
+    public  ObservableList<String> getPaymentMode(){
 
-        return FXCollections.observableArrayList(20,50,100,150,200,300,500,700,1000);
+        return FXCollections.observableArrayList("CASH","PHONE PE","GOOGLE PE" , "UPI" , "OTHER");
     }
 
     public ObservableList<String> getProductType() {
@@ -31,11 +31,6 @@ public class StaticData {
     public ObservableList<String> getDiscountType() {
 
         return FXCollections.observableArrayList("PERCENTAGE","FLAT");
-    }
-
-    public ObservableList<String> getProductCategory() {
-
-        return FXCollections.observableArrayList("Tiles", "Marble","Granite","Other");
     }
 
     public ObservableList<String> getSizeUnit() {

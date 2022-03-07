@@ -16,7 +16,7 @@
 
     <dependencies>
 
-         <!--Enter New dependency-->
+        <!--Enter New dependency-->
 
         <dependency>
             <groupId>org.postgresql</groupId>
@@ -36,7 +36,6 @@
             <artifactId>controlsfx</artifactId>
             <version>11.1.1</version>
         </dependency>
-
 
 
         <!--.......................-->

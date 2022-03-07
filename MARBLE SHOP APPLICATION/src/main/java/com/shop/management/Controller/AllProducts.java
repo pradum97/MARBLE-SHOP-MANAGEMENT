@@ -45,6 +45,7 @@ public class AllProducts implements Initializable {
     public TableColumn<Products, String> colColor;
     public TableColumn<Products , Integer> colSrNo;
     public TableColumn<Products, String> colProductName;
+    public TableColumn<Products, String> colProductCode;
     public TableColumn<Products, String> colType;
     public TableColumn<Products, String> colCategory;
     public TableColumn<Products, String> colDiscount;
@@ -105,7 +106,10 @@ public class AllProducts implements Initializable {
 
                 } else if (products.getProductType().toLowerCase().contains(lowerCaseFilter)) {
                     return true;
-                } else if (products.getCategory().toLowerCase().contains(lowerCaseFilter)) {
+                }else if (products.getProductCode().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                }
+                else if (products.getCategory().toLowerCase().contains(lowerCaseFilter)) {
                     return true;
                 } else if (products.getProductColor().toLowerCase().contains(lowerCaseFilter)) {
 
@@ -146,6 +150,7 @@ public class AllProducts implements Initializable {
                 tableView.getItems().indexOf(cellData.getValue()) + 1));
         colColor.setCellValueFactory(new PropertyValueFactory<>("productColor"));
         colProductName.setCellValueFactory(new PropertyValueFactory<>("productName"));
+        colProductCode.setCellValueFactory(new PropertyValueFactory<>("productCode"));
         colType.setCellValueFactory(new PropertyValueFactory<>("productType"));
         colCategory.setCellValueFactory(new PropertyValueFactory<>("category"));
         colDiscount.setCellValueFactory(new PropertyValueFactory<>("totalDiscount"));
@@ -154,129 +159,6 @@ public class AllProducts implements Initializable {
         colDescription.setCellValueFactory(new PropertyValueFactory<>("productDescription"));
         colSize.setCellValueFactory(new PropertyValueFactory<>("sizeUnit"));
         colDate.setCellValueFactory(new PropertyValueFactory<>("added_date"));
-
-
-        int fromIndex = index * limit;
-        int toIndex = Math.min(fromIndex + limit, productsList.size());
-
-        int minIndex = Math.min(toIndex, filteredData.size());
-        SortedList<Products> sortedData = new SortedList<>(
-                FXCollections.observableArrayList(filteredData.subList(Math.min(fromIndex, minIndex), minIndex)));
-        sortedData.comparatorProperty().bind(tableView.comparatorProperty());
-
-        tableView.setItems(sortedData);
-
-    }
-
-    private void listener() {
-
-
-        refresh_bn.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-
-                bnRefresh(null);
-
-            }
-        });
-    }
-
-    private void setCustomImage() {
-
-        // refreshImage.setImage(method.getImage("src/main/resources/com/shop/management/img/icon/refresh_ic.png"));
-    }
-
-    private void getProduct() {
-
-        if (null != productsList) {
-            productsList.clear();
-
-        }
-
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-
-            String query = "SELECT tp.product_id,tp.added_date , tp.product_name , tp.product_description\n" +
-                    "       ,tp.product_color,tp.product_type,tp.category,\n" +
-                    "       tp.discount_id ,tp.tax_id ,\n" +
-                    "       td.discount_id ,td.discount,td.description,tpt.tax_id , tpt.hsn_sac ,\n" +
-                    "       tpt.tax_id ,tpt.sgst,tpt.cgst,tpt.igst,tpt.description,tpt.\"gstName\",\n" +
-                    "       (select string_agg(concat(tps.height , 'x' , tps.width ,' ', tps.size_unit ),', ' ) as height_width\n" +
-                    "       from tbl_product_stock as tps where  tps.product_id = tp.product_id group by tp.product_id )\n" +
-                    "\n" +
-                    "FROM   tbl_products as tp\n" +
-                    "         Left JOIN tbl_discount as td  ON ( tp.discount_id = td.discount_id )\n" +
-                    "         Left Join tbl_product_tax as tpt  on ( tp.tax_id = tpt.tax_id ) ORDER BY tp.product_id DESC";
-
-            connection = dbconnection.getConnection();
-
-            if (null == connection) {
-                System.out.println("MyProduct : Connection Failed");
-                return;
-            }
-            ps = connection.prepareStatement(query);
-            rs = ps.executeQuery();
-
-            while (rs.next()) {
-
-                int productID = rs.getInt("product_id");
-                String productName = rs.getString("product_name");
-                String productDescription = rs.getString("product_description");
-                String productColor = rs.getString("product_color");
-                String productType = rs.getString("product_type");
-                String productCategory = rs.getString("category");
-                int productDiscountID = rs.getInt("discount_id");
-                String addedDate = " " + rs.getString("added_date");
-                int productTaxID = rs.getInt("tax_id");
-
-                // discount
-                int discountID = rs.getInt("discount_id");
-                int totalDiscount = rs.getInt("discount");
-
-                // tax
-                int hsnSac = rs.getInt("hsn_sac");
-                int taxId = rs.getInt("tax_id");
-                int sgst = rs.getInt("sgst");
-                int cgst = rs.getInt("cgst");
-                int igst = rs.getInt("igst");
-                String tax_description = rs.getString("description");
-                String gstName = rs.getString("gstName");
-
-                String size = " " + rs.getString("height_width");
-
-                int totalTax = sgst + cgst + igst;
-
-                String[] str = addedDate.split("\\.");
-
-
-                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-              //  Date date = new Date();
-
-              // String date = formatter.format(new Date(addedDate));
-
-                productsList.add(new Products(0, productID, 0, 0,
-                        0, 0, 0, size,
-                        null, 0, productID, productName, productDescription, productColor,
-                        productType, productCategory, discountID, taxId, null, str[0],
-                        String.valueOf(totalDiscount), String.valueOf(totalTax), hsnSac));
-
-            }
-
-            if (productsList.size()>0){
-                pagination.setVisible(true);
-                search_Item();
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-
-            DBConnection.closeConnection(connection, ps, rs);
-
-        }
 
         Callback<TableColumn<Products, String>, TableCell<Products, String>>
                 cellFactory = (TableColumn<Products, String> param) -> new TableCell<>() {
@@ -366,8 +248,8 @@ public class AllProducts implements Initializable {
                     HBox managebtn = new HBox(iv_edit, iv_delete);
 
                     managebtn.setStyle("-fx-alignment:center");
-                    HBox.setMargin(iv_edit, new Insets(0, 2, 0, 0));
-                    HBox.setMargin(iv_delete, new Insets(0, 3, 0, 30));
+                    HBox.setMargin(iv_edit, new Insets(0, 0, 0, 0));
+                    HBox.setMargin(iv_delete, new Insets(0, 3, 0, 20));
 
                     setGraphic(managebtn);
 
@@ -421,13 +303,137 @@ public class AllProducts implements Initializable {
         };
         colAction.setCellFactory(cellFactory);
         colPrice.setCellFactory(cellSize);
-        tableView.setItems(productsList);
 
         customColumn(colProductName);
         customColumn(colDescription);
         customColumn(colSize);
         customColumn(colDate);
-        tableView.getSelectionModel().selectFirst();
+        customColumn(colProductCode);
+
+
+        int fromIndex = index * limit;
+        int toIndex = Math.min(fromIndex + limit, productsList.size());
+
+        int minIndex = Math.min(toIndex, filteredData.size());
+        SortedList<Products> sortedData = new SortedList<>(
+                FXCollections.observableArrayList(filteredData.subList(Math.min(fromIndex, minIndex), minIndex)));
+        sortedData.comparatorProperty().bind(tableView.comparatorProperty());
+
+        tableView.setItems(sortedData);
+
+    }
+
+    private void listener() {
+
+
+        refresh_bn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+
+                bnRefresh(null);
+
+            }
+        });
+    }
+
+    private void setCustomImage() {
+
+        // refreshImage.setImage(method.getImage("src/main/resources/com/shop/management/img/icon/refresh_ic.png"));
+    }
+
+    private void getProduct() {
+
+        if (null != productsList) {
+            productsList.clear();
+
+        }
+
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+
+            String query = "SELECT tp.product_id,tp.added_date , tp.product_code , tp.product_name , tp.product_description\n" +
+                    "       ,tp.product_color,tp.product_type,tc.category_id, tc.category_name,\n" +
+                    "       tp.discount_id ,tp.tax_id ,\n" +
+                    "       td.discount_id ,td.discount,td.description,tpt.tax_id , tpt.hsn_sac ,\n" +
+                    "       tpt.tax_id ,tpt.sgst,tpt.cgst,tpt.igst,tpt.description,tpt.\"gstName\",\n" +
+                    "       (select string_agg(concat(tps.height , 'x' , tps.width ,' ', tps.size_unit ),', ' ) as height_width\n" +
+                    "       from tbl_product_stock as tps where  tps.product_id = tp.product_id group by tp.product_id )\n" +
+                    "\n" +
+                    "FROM   tbl_products as tp\n" +
+                   " LEFT JOIN tbl_category as tc ON tp.category_id = tc.category_id"+
+                    "         Left JOIN tbl_discount as td  ON ( tp.discount_id = td.discount_id )\n" +
+                    "         Left Join tbl_product_tax as tpt  on ( tp.tax_id = tpt.tax_id ) ORDER BY tp.product_id DESC";
+
+            connection = dbconnection.getConnection();
+
+            if (null == connection) {
+                System.out.println("MyProduct : Connection Failed");
+                return;
+            }
+            ps = connection.prepareStatement(query);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                int productID = rs.getInt("product_id");
+                String productName = rs.getString("product_name");
+                String productDescription = rs.getString("product_description");
+                String productColor = rs.getString("product_color");
+                String productType = rs.getString("product_type");
+                String productCategory = rs.getString("category_name");
+                int productDiscountID = rs.getInt("discount_id");
+                String addedDate = " " + rs.getString("added_date");
+                String productCode = " " + rs.getString("product_code");
+                int productTaxID = rs.getInt("tax_id");
+
+                // discount
+                int discountID = rs.getInt("discount_id");
+                int totalDiscount = rs.getInt("discount");
+
+                // tax
+                int hsnSac = rs.getInt("hsn_sac");
+                int taxId = rs.getInt("tax_id");
+                int sgst = rs.getInt("sgst");
+                int cgst = rs.getInt("cgst");
+                int igst = rs.getInt("igst");
+                String tax_description = rs.getString("description");
+                String gstName = rs.getString("gstName");
+
+                String size = " " + rs.getString("height_width");
+
+                int totalTax = sgst + cgst + igst;
+
+                String[] str = addedDate.split("\\.");
+
+
+                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+              //  Date date = new Date();
+
+              // String date = formatter.format(new Date(addedDate));
+
+                productsList.add(new Products(0, productID, 0, 0,
+                        0, 0, 0, size,
+                        null, 0, productID, productName, productDescription, productColor,
+                        productType, productCategory, discountID, taxId, null, str[0],
+                        String.valueOf(totalDiscount), String.valueOf(totalTax), hsnSac,productCode));
+
+            }
+
+            if (productsList.size()>0){
+                pagination.setVisible(true);
+                search_Item();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+
+            DBConnection.closeConnection(connection, ps, rs);
+
+        }
 
     }
 
@@ -460,30 +466,6 @@ public class AllProducts implements Initializable {
                 if (res > 0) {
 
                     ps = null;
-                    ps = con.prepareStatement("select  * from tbl_product_img where product_id = ?");
-                    ps.setInt(1, products.getProductID());
-
-                    ResultSet rs = ps.executeQuery();
-
-                    while (rs.next()) {
-
-                        String path = rs.getString("img_path");
-
-                        File file = new File("src/main/resources/com/shop/management/img/Product_Image/" + path);
-                        if (file.exists()) {
-                            FileUtils.forceDelete(file);
-                        }
-                    }
-                    ps = null;
-
-                    if (null != rs) {
-                        rs.close();
-                    }
-                    ps = con.prepareStatement("DELETE FROM tbl_product_img WHERE product_id = ?");
-                    ps.setInt(1, products.getProductID());
-                    ps.executeUpdate();
-
-                    ps = null;
 
                     ps = con.prepareStatement("DELETE FROM tbl_products WHERE product_id = ?");
                     ps.setInt(1, products.getProductID());
@@ -497,7 +479,7 @@ public class AllProducts implements Initializable {
                     }
 
                 }
-            } catch (SQLException | IOException e) {
+            } catch (SQLException e) {
                 customDialog.showAlertBox("ERROR", e.getMessage());
                 e.printStackTrace();
             } finally {

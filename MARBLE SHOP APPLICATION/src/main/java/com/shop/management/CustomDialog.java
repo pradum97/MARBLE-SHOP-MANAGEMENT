@@ -17,9 +17,7 @@ public class CustomDialog {
 
     public static Stage stage;
     public static Stage stage2;
-
-    private double xOffset = 0;
-    private double yOffset = 0;
+    public static Stage stage3;
 
     public void showFxmlDialog(String fxml_file, String title)  {
 
@@ -75,5 +73,25 @@ public class CustomDialog {
             e.printStackTrace();
         }
 
+    }
+
+    public void showFxmlFullDialog(String fxml_file, String title)  {
+
+        try {
+
+            Parent root = FXMLLoader.load(Objects.requireNonNull(Main.class.getResource(fxml_file)));
+
+            stage3 = new Stage();
+            stage3.getIcons().add(new Image(getClass().getResourceAsStream(AppConfig.APPLICATION_ICON)));
+            stage3.setTitle(title);
+            stage3.initOwner(Main.primaryStage);
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/itemView.css")).toExternalForm());
+            stage3.setScene(scene);
+            stage3.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

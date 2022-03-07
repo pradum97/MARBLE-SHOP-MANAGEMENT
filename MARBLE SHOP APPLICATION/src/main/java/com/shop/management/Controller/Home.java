@@ -21,9 +21,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.ResourceBundle;
 
 public class Home implements Initializable {
+
 
     int rowsPerPage = 15;
     public BorderPane mainContainer;
@@ -32,6 +34,7 @@ public class Home implements Initializable {
     public Label totalSaleItemL;
     public TableView<DailySaleReport> tableViewHome;
     public TableColumn<DailySaleReport, Integer> col_sno;
+    public TableColumn <DailySaleReport, String> colCategory;
     public TableColumn<DailySaleReport, String> colProductName;
     public TableColumn<DailySaleReport, String> colProductType;
     public TableColumn<DailySaleReport, String> colProductSize;
@@ -49,6 +52,7 @@ public class Home implements Initializable {
 
     private Method method;
     private DBConnection dbConnection;
+    private DecimalFormat df = new DecimalFormat("0.##");
 
     ObservableList<DailySaleReport> reportList = FXCollections.observableArrayList();
 
@@ -61,10 +65,13 @@ public class Home implements Initializable {
         dbConnection = new DBConnection();
 
         getSaleItems();
-
     }
 
     private void calculate(){
+
+        if (null == filteredData){
+            return;
+        }
 
         double profit = 0, totNetAmount = 0;
 
@@ -75,13 +82,12 @@ public class Home implements Initializable {
 
            totNetAmount = totNetAmount+items.getNet_amount();
 
-           profit = profit+(items.getNet_amount() - (items.getPurchase_price()*quantity));
+           profit = profit+((items.getPurchase_price()*quantity)-items.getNet_amount());
 
         }
 
-
-        totalSaleAmountL.setText("₹  "+totNetAmount);
-        totalProfitL.setText("₹  "+profit);
+        totalSaleAmountL.setText("₹  "+Double.parseDouble(df.format(totNetAmount)));
+        totalProfitL.setText("₹  "+Double.parseDouble(df.format(profit)));
     }
 
     private void getSaleItems() {
@@ -99,23 +105,19 @@ public class Home implements Initializable {
                 System.out.println("home : Connection failed");
                 return;
             }
-
-            ps = connection.prepareStatement("select  sales_id , product_name , product_type ,product_size\n" +
-                    "                    ,purchase_price, product_mrp ,sell_price , discount_amount\n" +
-                    "                    , tax_amount , product_tax ,product_quantity ,net_amount,bill_type from tbl_saleItems " +
-                    "where TO_CHAR(sale_date, 'yyyy-MM-dd' ) = TO_CHAR(CURRENT_DATE, 'yyyy-MM-dd') ORDER BY sales_id DESC ");
+            ps = connection.prepareStatement("select  *  from tbl_saleItems " +
+                    "where TO_CHAR(sale_date, 'yyyy-MM-dd' ) = TO_CHAR(CURRENT_DATE, 'yyyy-MM-dd') ORDER BY sale_item_id DESC ");
 
             rs = ps.executeQuery();
 
             int count = 0;
             while (rs.next()) {
                 ++count;
-                int saleId = rs.getInt("sales_id");
+                int saleId = rs.getInt("sale_item_id");
                 String pName = rs.getString("product_name");
                 String pType = rs.getString("product_type");
                 String pSize = rs.getString("product_size");
                 String pQuantity = rs.getString("product_quantity");
-                String bill_type = rs.getString("bill_type");
 
                 double purPrice = rs.getDouble("purchase_price");
                 double pMrp = rs.getDouble("product_mrp");
@@ -125,9 +127,10 @@ public class Home implements Initializable {
                 double taxAmount = rs.getDouble("tax_amount");
                 double netAmount = rs.getDouble("net_amount");
 
-                int tax = rs.getInt("product_tax");
+                String category = rs.getString("product_category");
+
                 reportList.add(new DailySaleReport( saleId, pName, pType, pSize, pQuantity, purPrice, pMrp, sellPrice,
-                        disAmount, netAmount, taxAmount + " ( " + tax + "% )", tax, bill_type));
+                        Double.parseDouble(df.format(disAmount)), netAmount, String.valueOf(Double.valueOf(df.format(taxAmount))) , 0, null,category));
 
             }
 
@@ -165,11 +168,13 @@ public class Home implements Initializable {
 
     public void bnRefresh(MouseEvent event) {
 
+        if (null == filteredData){
+            return;
+        }
         getSaleItems();
         calculate();
         changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);
     }
-
     private void search_Item() {
 
        filteredData = new FilteredList<>(reportList, p -> true);
@@ -227,13 +232,12 @@ public class Home implements Initializable {
 
         int totalPage = (int) (Math.ceil(filteredData.size() * 1.0 / rowsPerPage));
         pagination.setPageCount(totalPage);
-
-
         col_sno.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(
                 tableViewHome.getItems().indexOf(cellData.getValue()) + 1));
         colBilType.setCellValueFactory(new PropertyValueFactory<>("billType"));
         colProductName.setCellValueFactory(new PropertyValueFactory<>("product_name"));
         colProductType.setCellValueFactory(new PropertyValueFactory<>("product_type"));
+        colCategory.setCellValueFactory(new PropertyValueFactory<>("category"));
         colProductSize.setCellValueFactory(new PropertyValueFactory<>("product_size"));
         colPurchasePrice.setCellValueFactory(new PropertyValueFactory<>("purchase_price"));
         colMrp.setCellValueFactory(new PropertyValueFactory<>("product_mrp"));

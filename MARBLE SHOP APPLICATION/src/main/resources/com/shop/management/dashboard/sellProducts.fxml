@@ -19,16 +19,16 @@
               <columns>
 
                   <TableColumn fx:id="colSrNo" editable="false" minWidth="-Infinity" sortable="false" text="SrNo" />
-                  <TableColumn fx:id="colProductName" editable="false" minWidth="200.0" prefWidth="200.0" sortable="false" text="PROD-NAME" />
-                  <TableColumn fx:id="colType" editable="false" minWidth="115.0" prefWidth="115.0" sortable="false" text="PROD-TYPE" />
+                  <TableColumn fx:id="colProductName" editable="false" minWidth="200.0" prefWidth="200.0" sortable="false" text="PRODUCT NAME" />
+                  <TableColumn fx:id="colProductCode" editable="false" minWidth="-Infinity" maxWidth="100" sortable="false" text="P-CODE" />
                   <TableColumn fx:id="colCategory" editable="false" minWidth="120.0" prefWidth="120.0" sortable="false" text="CATEGORY" />
-                  <TableColumn fx:id="colColor" editable="false" prefWidth="120.0" sortable="false" text="COLOR" />
                   <TableColumn fx:id="colSize" editable="false" maxWidth="-1.0" minWidth="170.0" prefWidth="-1.0" sortable="false" text="SIZE ( H x W )" />
-                  <TableColumn fx:id="colPrice" editable="false" minWidth="-Infinity" sortable="false" text="PRICE" />
+                  <TableColumn fx:id="colPrice" editable="false" minWidth="-Infinity" sortable="false" text="ACTION" />
                   <TableColumn fx:id="colHsnSac" editable="false" minWidth="-Infinity" sortable="false" text="HSN/SAC" />
                   <TableColumn fx:id="colTax" editable="false" sortable="false" text="TAX %" />
                   <TableColumn fx:id="colDiscount" editable="false" sortable="false" text="DISCOUNT" />
-                  <TableColumn fx:id="colAction" editable="false" minWidth="-Infinity" sortable="false" text="ACTION" />
+                  <TableColumn fx:id="colType" editable="false" minWidth="115.0" prefWidth="115.0" sortable="false" text="PROD-TYPE" />
+                  <TableColumn fx:id="colColor" editable="false" prefWidth="120.0" sortable="false" text="COLOR" />
 
               </columns>
           </TableView>
