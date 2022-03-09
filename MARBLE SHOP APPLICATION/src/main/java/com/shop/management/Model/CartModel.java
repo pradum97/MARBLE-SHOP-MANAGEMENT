@@ -18,7 +18,7 @@ public class CartModel {
 
     private int quantity;
     private String productColor , discountName  ;
-    private long hsn_sac;
+    private long hsn;
     private double discountAmount , netAmount , gstAmount;
     private int sgst , csgt , igst;
     private String tax ;
@@ -29,7 +29,7 @@ public class CartModel {
                              purchasePrice, double productMRP, double minSellPrice,
                      double sellingPrice, double height, double width, String sizeUnit,
                      String quantityUnit, String totalDis, double totalTax, int quantity,
-                     String productColor, String discount_name, double discountAmount, long hsn_sac, double netAmount , double gstAmount ,
+                     String productColor, String discount_name, double discountAmount, long hsn, double netAmount , double gstAmount ,
                      int sgst , int cgst , int igst , String tax) {
 
         this.cartId = cartId;
@@ -55,7 +55,7 @@ public class CartModel {
         this.productColor = productColor;
         this.discountName = discount_name;
         this.discountAmount = discountAmount;
-        this.hsn_sac = hsn_sac;
+        this.hsn = hsn;
         this.netAmount = netAmount;
         this.gstAmount = gstAmount;
         this.sgst = sgst;
@@ -129,12 +129,12 @@ public class CartModel {
         this.discountAmount = discountAmount;
     }
 
-    public long getHsn_sac() {
-        return hsn_sac;
+    public long getHsn() {
+        return hsn;
     }
 
-    public void setHsn_sac(long hsn_sac) {
-        this.hsn_sac = hsn_sac;
+    public void setHsn(long hsn) {
+        this.hsn = hsn;
     }
 
     public double getNetAmount() {

@@ -100,7 +100,7 @@ public class GetUserProfile {
                 return null;
             }
 
-            userPs = connection.prepareStatement(properties.getProperty("ALL_USERS"));
+            userPs = connection.prepareStatement("SELECT  (TO_CHAR(created_time, 'YYYY-MM-DD HH12:MI:SS AM')) as created_time ,* FROM TBL_USERS ORDER BY USER_ID ASC");
             userRs = userPs.executeQuery();
 
             while (userRs.next()){

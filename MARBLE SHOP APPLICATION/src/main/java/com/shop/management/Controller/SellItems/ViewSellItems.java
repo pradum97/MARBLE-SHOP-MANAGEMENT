@@ -78,7 +78,7 @@ public class ViewSellItems implements Initializable {
                 System.out.println("Connection Failed");
                 return;
             }
-            ps = connection.prepareStatement("select * from tbl_saleitems where sale_main_id = ? order by sale_item_id asc");
+            ps = connection.prepareStatement("select (TO_CHAR(sale_date, 'YYYY-MM-DD HH:MM:SS')) as sale_date ,* from tbl_saleitems where sale_main_id = ? order by sale_item_id asc");
             ps.setInt(1, sale_main_id);
             rs = ps.executeQuery();
             while (rs.next()) {
@@ -108,14 +108,13 @@ public class ViewSellItems implements Initializable {
                 int igst = rs.getInt("igst");
                 int sgst = rs.getInt("sgst");
                 int cgst = rs.getInt("cgst");
+                String saleDate = rs.getString("sale_date");
 
-
-                String[] date = rs.getString("sale_date").split("\\.");
-                String sellingDate = date[0];
 
                 int tax = igst + cgst + sgst;
 
-                reportList.add(new SaleItems(saleItemId, productId, stockId, productName, productColor, productSize, productType, productCategory, purchasePrice, productMrp, sellPrice, discountAmount, taxAmount, netAmount, discountName, quantity, hsn, tax, igst, cgst, sgst, sellingDate));
+                reportList.add(new SaleItems(saleItemId, productId, stockId, productName, productColor, productSize, productType, productCategory, purchasePrice, productMrp,
+                        sellPrice, discountAmount, taxAmount, netAmount, discountName, quantity, hsn, tax, igst, cgst, sgst, saleDate));
 
             }
             if (reportList.size() > 0) {

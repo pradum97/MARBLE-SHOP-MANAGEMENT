@@ -18,10 +18,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.text.DecimalFormat;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -159,7 +156,6 @@ public class PayDues implements Initializable {
 
             Connection connection = null;
             PreparedStatement ps = null, psH = null;
-            ResultSet rs = null;
 
             try {
                 connection = new DBConnection().getConnection();
@@ -172,9 +168,17 @@ public class PayDues implements Initializable {
                 ps.setInt(2, saleMain.getDuesId());
 
                 int res = ps.executeUpdate();
-                if (res > 0) {
-                    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
+                if (res > 0) {
+
+                    ps = null;
+
+                    ps = connection.prepareStatement("UPDATE TBL_SALE_MAIN SET received_amount = received_amount+? WHERE SALE_MAIN_ID = ?");
+                    ps.setDouble(1,paidAmountD);
+                    ps.setInt(2,saleMain.getSale_main_id());
+                    ps.executeUpdate();
+
+                    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
                     String query = "INSERT INTO dues_history (DUES_ID, CUSTOMER_ID, SALE_MAIN_ID, PREVIOUS_DUES, PAID_AMOUNT, CURRENT_DUES, PAYMENT_MODE)\n" +
                             " VALUES (?,?,?,?,?,?,?)";
@@ -189,6 +193,15 @@ public class PayDues implements Initializable {
                     int resH = psH.executeUpdate();
 
                     if (resH > 0) {
+
+                        if (avlDuesD == 0){
+
+                            ps  = null;
+                            String duesQuery = "DELETE FROM TBL_DUES where dues_id ="+saleMain.getDuesId();
+                            ps = connection.prepareStatement(duesQuery);
+                           ps.executeUpdate();
+
+                        }
                         stage.close();
                     }
 

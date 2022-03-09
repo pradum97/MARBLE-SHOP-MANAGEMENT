@@ -3,15 +3,16 @@ package com.shop.management.Controller;
 import com.shop.management.CustomDialog;
 import com.shop.management.Main;
 import com.shop.management.Method.Method;
-import com.shop.management.Model.Dues;
 import com.shop.management.Model.Sale_Main;
 import com.shop.management.util.DBConnection;
 import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
-import javafx.fxml.FXMLLoader;
+import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -20,15 +21,26 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
+import javafx.util.StringConverter;
 
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
-public class SellReport implements Initializable {
+public class SaleReport implements Initializable {
+    public DatePicker fromDateP;
+    public DatePicker toDateP;
+    public Button searchReportBn;
+    public Label totalPurchaseAmtL;
+    public Label totalNetAmountL;
+    public Label totalProfitL;
+    public Label pL;
     int rowsPerPage = 15;
 
     public TableColumn<Sale_Main, Integer> col_sno;
@@ -55,6 +67,8 @@ public class SellReport implements Initializable {
     private Method method;
     private DBConnection dbConnection;
     private CustomDialog customDialog;
+    private DecimalFormat df = new DecimalFormat("0.##");
+
 
 
     ObservableList<Sale_Main> reportList = FXCollections.observableArrayList();
@@ -66,17 +80,15 @@ public class SellReport implements Initializable {
         method = new Method();
         customDialog = new CustomDialog();
         dbConnection = new DBConnection();
-        getSaleItems();
+        convertDateFormat(fromDateP,toDateP);
+        getSaleItems(false);
 
-        String query = "select  * from tbl_saleitems where TO_CHAR(sale_date, 'YYYY-MM-DD') between TO_CHAR(?, 'YYYY-MM-DD') and TO_CHAR(?, 'YYYY-MM-DD')\n";
 
     }
-
-    private void getSaleItems() {
+    private void getSaleItems(boolean dateQuery) {
         if (null != reportList) {
             reportList.clear();
         }
-
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -88,18 +100,38 @@ public class SellReport implements Initializable {
             }
 
             String query ="select (select count(sale_item_id) from tbl_saleitems tsi where (tsi.sale_main_id = tsm.sale_main_id) )\n" +
-                    "           as totalItem ,tsm.sale_main_id, td.dues_id ,tc.customer_id,tsm.seller_id,tsm.additional_discount,\n" +
+                    "    as totalItem ,tsm.sale_main_id, td.dues_id ,tc.customer_id,tsm.seller_id,tsm.additional_discount,\n" +
                     "       tsm.received_amount,tsm.tot_disc_amount,tsm.tot_tax_amount,tsm.net_amount,tsm.payment_mode,tsm.invoice_number,\n" +
-                    "       tsm.bill_type,tsm.date,tc.customer_name,tc.customer_phone,tc.customer_address , tu.first_name,tu.last_name,td.dues_amount\n" +
-                    "       from tbl_sale_main tsm\n" +
-                    "                                     LEFT JOIN tbl_customer tc on (tsm.customer_id = tc.customer_id)\n" +
-                    "                                     LEFT JOIN tbl_users tu on (tsm.seller_id = tu.user_id)\n" +
-                    "                                     LEFT JOIN tbl_dues td on tsm.sale_main_id = td.sale_main_id";
+                    "       tsm.bill_type, (TO_CHAR(tsm.sale_date , 'YYYY-MM-DD HH12:MI:SS AM')) as saleDate,tc.customer_name,tc.customer_phone,tc.customer_address ,\n" +
+                    "       tu.first_name,tu.last_name,td.dues_amount ,(select sum( tsi.purchase_price*(cast(split_part(tsi.product_quantity::TEXT,' -', 1) as double precision)))as purchasePrice from tbl_saleitems tsi\n" +
+                    "           where tsi.sale_main_id = tsm.sale_main_id group by tsm.sale_main_id),\n" +
+                    "       (select sum(tsi.net_amount) as netAmount from tbl_saleitems tsi\n" +
+                    "        where tsi.sale_main_id = tsm.sale_main_id group by tsm.sale_main_id)\n" +
+                    "from tbl_sale_main tsm\n" +
+                    "         LEFT JOIN tbl_customer tc on (tsm.customer_id = tc.customer_id)\n" +
+                    "         LEFT JOIN tbl_users tu on (tsm.seller_id = tu.user_id)\n" +
+                    "         LEFT JOIN tbl_dues td on tsm.sale_main_id = td.sale_main_id";
 
-            ps = connection.prepareStatement(query);
-            rs = ps.executeQuery();
+            if (dateQuery){
+             String   q = query.concat(" where TO_CHAR(tsm.sale_date, 'YYYY-MM-DD') between ? and ? order by sale_main_id desc  ");
 
-            while (rs.next()) {
+                ps = connection.prepareStatement(q);
+                ps.setString(1, fromDateP.getValue().toString());
+                ps.setString(2, toDateP.getValue().toString());
+
+                System.out.println(fromDateP.getValue().toString());
+
+                rs = ps.executeQuery();
+
+            }else {
+                query = query.concat("  order by sale_main_id desc");
+                ps = connection.prepareStatement(query);
+                rs = ps.executeQuery();
+            }
+
+            double totalNetAmount = 0 , totalProfit = 0 , totalPurchaseAmount = 0;
+
+            while (rs != null && rs.next()) {
 
                 int saleMainId = rs.getInt("sale_main_id");
                 int customerId = rs.getInt("customer_id");
@@ -113,8 +145,8 @@ public class SellReport implements Initializable {
                 String invoiceNumber = rs.getString("invoice_number");
                 String billType = rs.getString("bill_type");
 
-                String[] date = rs.getString("date").split("\\.");
-                String sellingDate = date[0];
+                String sale_date = rs.getString("saleDate");
+
 
                 String customerName = rs.getString("customer_name");
                 String customerPhone = rs.getString("customer_phone");
@@ -127,23 +159,47 @@ public class SellReport implements Initializable {
 
                 int totalItems = rs.getInt("totalItem");
 
+                double totPurAmount = rs.getDouble("purchasePrice");
+                double totNetAmount = rs.getDouble("netAmount");
+
                 reportList.add(new Sale_Main(saleMainId,duesId,customerId , sellerId , customerName , customerPhone , customerAddress , additionalDisc , receivedAmount , totDiscAmt,
-                       totTaxAmt , netAmount ,  paymentMode , billType , invoiceNumber , sellerName , sellingDate,totalItems,duesAmount));
+                       totTaxAmt , netAmount ,  paymentMode , billType , invoiceNumber , sellerName , sale_date,totalItems,duesAmount));
+
+                totalNetAmount = totalNetAmount+totNetAmount;
+                totalPurchaseAmount = totalPurchaseAmount+totPurAmount;
 
             }
-
-            if (reportList.size() > 0) {
-
-                pagination.setVisible(true);
-                search_Item();
+            if(totalNetAmount > totalPurchaseAmount ){
+                totalProfit = Double.parseDouble(df.format(totalNetAmount - totalPurchaseAmount));
+                double percentage = Double.parseDouble(df.format((totalProfit/totalPurchaseAmount)*100)) ;
+                totalProfitL.setText("+ "+totalProfit + " ( "+percentage+" ) %");
+                pL.setStyle("-fx-text-fill: green");
+                totalProfitL.setStyle("-fx-text-fill: green");
             }
+            else if(totalPurchaseAmount > totalNetAmount){
+                totalProfit = Double.parseDouble(df.format(totalPurchaseAmount - totalNetAmount));
+                double percentage = Double.parseDouble(df.format((totalProfit/totalPurchaseAmount)*100)) ;
+
+                totalProfitL.setText("- "+totalProfit + " ( "+percentage+" ) %");
+                pL.setStyle("-fx-text-fill: red");
+                totalProfitL.setStyle("-fx-text-fill: red");
+
+            } else {
+                totalProfitL.setText("0");
+            }
+
+            totalNetAmountL.setText(String.valueOf(Double.parseDouble(df.format(totalNetAmount))));
+            totalPurchaseAmtL.setText(String.valueOf(Double.parseDouble(df.format(totalPurchaseAmount))));
+
+            pagination.setVisible(true);
+            search_Item();
+
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             DBConnection.closeConnection(connection, ps, rs);
         }
     }
-
     private void customColumn(TableColumn<Sale_Main, String> columnName) {
 
         columnName.setCellFactory(tc -> {
@@ -158,13 +214,19 @@ public class SellReport implements Initializable {
             return cell;
         });
     }
-
     public void bnRefresh(MouseEvent event) {
 
-        getSaleItems();
+        getSaleItems(false);
         changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);
         setOptional();
 
+        if (null != fromDateP){
+            fromDateP.setValue(null);
+        }
+
+        if (null != toDateP){
+            toDateP.setValue(null);
+        }
     }
 
     private void search_Item() {
@@ -247,13 +309,13 @@ public class SellReport implements Initializable {
                     setText(null);
 
                 } else {
-                    Label bnCheckPrice = new Label("CHECK ITEMS");
+                    Label bnChecItem = new Label("CHECK ITEMS");
 
-                    bnCheckPrice.setStyle("-fx-background-color: #ff0000; -fx-background-radius: 25 ; -fx-font-family: 'Bookman Old Style'; " +
+                    bnChecItem.setStyle("-fx-background-color: #008080; -fx-background-radius: 25 ; -fx-font-family: 'Bookman Old Style'; " +
                             "-fx-padding: 5 8 5 8 ; -fx-text-fill: white; -fx-alignment: center;-fx-cursor: hand");
 
 
-                    bnCheckPrice.setOnMouseClicked(event -> {
+                    bnChecItem.setOnMouseClicked(event -> {
                         Sale_Main saleMain = tableView.getSelectionModel().getSelectedItem();
                         if (null == tableView) {
                             System.out.println("Items Not Found");
@@ -268,9 +330,9 @@ public class SellReport implements Initializable {
                         bnRefresh(null);
                     });
 
-                    HBox container = new HBox(bnCheckPrice);
+                    HBox container = new HBox(bnChecItem);
                     container.setStyle("-fx-alignment:center");
-                    HBox.setMargin(bnCheckPrice, new Insets(2, 20, 2, 20));
+                    HBox.setMargin(bnChecItem, new Insets(2, 20, 2, 20));
                     setGraphic(container);
 
                     setText(null);
@@ -307,6 +369,9 @@ public class SellReport implements Initializable {
 
                     bnDuesHistory.setStyle("-fx-background-color: #a7a4a8; -fx-background-radius: 25 ; -fx-font-family: 'Bookman Old Style'; " +
                             "-fx-padding: 4 11 4 11 ; -fx-text-fill: white; -fx-alignment: center;-fx-cursor: hand");
+
+                    bnPayDues.setMinWidth(100);
+                    bnDuesHistory.setMinWidth(130);
 
 
                     bnPayDues.setOnMouseClicked(event -> {
@@ -359,4 +424,48 @@ public class SellReport implements Initializable {
         customColumn(colDate);
     }
 
+
+    private void convertDateFormat(DatePicker... date) {
+
+        for (DatePicker datePicker : date) {
+
+            datePicker.setConverter(new StringConverter<>() {
+
+                private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
+                @Override
+                public String toString(LocalDate localDate) {
+                    if (localDate == null)
+                        return "";
+                    return dateTimeFormatter.format(localDate);
+                }
+
+                @Override
+                public LocalDate fromString(String dateString) {
+                    if (dateString == null || dateString.trim().isEmpty()) {
+                        return null;
+                    }
+                    return LocalDate.parse(dateString, dateTimeFormatter);
+                }
+            });
+        }
+
+
+    }
+
+    public void searchReportBn(ActionEvent event) {
+
+
+        if (null == fromDateP.getValue()){
+            method.show_popup("SELECT START DATE", fromDateP);
+            return;
+        }else  if (null == toDateP.getValue()){
+            method.show_popup("SELECT END DATE",toDateP);
+            return;
+        }
+
+
+        getSaleItems(true);
+
+    }
 }

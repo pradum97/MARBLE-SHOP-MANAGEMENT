@@ -25,27 +25,20 @@ import java.text.DecimalFormat;
 import java.util.ResourceBundle;
 
 public class Home implements Initializable {
-
-
+    public Label pL;
     int rowsPerPage = 15;
+    public TableColumn<DailySaleReport, String> colCategory;
+    public TableColumn<DailySaleReport, String> colTotalItem;
+    public TableColumn<DailySaleReport, String> colPurAmount;
+    public TableColumn<DailySaleReport, String> colNetAmount;
+    public TableColumn<DailySaleReport, String> colProfit;
+    public Label totalPurchaseAmtL;
+    public Label totalNetAmountL;
     public BorderPane mainContainer;
     public Label totalProfitL;
-    public Label totalSaleAmountL;
-    public Label totalSaleItemL;
     public TableView<DailySaleReport> tableViewHome;
     public TableColumn<DailySaleReport, Integer> col_sno;
-    public TableColumn <DailySaleReport, String> colCategory;
-    public TableColumn<DailySaleReport, String> colProductName;
-    public TableColumn<DailySaleReport, String> colProductType;
-    public TableColumn<DailySaleReport, String> colProductSize;
-    public TableColumn<DailySaleReport, String> colPurchasePrice;
-    public TableColumn<DailySaleReport, String> colMrp;
-    public TableColumn<DailySaleReport, String> colProductQuantity;
-    public TableColumn<DailySaleReport, String> colSellPrice;
-    public TableColumn<DailySaleReport, String> colProductDiscount;
-    public TableColumn<DailySaleReport, String> colGst;
-    public TableColumn<DailySaleReport, String> colNetAmount;
-    public TableColumn<DailySaleReport, String> colBilType;
+
     public TextField searchTf;
     public HBox refresh_bn;
     public Pagination pagination;
@@ -56,38 +49,12 @@ public class Home implements Initializable {
 
     ObservableList<DailySaleReport> reportList = FXCollections.observableArrayList();
 
-    private FilteredList<DailySaleReport> filteredData;
-
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         method = new Method();
         dbConnection = new DBConnection();
-
         getSaleItems();
-    }
-
-    private void calculate(){
-
-        if (null == filteredData){
-            return;
-        }
-
-        double profit = 0, totNetAmount = 0;
-
-        for(DailySaleReport items : filteredData){
-
-            String[] str = items.getQuantity().split(" ");
-           int quantity = Integer.parseInt(str[0]) ;
-
-           totNetAmount = totNetAmount+items.getNet_amount();
-
-           profit = profit+((items.getPurchase_price()*quantity)-items.getNet_amount());
-
-        }
-
-        totalSaleAmountL.setText("₹  "+Double.parseDouble(df.format(totNetAmount)));
-        totalProfitL.setText("₹  "+Double.parseDouble(df.format(profit)));
     }
 
     private void getSaleItems() {
@@ -105,36 +72,57 @@ public class Home implements Initializable {
                 System.out.println("home : Connection failed");
                 return;
             }
-            ps = connection.prepareStatement("select  *  from tbl_saleItems " +
-                    "where TO_CHAR(sale_date, 'yyyy-MM-dd' ) = TO_CHAR(CURRENT_DATE, 'yyyy-MM-dd') ORDER BY sale_item_id DESC ");
 
+            String query = "select  product_category , count(*)as total_Item  , sum(net_amount) as total_Net_Amount , sum(purchase_price*(cast(split_part(product_quantity::TEXT,' -', 1) as double precision))) as total_Pur_Amount,\n" +
+                    "        sum(net_amount-tbl_saleitems.purchase_price) as profit\n" +
+                    "from tbl_saleItems  where TO_CHAR(sale_date, 'yyyy-MM-dd' ) =\n" +
+                    "                          TO_CHAR(CURRENT_DATE, 'yyyy-MM-dd')   group by product_category";
+
+            ps = connection.prepareStatement(query);
+
+            System.out.println(query);
             rs = ps.executeQuery();
 
-            int count = 0;
+            double totalPurchaseAmount = 0, totalProfit = 0 , totalNetAmount = 0;
             while (rs.next()) {
-                ++count;
-                int saleId = rs.getInt("sale_item_id");
-                String pName = rs.getString("product_name");
-                String pType = rs.getString("product_type");
-                String pSize = rs.getString("product_size");
-                String pQuantity = rs.getString("product_quantity");
-
-                double purPrice = rs.getDouble("purchase_price");
-                double pMrp = rs.getDouble("product_mrp");
-                double sellPrice = rs.getDouble("sell_price");
-
-                double disAmount = rs.getDouble("discount_amount");
-                double taxAmount = rs.getDouble("tax_amount");
-                double netAmount = rs.getDouble("net_amount");
-
                 String category = rs.getString("product_category");
+                int totalItem = rs.getInt("total_Item");
 
-                reportList.add(new DailySaleReport( saleId, pName, pType, pSize, pQuantity, purPrice, pMrp, sellPrice,
-                        Double.parseDouble(df.format(disAmount)), netAmount, String.valueOf(Double.valueOf(df.format(taxAmount))) , 0, null,category));
+                double totalNet_Amount = rs.getDouble("total_Net_Amount");
+                double total_PurAmount = rs.getDouble("total_Pur_Amount");
+                double profit = rs.getDouble("profit");
+
+                reportList.add(new DailySaleReport( totalItem ,category , totalNet_Amount , total_PurAmount , profit));
+
+             //  totalProfit = totalProfit+profit;
+               totalPurchaseAmount  = totalPurchaseAmount + total_PurAmount;
+               totalNetAmount = totalNetAmount+totalNet_Amount;
 
             }
 
-            totalSaleItemL.setText(String.valueOf(count));
+            if(totalNetAmount > totalPurchaseAmount ){
+                totalProfit = Double.parseDouble(df.format(totalNetAmount - totalPurchaseAmount));
+                double percentage = Double.parseDouble(df.format((totalProfit/totalPurchaseAmount)*100)) ;
+                totalProfitL.setText("+ "+totalProfit + " ( "+percentage+" ) %");
+                pL.setStyle("-fx-text-fill: green");
+                totalProfitL.setStyle("-fx-text-fill: green");
+
+
+            }
+            else if(totalPurchaseAmount > totalNetAmount){
+                totalProfit = Double.parseDouble(df.format(totalPurchaseAmount - totalNetAmount));
+                double percentage = Double.parseDouble(df.format((totalProfit/totalPurchaseAmount)*100)) ;
+
+                totalProfitL.setText("- "+totalProfit + " ( "+percentage+" ) %");
+                pL.setStyle("-fx-text-fill: red");
+                totalProfitL.setStyle("-fx-text-fill: red");
+
+            } else {
+                totalProfitL.setText("0");
+            }
+
+            totalNetAmountL.setText(String.valueOf(Double.parseDouble(df.format(totalNetAmount))));
+            totalPurchaseAmtL.setText(String.valueOf(Double.parseDouble(df.format(totalPurchaseAmount))));
 
 
         } catch (SQLException e) {
@@ -145,116 +133,44 @@ public class Home implements Initializable {
 
         if (reportList.size() > 0){
             pagination.setVisible(true);
-            search_Item();
+            pagination.setCurrentPageIndex(0);
+            changeTableView(0, rowsPerPage);
+            pagination.currentPageIndexProperty().addListener(
+                    (observable1, oldValue1, newValue1) -> changeTableView(newValue1.intValue(), rowsPerPage));
         }
 
-        customColumn(colProductName);
+
     }
-
-    private void customColumn(TableColumn<DailySaleReport, String> columnName) {
-
-        columnName.setCellFactory(tc -> {
-            TableCell<DailySaleReport, String> cell = new TableCell<>();
-            Text text = new Text();
-            text.setStyle("-fx-font-size: 14");
-            cell.setGraphic(text);
-            text.setStyle("-fx-text-alignment: CENTER ; -fx-padding: 10");
-            cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
-            text.wrappingWidthProperty().bind(columnName.widthProperty());
-            text.textProperty().bind(cell.itemProperty());
-            return cell;
-        });
-    }
-
     public void bnRefresh(MouseEvent event) {
 
-        if (null == filteredData){
+        if (null ==  reportList){
             return;
         }
         getSaleItems();
-        calculate();
+         
         changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);
-    }
-    private void search_Item() {
-
-       filteredData = new FilteredList<>(reportList, p -> true);
-
-        searchTf.textProperty().addListener((observable, oldValue, newValue) -> {
-
-            filteredData.setPredicate(dailySaleReport -> {
-
-                if (newValue == null || newValue.isEmpty()) {
-                    return true;
-                }
-
-                String lowerCaseFilter = newValue.toLowerCase();
-
-                if (dailySaleReport.getProduct_name().toLowerCase().contains(lowerCaseFilter)) {
-                    return true;
-
-                } else if
-                (dailySaleReport.getProduct_type().toLowerCase().contains(lowerCaseFilter)) {
-                    return true;
-                } else if (String.valueOf(dailySaleReport.getPurchase_price()).toLowerCase().contains(lowerCaseFilter)) {
-
-                    return true;
-                } else if
-                (String.valueOf(dailySaleReport.getProduct_mrp()).toLowerCase().contains(lowerCaseFilter)) {
-
-                    return true;
-                } else if (String.valueOf(dailySaleReport.getSell_price()).toLowerCase().contains(lowerCaseFilter)) {
-
-                    return true;
-                } else if
-                (String.valueOf(dailySaleReport.getNet_amount()).toLowerCase().contains(lowerCaseFilter)) {
-
-                    return true;
-                }
-
-                return false;
-            });
-
-            changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);
-
-        });
-
-        pagination.setCurrentPageIndex(0);
-        changeTableView(0, rowsPerPage);
-        pagination.currentPageIndexProperty().addListener(
-                (observable1, oldValue1, newValue1) -> changeTableView(newValue1.intValue(), rowsPerPage));
-
-
-        calculate();
-
     }
 
     private void changeTableView(int index, int limit) {
 
-        int totalPage = (int) (Math.ceil(filteredData.size() * 1.0 / rowsPerPage));
+        int totalPage = (int) (Math.ceil(reportList.size() * 1.0 / rowsPerPage));
         pagination.setPageCount(totalPage);
         col_sno.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(
                 tableViewHome.getItems().indexOf(cellData.getValue()) + 1));
-        colBilType.setCellValueFactory(new PropertyValueFactory<>("billType"));
-        colProductName.setCellValueFactory(new PropertyValueFactory<>("product_name"));
-        colProductType.setCellValueFactory(new PropertyValueFactory<>("product_type"));
-        colCategory.setCellValueFactory(new PropertyValueFactory<>("category"));
-        colProductSize.setCellValueFactory(new PropertyValueFactory<>("product_size"));
-        colPurchasePrice.setCellValueFactory(new PropertyValueFactory<>("purchase_price"));
-        colMrp.setCellValueFactory(new PropertyValueFactory<>("product_mrp"));
-        colSellPrice.setCellValueFactory(new PropertyValueFactory<>("sell_price"));
-        colProductQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
-        colProductDiscount.setCellValueFactory(new PropertyValueFactory<>("userID"));
-        colProductDiscount.setCellValueFactory(new PropertyValueFactory<>("discount_amount"));
-        colNetAmount.setCellValueFactory(new PropertyValueFactory<>("net_amount"));
-        colGst.setCellValueFactory(new PropertyValueFactory<>("tax_amount"));
+        colTotalItem.setCellValueFactory(new PropertyValueFactory<>("totalItems"));
+        colCategory.setCellValueFactory(new PropertyValueFactory<>("productCategory"));
+        colNetAmount.setCellValueFactory(new PropertyValueFactory<>("totalNetAmount"));
+        colPurAmount.setCellValueFactory(new PropertyValueFactory<>("totalPurChaseAmount"));
+        colProfit.setCellValueFactory(new PropertyValueFactory<>("profit"));
+
 
 
         int fromIndex = index * limit;
         int toIndex = Math.min(fromIndex + limit, reportList.size());
 
-        int minIndex = Math.min(toIndex, filteredData.size());
+        int minIndex = Math.min(toIndex,  reportList.size());
         SortedList<DailySaleReport> sortedData = new SortedList<>(
-                FXCollections.observableArrayList(filteredData.subList(Math.min(fromIndex, minIndex), minIndex)));
+                FXCollections.observableArrayList( reportList.subList(Math.min(fromIndex, minIndex), minIndex)));
         sortedData.comparatorProperty().bind(tableViewHome.comparatorProperty());
 
         tableViewHome.setItems(sortedData);

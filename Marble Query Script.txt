@@ -39,14 +39,13 @@ INSERT INTO TBL_MENU(MENU_ICON_PATH ,MENU_NAME, MENU_LOCATION)
 VALUES ('home_icon.png','HOME', 'SIDE'),
        ('profile_ic.png','PROFILE', 'SIDE'),
        ('employ.png','USERS', 'SIDE'),
-       ('settings_ic.png','SETTING', 'TOP'),
-       ('shop_icon.png','ALL PRODUCT', 'SIDE'),
-       ('sell_ic.png','SALE REPORT', 'SIDE'),
-       ('viewReport_icon.png','SELL REPORT', 'SIDE'),
+       ('shop_icon.png','ALL PRODUCTS', 'SIDE'),
+       ('sell_ic.png','SALE PRODUCTS', 'SIDE'),
+       ('viewReport_icon.png','SALES REPORT', 'SIDE'),
        ('stock_ic.png','STOCK REPORT', 'SIDE'),
        ('add_icon.png','ADD PRODUCT', 'TOP'),
-       ('feedback_ic.png','FEEDBACK', 'TOP')
-
+       ('feedback_ic.png','FEEDBACK', 'TOP'),
+       ('settings_ic.png','SETTING', 'TOP')
 
 CREATE TABLE TBL_USERS
 (
@@ -229,7 +228,7 @@ CREATE TABLE TBL_SALE_MAIN
     NET_AMOUNT          NUMERIC                             NOT NULL,
     INVOICE_NUMBER      VARCHAR(100)                        NOT NULL,
     BILL_TYPE           VARCHAR(100)                        NOT NULL,
-    DATE                timestamp default CURRENT_TIMESTAMP NOT NULL,
+    sale_date                timestamp default CURRENT_TIMESTAMP NOT NULL,
 
     FOREIGN KEY (CUSTOMER_ID)
         REFERENCES tbl_customer (CUSTOMER_ID),
@@ -311,9 +310,7 @@ CREATE TABLE DUES_HISTORY (
                               PAYMENT_MODE VARCHAR NOT NULL ,
                               PAYMENT_DATE TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-                              FOREIGN KEY (DUES_ID)
-                                  REFERENCES tbl_dues (DUES_ID),
-
+                           
                               FOREIGN KEY (CUSTOMER_ID)
                                   REFERENCES tbl_customer (CUSTOMER_ID),
 

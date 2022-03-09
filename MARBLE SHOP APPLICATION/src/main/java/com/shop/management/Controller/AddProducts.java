@@ -472,7 +472,6 @@ public class AddProducts implements Initializable {
     }
 
     private void submit() {
-
         // textField
         String prodName = productName.getText();
         String prodCode = productCodeTF.getText();
@@ -480,7 +479,6 @@ public class AddProducts implements Initializable {
 
         Discount discount = productDiscount.getSelectionModel().getSelectedItem();
         TAX tax = productTax.getSelectionModel().getSelectedItem();
-
 
         ObservableList<ProductSize> tableData = sizeTableView.getItems();
 

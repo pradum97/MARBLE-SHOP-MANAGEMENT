@@ -70,7 +70,7 @@ public class Dashboard implements Initializable {
         properties = method.getProperties("query.properties");
         customDialog = new CustomDialog();
         main = new Main();
-        replaceScene("dashboard/sellProducts.fxml");
+        replaceScene("dashboard/saleReport.fxml");
         getMenuData();
         setCustomImage();
         setUserData();
@@ -249,9 +249,9 @@ public class Dashboard implements Initializable {
                                     replaceScene("dashboard/userprofile.fxml");
                                 }
                                 case "USERS" -> replaceScene("dashboard/users.fxml");
-                                case "ALL PRODUCT" -> replaceScene("dashboard/allProducts.fxml");
-                                case "SELL PRODUCT" -> replaceScene("dashboard/sellProducts.fxml");
-                                case "SALE REPORT" -> replaceScene("dashboard/saleReport.fxml");
+                                case "ALL PRODUCTS" -> replaceScene("dashboard/allProducts.fxml");
+                                case "SALE PRODUCTS" -> replaceScene("dashboard/saleProducts.fxml");
+                                case "SALES REPORT" -> replaceScene("dashboard/saleReport.fxml");
                                 case "STOCK REPORT" -> replaceScene("dashboard/stockReport.fxml");
                             }
 

@@ -68,8 +68,8 @@
     -fx-font-size: 13;
 }
 
-.table-view .table-row-cell:selected{
-    -fx-background-color: #c8cacb;
+.table-row-cell:selected {
+    -fx-background-color: #55a9ef;
 }
 
 /* Remove spacing */

@@ -46,7 +46,7 @@ public class DuesHistory implements Initializable {
     private DBConnection dbConnection;
 
     private final ObservableList<DuesHistoryModel> historyList = FXCollections.observableArrayList();
-    private int duesId;
+    private int saleMainId;
     private Sale_Main saleMain;
 
     @Override
@@ -60,7 +60,7 @@ public class DuesHistory implements Initializable {
             customDialog.showAlertBox("", "History Not Available");
             return;
         }
-        duesId = saleMain.getDuesId();
+        saleMainId = saleMain.getSale_main_id();
 
         setData();
 
@@ -91,8 +91,8 @@ public class DuesHistory implements Initializable {
                 System.out.println("Connection Failed");
                 return;
             }
-            ps = connection.prepareStatement("select * from dues_history where dues_id = ? order by dues_history_id ASC");
-            ps.setInt(1, duesId);
+            ps = connection.prepareStatement("select  (TO_CHAR(payment_date, 'YYYY-MM-DD HH:MM')) as payment_date  ,* from dues_history where sale_main_id = ? order by dues_history_id ASC");
+            ps.setInt(1, saleMainId);
             rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -108,8 +108,8 @@ public class DuesHistory implements Initializable {
 
                 String paymentMode = rs.getString("payment_mode");
 
-                String[] date = rs.getString("payment_date").split("\\.");
-                String paymentDate = date[0];
+                String paymentDate = rs.getString("payment_date");
+
 
                 historyList.add(new DuesHistoryModel(duesHistoryId, dues_id, customerId, saleMainId, previousDues,
                         paidAmount, current_dues, paymentMode, paymentDate));

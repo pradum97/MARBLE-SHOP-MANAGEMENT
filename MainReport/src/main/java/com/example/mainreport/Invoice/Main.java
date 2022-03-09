@@ -19,113 +19,92 @@ public class Main {
 
         TaxDetails taxDetail;
 
-        taxDetail = new TaxDetails();
+        taxDetail = new TaxDetails(9,9,0 , 300 , 20 , 20 ,0 , 32001);
         taxDetail.setCgst(9);
         taxDetail.setSgst(9);
         taxDetail.setIgst(0);
-        taxDetail.setHsn("32004");
+        taxDetail.setHsn(32001);
         taxDetail.setCgstAmount(50.0);
         taxDetail.setSgstAmount(50.0);
         taxDetail.setTaxableAmount(1000);
         taxDetail.setIgstAmount(0);
         taxDetails.add(taxDetail);
 
-        taxDetail = new TaxDetails();
-        taxDetail.setCgst(9);
-        taxDetail.setSgst(0);
-        taxDetail.setIgst(0);
-        taxDetail.setHsn("32004");
-        taxDetail.setCgstAmount(60.0);
-        taxDetail.setSgstAmount(60.0);
-        taxDetail.setTaxableAmount(2000);
-        taxDetail.setIgstAmount(0);
-        taxDetails.add(taxDetail);
+        List<CartModel> cartModels = new ArrayList<>();
+
+        CartModel cartModel1 = new CartModel(1,1,1,1,1,1 ,"Marble Indian","wall","Marble",
+                400,700,600,700,200,200,"MM","PCS" , null,18,
+                2,"WHITE","SPECIAL OFFER",140,30002,1260 , 180 ,9,9,0,null );
+
+        CartModel cartModel2 = new CartModel(1,1,1,1,1,1 ,"Marble Indian","wall","Marble",
+                500,700,600,700,200,200,"MM","PCS" , null,18,
+                2,"WHITE","SPECIAL OFFER",140,30003,1260 , 180 ,9,9,0,null );
+
+        CartModel cartModel3 = new CartModel(1,1,1,1,1,1 ,"Marble Indian","wall","Marble",
+                600,700,600,700,200,200,"MM","PCS" , null,18,
+                2,"WHITE","SPECIAL OFFER",140,30002,1260 , 180 ,9,9,0,null );
+
+        CartModel cartModel4 = new CartModel(1,1,1,1,1,1 ,"Marble Indian","wall","Marble",
+                700,700,600,800,200,200,"MM","PCS" , null,18,
+                2,"WHITE","SPECIAL OFFER",140,30004,1260 , 180 ,9,9,0,null );
+
+        cartModels.add(cartModel1);
+        cartModels.add(cartModel2);
+        cartModels.add(cartModel3);
+        cartModels.add(cartModel4);
 
 
-        taxDetail = new TaxDetails();
-        taxDetail.setCgst(9);
-        taxDetail.setSgst(0);
-        taxDetail.setIgst(0);
-        taxDetail.setHsn("32004");
-        taxDetail.setCgstAmount(60.0);
-        taxDetail.setSgstAmount(60.0);
-        taxDetail.setTaxableAmount(2000);
-        taxDetail.setIgstAmount(0);
-        taxDetails.add(taxDetail);
+        Map<Long,TaxDetails> map = new HashMap<>();
+
+        for (CartModel pd : cartModels) {
+
+            long key = pd.getHsn();
+
+            double sgstAmount = pd.getPurchasePrice()*pd.getSgst()/100;
+            double cgstAmount = pd.getPurchasePrice()*pd.getCsgt()/100;
+            double igstAmount = pd.getPurchasePrice()*pd.getIgst()/100;
+
+            double totalGstAmount = sgstAmount+cgstAmount+igstAmount;
+
+            double netAmount = (pd.getSellingPrice()*pd.getQuantity()-pd.getDiscountAmount());
+
+            double taxableAmount =  netAmount-totalGstAmount;
+
+            System.out.println(netAmount+" "+pd.getHsn());
 
 
-        taxDetail = new TaxDetails();
-        taxDetail.setCgst(9);
-        taxDetail.setSgst(0);
-        taxDetail.setIgst(0);
-        taxDetail.setHsn("32004");
-        taxDetail.setCgstAmount(60.0);
-        taxDetail.setSgstAmount(60.0);
-        taxDetail.setTaxableAmount(2000);
-        taxDetail.setIgstAmount(0);
-        taxDetails.add(taxDetail);
-        List<ProductDetails> productDetails = new ArrayList<>();
+            if (map.containsKey(key)) {
 
-        ProductDetails product;
+                // update value
+                TaxDetails td = new TaxDetails(pd.getSgst(),pd.getCsgt(),pd.getIgst()  ,
+                        map.get(key).getTaxableAmount()+taxableAmount,
+                         map.get(key).getSgstAmount()+sgstAmount ,
+                        map.get(key).getCgstAmount()+cgstAmount ,
+                        map.get(key).getIgstAmount()+igstAmount, pd.getHsn());
 
-        //TODO, ONLY FOR GST
+                map.put(key, td);
 
-        int igst = 0;
-        int cgst = 9;
-        int sgst = 9;
+                System.out.println("taxable "+ map.get(key).getTaxableAmount()+"sgstAmt : "+map.get(key).getSgstAmount() +"- "+map.get(key).getHsn());
 
-        double mrp = 500;
-        int totalTax = (igst + cgst + sgst);
-        double taxAmount  = 0;
 
-        String  billType = "GST";
+            } else {
 
-        if ("GST".equals(billType)) {
-            taxAmount = (mrp * totalTax) / 100;
+                TaxDetails td = new TaxDetails(pd.getSgst(),pd.getCsgt(),pd.getIgst()  , taxableAmount,sgstAmount , cgstAmount ,igstAmount, pd.getHsn());
+                map.put(key, td);
+
+
+            }
         }
 
-        product = new ProductDetails();
-        product.setProductName("Indian Marble");
-        product.setProductSize("8888x8888-pcs");
-        product.setQuantity("10-PKT");
-        product.setDiscountName("Special Offer");
-        product.setDiscountAmount(100);
-        product.setHsn(32004);
-        // count tax Amount
-        product.setMrp(mrp);
-        product.setTaxAmount(taxAmount);
-        productDetails.add(product);
+
+        System.out.println(map);
+
+      /*  for (int i = 0; i < map.size(); i++) {
+
+        }*/
 
 
-        product = new ProductDetails();
-        product.setProductName("Indian Marble");
-        product.setProductSize("200x200 -pcs");
-        product.setQuantity("20-PKT");
-        product.setDiscountName("Special Offer");
-        product.setDiscountAmount(200);
-        product.setHsn(32004);
-        product.setMrp(mrp); // mrp with gst
-        product.setTaxAmount(taxAmount);
-        productDetails.add(product);
-
-        product = new ProductDetails();
-        product.setProductName("Indian Marble");
-        product.setProductSize("200x200 -pcs");
-        product.setQuantity("10-PKT");
-        product.setDiscountName("Special Offer");
-        product.setDiscountAmount(100);
-        product.setHsn(32004);
-        // count tax Amount
-        product.setMrp(mrp);
-        product.setTaxAmount(taxAmount);
-        productDetails.add(product);
-
-
-
-
-
-
-        Map<String, Object> param = new HashMap<>();
+       /* Map<String, Object> param = new HashMap<>();
         // SHOP DETAILS
         param.put("SHOP_NAME", "SUMA MARBLE AND TILES");
         param.put("SHOP_PHONE_1", "9570294565");
@@ -134,6 +113,7 @@ public class Main {
         param.put("SHOP_GST_NUMBER", "10DGBPK6505G1ZY");
         param.put("SHOP_ADDRESS", "CHHOTI BALLIA, NH-31, EAST OF WATER TANK , BEGUSARAI, PINCODE - 851211, BIHAR");
         param.put("SHOP_OWNER_NAME", "RAJ KUMAR");
+
 
         // INVOICE DETAILS
 
@@ -151,11 +131,10 @@ public class Main {
         JRBeanCollectionDataSource jrProductbean = new JRBeanCollectionDataSource(productDetails);
         JRBeanCollectionDataSource tax = new JRBeanCollectionDataSource(taxDetails);
 
-
         param.put("productDetails", jrProductbean);
         param.put("tax", tax);
 
-        File file = new File("D:\\Desktop Application\\MARBLE-SHOP-MANAGEMENT\\iReport\\invoiceMain.jrxml");
+        File file = new File("D:\\Desktop Application\\MARBLE-SHOP-MANAGEMENT\\iReport\\Gst_Invoice.jrxml");
 
         try {
 
@@ -168,6 +147,6 @@ public class Main {
 
         } catch (JRException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 }

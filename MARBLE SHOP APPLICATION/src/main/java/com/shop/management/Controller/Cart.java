@@ -30,7 +30,6 @@ import javafx.util.Callback;
 import java.net.URL;
 import java.sql.*;
 import java.text.DecimalFormat;
-import java.util.Base64;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -52,7 +51,7 @@ public class Cart implements Initializable {
     public ComboBox<String> billingTypeC;
     public Label totalAmountL;
     public Label discountL;
-    public Label taxL;
+    public Label taxL , taxTitleL;
     public Label totalPayAbleL;
     public Label totalDiscountL;
     public TableColumn<CartModel, Integer> colSrNo;
@@ -283,6 +282,7 @@ public class Cart implements Initializable {
                 double price = sellingPrice * quantity;
                 double disAmount =  Double.parseDouble(df.format(price * totalDiscount / 100)) ;
                 double gstAmount =  Double.parseDouble(df.format((purchasePrice*quantity) * totalGst / 100));
+                System.out.println("gst "+gstAmount);
                 double netAmount = 0;
 
                 String totalDis = disAmount+"( " +totalDiscount +"%)";
@@ -290,9 +290,11 @@ public class Cart implements Initializable {
                 switch (billType) {
 
                     case "REGULAR" -> {
+
                         colGst.setVisible(false);
+                        taxTitleL.setText("  TAX  : ₹ -");
                         netAmount = (price - disAmount) - gstAmount;
-                        gstAmount = 0;
+                        System.out.println("price :"+price +"discountAmt "+ disAmount +"taxAmount : "+gstAmount+"netAmount "+netAmount);
 
                         cartList.add(new CartModel(cartId, productId, stockID, discountId, taxId, sellerId, productName, product_type,
                                 productCategory, purchasePrice, productMRP, minSellPrice, sellingPrice, height, width,
@@ -301,6 +303,7 @@ public class Cart implements Initializable {
                     }
                     case "GST" -> {
                         colGst.setVisible(true);
+                        taxTitleL.setText("  TAX  : ₹ +");
                         String tax = gstAmount+"( " +totalGst +"%)";
                         netAmount = (price - disAmount);
                         cartList.add(new CartModel(cartId, productId, stockID, discountId, taxId, sellerId, productName, product_type,
@@ -680,7 +683,7 @@ public class Cart implements Initializable {
 
             ps3 = connection.prepareStatement(saleMainQuery, new String[]{"sale_main_id"});
             ps3.setInt(1, customer.getCustomerId());
-            ps3.setInt(2, customer.getCustomerId());
+            ps3.setInt(2, Login.currentlyLogin_Id);
             ps3.setDouble(3, addiDisc);
             ps3.setDouble(4, receivedAmountD);
             ps3.setString(5, paytmModeS);
@@ -744,7 +747,7 @@ public class Cart implements Initializable {
                             ps.setNull(13, Types.NULL);
                         }
                         ps.setDouble(14, model.getDiscountAmount());
-                        ps.setLong(15, model.getHsn_sac());
+                        ps.setLong(15, model.getHsn());
                         ps.setInt(16, model.getIgst());
                         ps.setInt(17, model.getSgst());
                         ps.setInt(18, model.getCsgt());

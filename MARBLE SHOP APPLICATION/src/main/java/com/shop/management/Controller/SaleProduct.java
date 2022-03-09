@@ -25,7 +25,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.Callback;
 
 import java.io.File;
@@ -41,7 +40,7 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
-public class SellProduct implements Initializable {
+public class SaleProduct implements Initializable {
     int rowsPerPage = 15;
 
     public TableColumn<Products, String> colColor;
@@ -95,7 +94,7 @@ public class SellProduct implements Initializable {
 
         try {
 
-            String query = "SELECT tp.product_id,tp.added_date , tp.product_name ,tp.product_code, tp.product_description\n" +
+            String query = "SELECT tp.product_id,(TO_CHAR(tp.added_date, 'YYYY-MM-DD HH12:MI:SS AM')) as added_date, tp.product_name ,tp.product_code, tp.product_description\n" +
                     "        ,tp.product_color,tp.product_type,tc.category_id, tc.category_name,\n" +
                     "       tp.discount_id ,tp.tax_id ,\n" +
                     "       td.discount_id ,td.discount,tpt.tax_id ,\n" +
@@ -127,7 +126,7 @@ public class SellProduct implements Initializable {
                 String productType = rs.getString("product_type");
                 String productCategory = rs.getString("category_name");
                 int productDiscountID = rs.getInt("discount_id");
-                String addedDate = " " + rs.getString("added_date");
+                String addedDate = rs.getString("added_date");
                 String productCode = " " + rs.getString("product_code");
                 int productTaxID = rs.getInt("tax_id");
 
@@ -146,7 +145,11 @@ public class SellProduct implements Initializable {
                 String tax_description = rs.getString("description");
                 String gstName = rs.getString("gstName");
 
-                String size = " " + rs.getString("height_width");
+                String size =rs.getString("height_width");
+
+                if (null == size){
+                    size = "-";
+                }
 
                 int totalTax = sgst + cgst + igst;
 
