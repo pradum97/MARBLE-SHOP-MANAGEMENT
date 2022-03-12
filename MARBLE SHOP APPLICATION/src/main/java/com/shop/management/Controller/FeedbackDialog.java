@@ -52,7 +52,6 @@ public class FeedbackDialog implements Initializable {
 
         button_bg_color = colorProperties.getProperty("BUTTON_BG_COLOR");
         button_text_color = colorProperties.getProperty("BUTTON_TEXT_COLOR");
-        setTheme();
         rate.setRating(4);
 
 
@@ -65,14 +64,6 @@ public class FeedbackDialog implements Initializable {
 
             submitFeedback(null);
         }
-    }
-
-    private void setTheme() {
-
-        bn_feedback_submit.setStyle(
-                "-fx-background-color:" + button_bg_color + ";" +
-                        " -fx-text-fill:" + button_text_color
-        );
     }
 
     public void submitFeedback(ActionEvent event) {

@@ -158,7 +158,7 @@ public class GstUpdate implements Initializable {
                 gstNameTF.setText("");
                 descriptionTF.setText("");
 
-                Stage stage = new CustomDialog().stage;
+                Stage stage = CustomDialog.stage;
 
                 if (stage.isShowing()) {
                     stage.close();

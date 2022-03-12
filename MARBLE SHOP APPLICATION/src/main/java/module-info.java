@@ -27,4 +27,6 @@ module com.shop.management {
     opens com.shop.management.Controller.SellItems to javafx.fxml;
 
     opens com.shop.management;
+    exports com.shop.management.Controller.ReturnItems;
+    opens com.shop.management.Controller.ReturnItems to javafx.fxml;
 }

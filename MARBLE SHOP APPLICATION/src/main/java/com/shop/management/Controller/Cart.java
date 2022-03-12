@@ -2,20 +2,21 @@ package com.shop.management.Controller;
 
 import com.shop.management.CustomDialog;
 import com.shop.management.Main;
+import com.shop.management.Method.GenerateInvoiceNumber;
 import com.shop.management.Method.Method;
 import com.shop.management.Method.StaticData;
 import com.shop.management.Model.CartModel;
 import com.shop.management.Model.Customer;
 import com.shop.management.util.DBConnection;
 import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
@@ -28,6 +29,7 @@ import javafx.util.Callback;
 
 import java.net.URL;
 import java.sql.*;
+import java.text.DecimalFormat;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -42,23 +44,38 @@ public class Cart implements Initializable {
     public TableColumn<CartModel, String> colDiscount;
     public TableColumn<CartModel, String> colGst;
     public TableColumn<CartModel, String> colAction;
-    public TableColumn<CartModel, String> colPurchasePrice;
     public TableColumn<CartModel, String> colMrp;
     public TableColumn<CartModel, String> colSellPrice;
     public TableColumn<CartModel, String> colQuantity;
+    public TableColumn<CartModel, String> colAmount;
     public ComboBox<String> billingTypeC;
-    public Label priceL;
+    public Label totalAmountL;
     public Label discountL;
-    public Label taxL;
+    public Label taxL, taxTitleL;
     public Label totalPayAbleL;
-    public TableColumn<CartModel ,Integer> colSrNo;
+    public Label totalDiscountL;
+    public TableColumn<CartModel, Integer> colSrNo;
+    public TextField addDiscTF;
+    public TextField duesAmountTF;
+    public TextField receivedAmountTF;
+    public ComboBox<String> paymentModeC;
+
 
     private DBConnection dbconnection;
     private Method method;
     private CustomDialog customDialog;
     private Properties properties;
 
+    private static String invoiceNumber;
+
+    private DecimalFormat df = new DecimalFormat("0.##");
+
     private ObservableList<CartModel> cartList = FXCollections.observableArrayList();
+
+    double totalPayableD = 0;
+    double totalAmount = 0;
+    double discountPrice = 0;
+    double gstPrice = 0;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -66,21 +83,112 @@ public class Cart implements Initializable {
         dbconnection = new DBConnection();
         customDialog = new CustomDialog();
         properties = method.getProperties("query.properties");
+        invoiceNumber = new GenerateInvoiceNumber().generate();
+
+        if (null == invoiceNumber) {
+            customDialog.showAlertBox("Failed", "Invoice Number Not Found");
+            return;
+        }
         setBillType();
-
-
         refresh();
-
-        cartTableView.getSelectionModel().selectedItemProperty().addListener((observableValue, cartModel, t1) -> {
-
-
-        });
+        duesAmountTF.setEditable(false);
 
         billingTypeC.valueProperty().addListener((observableValue, s, t1) -> {
             getCart(t1);
+        });
+        comboBoxConfig();
+        textFieldConfig();
+
+    }
+
+    private void textFieldConfig() {
+
+        receivedAmountTF.textProperty().addListener((observableValue, s, t1) -> {
+            double totalPayable = Double.parseDouble(totalPayAbleL.getText());
+            double receivedAmount = 0;
+            try {
+                receivedAmount = Double.parseDouble(t1);
+            } catch (NumberFormatException ignored) {
+            }
+
+            if (receivedAmount <= totalPayable) {
+
+                double totDues = totalPayable - receivedAmount;
+
+                duesAmountTF.setText(String.valueOf(Double.valueOf(df.format(totDues))));
+            } else {
+                receivedAmountTF.setText("");
+                duesAmountTF.setText("");
+                method.show_popup("YOUR INVOICE VALUE IS : " + totalPayable, receivedAmountTF);
+            }
 
         });
+    }
 
+    private void comboBoxConfig() {
+
+        paymentModeC.setItems(new StaticData().getPaymentMode());
+        paymentModeC.getSelectionModel().selectFirst();
+
+        billingTypeC.setButtonCell(new ListCell<>() {
+            @Override
+            public void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item != null) {
+                    setText(item);
+                    setAlignment(Pos.CENTER);
+                    Insets old = getPadding();
+                    setPadding(new Insets(old.getTop(), 0, old.getBottom(), 0));
+                }
+            }
+        });
+
+        billingTypeC.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
+            @Override
+            public ListCell<String> call(ListView<String> list) {
+                return new ListCell<String>() {
+                    @Override
+                    public void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item != null) {
+                            setText(item);
+                            setAlignment(Pos.CENTER);
+                            setPadding(new Insets(3, 3, 3, 0));
+                        }
+                    }
+                };
+            }
+        });
+
+        paymentModeC.setButtonCell(new ListCell<>() {
+            @Override
+            public void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item != null) {
+                    setText(item);
+                    setAlignment(Pos.CENTER);
+                    Insets old = getPadding();
+                    setPadding(new Insets(old.getTop(), 0, old.getBottom(), 0));
+                }
+            }
+        });
+
+        paymentModeC.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
+            @Override
+            public ListCell<String> call(ListView<String> list) {
+                return new ListCell<String>() {
+                    @Override
+                    public void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item != null) {
+                            setText(item);
+                            setAlignment(Pos.CENTER);
+                            setPadding(new Insets(3, 3, 3, 0));
+                        }
+                    }
+                };
+            }
+        });
     }
 
     private void setBillType() {
@@ -94,7 +202,14 @@ public class Cart implements Initializable {
         if (null != cartList) {
             cartList.clear();
         }
-        double totalPayableD = 0, amount = 0, discountPrice = 0, gstPrice = 0;
+
+        totalPayableD = 0;
+        totalAmount = 0;
+        discountPrice = 0;
+        gstPrice = 0;
+        receivedAmountTF.setText("");
+        duesAmountTF.setText("");
+        addDiscTF.setText(String.valueOf(0));
 
         Connection connection = null;
         PreparedStatement ps = null;
@@ -113,22 +228,24 @@ public class Cart implements Initializable {
             String query = "SELECT  tps.purchase_price ,tps.product_mrp , tps.min_sellingprice ,\n" +
                     "        tc.sellprice , tps.height , tps.width,tps.size_unit,\n" +
                     "        tc.quantity_unit, tc.quantity,tp.product_id , tp.product_color , tc.cart_id , tc.seller_id ,\n" +
-                    "        tp.product_name,tp.product_type,tp.category,\n" +
+                    "        tp.product_name,tp.product_type,tcategory.category_name , tcategory.category_id,\n" +
                     "        tp.discount_id ,tp.tax_id , tps.stock_id ,\n" +
                     "        td.discount_id , td.discount_name,td.discount,tpt.hsn_sac  ,\n" +
-                    "        tpt.tax_id ,tpt.sgst,tpt.cgst,tpt.igst,tpt.\"gstName\"\n" +
+                    "        tpt.tax_id ,tpt.sgst,tpt.cgst,tpt.igst,tpt.gstName,(tc.sellprice * tc.quantity)  amount_asPer_mrp,\n" +
+                    "       ((tc.sellprice * tc.quantity)*td.discount/100)as discountAmount,\n" +
+                    "       ((tps.purchase_price*tc.quantity)*(tpt.sgst+tpt.cgst+tpt.igst)/100) as gstAmount\n" +
                     "FROM   tbl_cart as tc\n" +
-                    "           LEFT JOIN tbl_products as tp ON tc.product_id = tp.product_id\n" +
+                    "           LEFT JOIN tbl_products as tp ON (tc.product_id = tp.product_id)\n" +
                     "           LEFT JOIN tbl_product_stock as tps ON tc.stock_id = tps.stock_id\n" +
                     "           Left JOIN tbl_discount as td  ON ( tp.discount_id = td.discount_id )\n" +
-                    "           Left Join tbl_product_tax as tpt  on ( tp.tax_id = tpt.tax_id ) order by cart_id desc ";
+                    "           Left Join tbl_product_tax as tpt  on ( tp.tax_id = tpt.tax_id )\n" +
+                    "           LEFT JOIN tbl_category as tcategory ON (tp.category_id = tcategory.category_id) order by cart_id ASC";
 
 
             ps = connection.prepareStatement(query);
             rs = ps.executeQuery();
 
             while (rs.next()) {
-
 
                 int cartId = rs.getInt("cart_id");
                 int productId = rs.getInt("product_id");
@@ -139,7 +256,7 @@ public class Cart implements Initializable {
 
                 String productName = rs.getString("product_name");
                 String product_type = rs.getString("product_type");
-                String productCategory = rs.getString("category");
+                String productCategory = rs.getString("category_name");
                 String productColor = rs.getString("product_color");
 
                 double purchasePrice = rs.getDouble("purchase_price");
@@ -159,72 +276,78 @@ public class Cart implements Initializable {
                 int igst = rs.getInt("igst");
                 long hsn_sac = rs.getLong("hsn_sac");
 
-                int totalGst = sgst + cgst + igst;
+                double totalGstPer = sgst + cgst + igst;
 
-                int totalDiscount = rs.getInt("discount");
+                double discountPer = rs.getInt("discount");
                 String discount_name = rs.getString("discount_name");
 
-                double price = sellingPrice * quantity;
-                double disAmount = price * totalDiscount / 100;
-                double gstAmount = price * totalGst / 100;
-                double netAmount = 0;
+                double amountAsPerMrp = Double.parseDouble(df.format(rs.getDouble("amount_asPer_mrp")));
+                double disAmount = Double.parseDouble(df.format(rs.getDouble("discountAmount")));
+                double gstAmount = Double.parseDouble(df.format(rs.getDouble("gstAmount")));
 
-                String totalDis = String.valueOf(totalDiscount);
+                String totalDisStr = disAmount + "( " + discountPer + "%)";
+                String taxStr = gstAmount + "( " + totalGstPer + "%)";
 
+                double netAmount = (amountAsPerMrp - disAmount)+gstAmount;
 
-                switch (billType) {
+                cartList.add(new CartModel(cartId, productId, stockID, discountId, taxId, sellerId, productName, product_type,
+                        productCategory, purchasePrice, productMRP, minSellPrice, sellingPrice, height, width,
+                        sizeUnit, quantityUnit, totalDisStr, totalGstPer, quantity, productColor, discount_name,
+                        disAmount, hsn_sac, Double.parseDouble(df.format(netAmount)), gstAmount, sgst, cgst, igst, taxStr , discountPer));
 
-                    case "REGULAR" -> {
-
-                        gstAmount = 0;
-                        netAmount = (price - disAmount) + gstAmount;
-
-
-                        cartList.add(new CartModel(cartId, productId, stockID, discountId, taxId, sellerId, productName, product_type,
-                                productCategory, purchasePrice, productMRP, minSellPrice, sellingPrice, height, width,
-                                sizeUnit, quantityUnit, totalDis, 0, quantity, productColor, discount_name,
-                                disAmount, 0, netAmount, 0, sgst, cgst, igst));
-                    }
-
-                    case "GST" -> {
-                        gstAmount = price * totalGst / 100;
-                        netAmount = (price - disAmount) + gstAmount;
-
-                        cartList.add(new CartModel(cartId, productId, stockID, discountId, taxId, sellerId, productName, product_type,
-                                productCategory, purchasePrice, productMRP, minSellPrice, sellingPrice, height, width,
-                                sizeUnit, quantityUnit, totalDis, totalGst, quantity, productColor, discount_name,
-                                disAmount, hsn_sac, netAmount, gstAmount, sgst, cgst, igst));
-                    }
-                }
-
-
-                amount = amount + price;
+                totalAmount = totalAmount + amountAsPerMrp;
                 discountPrice = discountPrice + disAmount;
                 gstPrice = gstPrice + gstAmount;
-
                 totalPayableD = totalPayableD + netAmount;
 
 
             }
+            double additionalDisc = 0;
+            try {
+                additionalDisc = Double.parseDouble(addDiscTF.getText());
+            } catch (NumberFormatException ignored) {
 
-            cartTableView.setItems(cartList);
-            discountL.setText(String.valueOf(discountPrice));
-            taxL.setText(String.valueOf(gstPrice));
-            priceL.setText(String.valueOf(amount));
-            totalPayAbleL.setText(String.valueOf(totalPayableD));
+            }
+            totalAmountL.setText(String.valueOf(Double.valueOf(df.format(totalAmount))));
+            discountL.setText(String.valueOf(Double.valueOf(df.format(discountPrice))));
+            taxL.setText(String.valueOf(Double.valueOf(df.format(gstPrice))));
+            totalPayAbleL.setText(String.valueOf(Double.valueOf(df.format(totalPayableD))));
+            totalDiscountL.setText(String.valueOf(Double.valueOf(df.format(discountPrice + additionalDisc))));
+            addDiscTF.textProperty().addListener((observableValue, s, t1) -> {
+
+                receivedAmountTF.setText("");
+                duesAmountTF.setText("");
+                double inputDiscount = 0;
+                try {
+                    inputDiscount = Double.parseDouble(t1);
+                } catch (NumberFormatException ignored) {
+                }
+                totalDiscountL.setText(String.valueOf(discountPrice + inputDiscount));
+
+                if (inputDiscount < totalPayableD) {
+                    totalPayAbleL.setText(String.valueOf(Double.valueOf(df.format(totalPayableD - inputDiscount))));
+                } else {
+                    inputDiscount = 0;
+                    totalDiscountL.setText(String.valueOf(Double.valueOf(df.format(discountPrice + inputDiscount))));
+                    totalPayAbleL.setText(String.valueOf(Double.valueOf(df.format(totalPayableD))));
+                    addDiscTF.setText(String.valueOf(0));
+                    method.show_popup("Discount Amount Not Greater Then " + totalPayableD, totalDiscountL);
+                }
+            });
 
             colSrNo.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(
                     cartTableView.getItems().indexOf(cellData.getValue()) + 1));
+            colAmount.setCellValueFactory(new PropertyValueFactory<>("netAmount"));
             colProduct_name.setCellValueFactory(new PropertyValueFactory<>("productName"));
             colSize.setCellValueFactory(new PropertyValueFactory<>("fullSize"));
             colType.setCellValueFactory(new PropertyValueFactory<>("type"));
-            colDiscount.setCellValueFactory(new PropertyValueFactory<>("totalDiscount"));
-            colGst.setCellValueFactory(new PropertyValueFactory<>("totalTax"));
-            colPurchasePrice.setCellValueFactory(new PropertyValueFactory<>("purchasePrice"));
+            colDiscount.setCellValueFactory(new PropertyValueFactory<>("totalDiscountStr"));
+            colGst.setCellValueFactory(new PropertyValueFactory<>("totalTaxStr"));
             colMrp.setCellValueFactory(new PropertyValueFactory<>("productMRP"));
             colSellPrice.setCellValueFactory(new PropertyValueFactory<>("sellingPrice"));
             colQuantity.setCellValueFactory(new PropertyValueFactory<>("fullQuantity"));
 
+            cartTableView.setItems(cartList);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -302,7 +425,6 @@ public class Cart implements Initializable {
         };
 
         colAction.setCellFactory(cellFactory);
-        customColumn(colSize);
         customColumn(colProduct_name);
 
     }
@@ -355,20 +477,18 @@ public class Cart implements Initializable {
         columnName.setCellFactory(tc -> {
             TableCell<CartModel, String> cell = new TableCell<>();
             Text text = new Text();
-            text.setStyle("-fx-font-size: 14");
-            cell.setGraphic(text);
-            text.setStyle("-fx-text-alignment: CENTER ;");
             cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
             text.wrappingWidthProperty().bind(columnName.widthProperty());
             text.textProperty().bind(cell.itemProperty());
+            cell.setGraphic(text);
             return cell;
         });
     }
 
     public void clear(ActionEvent event) {
 
-        if (cartList.size() < 1){
-            customDialog.showAlertBox("Failed...","Item Not Available Please add At least 1 Item");
+        if (cartList.size() < 1) {
+            customDialog.showAlertBox("NOT AVAILABLE", "ITEM NOT AVAILABLE PLEASE ADD AT LEAST ONE ITEM");
             return;
         }
 
@@ -381,7 +501,7 @@ public class Cart implements Initializable {
         ButtonType button = result.orElse(ButtonType.CANCEL);
         if (button == ButtonType.OK) {
 
-            deleteAll();
+            deleteAll(event);
 
         } else {
             alert.close();
@@ -389,7 +509,7 @@ public class Cart implements Initializable {
 
     }
 
-    private void deleteAll() {
+    private void deleteAll(ActionEvent event) {
 
         Connection con = null;
         Statement ps = null;
@@ -410,19 +530,27 @@ public class Cart implements Initializable {
             ps.addBatch(sequenceOrder);
 
             int[] res = ps.executeBatch();
-            if (res[0] > 0){
+            if (res[0] > 0) {
 
-                if (res[1] > 0){
+                if (res[1] > 0) {
 
-                    if (null != cartList){
+                    if (null != cartList) {
                         cartList.clear();
                     }
-
                     refresh();
                 }
 
-            }
+                if (null != cartList) {
+                    cartList.clear();
+                }
 
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+                if (stage.isShowing()) {
+                    stage.close();
+                }
+                refresh();
+            }
 
         } catch (SQLException e) {
             customDialog.showAlertBox("ERROR", "Failed to Clear Cart !");
@@ -440,52 +568,62 @@ public class Cart implements Initializable {
     }
 
     private void refresh() {
-
         String billingType = billingTypeC.getSelectionModel().getSelectedItem();
-
         getCart(billingType);
 
     }
 
     public void sellNow_bn(ActionEvent event) {
 
-        if (cartList.size() < 1){
-            customDialog.showAlertBox("Failed...","Item Not Available Please add At least 1 Item");
+        if (cartList.size() < 1) {
+            customDialog.showAlertBox("NOT AVAILABLE", "ITEM NOT AVAILABLE PLEASE ADD AT LEAST ONE ITEM");
+            return;
+        }
+        String receivedAmountS = receivedAmountTF.getText();
+
+        if (receivedAmountS.isEmpty()) {
+            method.show_popup("Please Enter Received Amount", receivedAmountTF);
+            return;
+        }
+        double receivedAmountD = 0;
+        try {
+            receivedAmountD = Double.parseDouble(receivedAmountS);
+        } catch (NumberFormatException e) {
+            method.show_popup("Enter Valid Amount", receivedAmountTF);
             return;
         }
 
-        customDialog.showFxmlDialog("sellItems/customerDetails.fxml", "ENTER CUSTOMER DETAILS");
+        if (receivedAmountD < 0) {
+            method.show_popup("Enter more than 0", receivedAmountTF);
+            return;
+        } else if (addDiscTF.getText().isEmpty()) {
+            addDiscTF.setText(String.valueOf(0));
+        }
+
+        customDialog.showFxmlDialog2("sellItems/customerDetails.fxml", "ENTER CUSTOMER DETAILS");
         Customer customer = null;
 
         try {
             customer = (Customer) Main.primaryStage.getUserData();
-        } catch (ClassCastException e) {
-            System.out.println(e.getMessage());
+        } catch (ClassCastException ignored) {
         }
 
         if (null == customer) {
-
             System.out.println("customer not found");
             return;
         }
-
         // "REGULAR", "GST", "PROPOSAL" billType
 
         int customerId = customer.getCustomerId();
         String billingType = billingTypeC.getSelectionModel().getSelectedItem();
-
-        long invoiceNumber = 1233;
-
-
         switch (billingType) {
-
             case "PROPOSAL" -> {
 
             }
             case "GST", "REGULAR" -> {
 
                 try {
-                    addSaleItem(customer, invoiceNumber, billingType);
+                    addSaleItem(customer, billingType, receivedAmountD, event);
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -494,102 +632,156 @@ public class Cart implements Initializable {
         }
     }
 
-    private void addSaleItem(Customer customer, long invoiceNumber, String billingType) throws SQLException {
+    private void addSaleItem(Customer customer, String billingType,
+                             double receivedAmountD, ActionEvent event) throws SQLException {
+
+        String paytmModeS = paymentModeC.getSelectionModel().getSelectedItem();
+        double duesAmtD = Double.parseDouble(duesAmountTF.getText());
+        double totalDisAmtD = Double.parseDouble(totalDiscountL.getText());
+        double totalTaxAmtD = Double.parseDouble(taxL.getText());
+        double invoiceValue = Double.parseDouble(totalPayAbleL.getText());
+        long timestamp = System.currentTimeMillis();
 
         ObservableList<CartModel> items = cartTableView.getItems();
         Connection connection = null;
-        PreparedStatement ps = null;
-        PreparedStatement ps1 = null;
+        PreparedStatement ps = null, ps1 = null, ps3 = null, psDues = null;
+        ResultSet rsMain = null;
+
         int res = 0;
 
         connection = dbconnection.getConnection();
         connection.setAutoCommit(false);
 
-        if (null == connection) {
-            System.out.println("Cart : Connection Failed");
-            return;
+        double addiDisc = 0;
+        try {
+            addiDisc = Double.parseDouble(addDiscTF.getText());
+        } catch (NumberFormatException ignored) {
         }
 
+
         try {
-            for (CartModel model : items) {
+            String saleMainQuery = "INSERT INTO tbl_sale_main(CUSTOMER_ID, SELLER_ID, ADDITIONAL_DISCOUNT, RECEIVED_AMOUNT," +
+                    " PAYMENT_MODE, TOT_DISC_AMOUNT,\n" +
+                    "                          TOT_TAX_AMOUNT, NET_AMOUNT, INVOICE_NUMBER, BILL_TYPE)\n" +
+                    "                           VALUES (?,?,?,?,?,?,?,?,?,?)";
 
-                res = 0;
-                String query = "INSERT INTO tbl_saleItems (CUSTOMER_ID, PRODUCT_ID, STOCK_ID, SELLER_ID,\n" +
-                        "                             INVOICE_NUMBER, PRODUCT_NAME, PRODUCT_COLOR, PRODUCT_CATEGORY,\n" +
-                        "                             PRODUCT_TYPE, PRODUCT_SIZE, PURCHASE_PRICE, PRODUCT_MRP, SELL_PRICE,\n" +
-                        "                             PRODUCT_QUANTITY, DISCOUNT_NAME, DISCOUNT_AMOUNT, BILL_TYPE, HSN_SAC,\n" +
-                        "                             PRODUCT_TAX,TAX_AMOUNT ,NET_AMOUNT , igst , sgst ,cgst)\n" +
-                        "\n" +
-                        " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            ps3 = connection.prepareStatement(saleMainQuery, new String[]{"sale_main_id"});
+            ps3.setInt(1, customer.getCustomerId());
+            ps3.setInt(2, Login.currentlyLogin_Id);
+            ps3.setDouble(3, addiDisc);
+            ps3.setDouble(4, receivedAmountD);
+            ps3.setString(5, paytmModeS);
+            ps3.setDouble(6, totalDisAmtD);
+            ps3.setDouble(7, totalTaxAmtD);
+            ps3.setDouble(8, invoiceValue);
+            ps3.setString(9, invoiceNumber);
+            ps3.setString(10, billingType);
 
-                ps = connection.prepareStatement(query);
-                ps.setInt(1, customer.getCustomerId());
-                ps.setInt(2, model.getProductId());
-                ps.setInt(3, model.getProductStockID());
-                ps.setInt(4, model.getSellerId());
-                ps.setLong(5, invoiceNumber);
-                ps.setString(6, model.getProductName());
-                ps.setString(7, model.getProductColor());// color
-                ps.setString(8, model.getCategory());
-                ps.setString(9, model.getType());
-                ps.setString(10, model.getFullSize());
-                ps.setDouble(11, model.getPurchasePrice());
-                ps.setDouble(12, model.getProductMRP());
-                ps.setDouble(13, model.getSellingPrice());
-                ps.setString(14, model.getFullQuantity());
+            int resMain = ps3.executeUpdate();
+            if (resMain > 0) {
 
-                // ps.setDate(1,new java.sql.Date(new java.util.Date().getTime()));
+                rsMain = ps3.getGeneratedKeys();
 
-                if (null != model.getDiscountName()) {
-                    ps.setString(15, model.getDiscountName());
-                } else {
-                    ps.setNull(15, Types.NULL);
+                if (rsMain.next()) {
+
+                    int sale_main_id = rsMain.getInt(1);
+
+                    if (duesAmtD > 0) {
+                        String duesQuery = "INSERT INTO tbl_dues (CUSTOMER_ID, SALE_MAIN_ID, DUES_AMOUNT," +
+                                " DUES_NOTES, PAYMENT_MODE, LAST_PAYMENT,INVOICE_NUMBER)\n" +
+                                "VALUES (?,?,?,?,?,?,?)";
+                        psDues = connection.prepareStatement(duesQuery);
+                        psDues.setInt(1, customer.getCustomerId());
+                        psDues.setInt(2, sale_main_id);
+                        psDues.setDouble(3, duesAmtD);
+                        psDues.setNull(4, Types.NULL);
+                        psDues.setString(5, paytmModeS);
+                        psDues.setTimestamp(6, new Timestamp(timestamp));
+                        psDues.setString(7, invoiceNumber);
+                        psDues.executeUpdate();
+                    }
+
+                    for (CartModel model : items) {
+
+                        res = 0;
+                        String query = "INSERT INTO tbl_saleItems (sale_main_id, product_id, stock_id, product_name, product_color, \n" +
+                                "                           product_category, product_type, product_size, purchase_price, product_mrp, sell_price,\n" +
+                                "                           product_quantity, discount_name, discount_amount, hsn_sac, igst, sgst, cgst," +
+                                " net_amount, tax_amount,SALE_DATE,discountPer) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+                        ps = connection.prepareStatement(query);
+
+                        ps.setInt(1, sale_main_id);
+                        ps.setInt(2, model.getProductId());
+                        ps.setInt(3, model.getProductStockID());
+                        ps.setString(4, model.getProductName());
+                        ps.setString(5, model.getProductColor());
+                        ps.setString(6, model.getCategory());
+                        ps.setString(7, model.getType());
+                        ps.setString(8, model.getFullSize());
+                        ps.setDouble(9, model.getPurchasePrice());
+                        ps.setDouble(10, model.getProductMRP());
+                        ps.setDouble(11, model.getSellingPrice());
+                        ps.setString(12, model.getFullQuantity());
+
+                        if (null != model.getDiscountName()) {
+                            ps.setString(13, model.getDiscountName());
+                        } else {
+                            ps.setNull(13, Types.NULL);
+                        }
+                        ps.setDouble(14, model.getDiscountAmount());
+                        ps.setLong(15, model.getHsn());
+                        ps.setInt(16, model.getIgst());
+                        ps.setInt(17, model.getSgst());
+                        ps.setInt(18, model.getCsgt());
+                        ps.setDouble(19, model.getNetAmount());
+                        ps.setDouble(20, model.getGstAmount());
+                        ps.setTimestamp(21, new Timestamp(timestamp));
+                        ps.setDouble(22,model.getDiscountPercentage());
+
+                        res = ps.executeUpdate();
+                        if (res > 0) {
+                            ps1 = connection.prepareStatement("update tbl_product_stock set quantity = quantity-? where stock_id = ?");
+                            ps1.setInt(1, model.getQuantity());
+                            ps1.setInt(2, model.getProductStockID());
+                            res = ps1.executeUpdate();
+                        }
+
+                    }
+
+                    if (res > 0) {
+
+                        connection.commit();
+                        addDiscTF.setText(String.valueOf(0));
+                        deleteAll(event);
+
+
+                        customDialog.showAlertBox("Seccess", "Successfully to Sale !");
+                    }
+
                 }
-
-                ps.setDouble(16, model.getDiscountAmount());
-                ps.setString(17, billingType);
-
-
-                ps.setLong(18, model.getHsn_sac());
-                ps.setDouble(19, model.getTotalTax());
-                ps.setDouble(20, model.getGstAmount());
-
-                ps.setDouble(21, model.getNetAmount());
-                ps.setInt(22, model.getIgst());
-                ps.setInt(23, model.getSgst());
-                ps.setInt(24, model.getCsgt());
-
-
-                res = ps.executeUpdate();
-                if (res > 0) {
-                    ps1 = connection.prepareStatement("update tbl_product_stock set quantity = quantity-? where stock_id = ?");
-                    ps1.setInt(1, model.getQuantity());
-                    ps1.setInt(2, model.getProductStockID());
-                    res = ps1.executeUpdate();
-                }
-
-            }
-            if (res > 0) {
-                connection.commit();
-                customDialog.showAlertBox("Seccess", "Successfully to Sale !");
-            } else {
             }
         } catch (SQLException e) {
             customDialog.showAlertBox("ERROR", "Failed to Sale !");
             connection.rollback();
             e.printStackTrace();
         } finally {
-
             DBConnection.closeConnection(connection, ps, null);
-        }
-        //}
 
-        deleteAll();
-        Stage stage = CustomDialog.stage;
-
-        if (stage.isShowing()) {
-            stage.close();
+            if (null != rsMain) {
+                rsMain.close();
+            }
+            if (ps1 != null) {
+                ps1.close();
+            }
+            if (ps3 != null) {
+                ps3.close();
+            }
+            if (psDues != null) {
+                psDues.close();
+            }
         }
+
 
     }
 }

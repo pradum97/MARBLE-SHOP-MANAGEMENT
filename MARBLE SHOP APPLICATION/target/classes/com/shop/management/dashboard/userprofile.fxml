@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="600.0" style="-fx-border-color: red" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.Userprofile">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.Userprofile">
    <center>
       <StackPane BorderPane.alignment="CENTER">
          <children>
@@ -131,9 +136,7 @@
                                  <HBox.margin>
                                     <Insets />
                                  </HBox.margin></Button>
-                              <Button fx:id="bnEdit" mnemonicParsing="false" onAction="#editProfile"
-                                      style=" -fx-cursor: hand;-fx-background-color: #5e0cee;
-                                      -fx-text-fill: WHITE;" text="EDIT PROFILE" />
+                              <Button fx:id="bnEdit" mnemonicParsing="false" onAction="#editProfile" style=" -fx-cursor: hand;-fx-background-color: #5e0cee;                                       -fx-text-fill: WHITE;" text="EDIT PROFILE" />
                            </children>
                            <VBox.margin>
                               <Insets top="20.0" />

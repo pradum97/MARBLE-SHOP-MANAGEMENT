@@ -10,36 +10,34 @@ public class CartModel {
 
     private double purchasePrice, productMRP, minSellPrice, sellingPrice, height, width;
 
-    private String sizeUnit, quantityUnit  ,  totalDiscount;
+    private String sizeUnit, quantityUnit  ,  totalDiscountStr;
 
-    private double totalTax;
+    private double totalTaxPer;
 
     public String fullSize, fullQuantity;
 
     private int quantity;
     private String productColor , discountName  ;
-    private long hsn_sac;
+    private long hsn;
     private double discountAmount , netAmount , gstAmount;
     private int sgst , csgt , igst;
+    private String totalTaxStr ;
+    private  double discountPercentage;
 
-
-    public CartModel(int cartId, int productId, int stockID, int discountId, int taxId, int sellerId,
-                     String productName, String product_type, String productCategory, double
-                             purchasePrice, double productMRP, double minSellPrice,
-                     double sellingPrice, double height, double width, String sizeUnit,
-                     String quantityUnit, String totalDis, double totalTax, int quantity,
-                     String productColor, String discount_name, double dis, long hsn_sac, double netAmount , double gstAmount ,
-                     int sgst , int cgst , int igst) {
+    public CartModel(int cartId, int productId, int productStockID, int discountId, int taxId, int sellerId, String productName, String type, String category, double purchasePrice, double productMRP,
+                     double minSellPrice, double sellingPrice, double height, double width, String sizeUnit, String quantityUnit, String totalDiscountStr, double totalTaxPer,
+                     int quantity, String productColor, String discountName, double discountAmount ,
+                     long hsn, double netAmount, double gstAmount, int sgst, int csgt, int igst, String totalTaxStr, double discountPercentage) {
 
         this.cartId = cartId;
         this.productId = productId;
-        this.productStockID = stockID;
+        this.productStockID = productStockID;
         this.discountId = discountId;
         this.taxId = taxId;
         this.sellerId = sellerId;
         this.productName = productName;
-        this.type = product_type;
-        this.category = productCategory;
+        this.type = type;
+        this.category = category;
         this.purchasePrice = purchasePrice;
         this.productMRP = productMRP;
         this.minSellPrice = minSellPrice;
@@ -48,19 +46,44 @@ public class CartModel {
         this.width = width;
         this.sizeUnit = sizeUnit;
         this.quantityUnit = quantityUnit;
-        this.totalDiscount = totalDis;
-        this.totalTax = totalTax;
+        this.totalDiscountStr = totalDiscountStr;
+        this.totalTaxPer = totalTaxPer;
         this.quantity = quantity;
         this.productColor = productColor;
-        this.discountName = discount_name;
-        this.discountAmount = dis;
-        this.hsn_sac = hsn_sac;
+        this.discountName = discountName;
+        this.hsn = hsn;
+        this.discountAmount = discountAmount;
         this.netAmount = netAmount;
         this.gstAmount = gstAmount;
         this.sgst = sgst;
-        this.csgt = cgst;
+        this.csgt = csgt;
         this.igst = igst;
+        this.totalTaxStr = totalTaxStr;
+        this.discountPercentage = discountPercentage;
+    }
 
+    public double getDiscountPercentage() {
+        return discountPercentage;
+    }
+
+    public void setDiscountPercentage(double discountPercentage) {
+        this.discountPercentage = discountPercentage;
+    }
+
+    public String getTotalDiscountStr() {
+        return totalDiscountStr;
+    }
+
+    public void setTotalDiscountStr(String totalDiscountStr) {
+        this.totalDiscountStr = totalDiscountStr;
+    }
+
+    public String getTotalTaxStr() {
+        return totalTaxStr;
+    }
+
+    public void setTotalTaxStr(String totalTaxStr) {
+        this.totalTaxStr = totalTaxStr;
     }
 
     public int getSgst() {
@@ -119,12 +142,12 @@ public class CartModel {
         this.discountAmount = discountAmount;
     }
 
-    public long getHsn_sac() {
-        return hsn_sac;
+    public long getHsn() {
+        return hsn;
     }
 
-    public void setHsn_sac(long hsn_sac) {
-        this.hsn_sac = hsn_sac;
+    public void setHsn(long hsn) {
+        this.hsn = hsn;
     }
 
     public double getNetAmount() {
@@ -292,20 +315,13 @@ public class CartModel {
         this.fullQuantity = fullQuantity;
     }
 
-    public String getTotalDiscount() {
-        return totalDiscount;
+
+    public double getTotalTaxPer() {
+        return totalTaxPer;
     }
 
-    public void setTotalDiscount(String totalDiscount) {
-        this.totalDiscount = totalDiscount;
-    }
-
-    public double getTotalTax() {
-        return totalTax;
-    }
-
-    public void setTotalTax(double totalTax) {
-        this.totalTax = totalTax;
+    public void setTotalTaxPer(double totalTaxPer) {
+        this.totalTaxPer = totalTaxPer;
     }
 
     public int getQuantity() {

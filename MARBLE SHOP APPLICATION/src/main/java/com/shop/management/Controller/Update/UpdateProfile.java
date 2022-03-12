@@ -249,7 +249,9 @@ public class UpdateProfile implements Initializable {
             if (null != connection) {
                 try {
                     connection.close();
-                    ps_insert_data.close();
+                    if (ps_insert_data != null) {
+                        ps_insert_data.close();
+                    }
 
                 } catch (SQLException e) {
                     e.printStackTrace();

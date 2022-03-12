@@ -44,3 +44,4 @@ proguard/
 # Version control
 vcs.xml
 
+!/src/main/resources/com/shop/management/dashboard/home.fxml

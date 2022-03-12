@@ -26,11 +26,12 @@ public class Stock {
         this.sizeUnit = sizeUnit;
         this.quantityUnit = quantityUnit;
         this.quantity = quantity;
+
     }
 
     public Stock(int stockID, int productID, double purchasePrice, double productMRP, double minSellingPrice,
                  double height, double width, String sizeUnit, String quantityUnit, int quantity,
-                 String fullSize, String fullQuantity) {
+                 String fullSize, String fullQuantity ) {
         this.stockID = stockID;
         this.productID = productID;
         this.purchasePrice = purchasePrice;

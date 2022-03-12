@@ -20,7 +20,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.util.Callback;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -46,7 +45,6 @@ public class ViewSizeAndPrice implements Initializable {
     private DBConnection dbConnection;
     private Properties properties;
     private Products products;
-
     private ObservableList<Stock> stockList = FXCollections.observableArrayList();
 
     @Override

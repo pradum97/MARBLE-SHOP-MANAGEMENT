@@ -18,6 +18,7 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
@@ -128,8 +129,6 @@ public class UpdateSize implements Initializable {
             e.printStackTrace();
             return;
         }
-
-
         if (prodMrp.isEmpty()) {
             method.show_popup("ENTER PRODUCT MRP ", productMrp);
             return;
@@ -141,7 +140,10 @@ public class UpdateSize implements Initializable {
             e.printStackTrace();
             return;
         }
-        if (minSellPrice_s.isEmpty()) {
+        if (purchase_price > mrp) {
+            method.show_popup("ENTER MRP MORE THAN PURCHASE PRICE", productMrp);
+            return;
+        } else if (minSellPrice_s.isEmpty()) {
             method.show_popup("ENTER MIN SELLING PRICE ", minSellPrice);
             return;
         }
@@ -154,7 +156,14 @@ public class UpdateSize implements Initializable {
             return;
         }
 
-        if (heightS.isEmpty()) {
+        if (purchase_price > min_Sell_Price) {
+            method.show_popup("ENTER MINIMUM SELLING PRICE MORE THAN PURCHASE PRICE", minSellPrice);
+            return;
+        } else if ( min_Sell_Price > mrp){
+            method.show_popup("ENTER MINIMUM SELLING PRICE LESS THAN MRP", minSellPrice);
+            return;
+
+        }else if (heightS.isEmpty()) {
             method.show_popup("ENTER PRODUCT HEIGHT", productHeight);
             return;
         } else if (widthS.isEmpty()) {
@@ -221,12 +230,9 @@ public class UpdateSize implements Initializable {
             int res = ps.executeUpdate();
 
             if (res > 0) {
+                System.out.println("sucess");
 
-                Stage stage = new CustomDialog().stage2;
-
-                if (stage.isShowing()) {
-                    stage.close();
-                }
+                clearCart(connection);
             }
 
 
@@ -234,8 +240,50 @@ public class UpdateSize implements Initializable {
             e.printStackTrace();
         } finally {
 
-            DBConnection.closeConnection(connection, ps, null);
+            DBConnection.closeConnection(null, ps, null);
         }
 
+    }
+
+    private void clearCart(Connection con ) {
+
+        Statement ps = null;
+
+        String deleteQuery = "DELETE FROM tbl_cart";
+        String sequenceOrder = "ALTER SEQUENCE tbl_cart_cart_id_seq RESTART WITH 1;";
+
+        try {
+
+            if (null == con) {
+                return;
+            }
+            ps = con.createStatement();
+            ps.addBatch(deleteQuery);
+            ps.addBatch(sequenceOrder);
+
+            ps.executeBatch();
+            Stage stage = CustomDialog.stage2;
+
+            if (stage.isShowing()) {
+                stage.close();
+            }
+
+        } catch (SQLException e) {
+            customDialog.showAlertBox("ERROR", "Failed to Clear Cart !");
+            e.printStackTrace();
+        } finally {
+
+            DBConnection.closeConnection(con, null, null);
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+                if (null != con){
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

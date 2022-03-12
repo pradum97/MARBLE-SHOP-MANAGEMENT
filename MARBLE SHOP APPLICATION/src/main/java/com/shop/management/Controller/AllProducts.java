@@ -6,10 +6,14 @@ import com.shop.management.Method.Method;
 import com.shop.management.Model.Products;
 import com.shop.management.util.DBConnection;
 import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -29,22 +33,19 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.text.SimpleDateFormat;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class AllProducts implements Initializable {
 
+    public Button bnSelectAll;
     int rowsPerPage = 15;
 
     public TableColumn<Products, String> colColor;
-    public TableColumn<Products , Integer> colSrNo;
+    public TableColumn<Products, Integer> colSrNo;
     public TableColumn<Products, String> colProductName;
+    public TableColumn<Products, String> colProductCode;
     public TableColumn<Products, String> colType;
     public TableColumn<Products, String> colCategory;
     public TableColumn<Products, String> colDiscount;
@@ -60,6 +61,7 @@ public class AllProducts implements Initializable {
     public ImageView refresh_img;
     public TextField searchTf;
     public Pagination pagination;
+    public Button bnDeleteAll;
 
 
     private DBConnection dbconnection;
@@ -80,15 +82,115 @@ public class AllProducts implements Initializable {
         properties = method.getProperties("query.properties");
         setCustomImage();
 
-       getProduct();
+        getProduct();
+
+        tableViewMultipleSelection();
 
 
         listener();
     }
 
+    private void tableViewMultipleSelection() {
+        tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
+
+        invisibleItem(bnSelectAll, bnDeleteAll);
+
+        tableView.getSelectionModel().selectedItemProperty().addListener((observableValue, products, t1) -> {
+
+            onSelectMultiple();
+        });
+
+        tableView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                onSelectMultiple();
+            }
+        });
+    }
+
+    private void onSelectMultiple() {
+
+        ObservableList<Products> selectedItems = tableView.getSelectionModel().getSelectedItems();
+
+        if (null == tableView.getSelectionModel().getSelectedItem() || selectedItems.size() < 2) {
+            invisibleItem(bnDeleteAll, bnSelectAll);
+        } else {
+            if (!bnDeleteAll.isVisible()) {
+                bnDeleteAll.setVisible(true);
+            }
+            if (!bnSelectAll.isVisible()) {
+                bnSelectAll.setVisible(true);
+            }
+        }
+
+        if (selectedItems.size() > 1) {
+            if (productsList.size() == selectedItems.size()) {
+                bnSelectAll.setText("Deselect All");
+            } else {
+                bnSelectAll.setText("Select All");
+            }
+        } else {
+            invisibleItem(bnDeleteAll, bnSelectAll);
+        }
+
+    }
+
+    private void invisibleItem(Button... bn) {
+
+        for (Button button : bn) {
+            button.setVisible(false);
+            button.managedProperty().bind(button.visibleProperty());
+        }
+    }
+
+    public void selectAllProduct(ActionEvent event) {
+
+        String txt = bnSelectAll.getText();
+
+        if (txt.equals("Select All")) {
+            tableView.getSelectionModel().selectAll();
+            bnSelectAll.setText("Deselect All");
+        } else {
+
+            tableView.getSelectionModel().clearSelection();
+            bnSelectAll.setText("Select All");
+            invisibleItem(bnSelectAll);
+        }
+
+
+    }
+
+    public void deleteMultipleProduct(ActionEvent event) {
+       int res  = 0;
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Warning ");
+        alert.setHeaderText("ARE YOU SURE YOU WANT TO DELETE SELECTED PRODUCT ?");
+        alert.initModality(Modality.APPLICATION_MODAL);
+        alert.initOwner(Main.primaryStage);
+        Optional<ButtonType> result = alert.showAndWait();
+        ButtonType button = result.orElse(ButtonType.CANCEL);
+        if (button == ButtonType.OK) {
+
+            ObservableList<Products> selectedItems = tableView.getSelectionModel().getSelectedItems();
+            for (Products products : selectedItems) {
+             int[]  i = deleteProduct(products.getProductID());
+
+             res = i.length;
+            }
+
+            if (res > 0) {
+                bnRefresh(null);
+                customDialog.showAlertBox("Success","Successfully Deleted");
+            }
+
+        } else {
+            alert.close();
+        }
+    }
     private void search_Item() {
 
-       filteredData = new FilteredList<>(productsList, p -> true);
+        filteredData = new FilteredList<>(productsList, p -> true);
 
         searchTf.textProperty().addListener((observable, oldValue, newValue) -> {
 
@@ -105,22 +207,17 @@ public class AllProducts implements Initializable {
 
                 } else if (products.getProductType().toLowerCase().contains(lowerCaseFilter)) {
                     return true;
+                } else if (products.getProductCode().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
                 } else if (products.getCategory().toLowerCase().contains(lowerCaseFilter)) {
                     return true;
                 } else if (products.getProductColor().toLowerCase().contains(lowerCaseFilter)) {
 
                     return true;
-                }else if (products.getAdded_date().toLowerCase().contains(lowerCaseFilter)) {
+                } else if (products.getAdded_date().toLowerCase().contains(lowerCaseFilter)) {
 
                     return true;
-                }else if (products.getTotalDiscount().toLowerCase().contains(lowerCaseFilter)) {
-
-                    return true;
-                }else if (products.getTotalTax().toLowerCase().contains(lowerCaseFilter)) {
-
-                    return true;
-                }
-                else if (String.valueOf(products.getHsn_sac()).toLowerCase().contains(lowerCaseFilter)) {
+                }else if (String.valueOf(products.getHsn_sac()).toLowerCase().contains(lowerCaseFilter)) {
 
                     return true;
                 }
@@ -146,6 +243,7 @@ public class AllProducts implements Initializable {
                 tableView.getItems().indexOf(cellData.getValue()) + 1));
         colColor.setCellValueFactory(new PropertyValueFactory<>("productColor"));
         colProductName.setCellValueFactory(new PropertyValueFactory<>("productName"));
+        colProductCode.setCellValueFactory(new PropertyValueFactory<>("productCode"));
         colType.setCellValueFactory(new PropertyValueFactory<>("productType"));
         colCategory.setCellValueFactory(new PropertyValueFactory<>("category"));
         colDiscount.setCellValueFactory(new PropertyValueFactory<>("totalDiscount"));
@@ -154,129 +252,6 @@ public class AllProducts implements Initializable {
         colDescription.setCellValueFactory(new PropertyValueFactory<>("productDescription"));
         colSize.setCellValueFactory(new PropertyValueFactory<>("sizeUnit"));
         colDate.setCellValueFactory(new PropertyValueFactory<>("added_date"));
-
-
-        int fromIndex = index * limit;
-        int toIndex = Math.min(fromIndex + limit, productsList.size());
-
-        int minIndex = Math.min(toIndex, filteredData.size());
-        SortedList<Products> sortedData = new SortedList<>(
-                FXCollections.observableArrayList(filteredData.subList(Math.min(fromIndex, minIndex), minIndex)));
-        sortedData.comparatorProperty().bind(tableView.comparatorProperty());
-
-        tableView.setItems(sortedData);
-
-    }
-
-    private void listener() {
-
-
-        refresh_bn.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-
-                bnRefresh(null);
-
-            }
-        });
-    }
-
-    private void setCustomImage() {
-
-        // refreshImage.setImage(method.getImage("src/main/resources/com/shop/management/img/icon/refresh_ic.png"));
-    }
-
-    private void getProduct() {
-
-        if (null != productsList) {
-            productsList.clear();
-
-        }
-
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-
-            String query = "SELECT tp.product_id,tp.added_date , tp.product_name , tp.product_description\n" +
-                    "       ,tp.product_color,tp.product_type,tp.category,\n" +
-                    "       tp.discount_id ,tp.tax_id ,\n" +
-                    "       td.discount_id ,td.discount,td.description,tpt.tax_id , tpt.hsn_sac ,\n" +
-                    "       tpt.tax_id ,tpt.sgst,tpt.cgst,tpt.igst,tpt.description,tpt.\"gstName\",\n" +
-                    "       (select string_agg(concat(tps.height , 'x' , tps.width ,' ', tps.size_unit ),', ' ) as height_width\n" +
-                    "       from tbl_product_stock as tps where  tps.product_id = tp.product_id group by tp.product_id )\n" +
-                    "\n" +
-                    "FROM   tbl_products as tp\n" +
-                    "         Left JOIN tbl_discount as td  ON ( tp.discount_id = td.discount_id )\n" +
-                    "         Left Join tbl_product_tax as tpt  on ( tp.tax_id = tpt.tax_id ) ORDER BY tp.product_id DESC";
-
-            connection = dbconnection.getConnection();
-
-            if (null == connection) {
-                System.out.println("MyProduct : Connection Failed");
-                return;
-            }
-            ps = connection.prepareStatement(query);
-            rs = ps.executeQuery();
-
-            while (rs.next()) {
-
-                int productID = rs.getInt("product_id");
-                String productName = rs.getString("product_name");
-                String productDescription = rs.getString("product_description");
-                String productColor = rs.getString("product_color");
-                String productType = rs.getString("product_type");
-                String productCategory = rs.getString("category");
-                int productDiscountID = rs.getInt("discount_id");
-                String addedDate = " " + rs.getString("added_date");
-                int productTaxID = rs.getInt("tax_id");
-
-                // discount
-                int discountID = rs.getInt("discount_id");
-                int totalDiscount = rs.getInt("discount");
-
-                // tax
-                int hsnSac = rs.getInt("hsn_sac");
-                int taxId = rs.getInt("tax_id");
-                int sgst = rs.getInt("sgst");
-                int cgst = rs.getInt("cgst");
-                int igst = rs.getInt("igst");
-                String tax_description = rs.getString("description");
-                String gstName = rs.getString("gstName");
-
-                String size = " " + rs.getString("height_width");
-
-                int totalTax = sgst + cgst + igst;
-
-                String[] str = addedDate.split("\\.");
-
-
-                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-              //  Date date = new Date();
-
-              // String date = formatter.format(new Date(addedDate));
-
-                productsList.add(new Products(0, productID, 0, 0,
-                        0, 0, 0, size,
-                        null, 0, productID, productName, productDescription, productColor,
-                        productType, productCategory, discountID, taxId, null, str[0],
-                        String.valueOf(totalDiscount), String.valueOf(totalTax), hsnSac));
-
-            }
-
-            if (productsList.size()>0){
-                pagination.setVisible(true);
-                search_Item();
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-
-            DBConnection.closeConnection(connection, ps, rs);
-
-        }
 
         Callback<TableColumn<Products, String>, TableCell<Products, String>>
                 cellFactory = (TableColumn<Products, String> param) -> new TableCell<>() {
@@ -358,16 +333,32 @@ public class AllProducts implements Initializable {
                             return;
                         }
 
+                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                        alert.setTitle("Warning ");
+                        alert.setHeaderText("ARE YOU SURE YOU WANT TO DELETE THIS PRODUCT ( " + products.getProductName() + " )");
+                        alert.initModality(Modality.APPLICATION_MODAL);
+                        alert.initOwner(Main.primaryStage);
+                        Optional<ButtonType> result = alert.showAndWait();
+                        ButtonType button = result.orElse(ButtonType.CANCEL);
+                        if (button == ButtonType.OK) {
 
-                        deleteProduct(products);
+                            int[] res = deleteProduct(products.getProductID());
+                            if (res.length > 0) {
+                                bnRefresh(null);
+                                customDialog.showAlertBox("Success","Successfully Deleted");
+                            }
+
+                        } else {
+                            alert.close();
+                        }
 
                     });
 
                     HBox managebtn = new HBox(iv_edit, iv_delete);
 
                     managebtn.setStyle("-fx-alignment:center");
-                    HBox.setMargin(iv_edit, new Insets(0, 2, 0, 0));
-                    HBox.setMargin(iv_delete, new Insets(0, 3, 0, 30));
+                    HBox.setMargin(iv_edit, new Insets(0, 0, 0, 0));
+                    HBox.setMargin(iv_delete, new Insets(0, 3, 0, 20));
 
                     setGraphic(managebtn);
 
@@ -389,6 +380,8 @@ public class AllProducts implements Initializable {
 
                 } else {
                     Label bnCheckPrice = new Label("CHECK PRICE");
+
+                    bnCheckPrice.setMinWidth(100);
 
                     bnCheckPrice.setStyle("-fx-background-color: #008080; -fx-background-radius: 3 ; " +
                             "-fx-padding: 5 8 5 8 ; -fx-text-fill: white; -fx-alignment: center;-fx-cursor: hand");
@@ -421,93 +414,170 @@ public class AllProducts implements Initializable {
         };
         colAction.setCellFactory(cellFactory);
         colPrice.setCellFactory(cellSize);
-        tableView.setItems(productsList);
 
         customColumn(colProductName);
         customColumn(colDescription);
         customColumn(colSize);
         customColumn(colDate);
-        tableView.getSelectionModel().selectFirst();
+        customColumn(colProductCode);
+
+
+        int fromIndex = index * limit;
+        int toIndex = Math.min(fromIndex + limit, productsList.size());
+
+        int minIndex = Math.min(toIndex, filteredData.size());
+        SortedList<Products> sortedData = new SortedList<>(
+                FXCollections.observableArrayList(filteredData.subList(Math.min(fromIndex, minIndex), minIndex)));
+        sortedData.comparatorProperty().bind(tableView.comparatorProperty());
+
+        tableView.setItems(sortedData);
 
     }
 
-    private void deleteProduct(Products products) {
+    private void listener() {
 
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Warning ");
-        alert.setHeaderText("Are You Sure You Want to Delete This Product ( " + products.getProductName() + " )");
-        alert.initModality(Modality.APPLICATION_MODAL);
-        alert.initOwner(Main.primaryStage);
-        Optional<ButtonType> result = alert.showAndWait();
-        ButtonType button = result.orElse(ButtonType.CANCEL);
-        if (button == ButtonType.OK) {
-            Connection con = null;
-            PreparedStatement ps = null;
 
-            try {
+        refresh_bn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
 
-                con = dbconnection.getConnection();
+                bnRefresh(null);
 
-                if (null == con) {
-                    return;
-                }
+            }
+        });
+    }
 
-                ps = con.prepareStatement("DELETE FROM tbl_product_stock WHERE product_id = ?");
-                ps.setInt(1, products.getProductID());
+    private void setCustomImage() {
 
-                int res = ps.executeUpdate();
+        // refreshImage.setImage(method.getImage("src/main/resources/com/shop/management/img/icon/refresh_ic.png"));
+    }
 
-                if (res > 0) {
+    private void getProduct() {
 
-                    ps = null;
-                    ps = con.prepareStatement("select  * from tbl_product_img where product_id = ?");
-                    ps.setInt(1, products.getProductID());
+        if (null != productsList) {
+            productsList.clear();
 
-                    ResultSet rs = ps.executeQuery();
+        }
 
-                    while (rs.next()) {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
 
-                        String path = rs.getString("img_path");
+        try {
 
-                        File file = new File("src/main/resources/com/shop/management/img/Product_Image/" + path);
-                        if (file.exists()) {
-                            FileUtils.forceDelete(file);
-                        }
-                    }
-                    ps = null;
+            String query = "SELECT tp.product_id, (TO_CHAR(tp.added_date, 'DD-MM-YYYY HH12:MI:SS AM')) as added_date , tp.product_code , tp.product_name , tp.product_description\n" +
+                    "        ,tp.product_color,tp.product_type,tc.category_id, tc.category_name,\n" +
+                    "       tp.discount_id ,tp.tax_id ,\n" +
+                    "       td.discount_id ,td.discount,td.description,tpt.tax_id , tpt.hsn_sac ,\n" +
+                    "       tpt.tax_id ,tpt.sgst,tpt.cgst,tpt.igst,tpt.description,tpt.gstName,\n" +
+                    "       (select string_agg(concat(tps.height , 'x' , tps.width ,' ', tps.size_unit ),', ' ) as height_width\n" +
+                    "        from tbl_product_stock as tps where  tps.product_id = tp.product_id group by tp.product_id )\n" +
+                    "\n" +
+                    "FROM   tbl_products as tp\n" +
+                    "           LEFT JOIN tbl_category as tc ON tp.category_id = tc.category_id         Left JOIN tbl_discount as td  ON ( tp.discount_id = td.discount_id )\n" +
+                    "           Left Join tbl_product_tax as tpt  on ( tp.tax_id = tpt.tax_id ) ORDER BY tp.product_id DESC";
 
-                    if (null != rs) {
-                        rs.close();
-                    }
-                    ps = con.prepareStatement("DELETE FROM tbl_product_img WHERE product_id = ?");
-                    ps.setInt(1, products.getProductID());
-                    ps.executeUpdate();
+            connection = dbconnection.getConnection();
+            if (null == connection) {
+                System.out.println("MyProduct : Connection Failed");
+                return;
+            }
+            ps = connection.prepareStatement(query);
+            rs = ps.executeQuery();
 
-                    ps = null;
+            while (rs.next()) {
 
-                    ps = con.prepareStatement("DELETE FROM tbl_products WHERE product_id = ?");
-                    ps.setInt(1, products.getProductID());
+                int productID = rs.getInt("product_id");
+                String productName = rs.getString("product_name");
+                String productDescription = rs.getString("product_description");
+                String productColor = rs.getString("product_color");
+                String productType = rs.getString("product_type");
+                String productCategory = rs.getString("category_name");
+                int productDiscountID = rs.getInt("discount_id");
+                String addedDate = " " + rs.getString("added_date");
+                String productCode = " " + rs.getString("product_code");
+                int productTaxID = rs.getInt("tax_id");
 
-                    int i = ps.executeUpdate();
+                // discount
+                int discountID = rs.getInt("discount_id");
+                double discountPer = rs.getInt("discount");
 
-                    if (i > 0) {
-                        bnRefresh(null);
-                        customDialog.showAlertBox("", "Successfully Deleted");
-                        alert.close();
-                    }
+                // tax
+                int hsnSac = rs.getInt("hsn_sac");
+                int taxId = rs.getInt("tax_id");
+                double sgst = rs.getInt("sgst");
+                double cgst = rs.getInt("cgst");
+                double igst = rs.getInt("igst");
+                String tax_description = rs.getString("description");
+                String gstName = rs.getString("gstName");
 
-                }
-            } catch (SQLException | IOException e) {
-                customDialog.showAlertBox("ERROR", e.getMessage());
-                e.printStackTrace();
-            } finally {
+                String size =rs.getString("height_width");
 
-                DBConnection.closeConnection(con, ps, null);
+               if (null == size){
+                   size = "-";
+               }
+                double totalTaxPer = sgst + cgst + igst;
+
+                productsList.add(new Products(0, productID, 0, 0,
+                        0, 0, 0, size,
+                        null, 0, productID, productName, productDescription, productColor,
+                        productType, productCategory, discountID, taxId, null, addedDate,
+                        discountPer, totalTaxPer, hsnSac, productCode));
+
             }
 
-        } else {
-            alert.close();
+            if (productsList.size() > 0) {
+                pagination.setVisible(true);
+                search_Item();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+
+            DBConnection.closeConnection(connection, ps, rs);
+
         }
+
+    }
+
+    private int[] deleteProduct(int productId) {
+
+        Connection con = null;
+        Statement ps = null;
+
+        try {
+
+            con = dbconnection.getConnection();
+
+            String stockQuery = "DELETE FROM tbl_product_stock WHERE product_id =" + productId;
+            String productQuery = "DELETE FROM tbl_products WHERE product_id =" + productId;
+
+            ps = con.createStatement();
+            ps.addBatch(stockQuery);
+            ps.addBatch(productQuery);
+
+            return ps.executeBatch();
+
+
+        } catch (SQLException e) {
+            customDialog.showAlertBox("ERROR", e.getMessage());
+            e.printStackTrace();
+            return new int[]{0};
+        } finally {
+
+            DBConnection.closeConnection(con, null, null);
+
+            try {
+                if (null != ps) {
+                    ps.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+
     }
 
     private void customColumn(TableColumn<Products, String> columnName) {
@@ -530,5 +600,4 @@ public class AllProducts implements Initializable {
         tableView.refresh();
         changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);
     }
-
 }
