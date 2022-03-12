@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Pagination?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane  maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.ReturnItems.ReturnMain">
+   <center>
+      <AnchorPane BorderPane.alignment="CENTER">
+         <children>
+            <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <TableView fx:id="tableView" VBox.vgrow="ALWAYS">
+                    <columns>
+                      <TableColumn fx:id="colSrNo" maxWidth="60.0" minWidth="70.0" prefWidth="-1.0" text="SrNo" />
+                        <TableColumn fx:id="colCusName" maxWidth="400.0" minWidth="150.0" prefWidth="184.800048828125" text="CUSTOMER NAME" />
+                        <TableColumn fx:id="colCusPhone" maxWidth="300.0" minWidth="150.0" text="CUSTOMER MOB" />
+                        <TableColumn fx:id="colCheckItem" maxWidth="300.0" minWidth="150.0" text="#" />
+                        <TableColumn fx:id="colRefundable" maxWidth="250.0" minWidth="150.0" text="REFUNDABLE AMOUNT" />
+                        <TableColumn fx:id="colOldVoiceNum" maxWidth="200.0" minWidth="170.0" text="OLD INVOICE NUMBER" />
+                        <TableColumn fx:id="colNewInvoice" maxWidth="200.0" minWidth="170.0" text="INVOICE NUMBER" />
+                        <TableColumn fx:id="colReturnDate" minWidth="150.0" text="RETURN DATE" />
+                        <TableColumn fx:id="colRemark" minWidth="100.0" text="RE-MARK" />
+                    </columns>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
+                  </TableView>
+               </children>
+            </VBox>
+         </children>
+      </AnchorPane>
+   </center>
+   <top>
+      <HBox alignment="CENTER_RIGHT" fillHeight="false" prefHeight="70.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <HBox alignment="CENTER">
+               <children>
+                  <TextField fx:id="searchTF" alignment="CENTER" minHeight="35.0" minWidth="150.0" prefHeight="42.0" prefWidth="250.0" promptText="Enter MOB /  INVOICE NUM" style="-fx-border-color: GRAY; -fx-border-radius: 4;" />
+               </children>
+               <HBox.margin>
+                  <Insets right="70.0" />
+               </HBox.margin>
+            </HBox>
+         </children>
+      </HBox>
+   </top>
+   <bottom>
+      <Pagination visible="false" fx:id="pagination" BorderPane.alignment="CENTER" />
+   </bottom>
+</BorderPane>

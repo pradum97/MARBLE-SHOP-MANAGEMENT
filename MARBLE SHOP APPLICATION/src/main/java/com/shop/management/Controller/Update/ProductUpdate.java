@@ -80,7 +80,7 @@ public class ProductUpdate implements Initializable {
 
             String query = "SELECT tp.product_id,tp.discount_id ,tp.product_code ,tp.tax_id ,\n" +
                     "       td.discount_id , td.discount_name ,td.discount,td.description, tpt.tax_id ,tpt.hsn_sac ,\n" +
-                    "       tpt.tax_id ,tpt.sgst,tpt.cgst,tpt.igst,tpt.description,tpt.\"gstName\" , tc.category_id , tc.category_name\n" +
+                    "       tpt.tax_id ,tpt.sgst,tpt.cgst,tpt.igst,tpt.description,tpt.gstName , tc.category_id , tc.category_name\n" +
                     "\n" +
                     "FROM   tbl_products as tp\n" +
                     "    LEFT JOIN tbl_category as tc ON (tp.category_id = tc.category_id)\n" +
@@ -295,7 +295,7 @@ public class ProductUpdate implements Initializable {
             int res = ps.executeUpdate();
 
             if (res > 0) {
-                Stage stage = new CustomDialog().stage;
+                Stage stage = CustomDialog.stage;
                 if (stage.isShowing()) {
                     stage.close();
                 }

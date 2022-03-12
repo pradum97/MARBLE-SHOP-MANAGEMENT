@@ -191,8 +191,11 @@ public class SaleReport implements Initializable {
             totalNetAmountL.setText(String.valueOf(Double.parseDouble(df.format(totalNetAmount))));
             totalPurchaseAmtL.setText(String.valueOf(Double.parseDouble(df.format(totalPurchaseAmount))));
 
-            pagination.setVisible(true);
-            search_Item();
+            if (reportList.size() > 0) {
+                pagination.setVisible(true);
+                search_Item();
+            }
+
 
         } catch (SQLException e) {
             e.printStackTrace();

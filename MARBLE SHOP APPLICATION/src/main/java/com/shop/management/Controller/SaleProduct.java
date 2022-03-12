@@ -98,7 +98,7 @@ public class SaleProduct implements Initializable {
                     "        ,tp.product_color,tp.product_type,tc.category_id, tc.category_name,\n" +
                     "       tp.discount_id ,tp.tax_id ,\n" +
                     "       td.discount_id ,td.discount,tpt.tax_id ,\n" +
-                    "       tpt.tax_id ,tpt.sgst,tpt.cgst,tpt.igst , tpt.hsn_sac,tpt.description,tpt.\"gstName\",\n" +
+                    "       tpt.tax_id ,tpt.sgst,tpt.cgst,tpt.igst , tpt.hsn_sac,tpt.description,tpt.gstName,\n" +
                     "       (select string_agg(concat(tps.height , 'x' , tps.width ,' ', tps.size_unit ),', ' ) as height_width\n" +
                     "        from tbl_product_stock as tps where  tps.product_id = tp.product_id group by tp.product_id )\n" +
                     "\n" +
@@ -132,16 +132,16 @@ public class SaleProduct implements Initializable {
 
                 // discount
                 int discountID = rs.getInt("discount_id");
-                int totalDiscount = rs.getInt("discount");
+                double totalDiscount = rs.getInt("discount");
                /* String discountType = rs.getString("discount_type");
                 String description = rs.getString("description");*/
 
                 // tax
                 int hsnSac = rs.getInt("hsn_sac");
                 int taxId = rs.getInt("tax_id");
-                int sgst = rs.getInt("sgst");
-                int cgst = rs.getInt("cgst");
-                int igst = rs.getInt("igst");
+                double sgst = rs.getInt("sgst");
+                double cgst = rs.getInt("cgst");
+                double igst = rs.getInt("igst");
                 String tax_description = rs.getString("description");
                 String gstName = rs.getString("gstName");
 
@@ -151,13 +151,13 @@ public class SaleProduct implements Initializable {
                     size = "-";
                 }
 
-                int totalTax = sgst + cgst + igst;
+                double totalTaxPer = sgst + cgst + igst;
 
                 productsList.add(new Products(0, productID, 0, 0,
                         0, 0, 0, size,
                         null, 0, productID, productName, productDescription, productColor,
                         productType, productCategory, discountID, taxId, null, addedDate,
-                        String.valueOf(totalDiscount), String.valueOf(totalTax), hsnSac, productCode));
+                        totalDiscount, totalTaxPer, hsnSac, productCode));
             }
 
             if (productsList.size() > 0) {
@@ -287,18 +287,7 @@ public class SaleProduct implements Initializable {
                 } else if (products.getAdded_date().toLowerCase().contains(lowerCaseFilter)) {
 
                     return true;
-                } else if (products.getTotalDiscount().toLowerCase().contains(lowerCaseFilter)) {
-
-                    return true;
-                } else if (products.getTotalTax().toLowerCase().contains(lowerCaseFilter)) {
-
-                    return true;
-                } else if (String.valueOf(products.getHsn_sac()).toLowerCase().contains(lowerCaseFilter)) {
-
-                    return true;
-                }
-
-                return false;
+                } else return String.valueOf(products.getHsn_sac()).toLowerCase().contains(lowerCaseFilter);
             });
 
             changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);

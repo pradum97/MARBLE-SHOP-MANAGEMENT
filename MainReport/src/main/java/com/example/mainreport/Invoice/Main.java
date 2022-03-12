@@ -56,55 +56,37 @@ public class Main {
 
         Map<Long,TaxDetails> map = new HashMap<>();
 
-        for (CartModel pd : cartModels) {
+        for (CartModel cm : cartModels) {
 
-            long key = pd.getHsn();
+            long key = cm.getHsn();
 
-            double sgstAmount = pd.getPurchasePrice()*pd.getSgst()/100;
-            double cgstAmount = pd.getPurchasePrice()*pd.getCsgt()/100;
-            double igstAmount = pd.getPurchasePrice()*pd.getIgst()/100;
-
+            double sgstAmount = cm.getPurchasePrice()*cm.getSgst()/100;
+            double cgstAmount = cm.getPurchasePrice()*cm.getCsgt()/100;
+            double igstAmount = cm.getPurchasePrice()*cm.getIgst()/100;
             double totalGstAmount = sgstAmount+cgstAmount+igstAmount;
 
-            double netAmount = (pd.getSellingPrice()*pd.getQuantity()-pd.getDiscountAmount());
-
+            double netAmount = (cm.getSellingPrice()*cm.getQuantity())-cm.getDiscountAmount();
             double taxableAmount =  netAmount-totalGstAmount;
 
-            System.out.println(netAmount+" "+pd.getHsn());
-
+            System.out.println(netAmount);
 
             if (map.containsKey(key)) {
-
                 // update value
-                TaxDetails td = new TaxDetails(pd.getSgst(),pd.getCsgt(),pd.getIgst()  ,
+                TaxDetails td = new TaxDetails(cm.getSgst(),cm.getCsgt(),cm.getIgst()  ,
                         map.get(key).getTaxableAmount()+taxableAmount,
                          map.get(key).getSgstAmount()+sgstAmount ,
                         map.get(key).getCgstAmount()+cgstAmount ,
-                        map.get(key).getIgstAmount()+igstAmount, pd.getHsn());
+                        map.get(key).getIgstAmount()+igstAmount, cm.getHsn());
 
                 map.put(key, td);
-
-                System.out.println("taxable "+ map.get(key).getTaxableAmount()+"sgstAmt : "+map.get(key).getSgstAmount() +"- "+map.get(key).getHsn());
-
 
             } else {
-
-                TaxDetails td = new TaxDetails(pd.getSgst(),pd.getCsgt(),pd.getIgst()  , taxableAmount,sgstAmount , cgstAmount ,igstAmount, pd.getHsn());
+                TaxDetails td = new TaxDetails(cm.getSgst(),cm.getCsgt(),cm.getIgst()  , taxableAmount,sgstAmount , cgstAmount ,igstAmount, cm.getHsn());
                 map.put(key, td);
-
 
             }
         }
-
-
-        System.out.println(map);
-
-      /*  for (int i = 0; i < map.size(); i++) {
-
-        }*/
-
-
-       /* Map<String, Object> param = new HashMap<>();
+      /* Map<String, Object> param = new HashMap<>();
         // SHOP DETAILS
         param.put("SHOP_NAME", "SUMA MARBLE AND TILES");
         param.put("SHOP_PHONE_1", "9570294565");
@@ -148,5 +130,8 @@ public class Main {
         } catch (JRException e) {
             e.printStackTrace();
         }*/
+
+
+      
     }
 }

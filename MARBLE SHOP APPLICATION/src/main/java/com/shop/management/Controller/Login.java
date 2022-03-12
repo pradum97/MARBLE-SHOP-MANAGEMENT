@@ -154,7 +154,7 @@ public class Login implements Initializable {
             }
 
         } catch (Exception e) {
-            customDialog.showAlertBox("Authentication Failed", e.getMessage());
+            customDialog.showAlertBox("Authentication Failed","USER NOT FOUND");
         } finally {
 
             DBConnection.closeConnection(connection,ps,rs);

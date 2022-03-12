@@ -8,13 +8,19 @@
     -fx-background-radius: 4;
 }
 .menu-item:focused .label {
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
+    -fx-background-color: #dbdcde;
+    -fx-border-color: transparent;
+    -fx-text-fill: black;
+    -fx-font-family: "Bookman Old Style";
+    -fx-cursor: hand;
+    -fx-background-radius: 4;
 }
 .menu-item:focused {
-    -fx-background: -fx-accent;
-    -fx-background-color: #0881ea;
-    -fx-text-fill: white;
+    -fx-background-color: #dbdcde;
+    -fx-border-color: transparent;
+    -fx-text-fill: black;
+    -fx-font-family: "Bookman Old Style";
+    -fx-cursor: hand;
     -fx-background-radius: 4;
 }
 

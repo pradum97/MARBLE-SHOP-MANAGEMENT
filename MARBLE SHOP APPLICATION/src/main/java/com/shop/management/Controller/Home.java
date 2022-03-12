@@ -39,6 +39,8 @@ public class Home implements Initializable {
     public TableView<DailySaleReport> tableViewHome;
     public TableColumn<DailySaleReport, Integer> col_sno;
 
+
+
     public TextField searchTf;
     public HBox refresh_bn;
     public Pagination pagination;
@@ -55,6 +57,8 @@ public class Home implements Initializable {
         method = new Method();
         dbConnection = new DBConnection();
         getSaleItems();
+
+
     }
 
     private void getSaleItems() {
@@ -80,7 +84,6 @@ public class Home implements Initializable {
 
             ps = connection.prepareStatement(query);
 
-            System.out.println(query);
             rs = ps.executeQuery();
 
             double totalPurchaseAmount = 0, totalProfit = 0 , totalNetAmount = 0;

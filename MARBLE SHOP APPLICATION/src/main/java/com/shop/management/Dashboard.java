@@ -70,7 +70,7 @@ public class Dashboard implements Initializable {
         properties = method.getProperties("query.properties");
         customDialog = new CustomDialog();
         main = new Main();
-        replaceScene("dashboard/saleReport.fxml");
+        replaceScene("dashboard/home.fxml");
         getMenuData();
         setCustomImage();
         setUserData();
@@ -134,8 +134,8 @@ public class Dashboard implements Initializable {
     }
 
 
-    private void onClickAction( MenuItem appearance, Menu product, MenuItem gst, MenuItem discount, MenuItem help,
-                               MenuItem shopData, MenuItem category) {
+    private void onClickAction(MenuItem appearance, Menu product, MenuItem gst, MenuItem discount, MenuItem help,
+                               MenuItem shopData, MenuItem category, MenuItem profile, MenuItem users) {
 
         appearance.setOnAction(event -> customDialog.showFxmlDialog2("setting/appearance.fxml", "APPEARANCE"));
 
@@ -152,6 +152,11 @@ public class Dashboard implements Initializable {
         help.setOnAction(event -> customDialog.showFxmlDialog2("setting/help.fxml", "HELP"));
         shopData.setOnAction(event -> customDialog.showFxmlDialog2("shopDetails.fxml", ""));
         category.setOnAction(event -> customDialog.showFxmlDialog2("category.fxml", "CATEGORY"));
+        users.setOnAction(event -> customDialog.showFxmlFullDialog("dashboard/users.fxml", "ALL USERS"));
+        profile.setOnAction(event -> {
+            Main.primaryStage.setUserData(Login.currentlyLogin_Id);
+            customDialog.showFxmlDialog2("dashboard/userprofile.fxml", "MY PROFILE");
+        });
 
 
 
@@ -224,6 +229,8 @@ public class Dashboard implements Initializable {
                 String icon_path = rs.getString("menu_icon_path");
                 String menu_location = rs.getString("menu_location");
 
+                String path = "src/main/resources/com/shop/management/img/menu_icon/";
+
                 switch (menu_location) {
 
                     case "SIDE" -> {
@@ -244,15 +251,11 @@ public class Dashboard implements Initializable {
 
                             switch (txt) {
                                 case "HOME" -> replaceScene("dashboard/home.fxml");
-                                case "PROFILE" ->{
-                                    Main.primaryStage.setUserData(Login.currentlyLogin_Id);
-                                    replaceScene("dashboard/userprofile.fxml");
-                                }
-                                case "USERS" -> replaceScene("dashboard/users.fxml");
                                 case "ALL PRODUCTS" -> replaceScene("dashboard/allProducts.fxml");
                                 case "SALE PRODUCTS" -> replaceScene("dashboard/saleProducts.fxml");
                                 case "SALES REPORT" -> replaceScene("dashboard/saleReport.fxml");
                                 case "STOCK REPORT" -> replaceScene("dashboard/stockReport.fxml");
+                                case "RETURN PRODUCT" -> replaceScene("returnItems/returnProduct.fxml");
                             }
 
 
@@ -281,9 +284,12 @@ public class Dashboard implements Initializable {
                                 gen.getItems().addAll(category,appearance);
 
                                // general -- end
-
                                 MenuItem shopData = new MenuItem("SHOP DETAILS");
+                                MenuItem profile = new MenuItem("PROFILE");
+                                MenuItem users = new MenuItem("USERS");
                                 MenuItem help = new MenuItem("HELP");
+
+                                help.setVisible(false);
 
 
                                 // product -- start
@@ -294,9 +300,9 @@ public class Dashboard implements Initializable {
 
                                 // product --  end
 
-                                menu_button.getItems().addAll(gen, product,shopData, help);
+                                menu_button.getItems().addAll(gen, product,profile,users ,shopData, help);
 
-                                onClickAction( appearance, product, gst, discount, help,shopData,category);
+                                onClickAction( appearance, product, gst, discount, help,shopData,category,profile,users);
 
 
                                 ImageView icon = new ImageView();
@@ -370,6 +376,28 @@ public class Dashboard implements Initializable {
                                 }
 
                             }
+
+                          /*  case "RE-STOCK" -> {
+
+                                Label bnRestock = new Label("RE-STOCK");
+                                bnRestock.setStyle("-fx-padding: 5 10 5 10 ; -fx-background-color: #0881ea ; -fx-text-fill: white;" +
+                                        "-fx-background-radius: 5 ; -fx-cursor: hand");
+                                ImageView iv = new ImageView(method.getImage(path+icon_path));
+                                iv.setFitWidth(18);
+                                iv.setFitHeight(18);
+
+                                bnRestock.setGraphic(iv);
+
+                                bnRestock.setOnMouseClicked(event ->  showAddProductDialog());
+
+                                gridTopMenu.add(bnRestock, colCnt, rowCnt);
+                                colCnt++;
+
+                                if (colCnt > cols) {
+                                    rowCnt++;
+                                    colCnt = 0;
+                                }
+                            }*/
                         }
                     }
                 }

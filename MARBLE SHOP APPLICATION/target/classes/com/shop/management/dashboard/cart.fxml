@@ -243,7 +243,7 @@
                                                 <Insets left="5.0" />
                                             </HBox.margin>
                                         </TextField>
-                                        <Label layoutX="108.0" layoutY="10.0" minWidth="20.0" style="-fx-text-fill: BLACK;" text=" = - " textFill="WHITE">
+                                        <Label layoutX="108.0" layoutY="10.0" minWidth="20.0" style="-fx-text-fill: BLACK;" text=" =" textFill="WHITE">
                                             <font>
                                                 <Font name="System Bold" size="13.0" />
                                             </font>
@@ -257,7 +257,7 @@
                                 </HBox>
                                 <HBox alignment="CENTER_LEFT">
                                     <children>
-                                        <Label fx:id="taxTitleL" alignment="CENTER_RIGHT" style="-fx-text-fill: BLACK;">
+                                        <Label fx:id="taxTitleL" alignment="CENTER_RIGHT" prefHeight="15.0" prefWidth="84.0" style="-fx-text-fill: BLACK;" text="TAX : ">
                                             <font>
                                                 <Font name="Bookman Old Style Bold" size="13.0" />
                                             </font>
@@ -284,9 +284,9 @@
                                         <Insets left="4.0" />
                                     </HBox.margin>
                                     <children>
-                                        <Label text="INVOICE VALUE  ₹" textFill="WHITE">
+                                        <Label text="TOTAL PAYABLE  ₹" textFill="WHITE">
                                             <font>
-                                                <Font name="Bookman Old Style Bold" size="12.0" />
+                                                <Font name="Arial Bold" size="12.0" />
                                             </font>
                                         </Label>
                                         <HBox alignment="CENTER" VBox.vgrow="ALWAYS">

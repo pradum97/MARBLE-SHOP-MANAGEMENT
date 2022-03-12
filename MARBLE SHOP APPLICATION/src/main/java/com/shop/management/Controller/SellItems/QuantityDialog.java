@@ -240,7 +240,7 @@ public class QuantityDialog implements Initializable {
 
             if (res > 0) {
 
-                Stage stage = new CustomDialog().stage;
+                Stage stage = CustomDialog.stage;
 
                 if (stage.isShowing()) {
                     stage.close();
@@ -259,7 +259,7 @@ public class QuantityDialog implements Initializable {
         Quantity quantity1 = new Quantity(quantity, quantity_Unit, sellingPrice);
 
         Main.primaryStage.setUserData(quantity1);
-        Stage stage = new CustomDialog().stage;
+        Stage stage = CustomDialog.stage;
 
         if (stage.isShowing()) {
             stage.close();

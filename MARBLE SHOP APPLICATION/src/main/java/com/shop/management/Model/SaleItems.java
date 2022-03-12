@@ -7,13 +7,13 @@ public class SaleItems {
     private double purchasePrice, mrp, sellPrice , discountAmount,taxAmount, netAmount;
     private String discountName, quantity;
     private int hsnSac, tax ,  igst , cgst , sgst;
-    private String sellingDate;
+    private String sellingDate , discountPer;
 
     public SaleItems(int sale_item_Id, int productId, int stockId, String productName,
                      String productColor, String productSize, String productType,
                      String productCategory, double purchasePrice, double mrp,
                      double sellPrice, double discountAmount, double taxAmount, double netAmount,
-                     String discountName, String quantity, int hsnSac, int tax, int igst, int cgst, int sgst , String sellingDate) {
+                     String discountName, String quantity, int hsnSac, int tax, int igst, int cgst, int sgst , String sellingDate, String discountPer ) {
         this.sale_item_Id = sale_item_Id;
         this.productId = productId;
         this.stockId = stockId;
@@ -36,6 +36,15 @@ public class SaleItems {
         this.cgst = cgst;
         this.sgst = sgst;
         this.sellingDate = sellingDate;
+        this.discountPer = discountPer;
+    }
+
+    public String getDiscountPer() {
+        return discountPer;
+    }
+
+    public void setDiscountPer(String discountPer) {
+        this.discountPer = discountPer;
     }
 
     public String getSellingDate() {

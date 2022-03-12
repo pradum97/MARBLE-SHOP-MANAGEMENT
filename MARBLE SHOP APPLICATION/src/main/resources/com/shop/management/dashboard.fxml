@@ -10,7 +10,7 @@
 <BorderPane fx:id="main_container" prefWidth="700.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Dashboard">
 
     <left>
-        <VBox alignment="TOP_CENTER" prefHeight="340.0" prefWidth="180.0" style="-fx-background-color: #008080;" BorderPane.alignment="TOP_CENTER">
+        <VBox alignment="TOP_CENTER" prefHeight="340.0" prefWidth="200.0" style="-fx-background-color: #008080;" BorderPane.alignment="TOP_CENTER">
             <children>
                 <VBox alignment="TOP_CENTER" spacing="12.0">
                     <children>

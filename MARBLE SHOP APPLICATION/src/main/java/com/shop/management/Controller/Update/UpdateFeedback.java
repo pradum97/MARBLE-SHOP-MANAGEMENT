@@ -126,7 +126,7 @@ public class UpdateFeedback implements Initializable {
                 fullName.setText("");
 
 
-                Stage stage = new CustomDialog().stage;
+                Stage stage = CustomDialog.stage;
 
                 if (stage.isShowing()) {
                     stage.close();

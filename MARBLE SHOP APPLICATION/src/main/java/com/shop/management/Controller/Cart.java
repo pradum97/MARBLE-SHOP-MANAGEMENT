@@ -51,7 +51,7 @@ public class Cart implements Initializable {
     public ComboBox<String> billingTypeC;
     public Label totalAmountL;
     public Label discountL;
-    public Label taxL , taxTitleL;
+    public Label taxL, taxTitleL;
     public Label totalPayAbleL;
     public Label totalDiscountL;
     public TableColumn<CartModel, Integer> colSrNo;
@@ -231,7 +231,9 @@ public class Cart implements Initializable {
                     "        tp.product_name,tp.product_type,tcategory.category_name , tcategory.category_id,\n" +
                     "        tp.discount_id ,tp.tax_id , tps.stock_id ,\n" +
                     "        td.discount_id , td.discount_name,td.discount,tpt.hsn_sac  ,\n" +
-                    "        tpt.tax_id ,tpt.sgst,tpt.cgst,tpt.igst,tpt.\"gstName\"\n" +
+                    "        tpt.tax_id ,tpt.sgst,tpt.cgst,tpt.igst,tpt.gstName,(tc.sellprice * tc.quantity)  amount_asPer_mrp,\n" +
+                    "       ((tc.sellprice * tc.quantity)*td.discount/100)as discountAmount,\n" +
+                    "       ((tps.purchase_price*tc.quantity)*(tpt.sgst+tpt.cgst+tpt.igst)/100) as gstAmount\n" +
                     "FROM   tbl_cart as tc\n" +
                     "           LEFT JOIN tbl_products as tp ON (tc.product_id = tp.product_id)\n" +
                     "           LEFT JOIN tbl_product_stock as tps ON tc.stock_id = tps.stock_id\n" +
@@ -239,11 +241,11 @@ public class Cart implements Initializable {
                     "           Left Join tbl_product_tax as tpt  on ( tp.tax_id = tpt.tax_id )\n" +
                     "           LEFT JOIN tbl_category as tcategory ON (tp.category_id = tcategory.category_id) order by cart_id ASC";
 
+
             ps = connection.prepareStatement(query);
             rs = ps.executeQuery();
 
             while (rs.next()) {
-
 
                 int cartId = rs.getInt("cart_id");
                 int productId = rs.getInt("product_id");
@@ -274,49 +276,31 @@ public class Cart implements Initializable {
                 int igst = rs.getInt("igst");
                 long hsn_sac = rs.getLong("hsn_sac");
 
-                int totalGst = sgst + cgst + igst;
+                double totalGstPer = sgst + cgst + igst;
 
-                int totalDiscount = rs.getInt("discount");
+                double discountPer = rs.getInt("discount");
                 String discount_name = rs.getString("discount_name");
 
-                double price = sellingPrice * quantity;
-                double disAmount =  Double.parseDouble(df.format(price * totalDiscount / 100)) ;
-                double gstAmount =  Double.parseDouble(df.format((purchasePrice*quantity) * totalGst / 100));
-                System.out.println("gst "+gstAmount);
-                double netAmount = 0;
+                double amountAsPerMrp = Double.parseDouble(df.format(rs.getDouble("amount_asPer_mrp")));
+                double disAmount = Double.parseDouble(df.format(rs.getDouble("discountAmount")));
+                double gstAmount = Double.parseDouble(df.format(rs.getDouble("gstAmount")));
 
-                String totalDis = disAmount+"( " +totalDiscount +"%)";
+                String totalDisStr = disAmount + "( " + discountPer + "%)";
+                String taxStr = gstAmount + "( " + totalGstPer + "%)";
 
-                switch (billType) {
+                double netAmount = (amountAsPerMrp - disAmount)+gstAmount;
 
-                    case "REGULAR" -> {
+                cartList.add(new CartModel(cartId, productId, stockID, discountId, taxId, sellerId, productName, product_type,
+                        productCategory, purchasePrice, productMRP, minSellPrice, sellingPrice, height, width,
+                        sizeUnit, quantityUnit, totalDisStr, totalGstPer, quantity, productColor, discount_name,
+                        disAmount, hsn_sac, Double.parseDouble(df.format(netAmount)), gstAmount, sgst, cgst, igst, taxStr , discountPer));
 
-                        colGst.setVisible(false);
-                        taxTitleL.setText("  TAX  : ₹ -");
-                        netAmount = (price - disAmount) - gstAmount;
-                        System.out.println("price :"+price +"discountAmt "+ disAmount +"taxAmount : "+gstAmount+"netAmount "+netAmount);
-
-                        cartList.add(new CartModel(cartId, productId, stockID, discountId, taxId, sellerId, productName, product_type,
-                                productCategory, purchasePrice, productMRP, minSellPrice, sellingPrice, height, width,
-                                sizeUnit, quantityUnit, totalDis, 0, quantity, productColor, discount_name,
-                                disAmount, 0,  Double.parseDouble(df.format(netAmount)), 0, 0, 0, 0  , null));
-                    }
-                    case "GST" -> {
-                        colGst.setVisible(true);
-                        taxTitleL.setText("  TAX  : ₹ +");
-                        String tax = gstAmount+"( " +totalGst +"%)";
-                        netAmount = (price - disAmount);
-                        cartList.add(new CartModel(cartId, productId, stockID, discountId, taxId, sellerId, productName, product_type,
-                                productCategory, purchasePrice, productMRP, minSellPrice, sellingPrice, height, width,
-                                sizeUnit, quantityUnit, totalDis, totalGst, quantity, productColor, discount_name,
-                                disAmount, hsn_sac,  Double.parseDouble(df.format(netAmount)), gstAmount, sgst, cgst, igst,tax));
-                    }
-                }
-
-                totalAmount = totalAmount + price;
+                totalAmount = totalAmount + amountAsPerMrp;
                 discountPrice = discountPrice + disAmount;
                 gstPrice = gstPrice + gstAmount;
                 totalPayableD = totalPayableD + netAmount;
+
+
             }
             double additionalDisc = 0;
             try {
@@ -324,9 +308,6 @@ public class Cart implements Initializable {
             } catch (NumberFormatException ignored) {
 
             }
-
-            cartTableView.setItems(cartList);
-
             totalAmountL.setText(String.valueOf(Double.valueOf(df.format(totalAmount))));
             discountL.setText(String.valueOf(Double.valueOf(df.format(discountPrice))));
             taxL.setText(String.valueOf(Double.valueOf(df.format(gstPrice))));
@@ -360,11 +341,13 @@ public class Cart implements Initializable {
             colProduct_name.setCellValueFactory(new PropertyValueFactory<>("productName"));
             colSize.setCellValueFactory(new PropertyValueFactory<>("fullSize"));
             colType.setCellValueFactory(new PropertyValueFactory<>("type"));
-            colDiscount.setCellValueFactory(new PropertyValueFactory<>("totalDiscount"));
-            colGst.setCellValueFactory(new PropertyValueFactory<>("tax"));
+            colDiscount.setCellValueFactory(new PropertyValueFactory<>("totalDiscountStr"));
+            colGst.setCellValueFactory(new PropertyValueFactory<>("totalTaxStr"));
             colMrp.setCellValueFactory(new PropertyValueFactory<>("productMRP"));
             colSellPrice.setCellValueFactory(new PropertyValueFactory<>("sellingPrice"));
             colQuantity.setCellValueFactory(new PropertyValueFactory<>("fullQuantity"));
+
+            cartTableView.setItems(cartList);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -561,7 +544,7 @@ public class Cart implements Initializable {
                     cartList.clear();
                 }
 
-                Stage stage =(Stage) ((Node)event.getSource()).getScene().getWindow();
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
                 if (stage.isShowing()) {
                     stage.close();
@@ -648,6 +631,7 @@ public class Cart implements Initializable {
             }
         }
     }
+
     private void addSaleItem(Customer customer, String billingType,
                              double receivedAmountD, ActionEvent event) throws SQLException {
 
@@ -723,8 +707,7 @@ public class Cart implements Initializable {
                         String query = "INSERT INTO tbl_saleItems (sale_main_id, product_id, stock_id, product_name, product_color, \n" +
                                 "                           product_category, product_type, product_size, purchase_price, product_mrp, sell_price,\n" +
                                 "                           product_quantity, discount_name, discount_amount, hsn_sac, igst, sgst, cgst," +
-                                " net_amount, tax_amount,SALE_DATE)\n" +
-                                "                           VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                                " net_amount, tax_amount,SALE_DATE,discountPer) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
                         ps = connection.prepareStatement(query);
 
@@ -754,6 +737,7 @@ public class Cart implements Initializable {
                         ps.setDouble(19, model.getNetAmount());
                         ps.setDouble(20, model.getGstAmount());
                         ps.setTimestamp(21, new Timestamp(timestamp));
+                        ps.setDouble(22,model.getDiscountPercentage());
 
                         res = ps.executeUpdate();
                         if (res > 0) {
