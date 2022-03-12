@@ -20,7 +20,7 @@
                         <HBox VBox.vgrow="ALWAYS">
                             <children>
 
-                                <TableView focusTraversable="false" tableMenuButtonVisible="true" BorderPane.alignment="CENTER">
+                                <TableView visible="false" focusTraversable="false" tableMenuButtonVisible="true" BorderPane.alignment="CENTER">
                                     <columns>
 
                                         <TableColumn fx:id="col_sno" prefWidth="75.0" text="S.NO" />

@@ -9,9 +9,11 @@ import com.shop.management.util.DBConnection;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.sql.Connection;
@@ -36,6 +38,7 @@ public class Userprofile implements Initializable {
     private Properties properties;
     private CustomDialog customDialog;
     private Method method;
+    private int userId;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -45,8 +48,7 @@ public class Userprofile implements Initializable {
         customDialog = new CustomDialog();
 
 
-
-        int userId = ((int) Main.primaryStage.getUserData());
+        userId = ((int) Main.primaryStage.getUserData());
 
         setUserData(userId);
 
@@ -54,7 +56,7 @@ public class Userprofile implements Initializable {
 
     private void setUserData(int userId) {
 
-        if (userId != Login.currentlyLogin_Id){
+        if (userId != Login.currentlyLogin_Id) {
             bnChangePassword.setVisible(false);
             bnChangePassword.managedProperty().bind(bnChangePassword.visibleProperty());
         }
@@ -81,7 +83,9 @@ public class Userprofile implements Initializable {
 
     public void editProfile(ActionEvent event) {
 
-        customDialog.showFxmlDialog("update/updateProfile.fxml", "EDIT PROFILE");
+        customDialog.showFxmlDialog2("update/updateProfile.fxml", "EDIT PROFILE");
+
+        setUserData(userId);
     }
 
     public void changePassword(ActionEvent event) {

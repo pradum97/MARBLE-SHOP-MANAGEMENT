@@ -49,18 +49,16 @@ public class Cart implements Initializable {
     public TableColumn<CartModel, String> colQuantity;
     public TableColumn<CartModel, String> colAmount;
     public ComboBox<String> billingTypeC;
-    public Label totalAmountL;
+    public Label subTotalL;
     public Label discountL;
     public Label taxL, taxTitleL;
     public Label totalPayAbleL;
-    public Label totalDiscountL;
     public TableColumn<CartModel, Integer> colSrNo;
     public TextField addDiscTF;
     public TextField duesAmountTF;
     public TextField receivedAmountTF;
     public ComboBox<String> paymentModeC;
-
-
+    public Label taxableValueL;
     private DBConnection dbconnection;
     private Method method;
     private CustomDialog customDialog;
@@ -68,12 +66,10 @@ public class Cart implements Initializable {
 
     private static String invoiceNumber;
 
-    private DecimalFormat df = new DecimalFormat("0.##");
-
     private ObservableList<CartModel> cartList = FXCollections.observableArrayList();
 
     double totalPayableD = 0;
-    double totalAmount = 0;
+    double subTotAmount = 0;
     double discountPrice = 0;
     double gstPrice = 0;
 
@@ -99,6 +95,8 @@ public class Cart implements Initializable {
         comboBoxConfig();
         textFieldConfig();
 
+
+
     }
 
     private void textFieldConfig() {
@@ -115,7 +113,7 @@ public class Cart implements Initializable {
 
                 double totDues = totalPayable - receivedAmount;
 
-                duesAmountTF.setText(String.valueOf(Double.valueOf(df.format(totDues))));
+                duesAmountTF.setText(String.valueOf(Math.ceil(totDues)));
             } else {
                 receivedAmountTF.setText("");
                 duesAmountTF.setText("");
@@ -204,7 +202,7 @@ public class Cart implements Initializable {
         }
 
         totalPayableD = 0;
-        totalAmount = 0;
+        subTotAmount = 0;
         discountPrice = 0;
         gstPrice = 0;
         receivedAmountTF.setText("");
@@ -271,9 +269,9 @@ public class Cart implements Initializable {
 
                 int quantity = rs.getInt("quantity");
 
-                int sgst = rs.getInt("sgst");
-                int cgst = rs.getInt("cgst");
-                int igst = rs.getInt("igst");
+                double sgst = rs.getInt("sgst");
+                double cgst = rs.getInt("cgst");
+                double igst = rs.getInt("igst");
                 long hsn_sac = rs.getLong("hsn_sac");
 
                 double totalGstPer = sgst + cgst + igst;
@@ -281,21 +279,21 @@ public class Cart implements Initializable {
                 double discountPer = rs.getInt("discount");
                 String discount_name = rs.getString("discount_name");
 
-                double amountAsPerMrp = Double.parseDouble(df.format(rs.getDouble("amount_asPer_mrp")));
-                double disAmount = Double.parseDouble(df.format(rs.getDouble("discountAmount")));
-                double gstAmount = Double.parseDouble(df.format(rs.getDouble("gstAmount")));
+                double amountAsPerMrp = Math.ceil(rs.getDouble("amount_asPer_mrp"));
+                double disAmount =Math.ceil(rs.getDouble("discountAmount"));
+                double gstAmount = Math.ceil(rs.getDouble("gstAmount"));
 
                 String totalDisStr = disAmount + "( " + discountPer + "%)";
                 String taxStr = gstAmount + "( " + totalGstPer + "%)";
 
-                double netAmount = (amountAsPerMrp - disAmount)+gstAmount;
+                double netAmount = (amountAsPerMrp - disAmount);
 
                 cartList.add(new CartModel(cartId, productId, stockID, discountId, taxId, sellerId, productName, product_type,
                         productCategory, purchasePrice, productMRP, minSellPrice, sellingPrice, height, width,
                         sizeUnit, quantityUnit, totalDisStr, totalGstPer, quantity, productColor, discount_name,
-                        disAmount, hsn_sac, Double.parseDouble(df.format(netAmount)), gstAmount, sgst, cgst, igst, taxStr , discountPer));
+                        disAmount, hsn_sac, Math.ceil(netAmount), gstAmount, sgst, cgst, igst, taxStr , discountPer));
 
-                totalAmount = totalAmount + amountAsPerMrp;
+                subTotAmount = subTotAmount + amountAsPerMrp;
                 discountPrice = discountPrice + disAmount;
                 gstPrice = gstPrice + gstAmount;
                 totalPayableD = totalPayableD + netAmount;
@@ -308,11 +306,15 @@ public class Cart implements Initializable {
             } catch (NumberFormatException ignored) {
 
             }
-            totalAmountL.setText(String.valueOf(Double.valueOf(df.format(totalAmount))));
-            discountL.setText(String.valueOf(Double.valueOf(df.format(discountPrice))));
-            taxL.setText(String.valueOf(Double.valueOf(df.format(gstPrice))));
-            totalPayAbleL.setText(String.valueOf(Double.valueOf(df.format(totalPayableD))));
-            totalDiscountL.setText(String.valueOf(Double.valueOf(df.format(discountPrice + additionalDisc))));
+
+            subTotalL.setText(String.valueOf(Math.ceil(subTotAmount)));
+            discountL.setText(String.valueOf(Math.ceil(discountPrice)));
+            taxL.setText(String.valueOf(Math.ceil(gstPrice)));
+            totalPayAbleL.setText(String.valueOf(Math.ceil(totalPayableD)));
+            taxableValueL.setText(String.valueOf(Math.round((subTotAmount-gstPrice)-discountPrice)));
+            double finalAdditionalDisc = additionalDisc;
+
+
             addDiscTF.textProperty().addListener((observableValue, s, t1) -> {
 
                 receivedAmountTF.setText("");
@@ -322,16 +324,16 @@ public class Cart implements Initializable {
                     inputDiscount = Double.parseDouble(t1);
                 } catch (NumberFormatException ignored) {
                 }
-                totalDiscountL.setText(String.valueOf(discountPrice + inputDiscount));
 
                 if (inputDiscount < totalPayableD) {
-                    totalPayAbleL.setText(String.valueOf(Double.valueOf(df.format(totalPayableD - inputDiscount))));
+                        taxableValueL.setText(String.valueOf(Math.round((subTotAmount-gstPrice)-(discountPrice+inputDiscount))));
+                    totalPayAbleL.setText(String.valueOf(Double.valueOf(Math.ceil(totalPayableD - inputDiscount))));
                 } else {
+
                     inputDiscount = 0;
-                    totalDiscountL.setText(String.valueOf(Double.valueOf(df.format(discountPrice + inputDiscount))));
-                    totalPayAbleL.setText(String.valueOf(Double.valueOf(df.format(totalPayableD))));
+                    totalPayAbleL.setText(String.valueOf(Math.ceil(totalPayableD)));
                     addDiscTF.setText(String.valueOf(0));
-                    method.show_popup("Discount Amount Not Greater Then " + totalPayableD, totalDiscountL);
+                    method.show_popup("Discount Amount Not Greater Then " + totalPayableD, addDiscTF);
                 }
             });
 
@@ -635,9 +637,15 @@ public class Cart implements Initializable {
     private void addSaleItem(Customer customer, String billingType,
                              double receivedAmountD, ActionEvent event) throws SQLException {
 
+        double additionalDisc = 0;
+        try {
+            additionalDisc = Double.parseDouble(addDiscTF.getText());
+        } catch (NumberFormatException ignored) {
+        }
+
         String paytmModeS = paymentModeC.getSelectionModel().getSelectedItem();
         double duesAmtD = Double.parseDouble(duesAmountTF.getText());
-        double totalDisAmtD = Double.parseDouble(totalDiscountL.getText());
+        double totalDisAmtD = discountPrice + additionalDisc;
         double totalTaxAmtD = Double.parseDouble(taxL.getText());
         double invoiceValue = Double.parseDouble(totalPayAbleL.getText());
         long timestamp = System.currentTimeMillis();
@@ -731,9 +739,9 @@ public class Cart implements Initializable {
                         }
                         ps.setDouble(14, model.getDiscountAmount());
                         ps.setLong(15, model.getHsn());
-                        ps.setInt(16, model.getIgst());
-                        ps.setInt(17, model.getSgst());
-                        ps.setInt(18, model.getCsgt());
+                        ps.setDouble(16, model.getIgst());
+                        ps.setDouble(17, model.getSgst());
+                        ps.setDouble(18, model.getCsgt());
                         ps.setDouble(19, model.getNetAmount());
                         ps.setDouble(20, model.getGstAmount());
                         ps.setTimestamp(21, new Timestamp(timestamp));

@@ -94,7 +94,7 @@ public class SaleProduct implements Initializable {
 
         try {
 
-            String query = "SELECT tp.product_id,(TO_CHAR(tp.added_date, 'YYYY-MM-DD HH12:MI:SS AM')) as added_date, tp.product_name ,tp.product_code, tp.product_description\n" +
+            String query = "SELECT tp.product_id,(TO_CHAR(tp.added_date, 'DD-MM-YYYY HH12:MI:SS AM')) as added_date, tp.product_name ,tp.product_code, tp.product_description\n" +
                     "        ,tp.product_color,tp.product_type,tc.category_id, tc.category_name,\n" +
                     "       tp.discount_id ,tp.tax_id ,\n" +
                     "       td.discount_id ,td.discount,tpt.tax_id ,\n" +
@@ -133,8 +133,7 @@ public class SaleProduct implements Initializable {
                 // discount
                 int discountID = rs.getInt("discount_id");
                 double totalDiscount = rs.getInt("discount");
-               /* String discountType = rs.getString("discount_type");
-                String description = rs.getString("description");*/
+
 
                 // tax
                 int hsnSac = rs.getInt("hsn_sac");

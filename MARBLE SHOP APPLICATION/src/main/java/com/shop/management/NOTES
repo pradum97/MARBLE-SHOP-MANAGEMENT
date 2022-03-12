@@ -1,18 +1,7 @@
 //hsn code required
 // cart gst improve
 // restock
-// return product
 // stock management
-// INVOICE in sell main id
-// dues check in daily report
-
-// decimal format , create decimal format method
-// question - > regularPrice add into database or not
-// date format cgange
-//discountper int into double
-//additional discount returnProduct
-// decrease value in saleItems after return product
-// hsn code require
 
        v2
 // discount expire

@@ -402,7 +402,7 @@ public class SaleReport implements Initializable {
                         Main.primaryStage.setUserData(saleMain);
 
 
-                        customDialog.showFxmlDialog("sellItems/duesHistory.fxml", "DUES HISTORY " );
+                        customDialog.showFxmlFullDialog("sellItems/duesHistory.fxml", "DUES HISTORY " );
                         bnRefresh(null);
                     });
 

@@ -76,12 +76,12 @@ public class Dashboard implements Initializable {
         setUserData();
         keyBoardShortcut();
 
-        Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {
+       /* Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
             dateL.setText(LocalDateTime.now().format(formatter));
         }), new KeyFrame(Duration.seconds(1)));
         clock.setCycleCount(Animation.INDEFINITE);
-        clock.play();
+        clock.play();*/
 
     }
 
@@ -142,24 +142,35 @@ public class Dashboard implements Initializable {
         discount.setOnAction(event -> {
 
             customDialog.showFxmlDialog2("setting/discountConfig.fxml", "DISCOUNT");
-
-
+            refreshPage();
         });
 
 
-        gst.setOnAction(event -> customDialog.showFxmlDialog2("setting/gstConfig.fxml", "GST"));
+        gst.setOnAction(event ->{
+            customDialog.showFxmlDialog2("setting/gstConfig.fxml", "GST");
+            refreshPage();
+        });
 
         help.setOnAction(event -> customDialog.showFxmlDialog2("setting/help.fxml", "HELP"));
         shopData.setOnAction(event -> customDialog.showFxmlDialog2("shopDetails.fxml", ""));
         category.setOnAction(event -> customDialog.showFxmlDialog2("category.fxml", "CATEGORY"));
         users.setOnAction(event -> customDialog.showFxmlFullDialog("dashboard/users.fxml", "ALL USERS"));
         profile.setOnAction(event -> {
+
             Main.primaryStage.setUserData(Login.currentlyLogin_Id);
             customDialog.showFxmlDialog2("dashboard/userprofile.fxml", "MY PROFILE");
+            refreshPage();
         });
 
 
 
+    }
+
+    private void  refreshPage(){
+        replaceScene("dashboard/home.fxml");
+        getMenuData();
+        setCustomImage();
+        setUserData();
     }
 
     private void showDialog(String fxmlName, String title, double height,
@@ -187,12 +198,12 @@ public class Dashboard implements Initializable {
 
         UserDetails userDetails = new GetUserProfile().getUser(Login.currentlyLogin_Id);
 
-        if (null == userDetails) {
+           if (null == userDetails) {
             customDialog.showAlertBox("Failed", "User Not Find Please Re-Login");
         } else {
 
-            fullName.setText(userDetails.getFirstName() + " " + userDetails.getLastName());
-            userRole.setText(userDetails.getRole());
+            fullName.setText((userDetails.getFirstName() + " " + userDetails.getLastName()).toUpperCase());
+            userRole.setText(userDetails.getRole().toUpperCase());
             String imgPath = "src/main/resources/com/shop/management/img/userImages/" + userDetails.getUserImage();
             userImage.setImage(method.getImage(imgPath));
         }
@@ -276,6 +287,7 @@ public class Dashboard implements Initializable {
 
                                 MenuButton menu_button = new MenuButton();
 
+
                                 // general --start
                                 Menu gen = new Menu("GENERAL");
                                 MenuItem category = new MenuItem("CATEGORY");
@@ -308,7 +320,6 @@ public class Dashboard implements Initializable {
                                 ImageView icon = new ImageView();
                                 icon.setFitWidth(18);
                                 icon.setFitHeight(18);
-                                menu_button.setStyle("-fx-cursor: hand;-fx-background-color: #0881ea ; -fx-background-radius: 5");
 
                                 icon.setImage(method.getImage("src/main/resources/com/shop/management/img/menu_icon/" + icon_path));
 
@@ -324,6 +335,7 @@ public class Dashboard implements Initializable {
                                 }
 
                             }
+
                             case "FEEDBACK" -> {
 
                                 MenuButton menu_button = new MenuButton("");
@@ -362,8 +374,8 @@ public class Dashboard implements Initializable {
                             case "ADD PRODUCT" -> {
 
                                 Label button = new Label("➕ ADD PRODUCT");
-                                button.setStyle("-fx-padding: 5 10 5 10 ; -fx-background-color: #0881ea ; -fx-text-fill: white;" +
-                                        "-fx-background-radius: 5 ; -fx-cursor: hand");
+                                button.setStyle("-fx-padding: 9 13 9 13 ; -fx-background-color: #053a67 ; -fx-text-fill: white;" +
+                                        "-fx-background-radius: 6 ;-fx-focus-traversable: false; -fx-cursor: hand ; -fx-font-family: 'Arial Black'");
 
                                 button.setOnMouseClicked(event ->  showAddProductDialog());
 
@@ -415,7 +427,6 @@ public class Dashboard implements Initializable {
             }
         }
     }
-
     private void replaceScene(String fxml_file_name) {
 
         try {

@@ -85,6 +85,8 @@ public class ReturnMain implements Initializable {
                     "LEFT JOIN tbl_sale_main tsm ON trm.sale_main_id =  tsm.sale_main_id\n" +
                     "LEFT JOIN tbl_customer tc on tsm.customer_id = tc.customer_id";
 
+            System.out.println(query);
+
             ps = connection.prepareStatement(query);
 
             rs = ps.executeQuery();

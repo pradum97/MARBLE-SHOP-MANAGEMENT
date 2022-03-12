@@ -107,9 +107,9 @@ public class AddGst implements Initializable {
 
             ps = connection.prepareStatement(properties.getProperty("SET_GST"));
             ps.setInt(1, hsn_sac);
-            ps.setInt(2, sGst);
+            ps.setDouble(2, sGst);
             ps.setInt(3, cGst);
-            ps.setInt(4, iGst);
+            ps.setDouble(4, iGst);
 
             if (gstName.isEmpty()) {
                 ps.setNull(5, Types.NULL);
@@ -138,8 +138,6 @@ public class AddGst implements Initializable {
                 if (stage.isShowing()){
                     stage.close();
                 }
-
-
             }
 
         } catch (SQLException e) {

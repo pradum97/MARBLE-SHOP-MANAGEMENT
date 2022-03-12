@@ -71,6 +71,7 @@ public class ViewReturnItem implements Initializable {
                     "LEFT JOIN tbl_return_main trm on tri.return_main_id = trm.return_main_id\n" +
                     "LEFT JOIN tbl_saleitems ts on tri.sale_item_id = ts.sale_item_id";
 
+
             ps = connection.prepareStatement(query);
 
             rs = ps.executeQuery();

@@ -86,7 +86,7 @@ public class CustomDialog {
             stage3.setTitle(title);
             stage3.initOwner(Main.primaryStage);
             Scene scene = new Scene(root);
-            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/itemView.css")).toExternalForm());
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/cartTable.css")).toExternalForm());
             stage3.setScene(scene);
             stage3.showAndWait();
 

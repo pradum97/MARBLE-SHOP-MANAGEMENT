@@ -217,20 +217,15 @@ public class UpdateProfile implements Initializable {
             int result = ps_insert_data.executeUpdate();
 
             if (result > 0) {
+                Stage stage =(Stage) ((Node) event.getSource()).getScene().getWindow();
+
+                if (stage.isShowing()) {
+
+                    stage.close();
+                }
 
                 customDialog.showAlertBox("Congratulations 🎉🎉🎉", "Successfully Updated");
 
-
-                int login_id = Login.currentlyLogin_Id;
-
-                if (login_id > 0) {
-
-                    if (login_id == userId) {
-                        new Main().changeScene("login.fxml", "Re-Login");
-                    }
-
-                }
-                Stage stage = CustomDialog.stage;
 
                 if (stage.isShowing()) {
 

@@ -489,7 +489,10 @@ public class AddProducts implements Initializable {
         } else if (prodCode.isEmpty()) {
             method.show_popup("Enter Product Code", productCodeTF);
             return;
-        } else if (null == productCategory.getValue()) {
+        }/*else if (productTax.getSelectionModel().isEmpty()) {
+            method.show_popup("SELECT HSN CODE", productTax);
+            return;
+        }*/ else if (null == productCategory.getValue()) {
             method.show_popup("CHOOSE PRODUCT CATEGORY", productCategory);
             return;
         } else if (null == productColor.getValue()) {
