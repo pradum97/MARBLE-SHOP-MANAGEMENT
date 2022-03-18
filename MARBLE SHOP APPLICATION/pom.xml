@@ -38,6 +38,21 @@
         </dependency>
 
 
+        <!--JASPER REPORT-->
+
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports</artifactId>
+            <version>6.19.0</version>
+        </dependency>
+
+        <!--JASPER FONT -->
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-fonts</artifactId>
+            <version>6.19.0</version>
+        </dependency>
+
         <!--.......................-->
 
 
@@ -113,7 +128,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.shop.management/com.shop.management.HelloApplication</mainClass>
+                            <mainClass>com.shop.management/com.shop.management.Launch</mainClass>
                         </configuration>
                     </execution>
                 </executions>

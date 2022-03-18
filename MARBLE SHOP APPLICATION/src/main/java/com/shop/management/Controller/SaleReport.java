@@ -85,7 +85,8 @@ public class SaleReport implements Initializable {
 
 
     }
-    private void getSaleItems(boolean dateQuery) {
+
+    private void getSaleItems(boolean isDateFilter) {
         if (null != reportList) {
             reportList.clear();
         }
@@ -112,8 +113,8 @@ public class SaleReport implements Initializable {
                     "         LEFT JOIN tbl_users tu on (tsm.seller_id = tu.user_id)\n" +
                     "         LEFT JOIN tbl_dues td on tsm.sale_main_id = td.sale_main_id";
 
-            if (dateQuery){
-             String   q = query.concat(" where TO_CHAR(tsm.sale_date, 'YYYY-MM-DD') between ? and ? order by sale_main_id desc  ");
+            if (isDateFilter){
+             String   q = query.concat(" where TO_CHAR(tsm.sale_date, 'YYYY-MM-DD') between ? and ? order by sale_main_id asc  ");
 
                 ps = connection.prepareStatement(q);
                 ps.setString(1, fromDateP.getValue().toString());
@@ -121,14 +122,11 @@ public class SaleReport implements Initializable {
 
                 System.out.println(fromDateP.getValue().toString());
 
-                rs = ps.executeQuery();
-
             }else {
                 query = query.concat("  order by sale_main_id desc");
                 ps = connection.prepareStatement(query);
-                rs = ps.executeQuery();
             }
-
+            rs = ps.executeQuery();
             double totalNetAmount = 0 , totalProfit = 0 , totalPurchaseAmount = 0;
 
             while (rs != null && rs.next()) {
@@ -457,7 +455,6 @@ public class SaleReport implements Initializable {
     }
 
     public void searchReportBn(ActionEvent event) {
-
 
         if (null == fromDateP.getValue()){
             method.show_popup("SELECT START DATE", fromDateP);

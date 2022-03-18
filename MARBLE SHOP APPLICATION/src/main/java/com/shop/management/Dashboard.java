@@ -70,7 +70,7 @@ public class Dashboard implements Initializable {
         properties = method.getProperties("query.properties");
         customDialog = new CustomDialog();
         main = new Main();
-        replaceScene("dashboard/home.fxml");
+        replaceScene("dashboard/invoiceReport.fxml");
         getMenuData();
         setCustomImage();
         setUserData();
@@ -161,9 +161,6 @@ public class Dashboard implements Initializable {
             customDialog.showFxmlDialog2("dashboard/userprofile.fxml", "MY PROFILE");
             refreshPage();
         });
-
-
-
     }
 
     private void  refreshPage(){
@@ -266,6 +263,7 @@ public class Dashboard implements Initializable {
                                 case "SALE PRODUCTS" -> replaceScene("dashboard/saleProducts.fxml");
                                 case "SALES REPORT" -> replaceScene("dashboard/saleReport.fxml");
                                 case "STOCK REPORT" -> replaceScene("dashboard/stockReport.fxml");
+                                case "INVOICE" -> replaceScene("dashboard/invoiceReport.fxml");
                                 case "RETURN PRODUCT" -> replaceScene("returnItems/returnProduct.fxml");
                             }
 
@@ -281,13 +279,10 @@ public class Dashboard implements Initializable {
                     }
 
                     case "TOP" -> {
-
                         switch (item) {
                             case "SETTING" -> {
 
                                 MenuButton menu_button = new MenuButton();
-
-
                                 // general --start
                                 Menu gen = new Menu("GENERAL");
                                 MenuItem category = new MenuItem("CATEGORY");

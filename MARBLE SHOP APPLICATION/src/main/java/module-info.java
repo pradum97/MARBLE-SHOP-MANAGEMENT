@@ -8,6 +8,7 @@ module com.shop.management {
     requires java.sql;
     requires org.apache.commons.io;
     requires org.controlsfx.controls;
+    requires jasperreports;
 
 
     exports com.shop.management;

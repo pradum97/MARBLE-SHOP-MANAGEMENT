@@ -2,6 +2,7 @@ package com.shop.management.Controller;
 
 import com.shop.management.CustomDialog;
 import com.shop.management.Main;
+import com.shop.management.Method.GenerateInvoice;
 import com.shop.management.Method.GenerateInvoiceNumber;
 import com.shop.management.Method.Method;
 import com.shop.management.Method.StaticData;
@@ -71,7 +72,9 @@ public class Cart implements Initializable {
     double totalPayableD = 0;
     double subTotAmount = 0;
     double discountPrice = 0;
+    double totGstPer = 0;
     double gstPrice = 0;
+    double totTaxable = 0;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -96,7 +99,6 @@ public class Cart implements Initializable {
         textFieldConfig();
 
 
-
     }
 
     private void textFieldConfig() {
@@ -113,7 +115,7 @@ public class Cart implements Initializable {
 
                 double totDues = totalPayable - receivedAmount;
 
-                duesAmountTF.setText(String.valueOf(Math.ceil(totDues)));
+                duesAmountTF.setText(String.valueOf(Math.round(totDues)));
             } else {
                 receivedAmountTF.setText("");
                 duesAmountTF.setText("");
@@ -171,10 +173,10 @@ public class Cart implements Initializable {
             }
         });
 
-        paymentModeC.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
+        paymentModeC.setCellFactory(new Callback<>() {
             @Override
             public ListCell<String> call(ListView<String> list) {
-                return new ListCell<String>() {
+                return new ListCell<>() {
                     @Override
                     public void updateItem(String item, boolean empty) {
                         super.updateItem(item, empty);
@@ -196,11 +198,11 @@ public class Cart implements Initializable {
     }
 
     private void getCart(String billType) {
-
         if (null != cartList) {
             cartList.clear();
         }
 
+        totTaxable = 0;
         totalPayableD = 0;
         subTotAmount = 0;
         discountPrice = 0;
@@ -230,14 +232,17 @@ public class Cart implements Initializable {
                     "        tp.discount_id ,tp.tax_id , tps.stock_id ,\n" +
                     "        td.discount_id , td.discount_name,td.discount,tpt.hsn_sac  ,\n" +
                     "        tpt.tax_id ,tpt.sgst,tpt.cgst,tpt.igst,tpt.gstName,(tc.sellprice * tc.quantity)  amount_asPer_mrp,\n" +
-                    "       ((tc.sellprice * tc.quantity)*td.discount/100)as discountAmount,\n" +
-                    "       ((tps.purchase_price*tc.quantity)*(tpt.sgst+tpt.cgst+tpt.igst)/100) as gstAmount\n" +
+                    "        ((tc.sellprice * tc.quantity)*td.discount/100)as discountAmount,\n" +
+                    "       ((((tc.sellprice * tc.quantity)-((tc.sellprice * tc.quantity)*td.discount/100))*100)/(100+(tpt.sgst+tpt.cgst+tpt.igst))) as taxable,\n" +
+                    "       (((((tc.sellprice * tc.quantity)-((tc.sellprice * tc.quantity)*td.discount/100))*100)/(100+(tpt.sgst+tpt.cgst+tpt.igst))*(tpt.sgst+tpt.cgst+tpt.igst))/100) as gstAmount\n" +
                     "FROM   tbl_cart as tc\n" +
                     "           LEFT JOIN tbl_products as tp ON (tc.product_id = tp.product_id)\n" +
                     "           LEFT JOIN tbl_product_stock as tps ON tc.stock_id = tps.stock_id\n" +
                     "           Left JOIN tbl_discount as td  ON ( tp.discount_id = td.discount_id )\n" +
                     "           Left Join tbl_product_tax as tpt  on ( tp.tax_id = tpt.tax_id )\n" +
                     "           LEFT JOIN tbl_category as tcategory ON (tp.category_id = tcategory.category_id) order by cart_id ASC";
+
+            System.out.println(query);
 
 
             ps = connection.prepareStatement(query);
@@ -279,9 +284,11 @@ public class Cart implements Initializable {
                 double discountPer = rs.getInt("discount");
                 String discount_name = rs.getString("discount_name");
 
-                double amountAsPerMrp = Math.ceil(rs.getDouble("amount_asPer_mrp"));
-                double disAmount =Math.ceil(rs.getDouble("discountAmount"));
-                double gstAmount = Math.ceil(rs.getDouble("gstAmount"));
+                double amountAsPerMrp = Math.round(rs.getDouble("amount_asPer_mrp"));
+                double disAmount = Math.round(rs.getDouble("discountAmount"));
+
+                double taxable = Math.round(rs.getDouble("taxable"));
+                double gstAmount = Math.round(rs.getDouble("gstAmount"));
 
                 String totalDisStr = disAmount + "( " + discountPer + "%)";
                 String taxStr = gstAmount + "( " + totalGstPer + "%)";
@@ -291,28 +298,20 @@ public class Cart implements Initializable {
                 cartList.add(new CartModel(cartId, productId, stockID, discountId, taxId, sellerId, productName, product_type,
                         productCategory, purchasePrice, productMRP, minSellPrice, sellingPrice, height, width,
                         sizeUnit, quantityUnit, totalDisStr, totalGstPer, quantity, productColor, discount_name,
-                        disAmount, hsn_sac, Math.ceil(netAmount), gstAmount, sgst, cgst, igst, taxStr , discountPer));
+                        disAmount, hsn_sac, Math.round(netAmount), gstAmount, sgst, cgst, igst, taxStr, discountPer));
 
-                subTotAmount = subTotAmount + amountAsPerMrp;
-                discountPrice = discountPrice + disAmount;
-                gstPrice = gstPrice + gstAmount;
-                totalPayableD = totalPayableD + netAmount;
-
-
-            }
-            double additionalDisc = 0;
-            try {
-                additionalDisc = Double.parseDouble(addDiscTF.getText());
-            } catch (NumberFormatException ignored) {
+                subTotAmount += amountAsPerMrp;
+                discountPrice += disAmount;
+                gstPrice += gstAmount;
+                totalPayableD += netAmount;
+                totTaxable += taxable;
 
             }
-
-            subTotalL.setText(String.valueOf(Math.ceil(subTotAmount)));
-            discountL.setText(String.valueOf(Math.ceil(discountPrice)));
-            taxL.setText(String.valueOf(Math.ceil(gstPrice)));
+            subTotalL.setText(String.valueOf(Math.round(subTotAmount)));
+            discountL.setText(String.valueOf(Math.round(discountPrice)));
+            taxL.setText(String.valueOf(Math.round(gstPrice)));
             totalPayAbleL.setText(String.valueOf(Math.ceil(totalPayableD)));
-            taxableValueL.setText(String.valueOf(Math.round((subTotAmount-gstPrice)-discountPrice)));
-            double finalAdditionalDisc = additionalDisc;
+            taxableValueL.setText(String.valueOf(totTaxable));
 
 
             addDiscTF.textProperty().addListener((observableValue, s, t1) -> {
@@ -326,17 +325,15 @@ public class Cart implements Initializable {
                 }
 
                 if (inputDiscount < totalPayableD) {
-                        taxableValueL.setText(String.valueOf(Math.round((subTotAmount-gstPrice)-(discountPrice+inputDiscount))));
-                    totalPayAbleL.setText(String.valueOf(Double.valueOf(Math.ceil(totalPayableD - inputDiscount))));
+                    double totPayable = totalPayableD - inputDiscount;
+                    totalPayAbleL.setText(String.valueOf((Math.ceil(totPayable))));
                 } else {
-
                     inputDiscount = 0;
                     totalPayAbleL.setText(String.valueOf(Math.ceil(totalPayableD)));
                     addDiscTF.setText(String.valueOf(0));
                     method.show_popup("Discount Amount Not Greater Then " + totalPayableD, addDiscTF);
                 }
             });
-
             colSrNo.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(
                     cartTableView.getItems().indexOf(cellData.getValue()) + 1));
             colAmount.setCellValueFactory(new PropertyValueFactory<>("netAmount"));
@@ -646,7 +643,7 @@ public class Cart implements Initializable {
         String paytmModeS = paymentModeC.getSelectionModel().getSelectedItem();
         double duesAmtD = Double.parseDouble(duesAmountTF.getText());
         double totalDisAmtD = discountPrice + additionalDisc;
-        double totalTaxAmtD = Double.parseDouble(taxL.getText());
+        double totalTaxAmtD = gstPrice;
         double invoiceValue = Double.parseDouble(totalPayAbleL.getText());
         long timestamp = System.currentTimeMillis();
 
@@ -745,7 +742,7 @@ public class Cart implements Initializable {
                         ps.setDouble(19, model.getNetAmount());
                         ps.setDouble(20, model.getGstAmount());
                         ps.setTimestamp(21, new Timestamp(timestamp));
-                        ps.setDouble(22,model.getDiscountPercentage());
+                        ps.setDouble(22, model.getDiscountPercentage());
 
                         res = ps.executeUpdate();
                         if (res > 0) {
@@ -756,15 +753,18 @@ public class Cart implements Initializable {
                         }
 
                     }
-
                     if (res > 0) {
 
                         connection.commit();
                         addDiscTF.setText(String.valueOf(0));
                         deleteAll(event);
 
+                        switch (billingType){
 
-                        customDialog.showAlertBox("Seccess", "Successfully to Sale !");
+                            case "REGULAR" ->  new GenerateInvoice().regularInvoice(sale_main_id,false , null);
+
+                            case "GST" -> new GenerateInvoice().gstInvoice(sale_main_id,false , null);
+                        }
                     }
 
                 }

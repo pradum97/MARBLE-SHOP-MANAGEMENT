@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.ShopDetails">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="420.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.ShopDetails">
    <top>
       <HBox alignment="CENTER" prefHeight="46.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <children>
@@ -21,20 +21,20 @@
       </HBox>
    </top>
    <center>
-      <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <AnchorPane BorderPane.alignment="CENTER">
          <children>
-            <VBox prefHeight="200.0" prefWidth="100.0" spacing="20.0" style="-fx-background-color: rgb(230, 230, 230)hsl(0, 0%, 90%); -fx-background-radius: 30 30 0 0;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <VBox spacing="20.0" style="-fx-background-color: rgb(230, 230, 230)hsl(0, 0%, 90%); -fx-background-radius: 30 30 0 0;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <HBox alignment="CENTER_LEFT" spacing="5.0">
                      <children>
                         <Label minWidth="110.0" text="SHOP NAME :  ">
                            <font>
-                              <Font name="Bookman Old Style Bold" size="15.0" />
+                              <Font name="Arial Bold" size="15.0" />
                            </font>
                         </Label>
                         <Label fx:id="shopName">
                            <font>
-                              <Font name="Bookman Old Style Bold" size="15.0" />
+                              <Font name="Arial Bold" size="13.0" />
                            </font>
                         </Label>
                      </children>
@@ -49,12 +49,12 @@
                      <children>
                         <Label minWidth="110.0" text="PHONE-1      :  ">
                            <font>
-                              <Font name="Bookman Old Style Bold" size="15.0" />
+                              <Font name="Arial Bold" size="15.0" />
                            </font>
                         </Label>
                         <Label fx:id="sPhone_1">
                            <font>
-                              <Font name="Bookman Old Style Bold" size="15.0" />
+                              <Font name="Arial Bold" size="13.0" />
                            </font>
                         </Label>
                      </children>
@@ -66,12 +66,12 @@
                      <children>
                         <Label minWidth="110.0" text="PHONE-2      :  ">
                            <font>
-                              <Font name="Bookman Old Style Bold" size="15.0" />
+                              <Font name="Arial Bold" size="15.0" />
                            </font>
                         </Label>
                         <Label fx:id="sPhone_2">
                            <font>
-                              <Font name="Bookman Old Style Bold" size="15.0" />
+                              <Font name="Arial Bold" size="13.0" />
                            </font>
                         </Label>
                      </children>
@@ -83,12 +83,12 @@
                      <children>
                         <Label minWidth="110.0" text="EMAIL          :  ">
                            <font>
-                              <Font name="Bookman Old Style Bold" size="15.0" />
+                              <Font name="Arial Bold" size="15.0" />
                            </font>
                         </Label>
                         <Label fx:id="sEmail">
                            <font>
-                              <Font name="Bookman Old Style Bold" size="15.0" />
+                              <Font name="Arial Bold" size="13.0" />
                            </font>
                         </Label>
                      </children>
@@ -100,14 +100,35 @@
                      <children>
                         <Label minWidth="110.0" text="GSTIN           : ">
                            <font>
-                              <Font name="Bookman Old Style Bold" size="15.0" />
+                              <Font name="Arial Bold" size="15.0" />
                            </font>
                         </Label>
                         <Label fx:id="sGstNum">
                            <font>
-                              <Font name="Bookman Old Style Bold" size="15.0" />
+                              <Font name="Arial Bold" size="13.0" />
                            </font>
                         </Label>
+                     </children>
+                     <padding>
+                        <Insets left="30.0" />
+                     </padding>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="232.0" spacing="5.0">
+                     <children>
+                        <Label minWidth="120.0" text="PROP            :  ">
+                           <font>
+                              <Font name="Arial Bold" size="15.0" />
+                           </font>
+                        </Label>
+                        <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label fx:id="propName" alignment="CENTER" lineSpacing="5.0" textAlignment="CENTER" wrapText="true" VBox.vgrow="ALWAYS">
+                                 <font>
+                                    <Font name="Arial Bold" size="13.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </VBox>
                      </children>
                      <padding>
                         <Insets left="30.0" />
@@ -117,14 +138,14 @@
                      <children>
                         <Label minWidth="120.0" text="ADDRESS     :  ">
                            <font>
-                              <Font name="Bookman Old Style Bold" size="15.0" />
+                              <Font name="Arial Bold" size="15.0" />
                            </font>
                         </Label>
                         <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <Label fx:id="sAddress" alignment="CENTER" lineSpacing="5.0" textAlignment="CENTER" wrapText="true" VBox.vgrow="ALWAYS">
+                              <Label fx:id="sAddress" alignment="CENTER" lineSpacing="5.0" wrapText="true" VBox.vgrow="ALWAYS">
                                  <font>
-                                    <Font name="Bookman Old Style Bold" size="15.0" />
+                                    <Font name="Arial Bold" size="13.0" />
                                  </font>
                               </Label>
                            </children>
