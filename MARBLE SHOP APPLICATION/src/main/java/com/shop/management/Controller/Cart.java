@@ -32,7 +32,6 @@ import javafx.util.Callback;
 
 import java.net.URL;
 import java.sql.*;
-import java.text.DecimalFormat;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.ResourceBundle;

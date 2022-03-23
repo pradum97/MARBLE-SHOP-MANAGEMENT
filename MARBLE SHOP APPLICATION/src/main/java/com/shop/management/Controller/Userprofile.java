@@ -15,9 +15,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 
-import java.io.File;
 import java.net.URL;
-import java.sql.Connection;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
@@ -34,7 +32,6 @@ public class Userprofile implements Initializable {
     public Label userAddress;
     public Button bnChangePassword;
     public Button bnEdit;
-    private Connection connection;
     private DBConnection dbConnection;
     private Properties properties;
     private CustomDialog customDialog;

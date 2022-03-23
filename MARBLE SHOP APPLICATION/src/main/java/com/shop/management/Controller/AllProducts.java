@@ -8,10 +8,7 @@ import com.shop.management.Model.Products;
 import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
@@ -21,23 +18,18 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.util.Callback;
-import org.apache.commons.io.FileUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.ResourceBundle;
 
 public class AllProducts implements Initializable {
 
@@ -82,13 +74,10 @@ public class AllProducts implements Initializable {
         dbconnection = new DBConnection();
         customDialog = new CustomDialog();
         properties = new PropertiesLoader().load("query.properties");
-        setCustomImage();
 
         getProduct();
 
         tableViewMultipleSelection();
-
-
         listener();
     }
 
@@ -428,11 +417,6 @@ public class AllProducts implements Initializable {
 
             }
         });
-    }
-
-    private void setCustomImage() {
-
-        // refreshImage.setImage(method.getImage("src/main/resources/com/shop/management/img/icon/refresh_ic.png"));
     }
 
     private void getProduct() {
