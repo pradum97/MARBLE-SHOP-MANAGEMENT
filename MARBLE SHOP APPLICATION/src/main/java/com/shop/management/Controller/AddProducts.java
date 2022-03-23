@@ -1,14 +1,11 @@
 package com.shop.management.Controller;
 
-import com.shop.management.CustomDialog;
-import com.shop.management.Dashboard;
-import com.shop.management.Main;
+import com.shop.management.*;
 import com.shop.management.Method.*;
 import com.shop.management.Model.CategoryModel;
 import com.shop.management.Model.Discount;
 import com.shop.management.Model.ProductSize;
 import com.shop.management.Model.TAX;
-import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -318,27 +315,10 @@ public class AddProducts implements Initializable {
 
                     } else {
 
-                        FileInputStream input_delete;
-                        File delete_file;
-                        ImageView iv_delete;
-                        Image image_delete = null;
-
-                        String path = "src/main/resources/com/shop/management/img/icon/";
-
-                        try {
-                            delete_file = new File(path + "delete_ic.png");
-
-                            input_delete = new FileInputStream(delete_file.getPath());
-
-                            image_delete = new Image(input_delete);
+                        String path = "img/icon/delete_ic.png";
 
 
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        }
-
-
-                        iv_delete = new ImageView(image_delete);
+                     ImageView   iv_delete = new ImageView(new ImageLoader().load(path));
                         iv_delete.setFitHeight(17);
                         iv_delete.setFitWidth(17);
                         iv_delete.setPreserveRatio(true);

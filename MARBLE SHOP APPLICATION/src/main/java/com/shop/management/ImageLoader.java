@@ -12,9 +12,6 @@ public class ImageLoader {
         try {
          return  new Image(Objects.requireNonNull(getClass().getResourceAsStream(imagePath)));
         } catch (Exception e) {
-
-            System.out.println(imagePath);
-            System.out.println(e.getMessage());
             return  new Image(Objects.requireNonNull(getClass().getResourceAsStream("img/icon/img_preview.png")));
         }
     }
