@@ -41,9 +41,6 @@ public class AddDiscount implements Initializable {
         properties =new PropertiesLoader().load("query.properties");
     }
 
-
-
-
     public void submitBn(ActionEvent event) {
 
         String discountTf = discountTF.getText();

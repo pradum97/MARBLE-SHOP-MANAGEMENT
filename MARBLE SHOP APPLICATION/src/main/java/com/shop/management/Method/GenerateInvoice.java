@@ -1,5 +1,6 @@
 package com.shop.management.Method;
 
+import com.shop.management.FileLoader;
 import com.shop.management.Model.GstInvoiceModel;
 import com.shop.management.Model.RegularInvoiceModel;
 import com.shop.management.Model.TaxDetails;
@@ -22,18 +23,14 @@ import java.util.Map;
 
 public class GenerateInvoice {
 
-    public static void main(String[] args) {
-
-      // new GenerateInvoice(). gstInvoice(7);
-
-    }
-
+    private FileLoader fileLoader;
 
     public void gstInvoice(int saleMainId, boolean isDownLoad , String downloadPath) {
 
         List<GstInvoiceModel> modelList = new ArrayList<>();
         Map<String, Object> param = new HashMap<>();
 
+        fileLoader = new FileLoader();
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -138,13 +135,11 @@ public class GenerateInvoice {
 
         param.put("productDetails", productBean);
         param.put("tax", taxBean);
-        param.put("SUBREPORT_DIR", "src/main/resources/com/shop/management/invoice/");
-
-        File file = new File("src/main/resources/com/shop/management/invoice/Gst_Invoice.jrxml");
+        param.put("SUBREPORT_DIR", fileLoader.load("invoice/Gst_Invoice_Tax.jasper"));
 
         try {
 
-            JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
+            JasperReport jasperReport = JasperCompileManager.compileReport(fileLoader.load("invoice/Gst_Invoice.jrxml"));
             JasperPrint print = JasperFillManager.fillReport(jasperReport, param, new JREmptyDataSource());
 
 
@@ -196,6 +191,7 @@ public class GenerateInvoice {
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
+        fileLoader = new FileLoader();
 
         try {
 
@@ -255,9 +251,9 @@ public class GenerateInvoice {
             JRBeanCollectionDataSource cartBean = new JRBeanCollectionDataSource(modelList);
 
             param.put("productDetails", cartBean);
-            File file = new File("src/main/resources/com/shop/management/invoice/Regular_Invoice.jrxml");
+          //  File file = new File();
 
-            JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
+            JasperReport jasperReport = JasperCompileManager.compileReport(fileLoader.load("invoice/Regular_Invoice.jrxml"));
             JasperPrint print = JasperFillManager.fillReport(jasperReport, param, new JREmptyDataSource());
 
             if (isDownLoad && null != downloadPath){

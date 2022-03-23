@@ -64,8 +64,6 @@ public class StockReport implements Initializable {
         dbConnection = new DBConnection();
         customDialog = new CustomDialog();
         comboBoxConfig();
-
-
     }
 
     private void comboBoxConfig() {

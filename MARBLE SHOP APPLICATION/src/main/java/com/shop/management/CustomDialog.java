@@ -20,7 +20,6 @@ public class CustomDialog {
     public static Stage stage3;
 
     public void showFxmlDialog(String fxml_file, String title)  {
-
         try {
 
             Parent root = FXMLLoader.load(Objects.requireNonNull(Main.class.getResource(fxml_file)));

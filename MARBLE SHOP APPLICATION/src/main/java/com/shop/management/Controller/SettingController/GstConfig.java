@@ -1,10 +1,10 @@
 package com.shop.management.Controller.SettingController;
 
 import com.shop.management.CustomDialog;
+import com.shop.management.ImageLoader;
 import com.shop.management.Main;
 import com.shop.management.Method.GetTax;
 import com.shop.management.Method.Method;
-import com.shop.management.Model.Products;
 import com.shop.management.Model.TAX;
 import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
@@ -16,7 +16,6 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -24,9 +23,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.util.Callback;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -94,34 +90,14 @@ public class GstConfig implements Initializable {
 
                     } else {
 
-                        FileInputStream input_edit, input_delete;
-                        File edit_file, delete_file;
-                        ImageView iv_edit, iv_delete;
-                        Image image_edit = null, image_delete = null;
+                        ImageLoader imageLoader = new ImageLoader();
 
-                        String path = "src/main/resources/com/shop/management/img/icon/";
-
-                        try {
-                            edit_file = new File(path + "edit_ic.png");
-                            delete_file = new File(path + "delete_ic.png");
-
-                            input_edit = new FileInputStream(edit_file.getPath());
-                            input_delete = new FileInputStream(delete_file.getPath());
-
-                            image_edit = new Image(input_edit);
-                            image_delete = new Image(input_delete);
-
-
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        }
-
-                        iv_edit = new ImageView(image_edit);
+                      ImageView  iv_edit = new ImageView(imageLoader.load("img/icon/edit_ic.png"));
                         iv_edit.setFitHeight(22);
                         iv_edit.setFitHeight(22);
                         iv_edit.setPreserveRatio(true);
 
-                        iv_delete = new ImageView(image_delete);
+                      ImageView  iv_delete = new ImageView(imageLoader.load("img/icon/delete_ic.png"));
                         iv_delete.setFitHeight(17);
                         iv_delete.setFitWidth(17);
                         iv_delete.setPreserveRatio(true);

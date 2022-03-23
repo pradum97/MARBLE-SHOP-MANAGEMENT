@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="invoice" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="575" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="10" isFloatColumnFooter="true" uuid="fc24451b-4ab4-4dfb-820f-a2c80d6950b1">
-	<property name="ireport.zoom" value="1.610510000000009"/>
+	<property name="ireport.zoom" value="2.14358881000001"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="98"/>
 	<style name="Table_CH" mode="Opaque" backcolor="#FFFFFF">
 		<box>
 			<pen lineWidth="0.7" lineColor="#000000"/>
@@ -35,10 +35,13 @@
 		<field name="hsn" class="java.lang.Long"/>
 		<field name="sellingPrice" class="java.lang.Double"/>
 		<field name="discountAmount" class="java.lang.Double"/>
+		<field name="gstAmount" class="java.lang.Double"/>
 		<field name="fullSize" class="java.lang.String"/>
-		<field name="quantity" class="java.lang.Integer"/>
 		<variable name="Total_Disount_Amount" class="java.lang.Double" calculation="Sum">
 			<variableExpression><![CDATA[$F{discountAmount}]]></variableExpression>
+		</variable>
+		<variable name="totalTaxAmountS" class="java.lang.Double" calculation="Sum">
+			<variableExpression><![CDATA[$F{gstAmount}]]></variableExpression>
 		</variable>
 		<variable name="Amount" class="java.lang.Double">
 			<variableExpression><![CDATA[(Double.valueOf($F{fullQuantity}.split( " -" )[0].trim())*$F{sellingPrice})- $F{discountAmount}]]></variableExpression>
@@ -53,31 +56,32 @@
 			<variableExpression><![CDATA[Double.valueOf($F{fullQuantity}.split( " -" )[0].trim())*$F{sellingPrice}]]></variableExpression>
 		</variable>
 	</subDataset>
-	<parameter name="SUBREPORT_DIR" class="java.io.InputStream" isForPrompting="false">
-		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["D:\\Desktop Application\\MARBLE-SHOP-MANAGEMENT\\iReport\\"]]></defaultValueExpression>
 	</parameter>
-	<parameter name="CUSTOMER_NAME" class="java.lang.String" isForPrompting="false"/>
-	<parameter name="CUSTOMER_PHONE" class="java.lang.String" isForPrompting="false"/>
-	<parameter name="CUSTOMER_ADDRESS" class="java.lang.String" isForPrompting="false"/>
-	<parameter name="INVOICE_NUMBER" class="java.lang.String" isForPrompting="false"/>
-	<parameter name="INVOICE_DATE" class="java.lang.String" isForPrompting="false"/>
-	<parameter name="SHOP_NAME" class="java.lang.String" isForPrompting="false"/>
-	<parameter name="SHOP_PHONE_1" class="java.lang.String" isForPrompting="false"/>
-	<parameter name="SHOP_PHONE_2" class="java.lang.String" isForPrompting="false"/>
-	<parameter name="SHOP_ADDRESS" class="java.lang.String" isForPrompting="false"/>
-	<parameter name="SHOP_GST_NUMBER" class="java.lang.String" isForPrompting="false"/>
-	<parameter name="SHOP_EMAIL" class="java.lang.String" isForPrompting="false"/>
-	<parameter name="SHOP_OWNER_NAME" class="java.lang.String" isForPrompting="false"/>
-	<parameter name="productDetails" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource" isForPrompting="false"/>
-	<parameter name="tax" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource" isForPrompting="false"/>
-	<parameter name="ADDITIONAL_DISCOUNT" class="java.lang.Double" isForPrompting="false">
-		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
-	</parameter>
+	<parameter name="CUSTOMER_NAME" class="java.lang.String"/>
+	<parameter name="CUSTOMER_PHONE" class="java.lang.String"/>
+	<parameter name="CUSTOMER_ADDRESS" class="java.lang.String"/>
+	<parameter name="INVOICE_NUMBER" class="java.lang.String"/>
+	<parameter name="INVOICE_DATE" class="java.lang.String"/>
+	<parameter name="SHOP_NAME" class="java.lang.String"/>
+	<parameter name="SHOP_PHONE_1" class="java.lang.String"/>
+	<parameter name="SHOP_PHONE_2" class="java.lang.String"/>
+	<parameter name="SHOP_ADDRESS" class="java.lang.String"/>
+	<parameter name="SHOP_GST_NUMBER" class="java.lang.String"/>
+	<parameter name="SHOP_EMAIL" class="java.lang.String"/>
+	<parameter name="SHOP_OWNER_NAME" class="java.lang.String"/>
+	<parameter name="productDetails" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+	<parameter name="tax" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
+	<field name="taxDetails" class="java.util.List">
+		<fieldDescription><![CDATA[taxDetails]]></fieldDescription>
+	</field>
 	<variable name="TOTAL_NET_AMOUNT" class="java.lang.Double"/>
 	<variable name="Total_Disount_Amount" class="java.lang.Double"/>
+	<variable name="totalTaxAmount" class="java.lang.Double" calculation="Sum"/>
 	<variable name="Sub_Total_M" class="java.lang.Double"/>
 	<variable name="Top_Invoice_Value" class="java.lang.Double"/>
 	<title>
@@ -140,7 +144,7 @@
 					<textFieldExpression><![CDATA[$P{CUSTOMER_PHONE}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="225" y="19" width="50" height="15" uuid="56fb8297-9d17-4e1c-b99e-6845f15ee7e6">
+					<reportElement x="225" y="18" width="50" height="15" uuid="56fb8297-9d17-4e1c-b99e-6845f15ee7e6">
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -445,23 +449,23 @@
 			</line>
 		</band>
 		<band height="56">
+			<subreport>
+				<reportElement x="1" y="0" width="572" height="56" uuid="ce32e97a-464d-4d71-ae01-7b94bceb37eb"/>
+				<dataSourceExpression><![CDATA[$P{tax}]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "Gst_Invoice_Tax.jasper"]]></subreportExpression>
+			</subreport>
 			<line>
 				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="574" y="0" width="1" height="56" uuid="3763f82e-1a04-489e-b624-c7cf60ac4372"/>
 			</line>
 			<line>
 				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="56" uuid="33d6cc18-6421-4fb6-b625-ba2a0cfe9a4e"/>
 			</line>
-			<subreport>
-				<reportElement x="1" y="0" width="570" height="56" uuid="1ccf63b8-bc07-4b48-bc4f-01d7f8091ff9"/>
-				<dataSourceExpression><![CDATA[$P{tax}]]></dataSourceExpression>
-				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportExpression>
-			</subreport>
 		</band>
 	</detail>
 	<summary>
-		<band height="121">
+		<band height="80">
 			<rectangle radius="0">
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="398" y="0" width="176" height="120" isRemoveLineWhenBlank="true" forecolor="#545050" backcolor="#FFFFFF" uuid="52028e21-ea17-4242-b62b-b35fc85efce9">
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="398" y="0" width="176" height="79" isRemoveLineWhenBlank="true" forecolor="#545050" backcolor="#FFFFFF" uuid="52028e21-ea17-4242-b62b-b35fc85efce9">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<graphicElement>
@@ -469,7 +473,7 @@
 				</graphicElement>
 			</rectangle>
 			<staticText>
-				<reportElement x="399" y="4" width="88" height="20" forecolor="#050000" uuid="d84c1472-a0c9-41ab-b0d0-846448b4202b">
+				<reportElement x="407" y="4" width="80" height="20" forecolor="#050000" uuid="d84c1472-a0c9-41ab-b0d0-846448b4202b">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
@@ -482,21 +486,21 @@
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Arial" size="10" isBold="false"/>
+					<font fontName="Arial" size="9" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Saving :]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="492" y="4" width="81" height="20" uuid="0824a56a-8bd3-482d-aa83-30ab90e3667f"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
-					<font fontName="Serif" size="10"/>
+					<font fontName="Serif" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{Sub_Total_M}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="492" y="24" width="81" height="20" uuid="cbeb9eeb-8298-45a6-a8cb-2b72fe0ef85d"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
-					<font fontName="Arial" size="10"/>
+					<font fontName="Arial" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{Total_Disount_Amount}]]></textFieldExpression>
 			</textField>
@@ -504,23 +508,23 @@
 				<reportElement x="398" y="45" width="176" height="1" uuid="bbbcfaf1-5238-4018-9781-2a8ed61b5037"/>
 			</line>
 			<line>
-				<reportElement x="0" y="120" width="575" height="1" uuid="503c94d6-448a-457f-bf24-8bf200a01247"/>
+				<reportElement x="0" y="79" width="575" height="1" uuid="503c94d6-448a-457f-bf24-8bf200a01247"/>
 			</line>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="121" uuid="fa5217aa-3a88-46f3-9863-d12d48b68653"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="80" uuid="fa5217aa-3a88-46f3-9863-d12d48b68653"/>
 			</line>
 			<line>
-				<reportElement x="574" y="-9" width="1" height="129" uuid="a0209db8-a353-4bb2-bc80-6deec4e45810"/>
+				<reportElement x="574" y="-9" width="1" height="89" uuid="a0209db8-a353-4bb2-bc80-6deec4e45810"/>
 			</line>
 			<textField>
-				<reportElement x="493" y="86" width="80" height="22" uuid="cf07839f-979d-4420-b142-57ce438c8655"/>
+				<reportElement x="493" y="47" width="80" height="22" uuid="cf07839f-979d-4420-b142-57ce438c8655"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="9" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[($V{TOTAL_NET_AMOUNT}-$P{ADDITIONAL_DISCOUNT})]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{TOTAL_NET_AMOUNT}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="398" y="86" width="90" height="22" forecolor="#000000" uuid="ce05a9b9-9d65-4057-b1bf-f386895961c3">
+				<reportElement x="398" y="47" width="90" height="22" forecolor="#000000" uuid="ce05a9b9-9d65-4057-b1bf-f386895961c3">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
@@ -529,47 +533,12 @@
 				<text><![CDATA[Total Payable : ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="493" y="108" width="81" height="9" uuid="611aaa7f-9e01-44e4-83ec-076d7b00e239"/>
+				<reportElement x="493" y="70" width="81" height="9" uuid="611aaa7f-9e01-44e4-83ec-076d7b00e239"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[All values are in INR]]></text>
 			</staticText>
-			<staticText>
-				<reportElement x="398" y="62" width="90" height="18" forecolor="#000000" uuid="f2074eb4-294a-4f4f-8a71-95f911d55d10">
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-				</reportElement>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="10" isBold="false"/>
-				</textElement>
-				<text><![CDATA[Additi Disc : ]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="491" y="62" width="80" height="18" uuid="aa63a359-a701-46ce-9dec-babf41888266"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Serif" size="10" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{ADDITIONAL_DISCOUNT}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="398" y="46" width="90" height="18" forecolor="#000000" uuid="57e97e98-8828-4999-b1c0-a0d004282195">
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-				</reportElement>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="10" isBold="false"/>
-				</textElement>
-				<text><![CDATA[Total : ]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="491" y="46" width="80" height="18" uuid="fd8795ef-f9d5-47fe-8371-a21d5375938b"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Serif" size="10" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$V{TOTAL_NET_AMOUNT}]]></textFieldExpression>
-			</textField>
-			<line>
-				<reportElement x="399" y="82" width="176" height="1" uuid="a701d758-be53-44b6-98a8-c60cba13a0b5"/>
-			</line>
 		</band>
 	</summary>
 </jasperReport>
