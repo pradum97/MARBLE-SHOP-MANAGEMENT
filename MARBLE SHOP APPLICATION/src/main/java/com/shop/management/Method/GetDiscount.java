@@ -1,6 +1,7 @@
 package com.shop.management.Method;
 
 import com.shop.management.Model.Discount;
+import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -29,7 +30,7 @@ public class GetDiscount {
                 return null;
             }
 
-            ps = connection.prepareStatement(new Method().getProperties("query.properties").getProperty("GET_DISCOUNT"));
+            ps = connection.prepareStatement(new PropertiesLoader().load("query.properties").getProperty("GET_DISCOUNT"));
             rs = ps.executeQuery();
 
             while (rs.next()) {

@@ -8,6 +8,7 @@ import com.shop.management.Method.Method;
 import com.shop.management.Model.Products;
 import com.shop.management.Model.Quantity;
 import com.shop.management.Model.Stock;
+import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -50,7 +51,7 @@ public class SelectSize implements Initializable {
         method = new Method();
         customDialog = new CustomDialog();
         dbConnection = new DBConnection();
-        properties = method.getProperties("query.properties");
+        properties =new PropertiesLoader().load("query.properties");
 
         products = (Products) Main.primaryStage.getUserData();
 

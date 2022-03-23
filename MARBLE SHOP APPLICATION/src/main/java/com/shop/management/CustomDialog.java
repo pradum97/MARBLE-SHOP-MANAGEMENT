@@ -26,7 +26,6 @@ public class CustomDialog {
             Parent root = FXMLLoader.load(Objects.requireNonNull(Main.class.getResource(fxml_file)));
 
             stage = new Stage();
-            stage.getIcons().add(new Image(getClass().getResourceAsStream(AppConfig.APPLICATION_ICON)));
             stage.setTitle(title);
             stage.initOwner(Main.primaryStage);
             stage.initModality(Modality.WINDOW_MODAL);
@@ -55,7 +54,6 @@ public class CustomDialog {
         try {
             Parent root = FXMLLoader.load(Objects.requireNonNull(Main.class.getResource(fxml_file)));
             stage2 = new Stage();
-            stage2.getIcons().add(new Image(getClass().getResourceAsStream(AppConfig.APPLICATION_ICON)));
             stage2.initOwner(Main.primaryStage);
             stage2.initStyle(StageStyle.UTILITY);
             stage2.setTitle(title);
@@ -64,9 +62,6 @@ public class CustomDialog {
             scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/main.css")).toExternalForm());
             stage2.setScene(scene);
             stage2.setResizable(false);
-
-
-
             stage2.showAndWait();
 
         } catch (IOException e) {
@@ -82,11 +77,11 @@ public class CustomDialog {
             Parent root = FXMLLoader.load(Objects.requireNonNull(Main.class.getResource(fxml_file)));
 
             stage3 = new Stage();
-            stage3.getIcons().add(new Image(getClass().getResourceAsStream(AppConfig.APPLICATION_ICON)));
+            stage3.getIcons().add((new ImageLoader().load(AppConfig.APPLICATION_ICON)));
             stage3.setTitle(title);
             stage3.initOwner(Main.primaryStage);
             Scene scene = new Scene(root);
-            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/itemView.css")).toExternalForm());
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/cartTable.css")).toExternalForm());
             stage3.setScene(scene);
             stage3.showAndWait();
 

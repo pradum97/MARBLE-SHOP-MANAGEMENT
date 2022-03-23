@@ -64,7 +64,7 @@
     -fx-table-cell-border-color:transparent;
     -fx-cell-size: 3.0em; /* 24 */
     -fx-text-fill: black;
-    -fx-font-family: "JetBrains Mono Light";
+    -fx-font-family: "Arial";
     -fx-font-size: 13;
 }
 

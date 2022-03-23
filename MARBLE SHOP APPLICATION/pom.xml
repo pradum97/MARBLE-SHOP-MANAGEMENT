@@ -6,8 +6,17 @@
 
     <groupId>com.shop</groupId>
     <artifactId>management</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <name>SHOP APPLICATION</name>
+    <version>1.0</version>
+    <name>SUMA MARBLE</name>
+
+    <distributionManagement>
+        <repository>
+            <id>internal.repo</id>
+            <name>Internal repo</name>
+            <url>file:///home/thara/testesb/in</url>
+        </repository>
+    </distributionManagement>
+
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -37,6 +46,21 @@
             <version>11.1.1</version>
         </dependency>
 
+
+        <!--JASPER REPORT-->
+
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports</artifactId>
+            <version>6.19.0</version>
+        </dependency>
+
+        <!--JASPER FONT -->
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-fonts</artifactId>
+            <version>6.19.0</version>
+        </dependency>
 
         <!--.......................-->
 
@@ -69,7 +93,7 @@
         <dependency>
             <groupId>com.dlsc.formsfx</groupId>
             <artifactId>formsfx-core</artifactId>
-            <version>11.4.2</version>
+            <version>11.5.0</version>
         </dependency>
 
         <dependency>
@@ -91,10 +115,15 @@
             <scope>compile</scope>
         </dependency>
 
+
     </dependencies>
 
     <build>
         <plugins>
+
+
+
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -113,7 +142,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.shop.management/com.shop.management.HelloApplication</mainClass>
+                            <mainClass>com.shop.management/com.shop.management.Launch</mainClass>
                         </configuration>
                     </execution>
                 </executions>

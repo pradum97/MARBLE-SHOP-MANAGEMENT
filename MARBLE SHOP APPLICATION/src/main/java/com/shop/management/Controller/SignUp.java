@@ -2,22 +2,17 @@ package com.shop.management.Controller;
 
 import com.shop.management.CustomDialog;
 import com.shop.management.Main;
-import com.shop.management.Method.CopyImage;
 import com.shop.management.Method.Method;
 import com.shop.management.Method.StaticData;
+import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
-import org.apache.commons.io.FileUtils;
-
-import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -41,17 +36,14 @@ public class SignUp implements Initializable {
     public TextArea full_address_f;
     public PasswordField password_f;
     public TextField con_password_f;
-    public ImageView profile_photo;
     public Button profile_img_choose;
     public Button already_account;
     public Button submit_bn;
     private Method method;
     private Properties properties;
     private DBConnection dbConnection;
-    private String imageName;
     private CustomDialog customDialog;
     private Main main;
-    private String imgAvatarPath;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -59,7 +51,7 @@ public class SignUp implements Initializable {
         customDialog = new CustomDialog();
         dbConnection = new DBConnection();
         main = new Main();
-        properties = method.getProperties("query.properties");
+        properties =new PropertiesLoader().load("query.properties");
 
         setData();
 
@@ -98,37 +90,12 @@ public class SignUp implements Initializable {
         password_f.setText("");
         con_password_f.setText("");
 
-        Stage stage = new CustomDialog().stage;
+        Stage stage = CustomDialog.stage;
 
         if (stage.isShowing()) {
             stage.close();
         }
 
-        imgAvatarPath = "";
-        profile_photo.setImage(method.getImage("src/main/resources/com/shop/management/img/icon/person_ic.png"));
-        profile_img_choose.setText("Upload Photo");
-
-    }
-
-    public void chooseAvatar(ActionEvent event) {
-
-        customDialog.showFxmlDialog2("avatar.fxml", "CHOOSE YOUR PROFILE AVATAR");
-        setAvatar();
-
-    }
-
-    public void setAvatar() {
-        String path = "src/main/resources/com/shop/management/img/Avatar/";
-        try {
-            imgAvatarPath = (String) Main.primaryStage.getUserData();
-        } catch (ClassCastException e) {
-            e.printStackTrace();
-        }
-        String img = path + imgAvatarPath;
-
-        if (null != imgAvatarPath) {
-            profile_photo.setImage(new Method().getImage(img));
-        }
     }
 
     public void enterPress(KeyEvent e) {
@@ -209,19 +176,14 @@ public class SignUp implements Initializable {
         } else if (confirm_password.isEmpty()) {
             method.show_popup("Enter Confirm Password", con_password_f);
             return;
-        } else if (null == imgAvatarPath) {
-            method.show_popup("please upload Photo", profile_img_choose);
-            return;
         } else if (!password.equals(confirm_password)) {
             method.show_popup("confirm password doesn't match", con_password_f);
             return;
         } else if (mac_address.isEmpty()) {
             mac_address = "Not-Found";
         }
-        imageName = new CopyImage().copy(new File("src/main/resources/com/shop/management/img/Avatar/" + imgAvatarPath).getAbsolutePath(), "userImages/profileImg");
 
         try {
-
             connection = dbConnection.getConnection();
             ps_insert_data = connection.prepareStatement(properties.getProperty("SIGNUP"));
 
@@ -234,8 +196,7 @@ public class SignUp implements Initializable {
             ps_insert_data.setString(7, password);
             ps_insert_data.setLong(8, phoneNum);
             ps_insert_data.setString(9, full_address);
-            ps_insert_data.setString(10, imageName);
-            ps_insert_data.setString(11, mac_address);
+            ps_insert_data.setString(10, mac_address);
 
             int result = ps_insert_data.executeUpdate();
 
@@ -258,25 +219,15 @@ public class SignUp implements Initializable {
             }
         } catch (SQLException e) {
             customDialog.showAlertBox("Registration Failed", e.getMessage());
-
-            if (null != imageName) {
-                File file = new File("src/main/resources/com/shop/management/img/userImages/" + imageName);
-                if (file.exists()) {
-                    try {
-                        FileUtils.forceDelete(file);
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
-                    System.out.println("Image deleted : " + imageName);
-                }
-            }
             e.printStackTrace();
         } finally {
 
             if (null != connection) {
                 try {
                     connection.close();
-                    ps_insert_data.close();
+                    if (ps_insert_data != null) {
+                        ps_insert_data.close();
+                    }
 
                 } catch (SQLException e) {
                     e.printStackTrace();

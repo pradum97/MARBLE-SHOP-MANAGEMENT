@@ -24,7 +24,7 @@
             <TableColumn fx:id="colDiscName" editable="false" prefWidth="170" sortable="false" text="DISC NAME" />
             <TableColumn fx:id="colDiscount" editable="false"  minWidth="-Infinity" sortable="false" text="DISC AMOUNT" />
             <TableColumn fx:id="colHsnSac" editable="false"  minWidth="-Infinity" sortable="false" text="HSN/SAC" />
-            <TableColumn fx:id="colTax" editable="false"  minWidth="-Infinity" sortable="false" text="TAX" />
+            <TableColumn fx:id="colTax" editable="false"  minWidth="-Infinity" sortable="false" text="TAX %" />
             <TableColumn fx:id="colTaxAmount" editable="false"  minWidth="-Infinity" sortable="false" text="TAX AMOUNT" />
             <TableColumn fx:id="colNetAmount" editable="false" minWidth="-Infinity" sortable="false" text="NET AMOUNT" />
             <TableColumn fx:id="colDate" minWidth="-Infinity" editable="false" sortable="false" text="DATE" />

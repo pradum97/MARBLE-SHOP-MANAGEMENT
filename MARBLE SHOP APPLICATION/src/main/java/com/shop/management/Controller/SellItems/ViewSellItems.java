@@ -110,7 +110,7 @@ public class ViewSellItems implements Initializable {
                 int cgst = rs.getInt("cgst");
                 String saleDate = rs.getString("sale_date");
 
-                String fullDiscount = discountAmount+" "+rs.getString("discountPer")+" %";
+                String fullDiscount = discountAmount+" ( "+rs.getString("discountPer")+" % )";
 
 
                 int tax = igst + cgst + sgst;

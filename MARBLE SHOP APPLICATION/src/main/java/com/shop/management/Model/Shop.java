@@ -2,16 +2,17 @@ package com.shop.management.Model;
 
 public class Shop {
 
- private  String shopName , shopPhone_1 , shopPhone_2 , shopEmail , shopAddress , gstNumber;
+ private  String shopName , shopPhone_1 , shopPhone_2 , shopEmail , shopAddress , gstNumber , propName;
 
-    public Shop(String shopName, String shopPhone_1, String shopPhone_2,
-                String shopEmail, String shopAddress, String gstNumber) {
+    public Shop(String shopName, String shopPhone_1, String shopPhone_2, String shopEmail,
+                String shopAddress, String gstNumber, String propName) {
         this.shopName = shopName;
         this.shopPhone_1 = shopPhone_1;
         this.shopPhone_2 = shopPhone_2;
         this.shopEmail = shopEmail;
         this.shopAddress = shopAddress;
         this.gstNumber = gstNumber;
+        this.propName = propName;
     }
 
     public String getShopName() {
@@ -60,5 +61,13 @@ public class Shop {
 
     public void setGstNumber(String gstNumber) {
         this.gstNumber = gstNumber;
+    }
+
+    public String getPropName() {
+        return propName;
+    }
+
+    public void setPropName(String propName) {
+        this.propName = propName;
     }
 }

@@ -3,6 +3,7 @@ package com.shop.management.Controller;
 
 import com.shop.management.CustomDialog;
 import com.shop.management.Method.Method;
+import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
@@ -46,7 +47,7 @@ public class Forgot_Password implements Initializable {
         dbConnection = new DBConnection();
         password_container.setVisible(false);
         password_container.managedProperty().bind(password_container.visibleProperty());
-        properties = new Method().getProperties("query.properties");
+        properties = new PropertiesLoader().load("query.properties");
 
     }
 

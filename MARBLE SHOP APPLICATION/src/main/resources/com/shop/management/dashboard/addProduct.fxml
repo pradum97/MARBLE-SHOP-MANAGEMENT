@@ -254,7 +254,7 @@
                                                               <TableColumn fx:id="col_SizeUit" editable="false" reorderable="false" sortable="false" text="UNIT" />
                                                               <TableColumn fx:id="col_Quantity" editable="false" reorderable="false" sortable="false" text="QUANTITY" />
                                                               <TableColumn fx:id="col_QuantityUnit" editable="false" reorderable="false" sortable="false" />
-      
+
                                                                 </columns>
                                                           <VBox.margin>
                                                               <Insets top="15.0" />
@@ -274,6 +274,12 @@
                                                 <Insets right="5.0" />
                                              </padding></TextArea>
                                                   </children>
+                                       <VBox.margin>
+                                          <Insets bottom="20.0" />
+                                       </VBox.margin>
+                                       <padding>
+                                          <Insets bottom="10.0" />
+                                       </padding>
                                               </VBox>
                                           </children>
                                           <padding>

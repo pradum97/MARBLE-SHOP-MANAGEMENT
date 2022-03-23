@@ -20,14 +20,14 @@ public class CartModel {
     private String productColor , discountName  ;
     private long hsn;
     private double discountAmount , netAmount , gstAmount;
-    private int sgst , csgt , igst;
+    private double sgst , csgt , igst;
     private String totalTaxStr ;
     private  double discountPercentage;
 
     public CartModel(int cartId, int productId, int productStockID, int discountId, int taxId, int sellerId, String productName, String type, String category, double purchasePrice, double productMRP,
                      double minSellPrice, double sellingPrice, double height, double width, String sizeUnit, String quantityUnit, String totalDiscountStr, double totalTaxPer,
                      int quantity, String productColor, String discountName, double discountAmount ,
-                     long hsn, double netAmount, double gstAmount, int sgst, int csgt, int igst, String totalTaxStr, double discountPercentage) {
+                     long hsn, double netAmount, double gstAmount, double sgst, double csgt, double igst, String totalTaxStr, double discountPercentage) {
 
         this.cartId = cartId;
         this.productId = productId;
@@ -86,7 +86,7 @@ public class CartModel {
         this.totalTaxStr = totalTaxStr;
     }
 
-    public int getSgst() {
+    public double getSgst() {
         return sgst;
     }
 
@@ -94,7 +94,7 @@ public class CartModel {
         this.sgst = sgst;
     }
 
-    public int getCsgt() {
+    public double getCsgt() {
         return csgt;
     }
 
@@ -102,7 +102,7 @@ public class CartModel {
         this.csgt = csgt;
     }
 
-    public int getIgst() {
+    public double getIgst() {
         return igst;
     }
 

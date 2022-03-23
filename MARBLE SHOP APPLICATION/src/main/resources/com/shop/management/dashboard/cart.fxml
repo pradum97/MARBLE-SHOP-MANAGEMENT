@@ -1,12 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<BorderPane minHeight="-Infinity" stylesheets="@../css/cartTable.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.Cart">
+<BorderPane minHeight="-Infinity" stylesheets="@../css/cartTable.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.Cart">
     <center>
         <StackPane BorderPane.alignment="CENTER">
             <children>
@@ -48,20 +59,20 @@
         </StackPane>
     </center>
     <bottom>
-        <HBox alignment="CENTER_RIGHT" prefHeight="150.0" BorderPane.alignment="CENTER">
+        <HBox alignment="TOP_RIGHT" prefHeight="175.0" BorderPane.alignment="CENTER">
             <children>
 
-                <HBox alignment="BOTTOM_CENTER" fillHeight="false" spacing="10.0" HBox.hgrow="ALWAYS">
+                      <HBox alignment="CENTER" spacing="10.0" HBox.hgrow="ALWAYS">
 
-                    <VBox HBox.hgrow="ALWAYS">
+                          <VBox alignment="CENTER" fillWidth="false">
                         <children>
-                            <HBox alignment="CENTER_RIGHT">
+                            <HBox alignment="BOTTOM_CENTER">
                                 <children>
-                                    <VBox alignment="CENTER" fillWidth="false" HBox.hgrow="ALWAYS">
+                                    <VBox alignment="CENTER_RIGHT" fillWidth="false" spacing="20.0" HBox.hgrow="ALWAYS">
                                         <children>
-                                            <HBox alignment="CENTER_RIGHT">
+                                            <HBox alignment="BOTTOM_CENTER" VBox.vgrow="ALWAYS">
                                                 <children>
-                                                    <HBox alignment="CENTER" prefHeight="100.0" spacing="20.0">
+                                                    <HBox alignment="CENTER_RIGHT" spacing="20.0" HBox.hgrow="ALWAYS">
                                                         <children>
                                                             <VBox spacing="5.0">
                                                                 <children>
@@ -69,11 +80,17 @@
                                                                         <font>
                                                                             <Font name="Bookman Old Style Bold" size="12.0" />
                                                                         </font>
+                                                      <VBox.margin>
+                                                         <Insets left="10.0" />
+                                                      </VBox.margin>
                                                                     </Label>
-                                                                    <ComboBox fx:id="paymentModeC" prefHeight="33.0" prefWidth="180.0" style="-fx-background-radius: 0;" />
+                                                                    <ComboBox fx:id="paymentModeC" focusTraversable="false" minWidth="150.0" prefHeight="33.0" prefWidth="150.0" style="-fx-background-radius: 0;">
+                                                      <VBox.margin>
+                                                         <Insets left="10.0" />
+                                                      </VBox.margin></ComboBox>
                                                                 </children>
                                                 <HBox.margin>
-                                                   <Insets left="20.0" />
+                                                   <Insets />
                                                 </HBox.margin>
                                                             </VBox>
                                                             <VBox alignment="TOP_CENTER" layoutX="35.0" layoutY="10.0" spacing="5.0">
@@ -83,7 +100,7 @@
                                                                             <Font name="Bookman Old Style Bold" size="12.0" />
                                                                         </font>
                                                                     </Label>
-                                                                    <TextField fx:id="receivedAmountTF" prefHeight="33.0" prefWidth="165.0" promptText="Enter Received Amount" style="-fx-background-radius: 0;" />
+                                                                    <TextField fx:id="receivedAmountTF" focusTraversable="false" minWidth="150.0" prefHeight="33.0" prefWidth="150.0" promptText="Enter Received Amount" style="-fx-background-radius: 0;" />
                                                                 </children>
                                                             </VBox>
                                                             <VBox alignment="TOP_CENTER" layoutX="230.0" layoutY="15.0" spacing="5.0">
@@ -93,7 +110,7 @@
                                                                             <Font name="Bookman Old Style Bold" size="12.0" />
                                                                         </font>
                                                                     </Label>
-                                                                    <TextField fx:id="duesAmountTF" prefHeight="33.0" prefWidth="165.0" promptText="DUES" style="-fx-background-radius: 1;" />
+                                                                    <TextField fx:id="duesAmountTF" focusTraversable="false" minWidth="150.0" prefHeight="33.0" prefWidth="150.0" promptText="DUES" style="-fx-background-radius: 1;" />
                                                                 </children>
                                                             </VBox>
                                                         </children>
@@ -105,18 +122,15 @@
                                                         </padding>
                                                     </HBox>
                                                 </children>
-                                                <padding>
-                                                    <Insets right="30.0" />
-                                                </padding>
                                             </HBox>
                                             <HBox alignment="BOTTOM_CENTER" spacing="50.0" VBox.vgrow="ALWAYS">
                                                 <children>
-                                                    <HBox alignment="CENTER_RIGHT" prefHeight="75.0" spacing="40.0" HBox.hgrow="ALWAYS">
+                                                    <HBox alignment="BOTTOM_CENTER" spacing="25.0" HBox.hgrow="ALWAYS">
                                                         <children>
                                                             <HBox alignment="BOTTOM_CENTER" layoutX="230.0" layoutY="10.0" HBox.hgrow="ALWAYS">
                                                                 <children>
 
-                                                                    <Button alignment="CENTER" graphicTextGap="6.0" onAction="#clear" prefHeight="33.0" style="-fx-font-family: 'Bookman Old Style'; -fx-cursor: hand; -fx-background-color: red; -fx-text-fill: WHITE; -fx-font-weight: BOLD; -fx-background-radius: 2;" text="CLEAR CART" textAlignment="CENTER">
+                                                                          <Button alignment="CENTER" focusTraversable="false" graphicTextGap="6.0" minWidth="130.0" onAction="#clear" prefHeight="33.0" style="-fx-font-family: 'Bookman Old Style'; -fx-cursor: hand; -fx-background-color: red; -fx-text-fill: WHITE; -fx-font-weight: BOLD; -fx-background-radius: 2;" text="CLEAR CART" textAlignment="CENTER">
                                                                         <graphic>
                                                                             <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                                                                 <image>
@@ -131,7 +145,7 @@
                                                                 </children>
                                                             </HBox>
 
-                                                            <HBox alignment="CENTER" fillHeight="false">
+                                                                  <HBox alignment="CENTER" fillHeight="false">
                                                                 <children>
                                                                     <VBox fillWidth="false" spacing="5.0">
                                                                         <children>
@@ -143,7 +157,7 @@
                                                                                     <Insets left="5.0" />
                                                                                 </VBox.margin>
                                                                             </Label>
-                                                                            <ComboBox fx:id="billingTypeC" prefHeight="33.0" prefWidth="165.0" style="-fx-background-radius: 0;" />
+                                                                            <ComboBox fx:id="billingTypeC" focusTraversable="false" minWidth="150.0" prefHeight="33.0" prefWidth="150.0" style="-fx-background-radius: 0;" />
                                                                         </children>
                                                                         <HBox.margin>
                                                                             <Insets />
@@ -154,9 +168,9 @@
                                                                     <Insets left="5.0" />
                                                                 </HBox.margin>
                                                             </HBox>
-                                                            <HBox alignment="BOTTOM_CENTER" HBox.hgrow="ALWAYS">
+                                                            <HBox alignment="BOTTOM_CENTER">
                                                                 <children>
-                                                                    <Button alignment="CENTER" graphicTextGap="10.0" onAction="#sellNow_bn" prefHeight="33.0" prefWidth="145.0" style="-fx-font-family: 'Bookman Old Style'; -fx-cursor: hand; -fx-background-color: BLUE; -fx-text-fill: WHITE; -fx-font-weight: BOLD; -fx-background-radius: 2;" text="SELL NOW" textAlignment="CENTER">
+                                                                    <Button alignment="CENTER" focusTraversable="false" graphicTextGap="10.0" minHeight="33.0" minWidth="140.0" onAction="#sellNow_bn" prefHeight="33.0" prefWidth="140.0" style="-fx-font-family: 'Bookman Old Style'; -fx-cursor: hand; -fx-background-color: BLUE; -fx-text-fill: WHITE; -fx-font-weight: BOLD; -fx-background-radius: 2;" text="SELL NOW" textAlignment="CENTER">
                                                                         <graphic>
                                                                             <ImageView fitHeight="16.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                                                                                 <image>
@@ -184,131 +198,158 @@
                                     </VBox>
                                 </children>
                                 <VBox.margin>
-                                    <Insets right="60.0" />
+                                    <Insets right="20.0" />
                                 </VBox.margin>
                             </HBox>
                         </children>
                     </VBox>
-                    <HBox.margin>
-                        <Insets bottom="10.0" />
-                    </HBox.margin>
 
-                </HBox>
-                <VBox prefWidth="400.0" spacing="5.0" style="-fx-background-color: #E3DEDE; -fx-background-radius: 5;">
+                      </HBox>
+                <VBox alignment="BOTTOM_CENTER" prefWidth="340.0" spacing="5.0" style="-fx-background-color: #e6e6e6; -fx-background-radius: 5;">
                     <children>
-                        <VBox spacing="8.0">
+                        <VBox spacing="6.0">
                             <children>
                                 <HBox alignment="CENTER_LEFT">
                                     <children>
-                                        <Label alignment="CENTER_RIGHT" style="-fx-text-fill: BLACK;" text="  Total As Per MRP :  ₹">
+                                        <Label alignment="CENTER_RIGHT" prefHeight="15.0" prefWidth="108.0" style="-fx-text-fill: BLACK;" text="SUB TOTAL  :">
                                             <font>
-                                                <Font name="Bookman Old Style Bold" size="13.0" />
+                                                <Font name="Arial" size="12.0" />
                                             </font>
+                                 <HBox.margin>
+                                    <Insets left="7.0" />
+                                 </HBox.margin>
                                         </Label>
-                                        <Label fx:id="totalAmountL" layoutX="10.0" layoutY="10.0" style="-fx-text-fill: BLACK;">
+                                        <Label fx:id="subTotalL" layoutX="10.0" layoutY="10.0" style="-fx-text-fill: BLACK;">
                                             <HBox.margin>
-                                                <Insets left="4.0" />
+                                                <Insets left="10.0" />
                                             </HBox.margin>
                                             <font>
-                                                <Font name="System Bold" size="14.0" />
+                                                <Font name="Arial" size="13.0" />
                                             </font>
                                         </Label>
                                     </children>
                                 </HBox>
                                 <HBox alignment="CENTER_LEFT">
                                     <children>
-                                        <Label alignment="CENTER_RIGHT" minWidth="92.0" style="-fx-text-fill: BLACK;" text="DISCOUNT :  ₹">
+                                        <Label alignment="CENTER_RIGHT" minWidth="92.0" prefHeight="16.0" prefWidth="111.0" style="-fx-text-fill: BLACK;" text="DISCOUNT  : " textAlignment="CENTER">
                                             <font>
-                                                <Font name="Bookman Old Style Bold" size="12.0" />
+                                                <Font name="Arial" size="12.0" />
                                             </font>
+                                 <HBox.margin>
+                                    <Insets left="7.0" />
+                                 </HBox.margin>
                                         </Label>
                                         <Label fx:id="discountL" layoutX="10.0" layoutY="10.0" minWidth="30.0" style="-fx-text-fill: BLACK;">
                                             <HBox.margin>
-                                                <Insets left="4.0" />
+                                                <Insets left="10.0" />
                                             </HBox.margin>
                                             <font>
-                                                <Font name="System Bold" size="14.0" />
-                                            </font>
-                                        </Label>
-                                        <Label minWidth="15.0" style="-fx-text-fill: BLACK;" text="+" textFill="WHITE">
-                                            <font>
-                                                <Font name="System Bold" size="13.0" />
-                                            </font>
-                                            <HBox.margin>
-                                                <Insets left="5.0" />
-                                            </HBox.margin>
-                                        </Label>
-                                        <TextField fx:id="addDiscTF" minWidth="50.0" prefWidth="60.0" style="-fx-text-fill: BLACK;" text="0">
-                                            <HBox.margin>
-                                                <Insets left="5.0" />
-                                            </HBox.margin>
-                                        </TextField>
-                                        <Label layoutX="108.0" layoutY="10.0" minWidth="20.0" style="-fx-text-fill: BLACK;" text=" =" textFill="WHITE">
-                                            <font>
-                                                <Font name="System Bold" size="13.0" />
-                                            </font>
-                                        </Label>
-                                        <Label fx:id="totalDiscountL" layoutX="176.0" layoutY="10.0" minWidth="60.0" style="-fx-text-fill: BLACK;" textFill="WHITE" wrapText="true">
-                                            <font>
-                                                <Font name="System Bold" size="13.0" />
+                                                <Font name="Arial" size="13.0" />
                                             </font>
                                         </Label>
                                     </children>
                                 </HBox>
+                        <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0">
+                           <children>
+                              <Label alignment="CENTER_RIGHT" prefHeight="15.0" prefWidth="110.0" style="-fx-text-fill: BLACK;" text="TAXABLE VALUE  : ">
+                                 <font>
+                                    <Font name="Arial Narrow" size="13.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets left="7.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <Label fx:id="taxableValueL" layoutX="10.0" layoutY="10.0" style="-fx-text-fill: BLACK;">
+                                 <HBox.margin>
+                                    <Insets left="10.0" />
+                                 </HBox.margin>
+                                 <font>
+                                    <Font name="Arial" size="13.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </HBox>
                                 <HBox alignment="CENTER_LEFT">
                                     <children>
-                                        <Label fx:id="taxTitleL" alignment="CENTER_RIGHT" prefHeight="15.0" prefWidth="84.0" style="-fx-text-fill: BLACK;" text="TAX : ">
+                                        <Label fx:id="taxTitleL" alignment="CENTER_RIGHT" prefHeight="15.0" prefWidth="109.0" style="-fx-text-fill: BLACK;" text="GST  : ">
                                             <font>
-                                                <Font name="Bookman Old Style Bold" size="13.0" />
+                                                <Font name="Arial" size="12.0" />
                                             </font>
+                                 <HBox.margin>
+                                    <Insets left="7.0" />
+                                 </HBox.margin>
                                         </Label>
                                         <Label fx:id="taxL" layoutX="10.0" layoutY="10.0" style="-fx-text-fill: BLACK;">
                                             <HBox.margin>
-                                                <Insets left="4.0" />
+                                                <Insets left="10.0" />
                                             </HBox.margin>
                                             <font>
-                                                <Font name="System Bold" size="14.0" />
+                                                <Font name="Arial" size="13.0" />
                                             </font>
                                         </Label>
                                     </children>
                                 </HBox>
+                        <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="10.0" layoutY="72.0">
+                           <children>
+                              <Label alignment="CENTER_RIGHT" minWidth="110.0" prefHeight="16.0" prefWidth="110.0" style="-fx-text-fill: BLACK;" text="ADDITIONAL DISC  : " textAlignment="CENTER">
+                                 <font>
+                                    <Font name="Arial Narrow" size="12.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets left="7.0" />
+                                 </HBox.margin>
+                              </Label>
+                                        <TextField fx:id="addDiscTF" focusTraversable="false" minWidth="50.0" prefWidth="100.0" style="-fx-text-fill: BLACK; -fx-border-color: GRAY;" text="0">
+                                            <HBox.margin>
+                                                <Insets left="2.0" />
+                                            </HBox.margin>
+                                 <font>
+                                    <Font name="Arial" size="11.0" />
+                                 </font>
+                                        </TextField>
+                           </children>
+                        </HBox>
+                        <Separator prefWidth="200.0" />
+                              <HBox alignment="CENTER_LEFT" minHeight="25.0" VBox.vgrow="ALWAYS">
+                                  <children>
+                                        <Label alignment="CENTER_RIGHT" prefHeight="15.0" prefWidth="130.0" text="TOTAL PAYABLE   ₹">
+                                            <font>
+                                                <Font name="Arial Black" size="10.0" />
+                                            </font>
+                                        </Label>
+                                          <Label fx:id="totalPayAbleL" alignment="CENTER" textAlignment="CENTER" HBox.hgrow="ALWAYS">
+                                              <font>
+                                                  <Font name="Arial Black" size="13.0" />
+                                              </font>
+                                 <HBox.margin>
+                                    <Insets left="10.0" />
+                                 </HBox.margin>
+                                          </Label>
+                                  </children>
+                           <padding>
+                              <Insets bottom="5.0" />
+                           </padding>
+                           <VBox.margin>
+                              <Insets bottom="5.0" />
+                           </VBox.margin>
+                              </HBox>
                             </children>
                             <VBox.margin>
                                 <Insets left="5.0" />
                             </VBox.margin>
                         </VBox>
-                        <HBox alignment="CENTER" layoutX="20.0" layoutY="81.0" style="-fx-background-color: RED;" VBox.vgrow="ALWAYS">
-                            <children>
-                                <VBox alignment="TOP_CENTER" HBox.hgrow="ALWAYS">
-                                    <HBox.margin>
-                                        <Insets left="4.0" />
-                                    </HBox.margin>
-                                    <children>
-                                        <Label text="TOTAL PAYABLE  ₹" textFill="WHITE">
-                                            <font>
-                                                <Font name="Arial Bold" size="12.0" />
-                                            </font>
-                                        </Label>
-                                        <HBox alignment="CENTER" VBox.vgrow="ALWAYS">
-                                            <children>
-                                                <Label fx:id="totalPayAbleL" alignment="CENTER" textAlignment="CENTER" textFill="WHITE" HBox.hgrow="ALWAYS">
-                                                    <font>
-                                                        <Font name="System Bold" size="14.0" />
-                                                    </font>
-                                                </Label>
-                                            </children>
-                                        </HBox>
-                                    </children>
-                                </VBox>
-                            </children>
-                        </HBox>
+                  <Text stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="All values are in INR" textAlignment="RIGHT" wrappingWidth="205.28063201904297">
+                     <font>
+                        <Font size="10.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets bottom="3.0" />
+                     </VBox.margin>
+                  </Text>
                     </children>
                     <padding>
-                        <Insets top="5.0" />
+                        <Insets left="15.0" top="5.0" />
                     </padding>
-                    <HBox.margin>
-                        <Insets bottom="5.0" right="5.0" top="5.0" />
-                    </HBox.margin>
                 </VBox>
             </children>
         </HBox>

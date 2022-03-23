@@ -25,6 +25,7 @@ public class ShopDetails implements Initializable {
     public Label sEmail;
     public Label sGstNum;
     public Label sAddress;
+    public Label propName;
 
     private DBConnection dbConnection;
     private Method method;
@@ -65,6 +66,7 @@ public class ShopDetails implements Initializable {
                 String email = rs.getString("shop_email");
                 String gstNum = rs.getString("shop_gst_number");
                 String address = rs.getString("shop_address");
+                String prop = rs.getString("shop_prop");
 
                 shopName.setText(shop_name);
                 sPhone_1.setText(phone_1);
@@ -72,6 +74,7 @@ public class ShopDetails implements Initializable {
                 sEmail.setText(email);
                 sGstNum.setText(gstNum);
                 sAddress.setText(address);
+                propName.setText(prop);
             }
 
 
@@ -90,8 +93,9 @@ public class ShopDetails implements Initializable {
         String email = sEmail.getText();
         String address = sAddress.getText();
         String gstNum = sGstNum.getText();
+        String prop = propName.getText();
 
-        Shop shop = new Shop(sName , phone_1 , phone_2 , email , address ,gstNum );
+        Shop shop = new Shop(sName , phone_1 , phone_2 , email , address ,gstNum,prop );
         Main.primaryStage.setUserData(shop);
 
         customDialog.showFxmlDialog("update/shopDetailsUpdate.fxml", "UPDATE");

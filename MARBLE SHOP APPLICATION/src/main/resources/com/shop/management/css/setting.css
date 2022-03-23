@@ -2,7 +2,7 @@
     -fx-background-color: #dbdcde;
     -fx-border-color: transparent;
     -fx-text-fill: black;
-    -fx-font-family: "Bookman Old Style";
+    -fx-font-family: SansSerif;
     -fx-cursor: hand;
     -fx-padding: 10;
     -fx-background-radius: 4;
@@ -11,29 +11,20 @@
     -fx-background-color: #dbdcde;
     -fx-border-color: transparent;
     -fx-text-fill: black;
-    -fx-font-family: "Bookman Old Style";
+    -fx-font-family: Arial;
     -fx-cursor: hand;
-    -fx-background-radius: 4;
 }
 .menu-item:focused {
     -fx-background-color: #dbdcde;
     -fx-border-color: transparent;
     -fx-text-fill: black;
-    -fx-font-family: "Bookman Old Style";
+    -fx-font-family: "Arial Black";
     -fx-cursor: hand;
-    -fx-background-radius: 4;
 }
-
 .menu-button{
 
     -fx-color: white;
-    -fx-background-color: #0881ea;
-    -fx-font-family: "Bookman Old Style";
+    -fx-background-color: #053a67;
+    -fx-font-family: "Arial Black";
     -fx-cursor: hand;
-}
-
-.menu-button:selected{
-
-    -fx-text-fill: white;
-    -fx-background-color: #f10707;
 }

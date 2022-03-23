@@ -24,6 +24,7 @@ public class ShopDetailsUpdate implements Initializable {
     public TextField phone_2TF;
     public TextField emailTF;
     public TextField addressTF;
+    public TextField propNameTF;
 
     private DBConnection dbConnection;
     private Method method;
@@ -54,6 +55,7 @@ public class ShopDetailsUpdate implements Initializable {
         phone_2TF.setText(shopDetails.getShopPhone_2());
         emailTF.setText(shopDetails.getShopEmail());
         addressTF.setText(shopDetails.getShopAddress());
+        propNameTF.setText(shopDetails.getPropName());
     }
 
     public void bnUpdate(MouseEvent event) {
@@ -63,6 +65,7 @@ public class ShopDetailsUpdate implements Initializable {
         String sPhone_2 = phone_2TF.getText();
         String sEmail = emailTF.getText();
         String sAddress = addressTF.getText();
+        String prop = propNameTF.getText();
 
         if (sName.isEmpty()) {
 
@@ -76,6 +79,10 @@ public class ShopDetailsUpdate implements Initializable {
 
             method.show_popup("ENTER SHOP EMAIL", emailTF);
             return;
+        }else if (prop.isEmpty()) {
+
+            method.show_popup("ENTER PROP NAME", propNameTF);
+            return;
         } else if (sAddress.isEmpty()) {
 
             method.show_popup("ENTER SHOP FULL ADDRESS", addressTF);
@@ -88,7 +95,7 @@ public class ShopDetailsUpdate implements Initializable {
             connection = dbConnection.getConnection();
 
             String query = "UPDATE tbl_shop_details SET shop_name = ? , shop_phone_1 = ? , shop_phone_2 = ? , shop_email = ? ,\n" +
-                    "                            shop_address = ?";
+                    "                            shop_address = ? , shop_prop = ?";
 
             ps = connection.prepareStatement(query);
             ps.setString(1,sName);
@@ -102,6 +109,7 @@ public class ShopDetailsUpdate implements Initializable {
 
             ps.setString(4,sEmail);
             ps.setString(5,sAddress);
+            ps.setString(6,prop);
 
             int res = ps.executeUpdate();
 

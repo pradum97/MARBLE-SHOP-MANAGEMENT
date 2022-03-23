@@ -5,6 +5,7 @@ import com.shop.management.Main;
 import com.shop.management.Method.GetUserProfile;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.UserDetails;
+import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -34,7 +35,7 @@ public class Login implements Initializable {
         main = new Main();
         method = new Method();
         customDialog = new CustomDialog();
-        properties = method.getProperties("query.properties");
+        properties = new PropertiesLoader().load("query.properties");
         dbConnection = new DBConnection();
     }
 

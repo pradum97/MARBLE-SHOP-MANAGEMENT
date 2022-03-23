@@ -1,9 +1,11 @@
 package com.shop.management.Controller;
 
 import com.shop.management.CustomDialog;
+import com.shop.management.ImageLoader;
 import com.shop.management.Main;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.Products;
+import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
@@ -79,7 +81,7 @@ public class AllProducts implements Initializable {
         method = new Method();
         dbconnection = new DBConnection();
         customDialog = new CustomDialog();
-        properties = method.getProperties("query.properties");
+        properties = new PropertiesLoader().load("query.properties");
         setCustomImage();
 
         getProduct();
@@ -264,34 +266,15 @@ public class AllProducts implements Initializable {
 
                 } else {
 
-                    FileInputStream input_edit, input_delete;
-                    File edit_file, delete_file;
+                    ImageLoader loader = new ImageLoader();
                     ImageView iv_edit, iv_delete;
-                    Image image_edit = null, image_delete = null;
 
-                    String path = "src/main/resources/com/shop/management/img/icon/";
-
-                    try {
-                        edit_file = new File(path + "edit_ic.png");
-                        delete_file = new File(path + "delete_ic.png");
-
-                        input_edit = new FileInputStream(edit_file.getPath());
-                        input_delete = new FileInputStream(delete_file.getPath());
-
-                        image_edit = new Image(input_edit);
-                        image_delete = new Image(input_delete);
-
-
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-
-                    iv_edit = new ImageView(image_edit);
+                    iv_edit = new ImageView(loader.load("img/icon/edit_ic.png"));
                     iv_edit.setFitHeight(22);
                     iv_edit.setFitHeight(22);
                     iv_edit.setPreserveRatio(true);
 
-                    iv_delete = new ImageView(image_delete);
+                    iv_delete = new ImageView(loader.load("img/icon/delete_ic.png"));
                     iv_delete.setFitHeight(17);
                     iv_delete.setFitWidth(17);
                     iv_delete.setPreserveRatio(true);

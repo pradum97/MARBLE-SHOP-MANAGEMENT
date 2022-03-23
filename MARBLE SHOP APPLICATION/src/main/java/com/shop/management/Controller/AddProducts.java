@@ -8,6 +8,7 @@ import com.shop.management.Model.CategoryModel;
 import com.shop.management.Model.Discount;
 import com.shop.management.Model.ProductSize;
 import com.shop.management.Model.TAX;
+import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -91,7 +92,7 @@ public class AddProducts implements Initializable {
         method = new Method();
         customDialog = new CustomDialog();
         dbConnection = new DBConnection();
-        properties = method.getProperties("query.properties");
+        properties = new PropertiesLoader().load("query.properties");
 
         connection = new DBConnection().getConnection();
 
@@ -489,7 +490,10 @@ public class AddProducts implements Initializable {
         } else if (prodCode.isEmpty()) {
             method.show_popup("Enter Product Code", productCodeTF);
             return;
-        } else if (null == productCategory.getValue()) {
+        }/*else if (productTax.getSelectionModel().isEmpty()) {
+            method.show_popup("SELECT HSN CODE", productTax);
+            return;
+        }*/ else if (null == productCategory.getValue()) {
             method.show_popup("CHOOSE PRODUCT CATEGORY", productCategory);
             return;
         } else if (null == productColor.getValue()) {

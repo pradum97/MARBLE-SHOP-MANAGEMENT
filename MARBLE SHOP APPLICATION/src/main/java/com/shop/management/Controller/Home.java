@@ -22,6 +22,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class Home implements Initializable {
@@ -39,9 +40,6 @@ public class Home implements Initializable {
     public TableView<DailySaleReport> tableViewHome;
     public TableColumn<DailySaleReport, Integer> col_sno;
 
-
-
-    public TextField searchTf;
     public HBox refresh_bn;
     public Pagination pagination;
 
@@ -54,6 +52,8 @@ public class Home implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+
         method = new Method();
         dbConnection = new DBConnection();
         getSaleItems();
@@ -62,6 +62,7 @@ public class Home implements Initializable {
     }
 
     private void getSaleItems() {
+
 
         if (null != reportList) {
             reportList.clear();
@@ -144,8 +145,8 @@ public class Home implements Initializable {
 
 
     }
-    public void bnRefresh(MouseEvent event) {
 
+    public void bnRefresh(MouseEvent event) {
         if (null ==  reportList){
             return;
         }

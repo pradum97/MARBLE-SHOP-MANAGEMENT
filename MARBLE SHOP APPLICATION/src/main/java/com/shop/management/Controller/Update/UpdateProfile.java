@@ -3,11 +3,11 @@ package com.shop.management.Controller.Update;
 import com.shop.management.Controller.Login;
 import com.shop.management.CustomDialog;
 import com.shop.management.Main;
-import com.shop.management.Method.CopyImage;
 import com.shop.management.Method.GetUserProfile;
 import com.shop.management.Method.Method;
 import com.shop.management.Method.StaticData;
 import com.shop.management.Model.UserDetails;
+import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,13 +17,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
-import javafx.stage.Window;
-import org.apache.commons.io.FileUtils;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -43,33 +38,24 @@ public class UpdateProfile implements Initializable {
     public ComboBox<String> gender_comboBox;
     public ComboBox<String> role_combobox;
     public TextArea full_address_f;
-    public ImageView profile_photo;
-    public Button profile_img_choose;
     public Button bnCancel;
     public Button bnUpdate;
     public ComboBox<String> combo_accountStatus;
     private Method method;
     private Properties properties;
     private DBConnection dbConnection;
-    private String imgAvatarPath, imageName, oldImagePath;
     private CustomDialog customDialog;
-    private Main main;
     private int userId;
-    private String rootPath = "src/main/resources/com/shop/management/img/userImages/";
-
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         method = new Method();
         customDialog = new CustomDialog();
         dbConnection = new DBConnection();
-        main = new Main();
-        properties = method.getProperties("query.properties");
+        properties = new PropertiesLoader().load("query.properties");
 
         userId = ((int) Main.primaryStage.getUserData());
-
         setUserDetails(userId);
-
     }
 
     private void setUserDetails(int userId) {
@@ -87,19 +73,13 @@ public class UpdateProfile implements Initializable {
         phone_f.setText(String.valueOf(userDetails.getPhone()));
         email_f.setText(userDetails.getEmail());
         full_address_f.setText(userDetails.getFullAddress());
-
         gender_comboBox.getItems().add(userDetails.getGender());
         gender_comboBox.getSelectionModel().selectFirst();
-
         role_combobox.getItems().add(userDetails.getRole());
         role_combobox.getSelectionModel().selectFirst();
-
         role_combobox.setItems(method.getRole());
         gender_comboBox.setItems(method.getGender());
-        oldImagePath = userDetails.getUserImage();
-
         combo_accountStatus.setItems(method.getAccountStatus());
-
         combo_accountStatus.setDisable(userDetails.getUserID() == Login.currentlyLogin_Id);
 
         switch (userDetails.getAccountStatus()) {
@@ -111,8 +91,6 @@ public class UpdateProfile implements Initializable {
                 combo_accountStatus.getSelectionModel().select(0);
             }
         }
-
-        profile_photo.setImage(method.getImage(rootPath + oldImagePath));
 
     }
 
@@ -145,7 +123,7 @@ public class UpdateProfile implements Initializable {
             return;
 
         }
-        long phoneNum = 0;
+        long phoneNum ;
         try {
             phoneNum = Long.parseLong(phone);
         } catch (NumberFormatException e) {
@@ -190,29 +168,8 @@ public class UpdateProfile implements Initializable {
             ps_insert_data.setString(6, username);
             ps_insert_data.setLong(7, phoneNum);
             ps_insert_data.setString(8, full_address);
-
-
-            if (null == imgAvatarPath) {
-                ps_insert_data.setString(9, oldImagePath); // user image
-
-            } else {
-                imageName = new CopyImage().copy(new File("src/main/resources/com/shop/management/img/Avatar/" + imgAvatarPath).getAbsolutePath(), "userImages/profileImg");
-                ps_insert_data.setString(9, imageName); // user image
-
-                // delete previous image
-                if (null != oldImagePath) {
-                    File file = new File("src/main/resources/com/shop/management/img/userImages/" + oldImagePath);
-                    if (file.exists()) {
-                        try {
-                            FileUtils.forceDelete(file);
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-                }
-            }
-            ps_insert_data.setInt(10, combo_accountStatus.getSelectionModel().getSelectedIndex());
-            ps_insert_data.setInt(11, userId);
+            ps_insert_data.setInt(9, combo_accountStatus.getSelectionModel().getSelectedIndex());
+            ps_insert_data.setInt(10, userId);
 
             int result = ps_insert_data.executeUpdate();
 
@@ -220,17 +177,7 @@ public class UpdateProfile implements Initializable {
 
                 customDialog.showAlertBox("Congratulations 🎉🎉🎉", "Successfully Updated");
 
-
-                int login_id = Login.currentlyLogin_Id;
-
-                if (login_id > 0) {
-
-                    if (login_id == userId) {
-                        new Main().changeScene("login.fxml", "Re-Login");
-                    }
-
-                }
-                Stage stage = CustomDialog.stage;
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
                 if (stage.isShowing()) {
 
@@ -259,28 +206,6 @@ public class UpdateProfile implements Initializable {
             }
         }
     }
-
-    public void chooseAvatar(ActionEvent event) {
-
-        customDialog.showFxmlDialog2("avatar.fxml", "CHOOSE YOUR PROFILE AVATAR");
-        setAvatar();
-
-    }
-
-    public void setAvatar() {
-        String path = "src/main/resources/com/shop/management/img/Avatar/";
-        try {
-            imgAvatarPath = (String) Main.primaryStage.getUserData();
-        } catch (ClassCastException e) {
-            //  e.printStackTrace();
-        }
-        String img = path + imgAvatarPath;
-
-        if (null != imgAvatarPath) {
-            profile_photo.setImage(new Method().getImage(img));
-        }
-    }
-
     public void bnCancel(ActionEvent event) {
 
         Stage stage = (Stage)((Node) event.getSource()).getScene().getWindow();

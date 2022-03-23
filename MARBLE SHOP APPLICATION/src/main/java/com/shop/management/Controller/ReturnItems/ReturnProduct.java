@@ -2,6 +2,7 @@ package com.shop.management.Controller.ReturnItems;
 
 import com.shop.management.Controller.Login;
 import com.shop.management.CustomDialog;
+import com.shop.management.ImageLoader;
 import com.shop.management.Main;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.ReturnProductModel;
@@ -57,11 +58,11 @@ public class ReturnProduct implements Initializable {
     private Method method;
     private CustomDialog customDialog;
     double netReturnAmtTot = 0;
-    private double totalDiscountAmount = 0;
+    private double totalReturnDisctAmount = 0;
     private int saleMainID;
     private double discountPer;
     private String oldInvoiceNumber;
-
+    private double totalDiscount , netAmount;
     private ObservableList<ReturnProductModel> itemList = FXCollections.observableArrayList();
 
     @Override
@@ -70,7 +71,6 @@ public class ReturnProduct implements Initializable {
         dbConnection = new DBConnection();
         customDialog = new CustomDialog();
 
-        System.out.println(getInvoiceNumber());
         textChangeListener();
     }
 
@@ -85,6 +85,11 @@ public class ReturnProduct implements Initializable {
                 e.printStackTrace();
             }
 
+            if (netReturnAmtTot < currentDiscount){
+                method.show_popup("Discount Amount Should Not Be Exceed Price !",discountTF);
+                return;
+
+            }
             refundL.setText(String.valueOf(netReturnAmtTot - currentDiscount));
 
         });
@@ -122,7 +127,7 @@ public class ReturnProduct implements Initializable {
                 return;
             }
 
-            String query = "select tsm.sale_main_id  ,tsi.product_id,tsi.stock_id,tsi.discountPer , tsi.sale_item_id ,tsm.invoice_number , tc.customer_name , tc.customer_phone, tc.customer_address,\n" +
+            String query = "select tsm.sale_main_id,tsm.tot_disc_amount  ,tsi.product_id,tsi.stock_id,tsi.discountPer , tsi.sale_item_id ,tsm.invoice_number , tc.customer_name , tc.customer_phone, tc.customer_address,\n" +
                     "       (TO_CHAR( tsm.sale_date, 'DD-MM-YYYY HH12:MI AM')) as sale_date , tsm.net_amount , tsm.bill_type ,td.dues_amount,\n" +
                     "       tsi.product_name , tsi.product_size , tsi.product_quantity , tsi.sell_price\n" +
                     "from tbl_sale_main tsm\n" +
@@ -154,13 +159,16 @@ public class ReturnProduct implements Initializable {
                 String ReturnProductModelize = rs.getString("product_size");
                 String productQuantity = rs.getString("product_quantity");
 
-                double netAmount = rs.getDouble("net_amount");
+                double net_Amount = rs.getDouble("net_amount");
                 double duesAmount = rs.getDouble("dues_amount");
                 double rate = rs.getDouble("sell_price");
                 double discountPer = rs.getDouble("discountPer");
 
+
                 if (rs.isLast()) {
                     res++;
+                    totalDiscount = rs.getDouble("tot_disc_amount");
+                    netAmount = net_Amount;
                     cusNameL.setText(customerName.toUpperCase());
                     cusPhoneL.setText(customerPhone);
                     cusAddressL.setText(customerAddress);
@@ -173,7 +181,7 @@ public class ReturnProduct implements Initializable {
                     saleMainID = saleMainId;
                     oldInvoiceNumber = invoiceNum;
                 }
-                itemList.add(new ReturnProductModel(false, productId, stockId, saleMainId,saleItemId, productName, ReturnProductModelize, productQuantity, rate, discountPer, "0"));
+                itemList.add(new ReturnProductModel(false, productId, stockId, saleMainId, saleItemId, productName, ReturnProductModelize, productQuantity, rate, discountPer, "0"));
 
             }
             if (res < 1) {
@@ -286,7 +294,7 @@ public class ReturnProduct implements Initializable {
     }
 
     public void bnSubmit(ActionEvent event) {
-        ImageView image = new ImageView(method.getImage("src/main/resources/com/shop/management/img/icon/warning_ic.png"));
+        ImageView image = new ImageView(new ImageLoader().load("img/icon/warning_ic.png"));
         image.setFitWidth(45);
         image.setFitHeight(45);
         Alert alert = new Alert(Alert.AlertType.NONE);
@@ -342,8 +350,7 @@ public class ReturnProduct implements Initializable {
             } else {
                 psReturnMain.setString(5, remark);
             }
-            psReturnMain.setString(6,oldInvoiceNumber);
-
+            psReturnMain.setString(6, oldInvoiceNumber);
 
 
             int res = psReturnMain.executeUpdate();
@@ -355,7 +362,7 @@ public class ReturnProduct implements Initializable {
                 }
                 for (ReturnProductModel rp : tableView.getItems()) {
                     String quantityUnit = rp.getQuantity().split(" -")[1];
-                            res = 0;
+                    res = 0;
                     int returnQuantity = 0;
                     try {
                         returnQuantity = Integer.parseInt(rp.getReturnQuantity().replaceAll("[^0-9.]", ""));
@@ -369,8 +376,8 @@ public class ReturnProduct implements Initializable {
                     psReturnItem.setInt(3, returnQuantity);
                     psReturnItem.setDouble(4, discountPer);
                     psReturnItem.setDouble(5, rp.getRate());
-                    psReturnItem.setString(6,quantityUnit);
-                    psReturnItem.setInt(7,rp.getSaleItemId());
+                    psReturnItem.setString(6, quantityUnit);
+                    psReturnItem.setInt(7, rp.getSaleItemId());
 
 
                     res = psReturnItem.executeUpdate();
@@ -389,7 +396,7 @@ public class ReturnProduct implements Initializable {
             }
             if (res > 0) {
                 connection.commit();
-                customDialog.showAlertBox("Success","Successfully Returned");
+                customDialog.showAlertBox("Success", "Successfully Returned");
                 resetValue();
             }
 
@@ -410,7 +417,7 @@ public class ReturnProduct implements Initializable {
 
     private void calculate() {
         netReturnAmtTot = 0;
-        totalDiscountAmount = 0;
+        totalReturnDisctAmount = 0;
         discountPer = 0;
 
         bnSubmit.setDisable(true);
@@ -426,20 +433,24 @@ public class ReturnProduct implements Initializable {
                 int productId = rp.getProductID();
                 int stockId = rp.getStockId();
                 double rate = rp.getRate();
+
+                discountPer = (totalDiscount*100)/(netAmount+totalDiscount) ;
+
+                System.out.println(discountPer);
+
                 double returnAmount = rate * returnQuantity;
-                discountPer = rp.getDiscountPercentage();
                 double discountAmount = (returnAmount * discountPer) / 100;
                 netReturnAmtTot = netReturnAmtTot + returnAmount;
-                totalDiscountAmount = totalDiscountAmount + discountAmount;
+                totalReturnDisctAmount = totalReturnDisctAmount + discountAmount;
             }
         }
-        refundL.setText(String.valueOf(netReturnAmtTot));
-        discountTF.setText(String.valueOf(totalDiscountAmount));
+        refundL.setText(String.valueOf(Math.round(netReturnAmtTot)));
+        discountTF.setText(String.valueOf(Math.round(totalReturnDisctAmount)));
     }
 
     public void bnReturnHistory(ActionEvent event) {
 
-        customDialog.showFxmlFullDialog("returnItems/ returnMain.fxml","RETURN HISTORY");
+        customDialog.showFxmlFullDialog("returnItems/ returnMain.fxml", "RETURN HISTORY");
     }
 
     public String getInvoiceNumber() {
@@ -462,12 +473,12 @@ public class ReturnProduct implements Initializable {
             }
 
 
-            return "SUMA"+invoiceNum+"R";
+            return "SUMA" + invoiceNum + "R";
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
         } finally {
-            DBConnection.closeConnection(connection , ps , rs);
+            DBConnection.closeConnection(connection, ps, rs);
 
         }
 
