@@ -3,6 +3,7 @@ package com.shop.management.Controller;
 import com.shop.management.CustomDialog;
 import com.shop.management.Main;
 import com.shop.management.Model.Feedback;
+import com.shop.management.PropertiesLoader;
 import com.shop.management.util.AppConfig;
 import com.shop.management.util.DBConnection;
 import com.shop.management.Method.Method;
@@ -37,12 +38,10 @@ public class FeedbackDialog implements Initializable {
     public Rating rate;
     public Button bn_feedback_submit;
     public Label titleL;
-    private Properties colorProperties, queryProp;
+    private Properties  queryProp;
     private DBConnection dbConnection;
     private CustomDialog customDialog;
     private Method method;
-
-    private String button_bg_color, button_text_color;
 
 
     @Override
@@ -50,11 +49,8 @@ public class FeedbackDialog implements Initializable {
         method = new Method();
         dbConnection = new DBConnection();
         customDialog = new CustomDialog();
-        colorProperties = method.getProperties("color.properties");
-        queryProp = method.getProperties("query.properties");
+        queryProp = new PropertiesLoader().load("query.properties");
 
-        button_bg_color = colorProperties.getProperty("BUTTON_BG_COLOR");
-        button_text_color = colorProperties.getProperty("BUTTON_TEXT_COLOR");
         rate.setRating(4);
 
         titleL.setText("we want to know what you thought of your experience at "+ AppConfig.COMPANY_NAME +" so we'd love to here you feedback");

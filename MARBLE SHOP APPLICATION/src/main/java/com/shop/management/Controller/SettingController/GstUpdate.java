@@ -4,6 +4,7 @@ import com.shop.management.CustomDialog;
 import com.shop.management.Main;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.TAX;
+import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
@@ -43,7 +44,7 @@ public class GstUpdate implements Initializable {
 
         method = new Method();
         dbConnection = new DBConnection();
-        properties = method.getProperties("query.properties");
+        properties = new PropertiesLoader().load("query.properties");
         customDialog = new CustomDialog();
 
         setPreviousData(tax);

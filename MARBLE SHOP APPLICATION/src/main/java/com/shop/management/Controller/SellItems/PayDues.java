@@ -1,6 +1,7 @@
 package com.shop.management.Controller.SellItems;
 
 import com.shop.management.Controller.Login;
+import com.shop.management.ImageLoader;
 import com.shop.management.Main;
 import com.shop.management.Method.Method;
 import com.shop.management.Method.StaticData;
@@ -140,7 +141,7 @@ public class PayDues implements Initializable {
             return;
         }
 
-        ImageView image = new ImageView(method.getImage("src/main/resources/com/shop/management/img/icon/warning_ic.png"));
+        ImageView image = new ImageView(new ImageLoader().load("img/icon/warning_ic.png"));
         image.setFitWidth(45);
         image.setFitHeight(45);
         Alert alert = new Alert(Alert.AlertType.NONE);

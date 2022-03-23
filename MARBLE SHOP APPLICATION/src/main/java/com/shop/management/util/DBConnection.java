@@ -1,6 +1,7 @@
 package com.shop.management.util;
 
 import com.shop.management.Method.Method;
+import com.shop.management.PropertiesLoader;
 
 import java.sql.*;
 import java.util.Properties;
@@ -12,7 +13,7 @@ public class DBConnection {
     public Connection getConnection() {
         method = new Method();
 
-        Properties properties = method.getProperties("query.properties");
+        Properties properties = new PropertiesLoader().load("query.properties");
 
         String DB_URL = properties.getProperty("DB_URL");
         String DB_USERNAME = properties.getProperty("DB_USERNAME");

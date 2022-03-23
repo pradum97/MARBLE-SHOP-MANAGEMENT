@@ -1,6 +1,7 @@
 package com.shop.management.Controller;
 
 import com.shop.management.CustomDialog;
+import com.shop.management.ImageLoader;
 import com.shop.management.Main;
 import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
@@ -16,7 +17,7 @@ import java.util.ResourceBundle;
 
 public class Avatar implements Initializable {
     public GridPane gridPane;
-   private String path = "src/main/resources/com/shop/management/img/Avatar/avtar_";
+   private String path = "img/Avatar/avtar_";
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -49,30 +50,14 @@ public class Avatar implements Initializable {
                 }
             });
 
-            try {
-                 is = new FileInputStream(new File(path+i+".png").getAbsolutePath());
-                iv.setImage(new Image(is));
+            iv.setImage(new ImageLoader().load(path+i+".png"));
 
-                gridPane.add(iv, colCnt, rowCnt);
-                colCnt++;
+            gridPane.add(iv, colCnt, rowCnt);
+            colCnt++;
 
-                if (colCnt>cols) {
-                    rowCnt++;
-                    colCnt=0;
-                }
-
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }finally {
-
-                try{
-
-                    if (is != null) {
-                        is.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            if (colCnt>cols) {
+                rowCnt++;
+                colCnt=0;
             }
 
         }

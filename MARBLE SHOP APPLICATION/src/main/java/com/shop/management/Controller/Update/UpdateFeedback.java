@@ -5,6 +5,7 @@ import com.shop.management.Main;
 import com.shop.management.Method.Method;
 import com.shop.management.Method.StaticData;
 import com.shop.management.Model.Feedback;
+import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -44,7 +45,7 @@ public class UpdateFeedback implements Initializable {
         method = new Method();
         dbConnection = new DBConnection();
         customDialog = new CustomDialog();
-        queryProp = method.getProperties("query.properties");
+        queryProp =new PropertiesLoader().load("query.properties");
 
         feed = (Feedback) Main.primaryStage.getUserData();
         setData(feed);

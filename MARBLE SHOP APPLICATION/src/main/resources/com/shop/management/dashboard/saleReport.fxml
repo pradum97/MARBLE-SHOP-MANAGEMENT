@@ -37,7 +37,7 @@
                                         <TableColumn fx:id="colDate" editable="false" minWidth="-Infinity" sortable="false" text="DATE" />
                                         <TableColumn fx:id="colCheck" editable="false" minWidth="-Infinity" sortable="false" text=" ITEMS" />
                                         <TableColumn fx:id="colTotItem" editable="false" minWidth="-Infinity" sortable="false" text="NO OF ITEMS" />
-                                        <TableColumn fx:id="colReceivedAmt" editable="false" prefWidth="145.0" sortable="false" text="PAID AMOUNT" />
+                                        <TableColumn fx:id="colReceivedAmt" editable="false" minWidth="-Infinity" sortable="false" text="PAID AMOUNT" />
                                         <TableColumn fx:id="colPayDues" editable="false" minWidth="-Infinity" sortable="false" />
                                         <TableColumn fx:id="colDuesAmt" editable="false" minWidth="-Infinity" sortable="false" text="DUES AMOUNT" />
                                         <TableColumn fx:id="colNetAmount" editable="false" minWidth="-Infinity" sortable="false" text="NET AMOUNT" />

@@ -1,20 +1,21 @@
 package com.shop.management.Controller;
 
 import com.shop.management.CustomDialog;
+import com.shop.management.ImageLoader;
 import com.shop.management.Main;
 import com.shop.management.Method.GetUserProfile;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.UserDetails;
+import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-import javafx.stage.Stage;
 
+import java.io.File;
 import java.net.URL;
 import java.sql.Connection;
 import java.util.Properties;
@@ -44,7 +45,7 @@ public class Userprofile implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         method = new Method();
         dbConnection = new DBConnection();
-        properties = method.getProperties("query.properties");
+        properties =new PropertiesLoader().load("query.properties");
         customDialog = new CustomDialog();
 
 
@@ -75,13 +76,14 @@ public class Userprofile implements Initializable {
             userPhone.setText(String.valueOf(userDetails.getPhone()));
             userAddress.setText(userDetails.getFullAddress());
 
-            String path = "src/main/resources/com/shop/management/img/userImages/" + userDetails.getUserImage();
+            String path = "img/Avatar/" + userDetails.getUserImage();
 
-            userImage.setImage(method.getImage(path));
+            userImage.setImage(new ImageLoader().load(path));
         }
     }
 
     public void editProfile(ActionEvent event) {
+       Main.primaryStage.setUserData(userId);
 
         customDialog.showFxmlDialog2("update/updateProfile.fxml", "EDIT PROFILE");
 

@@ -2,6 +2,7 @@ package com.shop.management.Controller.SettingController;
 
 import com.shop.management.CustomDialog;
 import com.shop.management.Method.Method;
+import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -37,7 +38,7 @@ public class AddDiscount implements Initializable {
         customDialog = new CustomDialog();
         method = new Method();
         dbConnection = new DBConnection();
-        properties = method.getProperties("query.properties");
+        properties =new PropertiesLoader().load("query.properties");
     }
 
 

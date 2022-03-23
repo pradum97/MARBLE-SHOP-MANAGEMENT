@@ -1,5 +1,6 @@
 package com.shop.management.Method;
 
+import com.shop.management.ImageLoader;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -11,6 +12,10 @@ public class StaticData {
     public ObservableList<String> getGender() {
 
         return FXCollections.observableArrayList("Male", "Female", "Other");
+    }
+ public ObservableList<String> stockFilter() {
+
+        return FXCollections.observableArrayList("ALL", "Out Of Stock", "LOW" , "MEDIUM" , "HIGH");
     }
 
     public ObservableList<String> getBillingType() {

@@ -1,9 +1,11 @@
 package com.shop.management.Controller;
 
 import com.shop.management.CustomDialog;
+import com.shop.management.ImageLoader;
 import com.shop.management.Main;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.Products;
+import com.shop.management.PropertiesLoader;
 import com.shop.management.util.AppConfig;
 import com.shop.management.util.DBConnection;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -18,7 +20,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -27,10 +28,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -75,7 +73,7 @@ public class SaleProduct implements Initializable {
         method = new Method();
         dbconnection = new DBConnection();
         customDialog = new CustomDialog();
-        properties = method.getProperties("query.properties");
+        properties = new PropertiesLoader().load("query.properties");
         getProduct();
 
     }
@@ -197,15 +195,10 @@ public class SaleProduct implements Initializable {
     }
 
     public void bnViewCart(MouseEvent event) {
-
-        File file = new File("src/main/resources/com/shop/management/"+AppConfig.APPLICATION_ICON);
-
-
         try {
-            InputStream is = new FileInputStream(file.getAbsolutePath());
             Stage stage = new Stage();
             Parent parent = FXMLLoader.load(Objects.requireNonNull(CustomDialog.class.getResource("dashboard/cart.fxml")));
-            stage.getIcons().add(new Image(is));
+            stage.getIcons().add(new ImageLoader().load(AppConfig.APPLICATION_ICON));
 
             stage.setTitle("YOUR CART");
             stage.setMaximized(false);
@@ -327,6 +320,18 @@ public class SaleProduct implements Initializable {
         tableView.setItems(sortedData);
 
 
+       setOptionalCell();
+
+
+        customColumn(colProductName);
+        customColumn(colSize);
+        customColumn(colProductCode);
+        countCart();
+
+    }
+
+    private void setOptionalCell() {
+
         Callback<TableColumn<Products, String>, TableCell<Products, String>>
                 cellSize = (TableColumn<Products, String> param) -> new TableCell<>() {
             @Override
@@ -389,12 +394,6 @@ public class SaleProduct implements Initializable {
             }
 
         };
-
         colPrice.setCellFactory(cellSize);
-        customColumn(colProductName);
-        customColumn(colSize);
-        customColumn(colProductCode);
-        countCart();
-
     }
 }

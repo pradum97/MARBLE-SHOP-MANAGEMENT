@@ -1,5 +1,6 @@
 package com.shop.management.Method;
 
+import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -27,6 +28,7 @@ public class Method extends StaticData {
         PreparedStatement ps = null;
         ResultSet rs = null;
         ObservableList<String> role = FXCollections.observableArrayList();
+        PropertiesLoader loader = new PropertiesLoader();
 
 
 
@@ -36,7 +38,7 @@ public class Method extends StaticData {
                 System.out.println(" Signup ( 65 ) : Connection Failed");
                 return null;
             }
-            ps = connection.prepareStatement(getProperties("query.properties").getProperty("ROLE"));
+            ps = connection.prepareStatement(loader.load("query.properties").getProperty("ROLE"));
             rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -72,21 +74,6 @@ public class Method extends StaticData {
 
     }
 
-    public Properties getProperties(String filename){
-
-        try {
-            File file = new File("src/main/java/com/shop/management/util/" + filename);
-            FileInputStream fileInputStream = new FileInputStream(file.getAbsolutePath());
-            Properties prop = new Properties();
-            prop.load(fileInputStream);
-            return prop;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     public String get_mac_address() {
 
         InetAddress ip;
@@ -110,42 +97,4 @@ public class Method extends StaticData {
         }
     }
 
-    public Image getImage(String path){
-
-        InputStream is = null;
-
-        try {
-
-            File file = new File(path);
-             is = new FileInputStream(file.getAbsolutePath());
-
-            return new Image(is);
-
-        } catch (FileNotFoundException e) {
-            try {
-                is = new FileInputStream("src/main/resources/com/shop/management/img/icon/person_ic.png");
-                return new Image(is);
-            } catch (FileNotFoundException ex) {
-                ex.printStackTrace();
-                return null;
-
-            }
-
-
-        }finally {
-
-            try {
-
-                if (null != is ){
-                    is.close();
-                }
-
-            } catch (IOException e) {
-
-                e.printStackTrace();
-            }
-        }
-
-
-    }
 }

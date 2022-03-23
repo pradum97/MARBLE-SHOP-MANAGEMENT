@@ -8,6 +8,7 @@ import com.shop.management.Model.CategoryModel;
 import com.shop.management.Model.Discount;
 import com.shop.management.Model.ProductSize;
 import com.shop.management.Model.TAX;
+import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -91,7 +92,7 @@ public class AddProducts implements Initializable {
         method = new Method();
         customDialog = new CustomDialog();
         dbConnection = new DBConnection();
-        properties = method.getProperties("query.properties");
+        properties = new PropertiesLoader().load("query.properties");
 
         connection = new DBConnection().getConnection();
 

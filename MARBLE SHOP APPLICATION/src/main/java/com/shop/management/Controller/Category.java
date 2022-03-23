@@ -1,6 +1,7 @@
 package com.shop.management.Controller;
 
 import com.shop.management.CustomDialog;
+import com.shop.management.ImageLoader;
 import com.shop.management.Main;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.CategoryModel;
@@ -160,15 +161,16 @@ public class Category implements Initializable
 
                     ImageView  iv_delete , ivEdit;
 
-                    String path = "src/main/resources/com/shop/management/img/icon/";
+                    String path = "img/icon/";
 
+                    ImageLoader loader = new ImageLoader();
 
-                    iv_delete = new ImageView(method.getImage(path+"delete_ic.png"));
+                    iv_delete = new ImageView(loader.load(path+"delete_ic.png"));
                     iv_delete.setFitHeight(17);
                     iv_delete.setFitWidth(17);
                     iv_delete.setPreserveRatio(true);
 
-                    ivEdit = new ImageView(method.getImage(path+"edit_ic.png"));
+                    ivEdit = new ImageView(loader.load(path+"edit_ic.png"));
                     ivEdit.setFitHeight(21);
                     ivEdit.setFitWidth(21);
                     ivEdit.setPreserveRatio(true);

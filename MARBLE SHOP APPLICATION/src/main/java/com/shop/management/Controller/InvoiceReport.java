@@ -1,6 +1,7 @@
 package com.shop.management.Controller;
 
 import com.shop.management.CustomDialog;
+import com.shop.management.ImageLoader;
 import com.shop.management.Main;
 import com.shop.management.Method.GenerateInvoice;
 import com.shop.management.Method.Method;
@@ -108,7 +109,6 @@ public class InvoiceReport implements Initializable {
                 };
             }
         });
-
         String searchType = searchTypeC.getSelectionModel().getSelectedItem();
 
         switch (searchType){
@@ -268,7 +268,6 @@ public class InvoiceReport implements Initializable {
 
     private void setOptionalCell() {
 
-
         Callback<TableColumn<InvoiceModel, String>, TableCell<InvoiceModel, String>>
                 cellFactory = (TableColumn<InvoiceModel, String> param) -> new TableCell<>() {
             @Override
@@ -294,7 +293,7 @@ public class InvoiceReport implements Initializable {
                     ImageView down_iv = new ImageView();
                     ImageView print_iv = new ImageView();
 
-                    String path = "src/main/resources/com/shop/management/img/icon/";
+                    String path = "img/icon/";
 
                     down_iv.setFitHeight(18);
                     down_iv.setFitWidth(18);
@@ -302,8 +301,10 @@ public class InvoiceReport implements Initializable {
                     print_iv.setFitHeight(18);
                     print_iv.setFitWidth(18);
 
-                    down_iv.setImage(method.getImage(path.concat("download_ic.png")));
-                    print_iv.setImage(method.getImage(path.concat("print_ic.png")));
+                    ImageLoader loader = new ImageLoader();
+
+                    down_iv.setImage(loader.load(path.concat("download_ic.png")));
+                    print_iv.setImage(loader.load(path.concat("print_ic.png")));
 
                     bnDownload.setGraphic(down_iv);
                     bnPrint.setGraphic(print_iv);
@@ -351,17 +352,14 @@ public class InvoiceReport implements Initializable {
                         }
                     });
 
-
                     HBox managebtn = new HBox(bnDownload, bnPrint);
 
                     managebtn.setStyle("-fx-alignment:center");
-                    HBox.setMargin(bnDownload, new Insets(10, 0, 10, 30));
+                    HBox.setMargin(bnDownload, new Insets(5, 0, 5, 30));
                     HBox.setMargin(bnPrint, new Insets(0, 3, 0, 20));
 
                     setGraphic(managebtn);
-
                     setText(null);
-
                 }
             }
 

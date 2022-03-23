@@ -1,6 +1,7 @@
 package com.shop.management.Method;
 
 import com.shop.management.Model.UserDetails;
+import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,7 +21,7 @@ public class GetUserProfile {
 
         method = new Method();
         dbConnection = new DBConnection();
-        properties = method.getProperties("query.properties");
+        properties =new PropertiesLoader().load("query.properties");
 
         Connection connection = null;
         PreparedStatement userPs = null;
@@ -84,7 +85,7 @@ public class GetUserProfile {
 
         method = new Method();
         dbConnection = new DBConnection();
-        properties = method.getProperties("query.properties");
+        properties = new PropertiesLoader().load("query.properties");
         ObservableList<UserDetails> usersList = FXCollections.observableArrayList();
 
         Connection connection = null;

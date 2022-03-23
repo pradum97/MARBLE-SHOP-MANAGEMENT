@@ -6,9 +6,6 @@ import com.shop.management.Method.Method;
 import com.shop.management.Model.UserDetails;
 import com.shop.management.util.AppConfig;
 import com.shop.management.util.DBConnection;
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -25,19 +22,13 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.util.Duration;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -67,21 +58,14 @@ public class Dashboard implements Initializable {
         main_container.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/setting.css")).toExternalForm());
         method = new Method();
         dbConnection = new DBConnection();
-        properties = method.getProperties("query.properties");
+        properties = new PropertiesLoader().load("query.properties");
         customDialog = new CustomDialog();
         main = new Main();
-        replaceScene("dashboard/invoiceReport.fxml");
+        replaceScene("dashboard/home.fxml");
         getMenuData();
         setCustomImage();
         setUserData();
         keyBoardShortcut();
-
-       /* Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
-            dateL.setText(LocalDateTime.now().format(formatter));
-        }), new KeyFrame(Duration.seconds(1)));
-        clock.setCycleCount(Animation.INDEFINITE);
-        clock.play();*/
 
     }
 
@@ -110,7 +94,7 @@ public class Dashboard implements Initializable {
         try {
             Parent parent = FXMLLoader.load(Objects.requireNonNull(CustomDialog.class.getResource("dashboard/addProduct.fxml")));
             stage = new Stage();
-            stage.getIcons().add(new Image(getClass().getResourceAsStream(AppConfig.APPLICATION_ICON)));
+            stage.getIcons().add(new ImageLoader().load(AppConfig.APPLICATION_ICON));
             stage.setTitle("ADD NEW PRODUCT");
             stage.setMaximized(false);
             Scene scene = new Scene(parent);
@@ -135,7 +119,7 @@ public class Dashboard implements Initializable {
 
 
     private void onClickAction(MenuItem appearance, Menu product, MenuItem gst, MenuItem discount, MenuItem help,
-                               MenuItem shopData, MenuItem category, MenuItem profile, MenuItem users) {
+                               MenuItem shopData, MenuItem category, MenuItem profile, MenuItem users, MenuItem stockControl, MenuItem supplier, MenuItem purchaseHistory) {
 
         appearance.setOnAction(event -> customDialog.showFxmlDialog2("setting/appearance.fxml", "APPEARANCE"));
 
@@ -146,7 +130,7 @@ public class Dashboard implements Initializable {
         });
 
 
-        gst.setOnAction(event ->{
+        gst.setOnAction(event -> {
             customDialog.showFxmlDialog2("setting/gstConfig.fxml", "GST");
             refreshPage();
         });
@@ -155,6 +139,9 @@ public class Dashboard implements Initializable {
         shopData.setOnAction(event -> customDialog.showFxmlDialog2("shopDetails.fxml", ""));
         category.setOnAction(event -> customDialog.showFxmlDialog2("category.fxml", "CATEGORY"));
         users.setOnAction(event -> customDialog.showFxmlFullDialog("dashboard/users.fxml", "ALL USERS"));
+        stockControl.setOnAction(event -> customDialog.showFxmlFullDialog("setting/stockControl.fxml", "STOCK SETTING"));
+        supplier.setOnAction(event -> customDialog.showFxmlFullDialog("stock/allSupplier.fxml", "ALL SUPPLIER"));
+        purchaseHistory.setOnAction(event -> customDialog.showFxmlFullDialog("purchaseHistory.fxml", ""));
         profile.setOnAction(event -> {
 
             Main.primaryStage.setUserData(Login.currentlyLogin_Id);
@@ -163,7 +150,7 @@ public class Dashboard implements Initializable {
         });
     }
 
-    private void  refreshPage(){
+    private void refreshPage() {
         replaceScene("dashboard/home.fxml");
         getMenuData();
         setCustomImage();
@@ -176,7 +163,7 @@ public class Dashboard implements Initializable {
         try {
             Parent parent = FXMLLoader.load(Objects.requireNonNull(CustomDialog.class.getResource(fxmlName)));
             stage = new Stage();
-            stage.getIcons().add(new Image(getClass().getResourceAsStream(AppConfig.APPLICATION_ICON)));
+            stage.getIcons().add(new ImageLoader().load(AppConfig.APPLICATION_ICON));
             stage.setTitle(title);
             stage.setMaximized(false);
             Scene scene = new Scene(parent, width, height);
@@ -195,33 +182,27 @@ public class Dashboard implements Initializable {
 
         UserDetails userDetails = new GetUserProfile().getUser(Login.currentlyLogin_Id);
 
-           if (null == userDetails) {
+        if (null == userDetails) {
             customDialog.showAlertBox("Failed", "User Not Find Please Re-Login");
         } else {
 
             fullName.setText((userDetails.getFirstName() + " " + userDetails.getLastName()).toUpperCase());
+
+
             userRole.setText(userDetails.getRole().toUpperCase());
-            String imgPath = "src/main/resources/com/shop/management/img/userImages/" + userDetails.getUserImage();
-            userImage.setImage(method.getImage(imgPath));
+            String imgPath = "img/Avatar/" + userDetails.getUserImage();
+            userImage.setImage(new ImageLoader().load(imgPath));
         }
     }
 
     private void setCustomImage() {
 
-        InputStream is = null;
-        try {
-            is = new FileInputStream("src/main/resources/com/shop/management/img/menu_icon/logout_ic.png");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
         ImageView logout_img = new ImageView();
-        Image img = new Image(is);
-        logout_img.setImage(img);
+        logout_img.setImage(new ImageLoader().load("img/menu_icon/logout_ic.png"));
         logout_img.setFitHeight(20);
         logout_img.setFitWidth(20);
 
         bn_logout.setGraphic(logout_img);
-
     }
 
     private void getMenuData() {
@@ -237,8 +218,6 @@ public class Dashboard implements Initializable {
                 String icon_path = rs.getString("menu_icon_path");
                 String menu_location = rs.getString("menu_location");
 
-                String path = "src/main/resources/com/shop/management/img/menu_icon/";
-
                 switch (menu_location) {
 
                     case "SIDE" -> {
@@ -250,7 +229,7 @@ public class Dashboard implements Initializable {
                         ImageView icon = new ImageView();
                         icon.setFitWidth(18);
                         icon.setFitHeight(18);
-                        icon.setImage(method.getImage("src/main/resources/com/shop/management/img/menu_icon/" + icon_path));
+                        icon.setImage(new ImageLoader().load("img/menu_icon/" + icon_path));
                         menu_button.setText(item);
 
                         menu_button.setOnAction(event -> {
@@ -287,13 +266,16 @@ public class Dashboard implements Initializable {
                                 Menu gen = new Menu("GENERAL");
                                 MenuItem category = new MenuItem("CATEGORY");
                                 MenuItem appearance = new MenuItem("APPEARANCE");
+                                MenuItem stockControl = new MenuItem("STOCK CONTROL");
+                                MenuItem supplier = new MenuItem("SUPPLIER");
                                 appearance.setVisible(false);
-                                gen.getItems().addAll(category,appearance);
+                                gen.getItems().addAll(category, appearance, stockControl, supplier);
 
-                               // general -- end
+                                // general -- end
                                 MenuItem shopData = new MenuItem("SHOP DETAILS");
                                 MenuItem profile = new MenuItem("PROFILE");
                                 MenuItem users = new MenuItem("USERS");
+                                MenuItem purchaseHistory = new MenuItem("PURCHASE HISTORY");
                                 MenuItem help = new MenuItem("HELP");
 
                                 help.setVisible(false);
@@ -307,16 +289,16 @@ public class Dashboard implements Initializable {
 
                                 // product --  end
 
-                                menu_button.getItems().addAll(gen, product,profile,users ,shopData, help);
+                                menu_button.getItems().addAll(gen, product, profile, users, shopData, purchaseHistory, help);
 
-                                onClickAction( appearance, product, gst, discount, help,shopData,category,profile,users);
+                                onClickAction(appearance, product, gst, discount, help, shopData, category, profile, users, stockControl, supplier, purchaseHistory);
 
 
                                 ImageView icon = new ImageView();
                                 icon.setFitWidth(18);
                                 icon.setFitHeight(18);
 
-                                icon.setImage(method.getImage("src/main/resources/com/shop/management/img/menu_icon/" + icon_path));
+                                icon.setImage(new ImageLoader().load("img/menu_icon/" + icon_path));
 
                                 menu_button.setGraphic(icon);
 
@@ -351,7 +333,7 @@ public class Dashboard implements Initializable {
                                 icon.setFitHeight(18);
 
 
-                                icon.setImage(method.getImage("src/main/resources/com/shop/management/img/menu_icon/" + icon_path));
+                                icon.setImage(new ImageLoader().load("img/menu_icon/" + icon_path));
 
                                 menu_button.setGraphic(icon);
 
@@ -372,7 +354,7 @@ public class Dashboard implements Initializable {
                                 button.setStyle("-fx-padding: 9 13 9 13 ; -fx-background-color: #053a67 ; -fx-text-fill: white;" +
                                         "-fx-background-radius: 6 ;-fx-focus-traversable: false; -fx-cursor: hand ; -fx-font-family: 'Arial Black'");
 
-                                button.setOnMouseClicked(event ->  showAddProductDialog());
+                                button.setOnMouseClicked(event -> showAddProductDialog());
 
                                 gridTopMenu.add(button, colCnt, rowCnt);
                                 colCnt++;
@@ -383,28 +365,6 @@ public class Dashboard implements Initializable {
                                 }
 
                             }
-
-                          /*  case "RE-STOCK" -> {
-
-                                Label bnRestock = new Label("RE-STOCK");
-                                bnRestock.setStyle("-fx-padding: 5 10 5 10 ; -fx-background-color: #0881ea ; -fx-text-fill: white;" +
-                                        "-fx-background-radius: 5 ; -fx-cursor: hand");
-                                ImageView iv = new ImageView(method.getImage(path+icon_path));
-                                iv.setFitWidth(18);
-                                iv.setFitHeight(18);
-
-                                bnRestock.setGraphic(iv);
-
-                                bnRestock.setOnMouseClicked(event ->  showAddProductDialog());
-
-                                gridTopMenu.add(bnRestock, colCnt, rowCnt);
-                                colCnt++;
-
-                                if (colCnt > cols) {
-                                    rowCnt++;
-                                    colCnt = 0;
-                                }
-                            }*/
                         }
                     }
                 }
@@ -422,6 +382,7 @@ public class Dashboard implements Initializable {
             }
         }
     }
+
     private void replaceScene(String fxml_file_name) {
 
         try {
@@ -435,7 +396,7 @@ public class Dashboard implements Initializable {
     }
 
     public void bnLogout(ActionEvent event) {
-        ImageView image = new ImageView(method.getImage("src/main/resources/com/shop/management/img/icon/warning_ic.png"));
+        ImageView image = new ImageView(new ImageLoader().load("img/icon/warning_ic.png"));
         image.setFitWidth(45);
         image.setFitHeight(45);
         Alert alert = new Alert(Alert.AlertType.NONE);

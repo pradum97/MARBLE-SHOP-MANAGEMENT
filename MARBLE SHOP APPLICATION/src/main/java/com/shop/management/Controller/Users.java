@@ -1,10 +1,12 @@
 package com.shop.management.Controller;
 
 import com.shop.management.CustomDialog;
+import com.shop.management.ImageLoader;
 import com.shop.management.Main;
 import com.shop.management.Method.GetUserProfile;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.UserDetails;
+import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -58,7 +60,7 @@ public class Users implements Initializable {
 
         method = new Method();
         dbConnection = new DBConnection();
-        properties = method.getProperties("query.properties");
+        properties = new PropertiesLoader().load("query.properties");
         customDialog = new CustomDialog();
         main = new Main();
         userID = Login.currentlyLogin_Id;
@@ -100,22 +102,22 @@ public class Users implements Initializable {
 
                 } else {
 
+                    ImageLoader loader = new ImageLoader();
+
                     ImageView iv_edit, iv_view, iv_delete;
 
-                    String path = "src/main/resources/com/shop/management/img/icon/";
 
-
-                    iv_edit = new ImageView(method.getImage(path + "edit_ic.png"));
+                    iv_edit = new ImageView(loader.load("img/icon/edit_ic.png"));
                     iv_edit.setFitHeight(22);
                     iv_edit.setFitHeight(22);
                     iv_edit.setPreserveRatio(true);
 
-                    iv_view = new ImageView(method.getImage(path + "view_ic.png"));
+                    iv_view = new ImageView(loader.load("img/icon/view_ic.png"));
                     iv_view.setFitHeight(22);
                     iv_view.setFitWidth(22);
                     iv_view.setPreserveRatio(true);
 
-                    iv_delete = new ImageView(method.getImage(path + "delete_ic.png"));
+                    iv_delete = new ImageView(loader.load("img/icon/delete_ic.png"));
                     iv_delete.setFitHeight(17);
                     iv_delete.setFitWidth(17);
                     iv_delete.setPreserveRatio(true);
@@ -232,10 +234,12 @@ public class Users implements Initializable {
                     iv.setFitWidth(45);
                     iv.setPreserveRatio(true);
 
+                    ImageLoader loader = new ImageLoader();
 
-                    String userImgPath = userList.get(getIndex()).getUserImage();
 
-                    iv.setImage(method.getImage("src/main/resources/com/shop/management/img/userImages/" + userImgPath));
+                    String userImgPath = user_table_view.getItems().get(getIndex()).getUserImage();
+
+                    iv.setImage(loader.load("img/Avatar/" + userImgPath));
 
 
                     HBox managebtn = new HBox(iv);

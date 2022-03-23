@@ -1,6 +1,7 @@
 package com.shop.management.Method;
 
 import com.shop.management.Model.TAX;
+import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -28,7 +29,7 @@ public class GetTax {
                 return null;
             }
 
-            ps = connection.prepareStatement(new Method().getProperties("query.properties").getProperty("GET_TAX"));
+            ps = connection.prepareStatement(new PropertiesLoader().load("query.properties").getProperty("GET_TAX"));
             rs = ps.executeQuery();
 
             ObservableList<TAX> tax = FXCollections.observableArrayList();

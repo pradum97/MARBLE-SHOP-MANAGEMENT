@@ -1,6 +1,7 @@
 package com.shop.management.Controller;
 
 import com.shop.management.CustomDialog;
+import com.shop.management.ImageLoader;
 import com.shop.management.Main;
 import com.shop.management.Method.GenerateInvoice;
 import com.shop.management.Method.GenerateInvoiceNumber;
@@ -8,6 +9,7 @@ import com.shop.management.Method.Method;
 import com.shop.management.Method.StaticData;
 import com.shop.management.Model.CartModel;
 import com.shop.management.Model.Customer;
+import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -81,7 +83,7 @@ public class Cart implements Initializable {
         method = new Method();
         dbconnection = new DBConnection();
         customDialog = new CustomDialog();
-        properties = method.getProperties("query.properties");
+        properties = new PropertiesLoader().load("query.properties");
         invoiceNumber = new GenerateInvoiceNumber().generate();
 
         if (null == invoiceNumber) {
@@ -241,8 +243,6 @@ public class Cart implements Initializable {
                     "           Left JOIN tbl_discount as td  ON ( tp.discount_id = td.discount_id )\n" +
                     "           Left Join tbl_product_tax as tpt  on ( tp.tax_id = tpt.tax_id )\n" +
                     "           LEFT JOIN tbl_category as tcategory ON (tp.category_id = tcategory.category_id) order by cart_id ASC";
-
-            System.out.println(query);
 
 
             ps = connection.prepareStatement(query);
@@ -409,8 +409,10 @@ public class Cart implements Initializable {
                         }
                     });
 
-                    ivDelete.setImage(method.getImage("src/main/resources/com/shop/management/img/icon/delete_ic.png"));
-                    ivUpdate.setImage(method.getImage("src/main/resources/com/shop/management/img/icon/edit_ic.png"));
+                    ImageLoader loader = new ImageLoader();
+
+                    ivDelete.setImage(loader.load("img/icon/delete_ic.png"));
+                    ivUpdate.setImage(loader.load("img/icon/edit_ic.png"));
 
                     HBox managebtn = new HBox(ivUpdate, ivDelete);
                     managebtn.setStyle("-fx-alignment:center; -fx-cursor: hand");

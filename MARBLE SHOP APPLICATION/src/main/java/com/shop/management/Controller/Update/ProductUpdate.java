@@ -9,6 +9,7 @@ import com.shop.management.Model.CategoryModel;
 import com.shop.management.Model.Discount;
 import com.shop.management.Model.Products;
 import com.shop.management.Model.TAX;
+import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -52,7 +53,7 @@ public class ProductUpdate implements Initializable {
         method = new Method();
         dbconnection = new DBConnection();
         customDialog = new CustomDialog();
-        properties = method.getProperties("query.properties");
+        properties = new PropertiesLoader().load("query.properties");
 
         products = (Products) Main.primaryStage.getUserData();
         if (null == products) {
