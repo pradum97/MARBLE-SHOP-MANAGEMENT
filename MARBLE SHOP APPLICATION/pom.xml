@@ -17,7 +17,6 @@
         </repository>
     </distributionManagement>
 
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>5.8.2</junit.version>
@@ -52,13 +51,6 @@
         <dependency>
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports</artifactId>
-            <version>6.19.0</version>
-        </dependency>
-
-        <!--JASPER FONT -->
-        <dependency>
-            <groupId>net.sf.jasperreports</groupId>
-            <artifactId>jasperreports-fonts</artifactId>
             <version>6.19.0</version>
         </dependency>
 
@@ -120,9 +112,6 @@
 
     <build>
         <plugins>
-
-
-
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Pagination?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.Blend?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.ViewFeedback">
+   <center>
+      <HBox>
+         <children>
+            <VBox HBox.hgrow="ALWAYS">
+               <children>
+                  <TableView fx:id="tableView" focusTraversable="false" VBox.vgrow="ALWAYS">
+                    <columns>
+                      <TableColumn fx:id="col_id" editable="false" prefWidth="75.0" reorderable="false" sortable="false" styleClass="table-column" text="ID" />
+                      <TableColumn fx:id="col_name" editable="false" prefWidth="100" reorderable="false" sortable="false" styleClass="table-column" text="NAME" />
+                        <TableColumn fx:id="col_email" editable="false" minWidth="200" prefWidth="-1.0" reorderable="false" sortable="false" styleClass="table-column" text="EMAIL" />
+                        <TableColumn fx:id="col_phone" editable="false" minWidth="150" prefWidth="-1.0" reorderable="false" sortable="false" styleClass="table-column" text="PHONE" />
+                        <TableColumn fx:id="col_star" editable="false" prefWidth="81" reorderable="false" sortable="false" styleClass="table-column" text="STAR" />
+                        <TableColumn fx:id="col_message" editable="false" maxWidth="300" minWidth="200.0" prefWidth="-1.0" reorderable="false" sortable="false" styleClass="table-column" text="MESSAGE" />
+                        <TableColumn fx:id="col_date" editable="false" minWidth="150" prefWidth="-1.0" reorderable="false" sortable="false" styleClass="table-column" text="DATE" />
+                        <TableColumn fx:id="col_action" editable="false" minWidth="150" prefWidth="-1.0" reorderable="false" sortable="false" styleClass="table-column" text="ACTION" />
+                    </columns>
+                  </TableView>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </center>
+
+    <bottom>
+        <HBox alignment="CENTER" fillHeight="false" spacing="23.0" style="-fx-background-color: white;">
+            <children>
+                <HBox HBox.hgrow="ALWAYS">
+                    <children>
+                        <Pagination visible="false" fx:id="pagination" maxPageIndicatorCount="0" HBox.hgrow="ALWAYS" />
+                    </children>
+                </HBox>
+                <HBox alignment="CENTER_RIGHT">
+                    <children>
+
+                        <HBox alignment="CENTER_RIGHT" minHeight="40.0" prefHeight="38.0" prefWidth="280.0" spacing="10.0" style="-fx-border-color: transparent transparent white transparent; -fx-background-color: #008080; -fx-background-radius: 5;">
+                            <children>
+                                <ImageView cache="true" fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                                    <Image url="@img/icon/search_icon.png" />
+                                    <effect>
+                                        <Blend />
+                                    </effect>
+                                    <HBox.margin>
+                                        <Insets left="10.0" />
+                                    </HBox.margin>
+                                </ImageView>
+                                <TextField fx:id="searchTf" promptText="FIND PRODUCT.. " style="-fx-background-color: transparent; -fx-text-inner-color: white;" HBox.hgrow="ALWAYS" />
+                            </children>
+                            <HBox.margin>
+                                <Insets />
+                            </HBox.margin>
+                        </HBox>
+                    </children>
+                    <HBox.margin>
+                        <Insets />
+                    </HBox.margin>
+                </HBox>
+
+                <HBox alignment="CENTER" fillHeight="false">
+
+                    <HBox fx:id="refresh_bn" alignment="CENTER" fillHeight="false" minHeight="35.0" onMouseClicked="#bnRefresh" prefHeight="38.0" prefWidth="60.0" style="-fx-cursor: hand; -fx-background-color: RED; -fx-background-radius: 3;">
+
+                        <ImageView fx:id="refresh_img" fitHeight="15.0" fitWidth="15.0" onMouseClicked="#bnRefresh">
+                            <Image url="@img/icon/refresh_ic.png" />
+                            <HBox.margin>
+                                <Insets left="7.0" right="7.0" />
+                            </HBox.margin>
+                        </ImageView>
+                        <HBox.margin>
+                            <Insets right="40.0" />
+                        </HBox.margin>
+                    </HBox>
+
+                </HBox>
+            </children>
+            <padding>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </padding>
+        </HBox>
+    </bottom>
+
+</BorderPane>

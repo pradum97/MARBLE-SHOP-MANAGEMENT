@@ -264,12 +264,11 @@ public class Dashboard implements Initializable {
                                 MenuButton menu_button = new MenuButton();
                                 // general --start
                                 Menu gen = new Menu("GENERAL");
-                                MenuItem category = new MenuItem("CATEGORY");
                                 MenuItem appearance = new MenuItem("APPEARANCE");
                                 MenuItem stockControl = new MenuItem("STOCK CONTROL");
                                 MenuItem supplier = new MenuItem("SUPPLIER");
                                 appearance.setVisible(false);
-                                gen.getItems().addAll(category, appearance, stockControl, supplier);
+                                gen.getItems().addAll(appearance, stockControl, supplier);
 
                                 // general -- end
                                 MenuItem shopData = new MenuItem("SHOP DETAILS");
@@ -283,9 +282,10 @@ public class Dashboard implements Initializable {
 
                                 // product -- start
                                 Menu product = new Menu("PRODUCT");
+                                MenuItem category = new MenuItem("CATEGORY");
                                 MenuItem gst = new MenuItem("GST");
                                 MenuItem discount = new MenuItem("DISCOUNT");
-                                product.getItems().addAll(gst, discount);
+                                product.getItems().addAll(category , gst, discount);
 
                                 // product --  end
 

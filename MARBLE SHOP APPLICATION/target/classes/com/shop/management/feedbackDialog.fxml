@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.controlsfx.control.*?>
+
+<VBox alignment="CENTER" fillWidth="false" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.FeedbackDialog">
+   <children>
+      <StackPane style="-fx-background-color: white; -fx-background-radius: 10;">
+         <children>
+            <VBox alignment="CENTER" fillWidth="false" prefWidth="450.0">
+               <children>
+                  <Label style="-fx-font-size: 17; -fx-font-weight: BOLD;" text="FEEDBACK" />
+                  <Label fx:id="titleL" alignment="CENTER" prefHeight="74.0" prefWidth="336.0" textAlignment="CENTER" wrapText="true" />
+                  <VBox prefWidth="350.0">
+                     <children>
+                        <VBox prefWidth="342.0" spacing="10.0">
+                           <children>
+                              <TextField fx:id="fullName" focusTraversable="false" onKeyReleased="#enterPress" prefHeight="35.0" promptText="Name" />
+                              <TextField fx:id="email" focusTraversable="false" layoutX="10.0" layoutY="10.0" onKeyReleased="#enterPress" prefHeight="35.0" promptText="Email ( Optional )" />
+                              <TextField fx:id="phone" focusTraversable="false" layoutX="10.0" layoutY="40.0" onKeyReleased="#enterPress" prefHeight="35.0" promptText="Phone ( Optional )" />
+
+                              <VBox alignment="CENTER_LEFT" spacing="10">
+                                 <Label onKeyReleased="#enterPress" text="Rate your experience with our product..." />
+
+                                       <Rating fx:id="rate" onKeyReleased="#enterPress" />
+
+                              </VBox>
+                              <TextArea fx:id="comments" focusTraversable="false" onKeyReleased="#enterPress" prefHeight="94.0" prefWidth="342.0" promptText="Your Feedback" wrapText="true" />
+                              <VBox alignment="CENTER" spacing="20.0">
+                                 <VBox.margin>
+                                    <Insets top="20.0" />
+                                 </VBox.margin>
+                                 <children>
+                                    <Button fx:id="bn_feedback_submit" alignment="CENTER" mnemonicParsing="false" onAction="#submitFeedback" onKeyReleased="#enterPress" prefHeight="26.0" prefWidth="171.0" style="-fx-cursor: hand; -fx-background-color: blue; -fx-text-fill: white;" text="SUBMIT" />
+                                 </children>
+                              </VBox>
+                           </children>
+                           <VBox.margin>
+                              <Insets top="20.0" />
+                           </VBox.margin>
+                        </VBox>
+                     </children>
+                  </VBox>
+
+               </children>
+               <padding>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+               </padding>
+            </VBox>
+         </children>
+      </StackPane>
+   </children>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
+</VBox>
