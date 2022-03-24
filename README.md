@@ -21,13 +21,10 @@
 
 
 ## STEP 3 🠮 CREATE  CATEGORY 
-     1. Click On The Settings Icon
-
-<img src="https://github.com/pradum97/MARBLE-SHOP-MANAGEMENT/blob/development/ScreenShot/setting1.png">
-
-     2. Select 'PRODUCT' Option
-
-<img src="https://github.com/pradum97/MARBLE-SHOP-MANAGEMENT/blob/development/ScreenShot/settingProduct2.png">
-
+    1. Click On The Settings Icon
+    2. Select 'PRODUCT' Option
     3. Click Category
-<img src="https://github.com/pradum97/MARBLE-SHOP-MANAGEMENT/blob/development/ScreenShot/settingProduct3.png">
+
+<img src="https://github.com/pradum97/MARBLE-SHOP-MANAGEMENT/blob/development/ScreenShot/setting1.png"> <img src="https://github.com/pradum97/MARBLE-SHOP-MANAGEMENT/blob/development/ScreenShot/settingProduct2.png">  <img src="https://github.com/pradum97/MARBLE-SHOP-MANAGEMENT/blob/development/ScreenShot/settingProduct3.png">
+
+    
