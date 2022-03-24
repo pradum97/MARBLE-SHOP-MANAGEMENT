@@ -28,6 +28,8 @@
 
 ###### GO TO : `src/main/resources/com/shop/management/util/query.properties` AND THEN OPEN `query.properties`
 
+<img src="https://github.com/pradum97/MARBLE-SHOP-MANAGEMENT/blob/development/ScreenShot/querySc.png">
+
 
 
 
