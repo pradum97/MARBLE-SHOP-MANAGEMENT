@@ -3,6 +3,7 @@
 
 ###  STEP 1 🠮 CREATE NEW ACCOUNT
 
+   
     1. Click 'Don't have an Account? Click Here'
 
 <img src="https://github.com/pradum97/MARBLE-SHOP-MANAGEMENT/blob/development/ScreenShot/signupBn.png" alt="">
@@ -20,6 +21,12 @@
 
 
 ## STEP 3 🠮 CREATE  CATEGORY 
-     Click On The Settings Icon
-        1. Click Category
+     1. Click On The Settings Icon
 
+<img src="https://github.com/pradum97/MARBLE-SHOP-MANAGEMENT/blob/development/ScreenShot/setting1.png">
+
+     2. Select 'PRODUCT' Option
+
+<img src="https://github.com/pradum97/MARBLE-SHOP-MANAGEMENT/blob/development/ScreenShot/settingProduct2.png">
+
+1. Click Category
