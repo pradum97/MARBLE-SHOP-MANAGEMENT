@@ -14,6 +14,7 @@
     1. Database Name 
     2. Port Number 
     3. Username
+    3. Password
 
 <p><B>2. </B> EXECUTE ALL QUERY SCRIPT IN `Query Tool` <b> <a href="https://github.com/pradum97/MARBLE-SHOP-MANAGEMENT/blob/development/Marble%20Query%20Script.txt">CLICK TO COPY QUERY SCRIPT</a></b></p>
 
@@ -28,7 +29,13 @@
 
 ###### GO TO : `src/main/resources/com/shop/management/util/query.properties` AND THEN OPEN `query.properties`
 
-<img src="https://github.com/pradum97/MARBLE-SHOP-MANAGEMENT/blob/development/ScreenShot/querySc.png">
+    DB_USERNAME = < Enter Your Database Username >
+    DB_PASSWORD = <Enter Yur Database Password>
+    DB_URL= jdbc:postgresql://localhost:<Enter Port Number>/<Enter Database Name>
+
+<img src="https://github.com/pradum97/MARBLE-SHOP-MANAGEMENT/blob/development/ScreenShot/querySc.png" alt="">
+
+
 
 
 
