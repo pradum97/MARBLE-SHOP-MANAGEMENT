@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class PropertiesLoader {
-
     public Properties load(String fileName) {
         String path = "util/"+fileName;
         InputStream is = getClass().getResourceAsStream(path);
