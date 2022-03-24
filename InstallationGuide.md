@@ -7,7 +7,7 @@
 
 - #### AFTER SUCCESSFULLY INSTALLED POSTGRESQL
 
-<p>1. OPEN 'pgAdmin' ( POSTGRESQL ) </b>
-<p>2. CREATE NEW DATABASE </b> 
+<p>1. OPEN 'pgAdmin' ( POSTGRESQL ) </p>
+<p>2. CREATE NEW DATABASE </p> 
 
 
