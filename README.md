@@ -29,4 +29,5 @@
 
 <img src="https://github.com/pradum97/MARBLE-SHOP-MANAGEMENT/blob/development/ScreenShot/settingProduct2.png">
 
-1. Click Category
+    3. Click Category
+<img src="https://github.com/pradum97/MARBLE-SHOP-MANAGEMENT/blob/development/ScreenShot/settingProduct3.png">
