@@ -16,7 +16,7 @@
     1. Enter Email / Username /Phone
     2. Enter Password
     3. Click On The LOGIN Button After Filling The Form
-![App Screenshot](https://techsofts.in/DESKTOP_APPS/marble_shop_management/ScreeShot/step3.png)
+![App Screenshot](https://github.com/pradum97/MARBLE-SHOP-MANAGEMENT/blob/development/ScreenShot/login.png)
 
 
 ## STEP 3 🠮 CREATE  CATEGORY 
