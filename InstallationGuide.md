@@ -13,9 +13,7 @@
 
 #### Note : please remember database name , port number and username
 
-<span style="color:green;font-weight:700;font-size:20px">
-    markdown color font styles
-</span>
+<red> red color markdown text</red>
 
 
 
