@@ -15,10 +15,18 @@
     2. Port Number 
     3. Username
 
-<p><B>2. </B> EXECUTE ALL QUERY SCRIPT IN `Query Tool`</p>
+<p><B>2. </B> EXECUTE ALL QUERY SCRIPT IN `Query Tool` <b> <a href="https://github.com/pradum97/MARBLE-SHOP-MANAGEMENT/blob/development/Marble%20Query%20Script.txt">CLICK TO COPY QUERY SCRIPT</a></b></p>
 
 
+<div style="text-align: center;"><H3 style="color:red" >#2 - CLONE PROJECT FROM GIT</H3></div>
 
+##### COPY THIS CODE AND THEN RUN IT AT THE COMMAND PROMPT
+     git clone --branch development https://github.com/pradum97/MARBLE-SHOP-MANAGEMENT.git
+
+#### * AFTER SUCCESSFULLY CLONED AND THEN OPEN PROJECT IN INTELLIJ IDEA 
+
+
+###### GO TO : `src/main/resources/com/shop/management/util/query.properties` AND THEN OPEN `query.properties`
 
 
 
