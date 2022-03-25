@@ -76,6 +76,6 @@ public class TAX {
 
     @Override
     public String toString() {
-        return String.valueOf(this.getHsn_sac());
+        return this.getHsn_sac()+" - "+this.getGstName();
     }
 }

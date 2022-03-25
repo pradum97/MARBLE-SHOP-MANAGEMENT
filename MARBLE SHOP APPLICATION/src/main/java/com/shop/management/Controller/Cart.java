@@ -8,7 +8,7 @@ import com.shop.management.Method.GenerateInvoiceNumber;
 import com.shop.management.Method.Method;
 import com.shop.management.Method.StaticData;
 import com.shop.management.Model.CartModel;
-import com.shop.management.Model.Customer;
+import com.shop.management.Model.CustomerModel;
 import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -601,10 +601,10 @@ public class Cart implements Initializable {
         }
 
         customDialog.showFxmlDialog2("sellItems/customerDetails.fxml", "ENTER CUSTOMER DETAILS");
-        Customer customer = null;
+        CustomerModel customer = null;
 
         try {
-            customer = (Customer) Main.primaryStage.getUserData();
+            customer = (CustomerModel) Main.primaryStage.getUserData();
         } catch (ClassCastException ignored) {
         }
 
@@ -632,7 +632,7 @@ public class Cart implements Initializable {
         }
     }
 
-    private void addSaleItem(Customer customer, String billingType,
+    private void addSaleItem(CustomerModel customer, String billingType,
                              double receivedAmountD, ActionEvent event) throws SQLException {
 
         double additionalDisc = 0;

@@ -43,6 +43,8 @@ public class QuantityDialog implements Initializable {
     private CustomDialog customDialog;
     private DBConnection dbConnection;
     private int stock_id;
+    private int requiredQuantity;
+    private long avlQty;
 
     private final static String UPDATE_QUANTITY = "UPDATE QUANTITY";
     private final static String ADD_CART = "➕ ADD TO CART";
@@ -60,7 +62,7 @@ public class QuantityDialog implements Initializable {
         customDialog = new CustomDialog();
         dbConnection = new DBConnection();
 
-        setDefaultValue();
+        getStockSetting();
         checkStockExist();
     }
 
@@ -132,7 +134,10 @@ public class QuantityDialog implements Initializable {
         purchasePrice.setText(stock.getPurchasePrice() + inr);
         productMrp.setText(stock.getProductMRP() + inr);
         minSellingPrice.setText(stock.getMinSellingPrice() + inr);
-        quantity_L.setText(stock.getFullQuantity());
+
+        avlQty = (stock.getQuantity()-requiredQuantity);
+
+        quantity_L.setText(avlQty+"-"+stock.getFullQuantity().split(" - ")[1]+" ( Tot Avl : "+stock.getQuantity()+" - Required : "+requiredQuantity+" )");
     }
 
     public void bnAddToCart(ActionEvent event) {
@@ -140,8 +145,6 @@ public class QuantityDialog implements Initializable {
         String quan = quantityTf.getText();
         String sellPrice = sellingPriceTf.getText();
         String quantity_Unit = quantityUnit.getSelectionModel().getSelectedItem();
-
-        BigDecimal minSell = BigDecimal.valueOf(stock.getMinSellingPrice()).stripTrailingZeros();
 
         long quantity = 0;
         double sellingPrice = 0;
@@ -178,14 +181,12 @@ public class QuantityDialog implements Initializable {
             method.show_popup("ENTER VALID PRICE", sellingPriceTf);
             return;
         }
-
-
         if (sellingPrice < 1) {
             method.show_popup("ENTER VALID PRICE", sellingPriceTf);
             return;
         }
 
-        if (quantity <= stock.getQuantity()) {
+        if (quantity <= avlQty) {
 
             if (sellingPrice >= stock.getMinSellingPrice()) {
 
@@ -214,7 +215,42 @@ public class QuantityDialog implements Initializable {
 
         } else {
 
-            method.show_popup("QUANTITY NOT AVAILABLE", quantityTf);
+            method.show_popup("QUANTITY NOT AVAILABLE! Tot Avl : "+avlQty+"-"+stock.getFullQuantity().split(" - ")[1], quantityTf);
+        }
+    }
+
+    private void getStockSetting() {
+        requiredQuantity = 0;
+
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            connection = dbConnection.getConnection();
+
+            if (null == connection) {
+                System.out.println("connection failed");
+                return;
+            }
+
+            String query = "SELECT REQUIRED FROM STOCK_CONTROL";
+
+            ps = connection.prepareStatement(query);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+
+                requiredQuantity = rs.getInt("REQUIRED");
+                setDefaultValue();
+            }
+
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DBConnection.closeConnection(connection, ps, rs);
         }
     }
 

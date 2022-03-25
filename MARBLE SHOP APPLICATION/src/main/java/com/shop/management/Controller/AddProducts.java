@@ -258,18 +258,19 @@ public class AddProducts implements Initializable {
         }
 
 
-        int height = 0, width = 0;
+        double height = 0, width = 0;
         long quantity = 0;
 
 
         try {
-            height = Integer.parseInt(heightS.replaceAll("[^0-9.]", ""));
-            width = Integer.parseInt(widthS.replaceAll("[^0-9.]", ""));
+            height = Double.parseDouble(heightS.replaceAll("[^0-9.]", ""));
+            width = Double.parseDouble(widthS.replaceAll("[^0-9.]", ""));
 
         } catch (NumberFormatException e) {
             customDialog.showAlertBox("INVALID PRODUCT SIZE", "ENTER VALID HEIGHT AND WIDTH ");
             return;
         }
+
         try {
             quantity = Long.parseLong(quantityS.replaceAll("[^0-9.]", ""));
         } catch (NumberFormatException e) {
@@ -398,6 +399,8 @@ public class AddProducts implements Initializable {
 
         } catch (SQLException e) {
             e.printStackTrace();
+        }finally {
+            DBConnection.closeConnection(connection , ps , rs);
         }
     }
 
@@ -425,7 +428,14 @@ public class AddProducts implements Initializable {
                 String tax_description = rs.getString("description");
                 String gstName = rs.getString("gstName");
 
-                taxList.add(new TAX(taxID, hsn_sac, sgst, cgst, igst, gstName, tax_description));
+                String gn;
+                if (gstName == null){
+                    gn = "";
+                }else {
+                    gn = gstName;
+                }
+
+                taxList.add(new TAX(taxID, hsn_sac, sgst, cgst, igst, gn, tax_description));
             }
 
             productTax.setItems(taxList);
@@ -447,10 +457,35 @@ public class AddProducts implements Initializable {
         }
     }
 
+    private boolean isExist(String value){
+
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+
+            connection = dbConnection.getConnection();
+            String query = "select PRODUCT_CODE from TBL_PRODUCTS where product_code = ?";
+
+            ps = connection.prepareStatement(query);
+            ps.setString(1,value);
+
+            rs = ps.executeQuery();
+
+            return rs.next();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }finally {
+            DBConnection.closeConnection(connection , ps , rs);
+        }
+    }
+
     private void submit() {
         // textField
         String prodName = productName.getText();
-        String prodCode = productCodeTF.getText();
+        String prodCode = productCodeTF.getText().replaceAll(" ","");
         String prodDescription = productDescription.getText();
 
         Discount discount = productDiscount.getSelectionModel().getSelectedItem();
@@ -465,10 +500,12 @@ public class AddProducts implements Initializable {
         } else if (prodCode.isEmpty()) {
             method.show_popup("Enter Product Code", productCodeTF);
             return;
-        }/*else if (productTax.getSelectionModel().isEmpty()) {
-            method.show_popup("SELECT HSN CODE", productTax);
+        }else if (isExist(prodCode)){
+            method.show_popup("PRODUCT CODE ALREADY EXIST", productCodeTF);
             return;
-        }*/ else if (null == productCategory.getValue()) {
+        }
+
+        else if (null == productCategory.getValue()) {
             method.show_popup("CHOOSE PRODUCT CATEGORY", productCategory);
             return;
         } else if (null == productColor.getValue()) {
@@ -519,7 +556,7 @@ public class AddProducts implements Initializable {
             } else {
                 ps.setInt(7, tax.getTaxID()); //tax
             }
-            ps.setString(8, prodCode);
+            ps.setString(8, prodCode.replaceAll(" ",""));
             int productResult = ps.executeUpdate();
 
             if (productResult > 0) {
@@ -541,8 +578,8 @@ public class AddProducts implements Initializable {
                         ps.setDouble(2, pz.getProductMRP());
                         ps.setDouble(3, pz.getMinSellPrice());
                         ps.setInt(4, productID);
-                        ps.setInt(5, pz.getHeight());
-                        ps.setInt(6, pz.getWidth());
+                        ps.setDouble(5, pz.getHeight());
+                        ps.setDouble(6, pz.getWidth());
                         ps.setDouble(7, pz.getQuantity());
                         ps.setString(8, pz.getSizeUnit());
                         ps.setString(9, pz.getQuantityUnit());
@@ -562,8 +599,11 @@ public class AddProducts implements Initializable {
                     DBConnection.closeConnection(connection, ps, rs);
                 }
             }
-        } catch (SQLException e) {
-            customDialog.showAlertBox("Failed..", e.getMessage());
+        } catch (Exception e) {
+
+            //System.out.println(e.getErrorCode());
+            customDialog.showAlertBox("Failed..","");
         }
     }
+
 }

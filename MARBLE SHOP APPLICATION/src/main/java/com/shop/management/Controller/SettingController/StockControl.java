@@ -83,14 +83,28 @@ public class StockControl implements Initializable {
             }
             case "SUBMIT" -> {
 
+                int i_req = Integer.parseInt(requiredTF.getText());
+                int i_low = Integer.parseInt(lowTF.getText());
+                int i_med = Integer.parseInt(mediumTF.getText());
+
                 if (requiredTF.getText().isEmpty()) {
                     method.show_popup("ENTER REQUIRED QUANTITY", requiredTF);
+                    return;
+                } else if (i_req < 0) {
+                    method.show_popup("NEGATIVE VALUE NOT ACCEPTED", requiredTF);
                     return;
                 } else if (lowTF.getText().isEmpty()) {
                     method.show_popup("ENTER LOW QUANTITY", lowTF);
                     return;
-                } else if (mediumTF.getText().isEmpty()) {
+                }
+                else if (i_low < 0){
+                    method.show_popup("NEGATIVE VALUE NOT ACCEPTED", lowTF);
+                    return;
+                }else if (mediumTF.getText().isEmpty()) {
                     method.show_popup("ENTER MEDIUM QUANTITY", mediumTF);
+                    return;
+                }else if (i_med < 0){
+                    method.show_popup("NEGATIVE VALUE NOT ACCEPTED", mediumTF);
                     return;
                 }
 

@@ -184,13 +184,12 @@ public class UpdateSize implements Initializable {
             return;
         }
 
-        int height = 0, width = 0;
+        double height = 0, width = 0;
         long quantity = 0;
 
-
         try {
-            height = Integer.parseInt(heightS.replaceAll("[^0-9.]", ""));
-            width = Integer.parseInt(widthS.replaceAll("[^0-9.]", ""));
+            height = Double.parseDouble(heightS.replaceAll("[^0-9.]", ""));
+            width = Double.parseDouble(widthS.replaceAll("[^0-9.]", ""));
 
         } catch (NumberFormatException e) {
             customDialog.showAlertBox("INVALID PRODUCT SIZE", "ENTER VALID HEIGHT AND WIDTH ");
@@ -221,8 +220,8 @@ public class UpdateSize implements Initializable {
             ps.setDouble(1, purchase_price);
             ps.setDouble(2, mrp);
             ps.setDouble(3, min_Sell_Price);
-            ps.setInt(4, height);
-            ps.setInt(5, width);
+            ps.setDouble(4, height);
+            ps.setDouble(5, width);
             ps.setString(6, sizeUnit);
             ps.setLong(7, quantity);
             ps.setString(8, quantityUnit);

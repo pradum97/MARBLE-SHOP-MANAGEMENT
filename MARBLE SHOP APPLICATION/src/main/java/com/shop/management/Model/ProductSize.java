@@ -4,12 +4,12 @@ public class ProductSize {
 
 
    private double purchasePrice, productMRP , MinSellPrice ;
-   private int width , height;
+   private double width , height;
    private long quantity ;
    private String  sizeUnit , quantityUnit;
 
-    public ProductSize(double purchasePrice, double productMRP, double minSellPrice,
-                       int width, int height, long quantity, String sizeUnit, String quantityUnit) {
+    public ProductSize(double purchasePrice, double productMRP, double minSellPrice, double width, double height,
+                       long quantity, String sizeUnit, String quantityUnit) {
         this.purchasePrice = purchasePrice;
         this.productMRP = productMRP;
         MinSellPrice = minSellPrice;
@@ -44,19 +44,19 @@ public class ProductSize {
         MinSellPrice = minSellPrice;
     }
 
-    public int getWidth() {
+    public double getWidth() {
         return width;
     }
 
-    public void setWidth(int width) {
+    public void setWidth(double width) {
         this.width = width;
     }
 
-    public int getHeight() {
+    public double getHeight() {
         return height;
     }
 
-    public void setHeight(int height) {
+    public void setHeight(double height) {
         this.height = height;
     }
 

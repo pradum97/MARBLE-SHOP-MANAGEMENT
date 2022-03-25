@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.SettingController.DiscountUpdate">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.SettingController.DiscountUpdate">
 
     <center>
         <StackPane BorderPane.alignment="CENTER">
@@ -20,7 +26,7 @@
                                         <Font name="System Bold" size="12.0" />
                                     </font>
                                 </Label>
-                        <TextField fx:id="discountNameC" editable="true" minHeight="40.0" prefHeight="40.0" prefWidth="312.0" promptText="Enter Discount Name ex- special offer" />
+                        <TextField fx:id="discountNameC" editable="true" minHeight="40.0" prefHeight="40.0" prefWidth="312.0" promptText="Enter Discount Name ex- special offer" style="-fx-border-color: gray; -fx-border-radius: 3;" />
                             </children>
                         </VBox>
 
@@ -34,7 +40,7 @@
                                                 <Font name="System Bold" size="12.0" />
                                             </font>
                                         </Label>
-                                        <TextField fx:id="discountTF" minHeight="37.0" prefHeight="42.0" prefWidth="312.0" promptText="ENTER DISCOUNT % :">
+                                        <TextField fx:id="discountTF" minHeight="37.0" prefHeight="42.0" prefWidth="312.0" promptText="ENTER DISCOUNT % :" style="-fx-border-color: gray; -fx-border-radius: 3;">
                                             <padding>
                                                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                             </padding>
@@ -50,7 +56,7 @@
                                         <Font name="System Bold" size="12.0" />
                                     </font>
                                 </Label>
-                                <TextArea fx:id="descriptionTF" minHeight="50.0" prefHeight="60.0" prefWidth="312.0" promptText="ENTER DESCRIPTION :" />
+                                <TextArea fx:id="descriptionTF" minHeight="50.0" prefHeight="60.0" prefWidth="312.0" promptText="ENTER DESCRIPTION :" style="-fx-border-color: gray; -fx-border-radius: 3;" />
                             </children>
                             <VBox.margin>
                                 <Insets />

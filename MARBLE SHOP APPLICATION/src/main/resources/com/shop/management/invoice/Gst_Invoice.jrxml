@@ -103,7 +103,7 @@
 			<textField>
 				<reportElement mode="Transparent" x="15" y="2" width="558" height="29" forecolor="#101887" uuid="bc5cee64-8e36-4e38-8a6e-b575fd2621ec"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="DejaVu Sans" size="14" isBold="true"/>
+					<font fontName="Arial" size="14" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{SHOP_NAME}]]></textFieldExpression>
 			</textField>

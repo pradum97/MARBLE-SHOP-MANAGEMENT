@@ -194,7 +194,6 @@ public class DiscountConfig implements Initializable {
     }
 
     private void setDiscountData() {
-
         if (null != discountList) {
             discountList.clear();
         }

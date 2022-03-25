@@ -2,7 +2,7 @@ package com.shop.management.Controller.SellItems;
 
 import com.shop.management.Main;
 import com.shop.management.Method.Method;
-import com.shop.management.Model.Customer;
+import com.shop.management.Model.CustomerModel;
 import com.shop.management.util.DBConnection;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -64,8 +64,6 @@ public class CustomerDetails implements Initializable {
         });
     }
 
-
-
     public void cancel_Bn(ActionEvent event) {
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -96,7 +94,6 @@ public class CustomerDetails implements Initializable {
                 method.show_popup("ENTER CUSTOMER FULL-NAME", c_name);
                 return;
             }
-
             try {
 
                 phoneNum = Long.parseLong(cPhone.replaceAll("[^0-9.]", ""));
@@ -105,24 +102,18 @@ public class CustomerDetails implements Initializable {
                 c_phone.setText("");
                 return;
             }
-
             if (address.isEmpty()) {
                 method.show_popup("ENTER CUSTOMER ADDRESS", c_address);
                 return;
             }
-
-
             addNewCustomer(fullName, phoneNum, address, event);
-
-
         }
-
-
     }
+
 
     private void sellNow(int customerId, ActionEvent event) {
 
-        Customer customer = new Customer(customerId);
+        CustomerModel customer = new CustomerModel(customerId);
 
         Main.primaryStage.setUserData(customer);
 
@@ -239,6 +230,7 @@ public class CustomerDetails implements Initializable {
                 detailsContainer.setDisable(false);
 
             } else {
+                customerId = 0;
                 detailsContainer.setDisable(true);
                 messageL.setText("Add New Customer");
                 messageL.setStyle("-fx-text-fill: blue");
@@ -248,8 +240,6 @@ public class CustomerDetails implements Initializable {
                 detailsContainer.setVisible(true);
                 bnCheckOut.setVisible(false);
                 bnCheckOut.managedProperty().bind(bnCheckOut.visibleProperty());
-
-                System.out.println("customer not exist");
             }
 
 

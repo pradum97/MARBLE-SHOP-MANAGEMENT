@@ -13,7 +13,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
@@ -119,7 +118,8 @@ public class Dashboard implements Initializable {
 
 
     private void onClickAction(MenuItem appearance, Menu product, MenuItem gst, MenuItem discount, MenuItem help,
-                               MenuItem shopData, MenuItem category, MenuItem profile, MenuItem users, MenuItem stockControl, MenuItem supplier, MenuItem purchaseHistory) {
+                               MenuItem shopData, MenuItem category, MenuItem profile, MenuItem users, MenuItem stockControl,
+                               MenuItem supplier, MenuItem purchaseHistory, MenuItem customer) {
 
         appearance.setOnAction(event -> customDialog.showFxmlDialog2("setting/appearance.fxml", "APPEARANCE"));
 
@@ -136,9 +136,13 @@ public class Dashboard implements Initializable {
         });
 
         help.setOnAction(event -> customDialog.showFxmlDialog2("setting/help.fxml", "HELP"));
+        customer.setOnAction(event -> customDialog.showFxmlFullDialog("setting/customer.fxml", "ALL CUSTOMER"));
         shopData.setOnAction(event -> customDialog.showFxmlDialog2("shopDetails.fxml", ""));
         category.setOnAction(event -> customDialog.showFxmlDialog2("category.fxml", "CATEGORY"));
-        users.setOnAction(event -> customDialog.showFxmlFullDialog("dashboard/users.fxml", "ALL USERS"));
+        users.setOnAction(event ->{
+                    customDialog.showFxmlFullDialog("dashboard/users.fxml", "ALL USERS");
+                    refreshPage();
+                });
         stockControl.setOnAction(event -> customDialog.showFxmlFullDialog("setting/stockControl.fxml", "STOCK SETTING"));
         supplier.setOnAction(event -> customDialog.showFxmlFullDialog("stock/allSupplier.fxml", "ALL SUPPLIER"));
         purchaseHistory.setOnAction(event -> customDialog.showFxmlFullDialog("purchaseHistory.fxml", ""));
@@ -264,18 +268,18 @@ public class Dashboard implements Initializable {
                                 MenuButton menu_button = new MenuButton();
                                 // general --start
                                 Menu gen = new Menu("GENERAL");
-                                MenuItem category = new MenuItem("CATEGORY");
                                 MenuItem appearance = new MenuItem("APPEARANCE");
                                 MenuItem stockControl = new MenuItem("STOCK CONTROL");
                                 MenuItem supplier = new MenuItem("SUPPLIER");
                                 appearance.setVisible(false);
-                                gen.getItems().addAll(category, appearance, stockControl, supplier);
+                                gen.getItems().addAll(appearance, stockControl, supplier);
 
                                 // general -- end
                                 MenuItem shopData = new MenuItem("SHOP DETAILS");
                                 MenuItem profile = new MenuItem("PROFILE");
                                 MenuItem users = new MenuItem("USERS");
                                 MenuItem purchaseHistory = new MenuItem("PURCHASE HISTORY");
+                                MenuItem customer = new MenuItem("VIEW CUSTOMER");
                                 MenuItem help = new MenuItem("HELP");
 
                                 help.setVisible(false);
@@ -283,15 +287,16 @@ public class Dashboard implements Initializable {
 
                                 // product -- start
                                 Menu product = new Menu("PRODUCT");
+                                MenuItem category = new MenuItem("CATEGORY");
                                 MenuItem gst = new MenuItem("GST");
                                 MenuItem discount = new MenuItem("DISCOUNT");
-                                product.getItems().addAll(gst, discount);
+                                product.getItems().addAll(category , gst, discount);
 
                                 // product --  end
 
-                                menu_button.getItems().addAll(gen, product, profile, users, shopData, purchaseHistory, help);
+                                menu_button.getItems().addAll(gen, product, profile, users, shopData, purchaseHistory,customer, help);
 
-                                onClickAction(appearance, product, gst, discount, help, shopData, category, profile, users, stockControl, supplier, purchaseHistory);
+                                onClickAction(appearance, product, gst, discount, help, shopData, category, profile, users, stockControl, supplier, purchaseHistory,customer);
 
 
                                 ImageView icon = new ImageView();

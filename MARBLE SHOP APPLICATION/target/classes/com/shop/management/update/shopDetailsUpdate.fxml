@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="540.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.Update.ShopDetailsUpdate">
+   <center>
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <VBox prefHeight="200.0" prefWidth="100.0" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <HBox alignment="CENTER">
+                     <children>
+                        <VBox fillWidth="false" spacing="5.0">
+                           <children>
+                              <Label text="SHOP NAME :">
+                                 <VBox.margin>
+                                    <Insets left="5.0" />
+                                 </VBox.margin>
+                                 <font>
+                                    <Font name="Bookman Old Style Bold" size="13.0" />
+                                 </font>
+                              </Label>
+                              <TextField fx:id="shopNameTf" minHeight="55.0" minWidth="400.0" prefHeight="55.0" promptText="Enter Shop Full Name" />
+                           </children>
+                        </VBox>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="15.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <HBox alignment="CENTER" fillHeight="false" layoutX="10.0" layoutY="25.0">
+                     <children>
+                        <VBox fillWidth="false" spacing="5.0">
+                           <children>
+                              <Label text="PHONE NUMBER -1  :">
+                                 <VBox.margin>
+                                    <Insets left="5.0" />
+                                 </VBox.margin>
+                                 <font>
+                                    <Font name="Bookman Old Style Bold" size="13.0" />
+                                 </font>
+                              </Label>
+                              <TextField fx:id="phone_1Tf" minHeight="40.0" minWidth="400.0" prefHeight="40.0" promptText="Enter Phone Number-1" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" layoutX="10.0" layoutY="98.0">
+                     <children>
+                        <VBox fillWidth="false" spacing="5.0">
+                           <children>
+                              <Label text="PHONE NUMBER -2  :">
+                                 <VBox.margin>
+                                    <Insets left="5.0" />
+                                 </VBox.margin>
+                                 <font>
+                                    <Font name="Bookman Old Style Bold" size="13.0" />
+                                 </font>
+                              </Label>
+                              <TextField fx:id="phone_2TF" minHeight="40.0" minWidth="400.0" prefHeight="40.0" promptText="Enter Phone Number-2" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER">
+                     <children>
+                        <VBox fillWidth="false" spacing="5.0">
+                           <children>
+                              <Label text="PROP :">
+                                 <VBox.margin>
+                                    <Insets left="5.0" />
+                                 </VBox.margin>
+                                 <font>
+                                    <Font name="Bookman Old Style Bold" size="13.0" />
+                                 </font>
+                              </Label>
+                              <TextField fx:id="propNameTF" minHeight="40.0" minWidth="400.0" prefHeight="40.0" promptText="Enter Prop Name : " />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" layoutX="10.0" layoutY="171.0">
+                     <children>
+                        <VBox fillWidth="false" spacing="5.0">
+                           <children>
+                              <Label text="EMAIL :">
+                                 <VBox.margin>
+                                    <Insets left="5.0" />
+                                 </VBox.margin>
+                                 <font>
+                                    <Font name="Bookman Old Style Bold" size="13.0" />
+                                 </font>
+                              </Label>
+                              <TextField fx:id="emailTF" minHeight="40.0" minWidth="400.0" prefHeight="40.0" promptText="Enter Email : " />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" layoutX="10.0" layoutY="244.0">
+                     <children>
+                        <VBox fillWidth="false" spacing="5.0">
+                           <children>
+                              <Label text="ADDRESS : ">
+                                 <VBox.margin>
+                                    <Insets left="5.0" />
+                                 </VBox.margin>
+                                 <font>
+                                    <Font name="Bookman Old Style Bold" size="13.0" />
+                                 </font>
+                              </Label>
+                              <TextField fx:id="addressTF" minHeight="60.0" minWidth="400.0" prefHeight="60.0" promptText="Enter Shop Address :" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </AnchorPane>
+   </center>
+   <top>
+      <HBox alignment="CENTER" BorderPane.alignment="CENTER">
+         <children>
+            <Label text="UPDATE SHOP DETAILS ">
+               <font>
+                  <Font name="Bookman Old Style Bold" size="15.0" />
+               </font>
+            </Label>
+         </children>
+         <padding>
+            <Insets bottom="15.0" top="10.0" />
+         </padding>
+      </HBox>
+   </top>
+
+    <bottom>
+        <HBox alignment="CENTER" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets bottom="10.0" top="10.0" />
+            </padding>
+            <children>
+                <Label onMouseClicked="#bnUpdate" style="-fx-background-color: RED; -fx-text-fill: WHITE; -fx-font-weight: BOLD; -fx-background-radius: 5; -fx-cursor: hand;" text="SUBMIT">
+                    <padding>
+                        <Insets bottom="8.0" left="20.0" right="20.0" top="8.0" />
+                    </padding>
+                    <font>
+                        <Font name="Bookman Old Style" size="13.0" />
+                    </font>
+                </Label>
+            </children>
+        </HBox>
+    </bottom>
+</BorderPane>

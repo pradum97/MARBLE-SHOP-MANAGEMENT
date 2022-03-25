@@ -4,6 +4,7 @@ import com.shop.management.CustomDialog;
 import com.shop.management.ImageLoader;
 import com.shop.management.Main;
 import com.shop.management.Method.Method;
+import com.shop.management.Method.StaticData;
 import com.shop.management.Model.SupplierModel;
 import com.shop.management.util.DBConnection;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -12,6 +13,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Side;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
@@ -24,6 +26,8 @@ import java.net.URL;
 import java.sql.*;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AllSupplier implements Initializable {
     public TableView<SupplierModel> tableView;
@@ -100,12 +104,12 @@ public class AllSupplier implements Initializable {
             colState.setCellValueFactory(new PropertyValueFactory<>("supplierState"));
             colDate.setCellValueFactory(new PropertyValueFactory<>("addedSate"));
 
-            onColumnEdit(colName , "supplier_name");
-            onColumnEdit(colPhone , "supplier_phone");
-            onColumnEdit(colEmail , "supplier_email");
-            onColumnEdit(colGstNum , "supplier_gstNo");
-            onColumnEdit(colAddress , "ADDRESS");
-            onColumnEdit(colState , "STATE");
+            onColumnEdit(colName, "supplier_name");
+            onColumnEdit(colPhone, "supplier_phone");
+            onColumnEdit(colEmail, "supplier_email");
+            onColumnEdit(colGstNum, "supplier_gstNo");
+            onColumnEdit(colAddress, "ADDRESS");
+            onColumnEdit(colState, "STATE");
 
             setOptionalCell();
             tableView.setItems(supplierList);
@@ -124,6 +128,26 @@ public class AllSupplier implements Initializable {
 
         col.setOnEditCommit(e -> {
 
+            if (col.equals(colEmail)) {
+                String email = e.getNewValue();
+                Pattern pattern = Pattern.compile(new StaticData().emailRegex);
+                Matcher matcher = pattern.matcher(email);
+                if (!email.isEmpty()) {
+                    if (!matcher.matches()) {
+                        getSupplier();
+                        customDialog.showAlertBox("Failed", "Enter Valid Email Address");
+                        return;
+                    }
+                }
+            } else {
+                String value = e.getNewValue();
+
+                if (value.isEmpty()) {
+                    getSupplier();
+                    customDialog.showAlertBox("Failed", "Empty Value Not Accepted");
+                    return;
+                }
+            }
             int supplierId = e.getTableView().getItems().get(e.getTablePosition().getRow()).getSupplierId();
 
             update(e.getNewValue(), updateColumnName, supplierId);
@@ -150,7 +174,11 @@ public class AllSupplier implements Initializable {
             ps.setString(1, newValue);
             ps.setInt(2, supplierId);
 
-            ps.executeUpdate();
+            int res = ps.executeUpdate();
+
+            if (res > 0) {
+                getSupplier();
+            }
 
 
         } catch (SQLException e) {
