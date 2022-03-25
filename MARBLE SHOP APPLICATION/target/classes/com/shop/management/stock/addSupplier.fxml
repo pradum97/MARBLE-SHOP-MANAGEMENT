@@ -9,8 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0"
-            prefWidth="600.0" fx:controller="com.shop.management.Controller.AddSupplier" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.AddSupplier">
    <top>
       <HBox alignment="CENTER" prefHeight="40.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <children>
@@ -34,7 +33,7 @@
                               <Font name="Arial Bold" size="12.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="sNameTf" minHeight="36.0" minWidth="200.0" prefHeight="40.0" prefWidth="361.0" promptText="Enter Supplier Name :" style="-fx-border-radius: 2; -fx-background-radius: 2;" />
+                        <TextField fx:id="sNameTf" minHeight="36.0" minWidth="200.0" prefHeight="40.0" prefWidth="361.0" promptText="Enter Supplier Name :" style="-fx-border-radius: 3; -fx-background-radius: 2; -fx-border-color: gray;" />
                      </children>
                   </VBox>
                </children>
@@ -48,7 +47,7 @@
                               <Font name="Arial Bold" size="12.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="sPhoneTf" minHeight="36.0" minWidth="200.0" prefHeight="40.0" prefWidth="361.0" promptText="Enter Supplier Phone :" style="-fx-border-radius: 2; -fx-background-radius: 2;" />
+                        <TextField fx:id="sPhoneTf" minHeight="36.0" minWidth="200.0" prefHeight="40.0" prefWidth="361.0" promptText="Enter Supplier Phone :" style="-fx-border-radius: 3; -fx-background-radius: 2; -fx-border-color: gray;" />
                      </children>
                   </VBox>
                </children>
@@ -62,7 +61,7 @@
                               <Font name="Arial Bold" size="12.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="sEmailTf" minHeight="36.0" minWidth="200.0" prefHeight="40.0" prefWidth="361.0" promptText="Enter Supplier Email :" style="-fx-border-radius: 2; -fx-background-radius: 2;" />
+                        <TextField fx:id="sEmailTf" minHeight="36.0" minWidth="200.0" prefHeight="40.0" prefWidth="361.0" promptText="Enter Supplier Email :" style="-fx-border-radius: 3; -fx-background-radius: 2; -fx-border-color: gray;" />
                      </children>
                   </VBox>
                </children>
@@ -76,7 +75,7 @@
                               <Font name="Arial Bold" size="12.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="sGstNumTf" minHeight="36.0" minWidth="200.0" prefHeight="40.0" prefWidth="361.0" promptText="Enter Gst Number :" style="-fx-border-radius: 2; -fx-background-radius: 2;" />
+                        <TextField fx:id="sGstNumTf" minHeight="36.0" minWidth="200.0" prefHeight="40.0" prefWidth="361.0" promptText="Enter Gst Number :" style="-fx-border-radius: 3; -fx-background-radius: 2; -fx-border-color: gray;" />
                      </children>
                   </VBox>
                </children>
@@ -90,7 +89,7 @@
                               <Font name="Arial Bold" size="12.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="sAddressTf" minHeight="40.0" minWidth="200.0" prefHeight="50.0" prefWidth="362.0" promptText="Enter Supplier Address :" style="-fx-border-radius: 2; -fx-background-radius: 2;" />
+                        <TextField fx:id="sAddressTf" minHeight="40.0" minWidth="200.0" prefHeight="50.0" prefWidth="362.0" promptText="Enter Supplier Address :" style="-fx-border-radius: 3; -fx-background-radius: 2; -fx-border-color: gray;" />
                      </children>
                   </VBox>
                </children>
@@ -104,7 +103,7 @@
                               <Font name="Arial Bold" size="12.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="sStateTf" minHeight="40.0" minWidth="200.0" prefHeight="40.0" prefWidth="361.0" promptText="Enter Supplier State :" style="-fx-border-radius: 2; -fx-background-radius: 2;" />
+                        <TextField fx:id="sStateTf" minHeight="40.0" minWidth="200.0" prefHeight="40.0" prefWidth="361.0" promptText="Enter Supplier State :" style="-fx-border-radius: 3; -fx-background-radius: 2; -fx-border-color: gray;" />
                      </children>
                   </VBox>
                </children>

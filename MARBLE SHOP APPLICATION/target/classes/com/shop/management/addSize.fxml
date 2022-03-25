@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="350.0" prefWidth="550.0"
-            style="-fx-background-color: WHITE; -fx-background-radius: 10;"
-            xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.shop.management.Controller.AddSize">
+<AnchorPane prefHeight="350.0" prefWidth="550.0" style="-fx-background-color: WHITE; -fx-background-radius: 10;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.AddSize">
 
     <VBox alignment="CENTER" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <children>
@@ -21,7 +23,7 @@
                                     <Font name="System Bold" size="12.0" />
                                 </font>
                             </Label>
-                            <TextField fx:id="purchasePrice" minHeight="40.0" prefHeight="40.0" promptText="Enter purchase price" />
+                            <TextField fx:id="purchasePrice" minHeight="40.0" prefHeight="40.0" promptText="Enter purchase price" style="-fx-border-color: gray; -fx-border-radius: 3;" />
                         </children>
                     </VBox>
                     <VBox minWidth="155.0" prefWidth="155.0" spacing="5.0">
@@ -31,7 +33,7 @@
                                     <Font name="System Bold" size="12.0" />
                                 </font>
                             </Label>
-                            <TextField fx:id="productMrp" minHeight="40.0" onKeyReleased="#enterPress" prefHeight="40.0" promptText="Enter MRP" />
+                            <TextField fx:id="productMrp" minHeight="40.0" onKeyReleased="#enterPress" prefHeight="40.0" promptText="Enter MRP" style="-fx-border-color: gray; -fx-border-radius: 3;" />
                         </children>
                     </VBox>
                     <VBox minWidth="155.0" prefWidth="155.0" spacing="5.0">
@@ -41,7 +43,7 @@
                                     <Font name="System Bold" size="12.0" />
                                 </font>
                             </Label>
-                            <TextField fx:id="minSellPrice" minHeight="40.0" onKeyReleased="#enterPress" prefHeight="40.0" promptText="Enter Min Selling Price" />
+                            <TextField fx:id="minSellPrice" minHeight="40.0" onKeyReleased="#enterPress" prefHeight="40.0" promptText="Enter Min Selling Price" style="-fx-border-color: gray; -fx-border-radius: 3;" />
                         </children>
                     </VBox>
                 </children>
@@ -55,7 +57,7 @@
                                     <Font name="System Bold" size="12.0" />
                                 </font>
                             </Label>
-                            <TextField fx:id="productHeight" minHeight="40.0" minWidth="185.0" onKeyReleased="#enterPress" prefHeight="40.0" prefWidth="185.0" promptText="Enter Height : " text="234" />
+                            <TextField fx:id="productHeight" minHeight="40.0" minWidth="185.0" onKeyReleased="#enterPress" prefHeight="40.0" prefWidth="185.0" promptText="Enter Height : " style="-fx-border-color: gray; -fx-border-radius: 3;" text="234" />
                         </children>
                     </VBox>
                     <VBox layoutX="10.0" layoutY="10.0" spacing="5.0">
@@ -65,7 +67,7 @@
                                     <Font name="System Bold" size="12.0" />
                                 </font>
                             </Label>
-                            <TextField fx:id="productWidth" minHeight="40.0" minWidth="185.0" onKeyReleased="#enterPress" prefHeight="40.0" prefWidth="1.0" promptText="Enter Width :" text="234" />
+                            <TextField fx:id="productWidth" minHeight="40.0" minWidth="185.0" onKeyReleased="#enterPress" prefHeight="40.0" prefWidth="1.0" promptText="Enter Width :" style="-fx-border-color: gray; -fx-border-radius: 3;" text="234" />
                         </children>
                     </VBox>
                     <VBox layoutX="271.0" layoutY="10.0" spacing="5.0">
@@ -75,7 +77,7 @@
                                     <Font name="System Bold" size="12.0" />
                                 </font>
                             </Label>
-                            <ComboBox fx:id="productSizeUnit" minHeight="40.0" minWidth="92.0" prefWidth="92.0" />
+                            <ComboBox fx:id="productSizeUnit" minHeight="40.0" minWidth="92.0" prefWidth="92.0" style="-fx-border-color: gray; -fx-border-radius: 3;" />
                         </children>
                     </VBox>
                 </children>
@@ -91,7 +93,7 @@
                                             <Font name="System Bold" size="12.0" />
                                         </font>
                                     </Label>
-                                    <TextField fx:id="productQuantity" minHeight="40.0" minWidth="188.0" onKeyReleased="#enterPress" prefHeight="40.0" prefWidth="285.0" promptText="Enter Quantity :" text="50" />
+                                    <TextField fx:id="productQuantity" minHeight="40.0" minWidth="188.0" onKeyReleased="#enterPress" prefHeight="40.0" prefWidth="285.0" promptText="Enter Quantity :" style="-fx-border-color: gray; -fx-border-radius: 3;" text="50" />
                                 </children>
                             </VBox>
                             <VBox spacing="5.0">
@@ -101,7 +103,7 @@
                                             <Font name="System Bold" size="12.0" />
                                         </font>
                                     </Label>
-                                    <ComboBox fx:id="productQuantityUnit" minHeight="40.0" minWidth="100.0" onKeyReleased="#enterPress" prefWidth="170.0" />
+                                    <ComboBox fx:id="productQuantityUnit" minHeight="40.0" minWidth="100.0" onKeyReleased="#enterPress" prefWidth="170.0" style="-fx-border-color: gray; -fx-border-radius: 3;" />
                                 </children>
                             </VBox>
                         </children>
@@ -110,10 +112,7 @@
             </HBox>
             <HBox alignment="BOTTOM_CENTER" prefHeight="70.0" prefWidth="200.0">
                 <children>
-                    <Button fx:id="bnAddSize" alignment="CENTER" minHeight="30.0" minWidth="100.0" mnemonicParsing="false"
-                            onAction="#bnAddSize" onKeyReleased="#enterPress" prefHeight="30.0"
-                            prefWidth="100.0" style="-fx-background-color: BLUE; -fx-text-fill: WHITE; -fx-cursor: hand;"
-                            text="ADD" textAlignment="CENTER" />
+                    <Button fx:id="bnAddSize" alignment="CENTER" minHeight="30.0" minWidth="100.0" mnemonicParsing="false" onAction="#bnAddSize" onKeyReleased="#enterPress" prefHeight="30.0" prefWidth="100.0" style="-fx-background-color: BLUE; -fx-text-fill: WHITE; -fx-cursor: hand;" text="ADD" textAlignment="CENTER" />
                 </children>
             </HBox>
         </children>
