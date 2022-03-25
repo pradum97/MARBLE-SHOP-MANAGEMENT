@@ -24,7 +24,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
-public class ReturnMain implements Initializable {
+public class ReturnHistory implements Initializable {
 
     private int rowsPerPage = 15;
 
@@ -58,7 +58,6 @@ public class ReturnMain implements Initializable {
 
         getReturnItem();
 
-
     }
 
     private void getReturnItem() {
@@ -83,8 +82,6 @@ public class ReturnMain implements Initializable {
                     "        ,trm.invoice_number ,trm.remark, tc.customer_name , tc.customer_phone  from tbl_return_main trm\n" +
                     "LEFT JOIN tbl_sale_main tsm ON trm.sale_main_id =  tsm.sale_main_id\n" +
                     "LEFT JOIN tbl_customer tc on tsm.customer_id = tc.customer_id";
-
-            System.out.println(query);
 
             ps = connection.prepareStatement(query);
 

@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane  maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.ReturnItems.ReturnMain">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.ReturnItems.ReturnHistory">
    <center>
       <AnchorPane BorderPane.alignment="CENTER">
          <children>
@@ -52,6 +52,6 @@
       </HBox>
    </top>
    <bottom>
-      <Pagination visible="false" fx:id="pagination" BorderPane.alignment="CENTER" />
+      <Pagination fx:id="pagination" visible="false" BorderPane.alignment="CENTER" />
    </bottom>
 </BorderPane>

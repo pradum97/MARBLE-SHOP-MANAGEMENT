@@ -1,6 +1,6 @@
 package com.shop.management.Model;
 
-public class Customer {
+public class CustomerModel {
 
     private int customerId;
     private String name;
@@ -8,10 +8,10 @@ public class Customer {
     private String address;
     private double duesAmount;
     private String notes , description;
+    private String registered_date;
 
-    public Customer(int customerId, String name, long phone,
-                    String address, double duesAmount,
-                    String notes, String description) {
+    public CustomerModel(int customerId, String name, long phone, String address, double duesAmount,
+                         String notes, String description, String registered_date) {
         this.customerId = customerId;
         this.name = name;
         this.phone = phone;
@@ -19,11 +19,20 @@ public class Customer {
         this.duesAmount = duesAmount;
         this.notes = notes;
         this.description = description;
+        this.registered_date = registered_date;
     }
 
-    public Customer(int customerId) {
+    public CustomerModel(int customerId) {
         this.customerId = customerId;
 
+    }
+
+    public String getRegistered_date() {
+        return registered_date;
+    }
+
+    public void setRegistered_date(String registered_date) {
+        this.registered_date = registered_date;
     }
 
     public int getCustomerId() {

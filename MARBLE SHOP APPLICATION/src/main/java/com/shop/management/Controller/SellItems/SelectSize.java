@@ -42,8 +42,9 @@ public class SelectSize implements Initializable {
     private Properties properties;
     private Products products;
 
-    private ObservableList<Stock> stockList = FXCollections.observableArrayList();
+    private int requiredQuantity;
 
+    private ObservableList<Stock> stockList = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -53,12 +54,44 @@ public class SelectSize implements Initializable {
         dbConnection = new DBConnection();
         properties =new PropertiesLoader().load("query.properties");
 
-        products = (Products) Main.primaryStage.getUserData();
+        getStockSetting();
 
+        products = (Products) Main.primaryStage.getUserData();
         if (null != products) {
             setTableData(products.getProductID());
         }
+    }
+    private void getStockSetting() {
+        requiredQuantity = 0;
 
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            connection = dbConnection.getConnection();
+
+            if (null == connection) {
+                System.out.println("connection failed");
+                return;
+            }
+
+            String query = "SELECT REQUIRED FROM STOCK_CONTROL";
+
+            ps = connection.prepareStatement(query);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+
+                requiredQuantity = rs.getInt("REQUIRED");
+            }
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DBConnection.closeConnection(connection, ps, rs);
+        }
     }
 
     private void setTableData(int productID) {
@@ -101,6 +134,13 @@ public class SelectSize implements Initializable {
                         Stock stock = tableView.getSelectionModel().getSelectedItem();
 
                         if (null != stock) {
+
+                            if (requiredQuantity >= stock.getQuantity()){
+                                customDialog.showAlertBox("Error","You Can't Sell This Item Because The Quantity Is Very Low. ! Your Required Quantity Is "+requiredQuantity);
+                                return;
+                            }
+
+
                             Main.primaryStage.setUserData(stock);
                             customDialog.showFxmlDialog("sellItems/quantityDialog.fxml", "");
 

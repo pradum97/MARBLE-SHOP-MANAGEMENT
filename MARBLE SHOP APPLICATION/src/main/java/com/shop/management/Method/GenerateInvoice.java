@@ -1,5 +1,6 @@
 package com.shop.management.Method;
 
+import com.shop.management.CustomDialog;
 import com.shop.management.FileLoader;
 import com.shop.management.Model.GstInvoiceModel;
 import com.shop.management.Model.RegularInvoiceModel;
@@ -44,7 +45,7 @@ public class GenerateInvoice {
             }
 
             String query = "select tsi.product_name , tsi.product_size  , tsi.discount_name  , tsi.sell_price ,\n" +
-                    "       tsi.discountper , tsi.discount_amount, tc.customer_name , tc.customer_phone , tc.customer_address, tsm.invoice_number , tsm.sale_date,\n" +
+                    "       tsi.discountper , tsi.discount_amount, tc.customer_name , tc.customer_phone , tc.customer_address, tsm.invoice_number , (TO_CHAR(tsm.sale_date, 'DD-MM-YYYY')) as sale_date,\n" +
                     "       tsi.product_quantity as fullQuantity ,(SPLIT_PART(tsi.product_quantity, ' -', 1)) as quantity,\n" +
                     "       tsd.shop_name , tsd.shop_address , tsd.shop_email , tsd.shop_gst_number , tsd.shop_phone_1 , tsd.shop_phone_2 , tsd.shop_prop,\n" +
                     "       tsi.sgst , tsi.cgst,tsi.igst , tsi.hsn_sac  , tsm.additional_discount\n" +
@@ -145,6 +146,7 @@ public class GenerateInvoice {
 
             if (isDownLoad && null != downloadPath){
                 JasperExportManager.exportReportToPdfFile(print,downloadPath);
+                new CustomDialog().showAlertBox("Successful","Invoice Successfully Download");
 
             }else{
                 JasperViewer viewer = new JasperViewer(print, false);
@@ -202,7 +204,7 @@ public class GenerateInvoice {
             }
 
             String query = "select tsi.product_name , tsi.product_size  , tsi.discount_name  , tsi.sell_price ,\n" +
-                    "       tsi.discountper , tsi.discount_amount, tc.customer_name , tc.customer_phone , tc.customer_address, tsm.invoice_number , tsm.sale_date,\n" +
+                    "       tsi.discountper , tsi.discount_amount, tc.customer_name , tc.customer_phone , tc.customer_address, tsm.invoice_number ,(TO_CHAR(tsm.sale_date, 'DD-MM-YYYY')) as sale_date,\n" +
                     "       tsi.product_quantity as fullQuantity ,(SPLIT_PART(tsi.product_quantity, ' -', 1)) as quantity,\n" +
                     "       tsd.shop_name , tsd.shop_address , tsd.shop_email , tsd.shop_gst_number , tsd.shop_phone_1 ,tsm.additional_discount, tsd.shop_phone_2 , tsd.shop_prop\n" +
                     "       from tbl_sale_main tsm\n" +
@@ -258,6 +260,7 @@ public class GenerateInvoice {
 
             if (isDownLoad && null != downloadPath){
                 JasperExportManager.exportReportToPdfFile(print,downloadPath);
+                new CustomDialog().showAlertBox("Successful","Invoice Successfully Download");
 
             }else{
                 JasperViewer viewer = new JasperViewer(print, false);

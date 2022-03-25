@@ -53,10 +53,13 @@ public class ReStock implements Initializable {
        }
         getSupplier();
         comboBox();
+
     }
 
     private void comboBox() {
-        unitCom.setItems(new StaticData().getSizeQuantityUnit());
+
+       unitCom.getItems().add(stockMainModel.getProductFullQuantity().split(" -")[1]);
+       unitCom.getSelectionModel().selectFirst();
         supplierCom.setButtonCell(new ListCell<>() {
             @Override
             public void updateItem(SupplierModel item, boolean empty) {
@@ -134,6 +137,10 @@ public class ReStock implements Initializable {
 
     private void getSupplier() {
 
+        if (null != supplierList){
+            supplierList.clear();
+        }
+
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -188,8 +195,19 @@ public class ReStock implements Initializable {
         }
 
         int supplierId  = supplierCom.getSelectionModel().getSelectedItem().getSupplierId();
-        int quantity = Integer.parseInt(quantityTf.getText().replaceAll("[^0-9.]", ""));
+        int quantity = 0;
+        try {
+            quantity = Integer.parseInt(quantityTf.getText());
+        } catch (NumberFormatException e) {
+            method.show_popup("Please Enter Valid Quantity",quantityTf);
+            return;
+        }
         String quantityUnit = unitCom.getSelectionModel().getSelectedItem();
+        if (quantity < 1){
+            method.show_popup("Please Enter More Then 0",quantityTf);
+
+            return;
+        }
 
         Connection connection = null;
         PreparedStatement ps = null , psStock = null;
@@ -260,5 +278,11 @@ public class ReStock implements Initializable {
                 }
             }
         }
+    }
+
+    public void addSupplier(ActionEvent event) {
+
+        customDialog.showFxmlDialog("stock/addSupplier.fxml", "ADD SUPPLIER");
+        getSupplier();
     }
 }

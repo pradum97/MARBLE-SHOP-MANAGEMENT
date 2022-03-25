@@ -173,6 +173,11 @@ public class StockReport implements Initializable {
                     case "Out Of Stock" -> {
                         if (quantity < 1) {
                             stockList.add(new StockMainModel(productId, stockId, quantity, productCode, type, category, size, color, fullQuantity, purchasePrice, mrp, minSellPrice));
+                        } else {
+                            if (null != stockList) {
+                                tableView.refresh();
+                                changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);
+                            }
                         }
 
                     }
@@ -180,23 +185,35 @@ public class StockReport implements Initializable {
 
                         if (quantity >= 1 && quantity <= lowQuantity) {
                             stockList.add(new StockMainModel(productId, stockId, quantity, productCode, type, category, size, color, fullQuantity, purchasePrice, mrp, minSellPrice));
+                        } else {
+                            if (null != stockList) {
+                                tableView.refresh();
+                                changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);
+                            }
                         }
                     }
                     case "MEDIUM" -> {
-                        if (quantity >= lowQuantity && quantity <= mediumQuantity) {
+                        if (quantity > lowQuantity && quantity <= mediumQuantity) {
 
                             stockList.add(new StockMainModel(productId, stockId, quantity, productCode, type, category, size, color, fullQuantity, purchasePrice, mrp, minSellPrice));
-
+                        } else {
+                            if (null != stockList) {
+                                tableView.refresh();
+                                changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);
+                            }
                         }
                     }
                     case "HIGH" -> {
-                        if (quantity >= mediumQuantity) {
+                        if (quantity > mediumQuantity) {
                             stockList.add(new StockMainModel(productId, stockId, quantity, productCode, type, category, size, color, fullQuantity, purchasePrice, mrp, minSellPrice));
-
+                        } else {
+                            if (null != stockList) {
+                                tableView.refresh();
+                                changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);
+                            }
                         }
                     }
                 }
-
 
                 if (rs.isLast()) {
                     totalItemL.setText(rs.getString("totalItem"));
@@ -225,6 +242,9 @@ public class StockReport implements Initializable {
     }
 
     private void getStockSetting() {
+        requiredQuantity = 0;
+        mediumQuantity = 0;
+        lowQuantity = 0;
 
         Connection connection = null;
         PreparedStatement ps = null;
@@ -375,10 +395,10 @@ public class StockReport implements Initializable {
                     reStock.setOnMouseClicked(mouseEvent -> {
                         StockMainModel smm = tableView.getSelectionModel().getSelectedItem();
                         Main.primaryStage.setUserData(smm);
-                        customDialog.showFxmlDialog("stock/reStock.fxml" , "");
+                        customDialog.showFxmlDialog("stock/reStock.fxml", "");
                         filterBy();
                     });
-                    HBox managebtn = new HBox(status,reStock);
+                    HBox managebtn = new HBox(status, reStock);
                     managebtn.setStyle("-fx-alignment:center ; -fx-padding: 0 10 0 0");
                     HBox.setMargin(reStock, new Insets(5, 10, 0, 0));
 
@@ -394,9 +414,10 @@ public class StockReport implements Initializable {
 
     private void setStatusStyle(Label status, String color) {
 
-        status.setStyle( ";-fx-background-radius: 5 ; -fx-text-fill: "+color+";"+
+        status.setStyle(";-fx-background-radius: 5 ; -fx-text-fill: " + color + ";" +
                 " -fx-padding: 3 7 3 7;-fx-alignment: center ; -fx-font-family: 'Arial Black'");
     }
+
     public void refreshBn(ActionEvent event) {
 
         getStockSetting();

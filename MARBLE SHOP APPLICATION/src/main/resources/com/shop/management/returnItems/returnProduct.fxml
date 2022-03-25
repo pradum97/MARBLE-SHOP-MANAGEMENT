@@ -68,7 +68,7 @@
                                  <font>
                                     <Font name="Bookman Old Style Bold" size="12.0" />
                                  </font></TextField>
-                              <TextField fx:id="invoiceNumTF" focusTraversable="false" minWidth="250.0" prefHeight="40.0" promptText="Enter Invoice Number " style="-fx-background-radius: 2;" text="0000001">
+                              <TextField fx:id="invoiceNumTF" focusTraversable="false" minWidth="250.0" prefHeight="40.0" promptText="Enter Invoice Number " style="-fx-background-radius: 2;">
                                  <font>
                                     <Font name="Bookman Old Style Bold" size="13.0" />
                                  </font></TextField>
@@ -185,7 +185,7 @@
                                           <Font name="Bookman Old Style Bold" size="13.0" />
                                        </font>
                                     </Label>
-                                    <Label fx:id="cusAddressL" maxWidth="300.0" minWidth="120.0" onMouseClicked="#test" textFill="#5c07f0" wrapText="true">
+                                    <Label fx:id="cusAddressL" maxWidth="300.0" minWidth="120.0" textFill="#5c07f0" wrapText="true">
                                        <font>
                                           <Font name="Arial Bold" size="14.0" />
                                        </font>

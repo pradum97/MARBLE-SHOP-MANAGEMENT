@@ -11,10 +11,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Types;
+import java.sql.*;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
@@ -62,6 +59,9 @@ public class AddGst implements Initializable {
         } else if (igst.isEmpty()) {
             method.show_popup("Enter igst", igstTF);
             return;
+        }else if (gstName.isEmpty()) {
+            method.show_popup("Enter Gst Name", gstNameTF);
+            return;
         }
 
         int sGst = 0, cGst = 0, iGst = 0 , hsn_sac = 0;
@@ -71,6 +71,11 @@ public class AddGst implements Initializable {
         } catch (NumberFormatException e) {
             hsn_sacTf.setText("");
           return;
+        }
+
+         if (isExist(hsn_sac)){
+            method.show_popup("THIS HSN CODE IS ALREADY EXIST!", hsn_sacTf);
+            return;
         }
 
         try {
@@ -155,6 +160,33 @@ public class AddGst implements Initializable {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    private boolean isExist(long enterHsnCode){
+
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+
+            connection = dbConnection.getConnection();
+            String query = "select HSN_SAC from TBL_PRODUCT_TAX where HSN_SAC = ?";
+
+            System.out.println(query);
+
+            ps = connection.prepareStatement(query);
+            ps.setLong(1,enterHsnCode);
+
+            rs = ps.executeQuery();
+
+            return rs.next();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }finally {
+            DBConnection.closeConnection(connection , ps , rs);
         }
     }
 

@@ -217,50 +217,45 @@ public class ReturnProduct implements Initializable {
 
     private void setCellF() {
 
-        colCheckBox.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ReturnProductModel, CheckBox>, ObservableValue<CheckBox>>() {
+        colCheckBox.setCellValueFactory(arg0 -> {
+            ReturnProductModel rpm = arg0.getValue();
 
-            @Override
-            public ObservableValue<CheckBox> call(
-                    TableColumn.CellDataFeatures<ReturnProductModel, CheckBox> arg0) {
-                ReturnProductModel rpm = arg0.getValue();
+            CheckBox checkBox = new CheckBox();
 
-                CheckBox checkBox = new CheckBox();
+            checkBox.selectedProperty().setValue(rpm.isReturn());
 
-                checkBox.selectedProperty().setValue(rpm.isReturn());
+            checkBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+                public void changed(ObservableValue<? extends Boolean> ov,
+                                    Boolean old_val, Boolean new_val) {
 
-                checkBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
-                    public void changed(ObservableValue<? extends Boolean> ov,
-                                        Boolean old_val, Boolean new_val) {
-
-                        int returnQuantity = 0;
-                        int quantity = 0;
-                        try {
-                            quantity = Integer.parseInt(rpm.getQuantity().split(" -")[0].replaceAll("[^0-9.]", ""));
-                            returnQuantity = Integer.parseInt(rpm.getReturnQuantity().replaceAll("[^0-9.]", ""));
-                        } catch (NumberFormatException e) {
-                            e.printStackTrace();
-                        }
-
-
-                        if (returnQuantity < 1) {
-                            method.show_popup("Please Enter Return Quantity ", checkBox);
-                            checkBox.setSelected(false);
-                            return;
-                        }
-                        if (returnQuantity > quantity) {
-
-                            method.show_popup("ENTER VALID RETURN QUANTITY " +
-                                    "Available Quality : " + rpm.getQuantity() + " You Enter :" + returnQuantity, checkBox);
-
-                            checkBox.setSelected(false);
-                            return;
-                        }
-                        rpm.setReturn(new_val);
-                        calculate();
+                    int returnQuantity = 0;
+                    int quantity = 0;
+                    try {
+                        quantity = Integer.parseInt(rpm.getQuantity().split(" -")[0].replaceAll("[^0-9.]", ""));
+                        returnQuantity = Integer.parseInt(rpm.getReturnQuantity().replaceAll("[^0-9.]", ""));
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
                     }
-                });
-                return new SimpleObjectProperty<CheckBox>(checkBox);
-            }
+
+
+                    if (returnQuantity < 1) {
+                        method.show_popup("Please Enter Return Quantity ", checkBox);
+                        checkBox.setSelected(false);
+                        return;
+                    }
+                    if (returnQuantity > quantity) {
+
+                        method.show_popup("ENTER VALID RETURN QUANTITY " +
+                                "Available Quality : " + rpm.getQuantity() + " You Enter :" + returnQuantity, checkBox);
+
+                        checkBox.setSelected(false);
+                        return;
+                    }
+                    rpm.setReturn(new_val);
+                    calculate();
+                }
+            });
+            return new SimpleObjectProperty<CheckBox>(checkBox);
         });
     }
 
@@ -283,14 +278,6 @@ public class ReturnProduct implements Initializable {
 
         tableView.refresh();
 
-    }
-
-    public void test(MouseEvent mouseEvent) {
-
-        for (ReturnProductModel rtm : tableView.getItems()) {
-
-            System.out.println(rtm.getReturnQuantity());
-        }
     }
 
     public void bnSubmit(ActionEvent event) {
@@ -450,7 +437,7 @@ public class ReturnProduct implements Initializable {
 
     public void bnReturnHistory(ActionEvent event) {
 
-        customDialog.showFxmlFullDialog("returnItems/ returnMain.fxml", "RETURN HISTORY");
+        customDialog.showFxmlFullDialog("returnItems/returnHistory.fxml", "RETURN HISTORY");
     }
 
     public String getInvoiceNumber() {

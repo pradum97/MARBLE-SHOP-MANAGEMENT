@@ -34,7 +34,6 @@ import java.util.ResourceBundle;
 public class GstConfig implements Initializable {
 
     int rowsPerPage = 10;
-
     public TableColumn<TAX, String> colSGST;
     public TableColumn<TAX, String> colCGST;
     public TableColumn<TAX, String> colIGST;
@@ -66,8 +65,6 @@ public class GstConfig implements Initializable {
 
         int totalPage = (int) (Math.ceil(taxList.size() * 1.0 / rowsPerPage));
         pagination.setPageCount(totalPage);
-
-
 
         colHsn_Sac.setCellValueFactory(new PropertyValueFactory<>("hsn_sac"));
         colSGST.setCellValueFactory(new PropertyValueFactory<>("sgst"));

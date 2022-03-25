@@ -13,8 +13,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            prefHeight="450.0" prefWidth="500.0" style="-fx-background-color: transparent; -fx-border-color: #838385" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.SellItems.QuantityDialog">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="500.0" style="-fx-background-color: transparent; -fx-border-color: #838385" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.SellItems.QuantityDialog">
    <center>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
@@ -138,7 +137,7 @@
                         </VBox>
                      </children>
                   </HBox>
-                  <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="213.0" onKeyReleased="#enterPress" spacing="3.0">
+                  <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="213.0" onKeyReleased="#enterPress">
                      <padding>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </padding>
@@ -146,7 +145,7 @@
                         <VBox spacing="5.0">
                            <children>
                               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="QUANTITY :" />
-                              <TextField fx:id="quantityTf" minHeight="37.0" prefWidth="200.0" promptText="ENTER QUANTITY :" />
+                              <TextField fx:id="quantityTf" minHeight="37.0" prefWidth="200.0" promptText="ENTER QUANTITY :" style="-fx-border-color: gray; -fx-border-radius: 3 0 3 3;" />
                            </children>
                            <HBox.margin>
                               <Insets left="20.0" />
@@ -155,7 +154,7 @@
                         <VBox layoutX="35.0" layoutY="15.0" spacing="5.0">
                            <children>
                               <Text strokeType="OUTSIDE" strokeWidth="0.0" />
-                              <ComboBox fx:id="quantityUnit" prefHeight="36.0" prefWidth="85.0" />
+                              <ComboBox fx:id="quantityUnit" prefHeight="37.0" prefWidth="85.0" style="-fx-border-color: gray; -fx-border-radius: 3 3 3 0;" />
                            </children>
                         </VBox>
                      </children>
@@ -168,7 +167,7 @@
                         <HBox alignment="CENTER_LEFT">
                            <children>
                               <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 15;" text="SELLING PRICE : " />
-                              <TextField fx:id="sellingPriceTf" minHeight="37.0" prefWidth="180.0" promptText="ENTER SELLING PRICE : " />
+                              <TextField fx:id="sellingPriceTf" minHeight="37.0" prefWidth="180.0" promptText="ENTER SELLING PRICE : " style="-fx-border-color: gray; -fx-border-radius: 3;" />
                            </children>
                            <HBox.margin>
                               <Insets left="20.0" />

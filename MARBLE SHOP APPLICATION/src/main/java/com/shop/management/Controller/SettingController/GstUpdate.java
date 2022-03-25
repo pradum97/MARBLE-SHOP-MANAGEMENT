@@ -12,10 +12,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Types;
+import java.sql.*;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
@@ -62,6 +59,33 @@ public class GstUpdate implements Initializable {
 
     }
 
+    private boolean isExist(long enterHsnCode){
+
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+
+            connection = dbConnection.getConnection();
+            String query = "select HSN_SAC from TBL_PRODUCT_TAX where HSN_SAC = ?";
+
+            System.out.println(query);
+
+            ps = connection.prepareStatement(query);
+            ps.setLong(1,enterHsnCode);
+
+            rs = ps.executeQuery();
+
+            return rs.next();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }finally {
+            DBConnection.closeConnection(connection , ps , rs);
+        }
+    }
+
     public void updateTax(ActionEvent event) {
 
         String sgst = sgstTF.getText();
@@ -74,7 +98,7 @@ public class GstUpdate implements Initializable {
         if (hsn_sacS.isEmpty()) {
             method.show_popup("Enter HSN / SAC", hsn_sacTf);
             return;
-        } else if (sgst.isEmpty()) {
+        }else if (sgst.isEmpty()) {
             method.show_popup("Enter sgst", sgstTF);
             return;
         } else if (cgst.isEmpty()) {
@@ -82,6 +106,9 @@ public class GstUpdate implements Initializable {
             return;
         } else if (igst.isEmpty()) {
             method.show_popup("Enter igst", igstTF);
+            return;
+        }else if (gstName.isEmpty()) {
+            method.show_popup("Enter Gst Name", gstNameTF);
             return;
         }
 
@@ -94,6 +121,11 @@ public class GstUpdate implements Initializable {
 
             return;
         }
+         if (isExist(hsn_sac)){
+            method.show_popup("THIS HSN CODE IS ALREADY EXIST!", hsn_sacTf);
+            return;
+        }
+
 
         try {
             sGst = Integer.parseInt(sgst);

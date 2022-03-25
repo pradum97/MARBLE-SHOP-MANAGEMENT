@@ -2,6 +2,7 @@ package com.shop.management.Controller;
 
 import com.shop.management.CustomDialog;
 import com.shop.management.Method.Method;
+import com.shop.management.Method.StaticData;
 import com.shop.management.util.DBConnection;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
@@ -15,6 +16,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AddSupplier implements Initializable {
     public TextField sNameTf;
@@ -45,18 +48,27 @@ public class AddSupplier implements Initializable {
         String sAddress = sAddressTf.getText();
         String sState = sStateTf.getText();
 
-        if (sName.isEmpty()){
-            method.show_popup("Enter AddSupplier Full Name" , sNameTf);
+        Pattern pattern = Pattern.compile(new StaticData().emailRegex);
+
+        Matcher matcher = pattern.matcher(sEmail);
+
+        if (sName.isEmpty()) {
+            method.show_popup("Enter AddSupplier Full Name", sNameTf);
             return;
-        }else  if (sPhone.isEmpty()){
-            method.show_popup("Enter AddSupplier Phone Number" , sPhoneTf);
+        } else if (sPhone.isEmpty()) {
+            method.show_popup("Enter AddSupplier Phone Number", sPhoneTf);
             return;
-        } else if (sAddress.isEmpty()){
-            method.show_popup("Enter AddSupplier Address" , sAddressTf);
+        }else if (sAddress.isEmpty()) {
+            method.show_popup("Enter AddSupplier Address", sAddressTf);
             return;
-        }else  if (sState.isEmpty()){
-            method.show_popup("Enter State" , sStateTf);
+        } else if (sState.isEmpty()) {
+            method.show_popup("Enter State", sStateTf);
             return;
+        } else if (!sEmail.isEmpty()) {
+            if (!matcher.matches()) {
+                method.show_popup("Enter Valid Email", sEmailTf);
+                return;
+            }
         }
 
         Connection connection = null;
@@ -65,43 +77,51 @@ public class AddSupplier implements Initializable {
         try {
 
             connection = dbConnection.getConnection();
-            if (null ==  connection){
+            if (null == connection) {
                 System.out.println("connection failed");
                 return;
             }
 
-            String query = "INSERT INTO Supplier (SUPPLIER_NAME, SUPPLIER_PHONE, SUPPLIER_EMAIL, SUPPLIER_GSTNO, ADDRESS, STATE) VALUES (?,?,?,?,?,?)" ;
+            String query = "INSERT INTO Supplier (SUPPLIER_NAME, SUPPLIER_PHONE, SUPPLIER_EMAIL, SUPPLIER_GSTNO, ADDRESS, STATE) VALUES (?,?,?,?,?,?)";
             ps = connection.prepareStatement(query);
-            ps.setString(1,sName);
-            ps.setString(2,sPhone);
+            ps.setString(1, sName);
+            ps.setString(2, sPhone);
 
-            if (sEmail.isEmpty()){ ps.setNull(3, Types.NULL); }else { ps.setString(3,sEmail);}
+            if (sEmail.isEmpty()) {
+                ps.setNull(3, Types.NULL);
+            } else {
+                ps.setString(3, sEmail);
+            }
 
-            if (sGstNum.isEmpty()){ ps.setNull(4,Types.NULL);  }else { ps.setString(4,sGstNum);}
+            if (sGstNum.isEmpty()) {
+                ps.setNull(4, Types.NULL);
+            } else {
+                ps.setString(4, sGstNum);
+            }
 
 
-            ps.setString(5,sAddress);
-            ps.setString(6,sState);
+            ps.setString(5, sAddress);
+            ps.setString(6, sState);
 
             int res = ps.executeUpdate();
 
-            if (res > 0){
+            if (res > 0) {
 
                 Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
-                if (stage.isShowing()){
+                if (stage.isShowing()) {
                     stage.close();
                 }
 
-                customDialog.showAlertBox("success","AddSupplier Successfully Added");
+                customDialog.showAlertBox("success", "AddSupplier Successfully Added");
 
 
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
-            DBConnection.closeConnection(connection , ps , null);
+        } finally {
+            DBConnection.closeConnection(connection, ps, null);
         }
 
     }

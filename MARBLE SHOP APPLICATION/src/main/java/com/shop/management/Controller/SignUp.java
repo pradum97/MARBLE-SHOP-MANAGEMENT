@@ -13,9 +13,11 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Objects;
 import java.util.Properties;
@@ -51,7 +53,7 @@ public class SignUp implements Initializable {
         customDialog = new CustomDialog();
         dbConnection = new DBConnection();
         main = new Main();
-        properties =new PropertiesLoader().load("query.properties");
+        properties = new PropertiesLoader().load("query.properties");
 
         setData();
 
@@ -107,6 +109,15 @@ public class SignUp implements Initializable {
         }
     }
 
+    private boolean hasSpace(String str) {
+        for (int i = 0; i < str.length(); i++) {
+            if (str.charAt(0) == ' ' || str.charAt(i) == ' ' && str.charAt(i + 1) != ' ') {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void startSignup() {
 
         Connection connection = null;
@@ -122,6 +133,14 @@ public class SignUp implements Initializable {
         String password = password_f.getText();
         String confirm_password = con_password_f.getText();
 
+        long phoneNum = 0;
+        try {
+            phoneNum = Long.parseLong(phone);
+        } catch (NumberFormatException e) {
+            customDialog.showAlertBox("Registration Failed ", "Enter 10-digit Phone Number Without Country Code");
+            return;
+        }
+
         Pattern pattern = Pattern.compile(new StaticData().emailRegex);
 
         Matcher matcher = pattern.matcher(email);
@@ -134,18 +153,24 @@ public class SignUp implements Initializable {
             method.show_popup("Enter Username", username_f);
             return;
 
+        } else if (hasSpace(username)) {
+            method.show_popup("SPACE NOT ALLOW PLEASE REMOVE SPACE FROM USERNAME", username_f);
+            return;
+        } else if (isExist("USERNAME", username)) {
+            method.show_popup("USERNAME ALREADY EXISTS!", username_f);
+            return;
         } else if (phone.isEmpty()) {
             method.show_popup("Enter 10-digit Phone Number", phone_f);
             return;
 
-        }
-        long phoneNum = 0;
-        try {
-            phoneNum = Long.parseLong(phone);
-        } catch (NumberFormatException e) {
-            customDialog.showAlertBox("Registration Failed ", "Enter 10-digit Phone Number Without Country Code");
+        } else if (hasSpace(phone)) {
+            method.show_popup("SPACE NOT ALLOW PLEASE REMOVE SPACE FROM PHONE", phone_f);
+            return;
+        } else if (isExistPhone("PHONE", phoneNum)) {
+            method.show_popup("PHONE NUM ALREADY EXISTS!", phone_f);
             return;
         }
+
         Pattern phone_pattern = Pattern.compile("^\\d{10}$");
         Matcher phone_matcher = phone_pattern.matcher(phone);
 
@@ -160,6 +185,12 @@ public class SignUp implements Initializable {
             method.show_popup("Enter Valid Email", email_f);
             return;
 
+        } else if (hasSpace(email)) {
+            method.show_popup("SPACE NOT ALLOW PLEASE REMOVE SPACE FROM EMAIL", email_f);
+            return;
+        } else if (isExist("EMAIL", email)) {
+            method.show_popup("EMAIL ALREADY EXISTS!", email_f);
+            return;
         } else if (null == gender_comboBox.getValue()) {
             method.show_popup("Choose Your Gender", gender_comboBox);
             return;
@@ -233,6 +264,56 @@ public class SignUp implements Initializable {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    private boolean isExist(String columnName, String value) {
+
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+
+            connection = dbConnection.getConnection();
+            String query = "select " + columnName + " from TBL_USERS where " + columnName + " = ?";
+
+            ps = connection.prepareStatement(query);
+            ps.setString(1, value);
+
+            rs = ps.executeQuery();
+
+            return rs.next();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            DBConnection.closeConnection(connection, ps, rs);
+        }
+    }
+
+    private boolean isExistPhone(String columnName, long enterPhoneNum) {
+
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+
+            connection = dbConnection.getConnection();
+            String query = "select " + columnName + " from TBL_USERS where " + columnName + " = ?";
+
+            ps = connection.prepareStatement(query);
+            ps.setLong(1, enterPhoneNum);
+
+            rs = ps.executeQuery();
+
+            return rs.next();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            DBConnection.closeConnection(connection, ps, rs);
         }
     }
 }

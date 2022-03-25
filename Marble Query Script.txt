@@ -166,7 +166,7 @@ CREATE TABLE TBL_PRODUCTS
     PRODUCT_COLOR       VARCHAR(50)                         NOT NULL,
     PRODUCT_TYPE        VARCHAR(100)                        NOT NULL,
     CATEGORY_ID         INTEGER                             NOT NULL,
-    PRODUCT_CODE        VARCHAR(100)                        not null,
+    PRODUCT_CODE        VARCHAR(100)      unique            not null,
     DISCOUNT_ID         INTEGER,
     ADDED_DATE          timestamp default CURRENT_TIMESTAMP not null,
     TAX_ID              INTEGER,
@@ -228,7 +228,8 @@ CREATE TABLE TBL_CUSTOMER
     CUSTOMER_ADDRESS VARCHAR(200)       NOT NULL,
     DUES_AMOUNT      NUMERIC,
     NOTES            VARCHAR(300),
-    DESCRIPTION      VARCHAR(300)
+    DESCRIPTION      VARCHAR(300),
+    registered_date  timestamp default CURRENT_TIMESTAMP NOT NULL
 );
 
 CREATE TABLE TBL_SALE_MAIN

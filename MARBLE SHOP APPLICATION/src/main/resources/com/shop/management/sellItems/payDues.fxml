@@ -21,10 +21,10 @@
                         <Font name="Bookman Old Style Bold" size="12.0" />
                      </font>
                   </Label>
-                  <ComboBox fx:id="paymentModeC" prefHeight="33.0" prefWidth="180.0" style="-fx-background-radius: 0;" />
+                  <ComboBox fx:id="paymentModeC" prefHeight="33.0" prefWidth="180.0" style="-fx-border-color: gray; -fx-border-radius: 3;" />
                </children>
             </VBox>
-            <Button mnemonicParsing="false" onAction="#payDues" prefHeight="33.0" prefWidth="135.0" style="-fx-background-color: #0881ea; -fx-text-fill: WHITE; -fx-background-radius: 3; -fx-cursor: hand;" text="PAY DUES" textAlignment="CENTER">
+            <Button mnemonicParsing="false" onAction="#payDues" prefHeight="33.0" prefWidth="135.0" style="-fx-background-color: #0881ea; -fx-text-fill: WHITE; -fx-background-radius: 3; -fx-cursor: hand; -fx-border-color: gray;" text="PAY DUES" textAlignment="CENTER">
                <font>
                   <Font name="Bookman Old Style" size="14.0" />
                </font></Button>
@@ -70,8 +70,8 @@
                                     <Insets left="5.0" />
                                  </VBox.margin>
                               </Label>
-                              <TextField fx:id="receivedAmountTF" prefHeight="33.0" prefWidth="150.0" promptText="Enter Received Amount" style="-fx-background-radius: 0;" />
-                              <Button alignment="BOTTOM_LEFT" mnemonicParsing="false" onAction="#PAY_100" style="-fx-cursor: hand;" text="PAY 100%" textAlignment="CENTER">
+                              <TextField fx:id="receivedAmountTF" prefHeight="34.0" prefWidth="184.0" promptText="Enter Received Amount" style="-fx-border-color: gray; -fx-border-radius: 3;" />
+                              <Button alignment="BOTTOM_LEFT" mnemonicParsing="false" onAction="#PAY_100" style="-fx-border-color: gray; -fx-border-radius: 3;" text="PAY 100%" textAlignment="CENTER">
                                  <font>
                                     <Font name="Bookman Old Style" size="12.0" />
                                  </font>
@@ -91,7 +91,7 @@
                                     <Insets left="5.0" />
                                  </VBox.margin>
                               </Label>
-                              <TextField fx:id="duesAmountTF" prefHeight="33.0" prefWidth="150.0" promptText="DUES" style="-fx-background-radius: 1;" />
+                              <TextField fx:id="duesAmountTF" prefHeight="34.0" prefWidth="194.0" promptText="DUES" style="-fx-border-color: gray; -fx-border-radius: 3;" />
                            </children>
                         </VBox>
                         <VBox alignment="BOTTOM_CENTER" layoutX="206.0" layoutY="10.0" spacing="5.0" />
