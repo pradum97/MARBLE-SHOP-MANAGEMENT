@@ -22,6 +22,7 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -57,7 +58,6 @@ public class UpdateProfile implements Initializable {
         userId = ((int) Main.primaryStage.getUserData());
         setUserDetails(userId);
     }
-
     private void setUserDetails(int userId) {
 
         GetUserProfile getUserProfile = new GetUserProfile();
@@ -118,7 +118,11 @@ public class UpdateProfile implements Initializable {
             method.show_popup("Enter Username", username_f);
             return;
 
-        } else if (phone.isEmpty()) {
+        }else if (isExist("LOWER(username )",username)){
+            method.show_popup("USERNAME ALREADY EXISTS", username_f);
+            return;
+
+        }else if (phone.isEmpty()) {
             method.show_popup("Enter 10-digit Phone Number", phone_f);
             return;
 
@@ -136,12 +140,20 @@ public class UpdateProfile implements Initializable {
         if (!phone_matcher.matches()) {
             customDialog.showAlertBox("Registration Failed ", "Enter 10-digit Phone Number Without Country Code");
             return;
-        } else if (email.isEmpty()) {
+        } else if (isPhoneExist(phoneNum)){
+            method.show_popup("PHONE NUMBER ALREADY EXISTS", phone_f);
+            return;
+
+        }else if (email.isEmpty()) {
             method.show_popup("Enter Valid Email", email_f);
             return;
 
         } else if (!matcher.matches()) {
             method.show_popup("Enter Valid Email", email_f);
+            return;
+
+        }else if (isExist("LOWER(email) ",email)){
+            method.show_popup("EMAIL ALREADY EXISTS", email_f);
             return;
 
         } else if (null == gender_comboBox.getValue()) {
@@ -206,12 +218,91 @@ public class UpdateProfile implements Initializable {
             }
         }
     }
+
     public void bnCancel(ActionEvent event) {
 
         Stage stage = (Stage)((Node) event.getSource()).getScene().getWindow();
 
         if (stage.isShowing()){
             stage.close();
+        }
+    }
+
+    private boolean isPhoneExist(long phoneNum){
+
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+
+            connection = dbConnection.getConnection();
+            String query = "select phone,user_id from tbl_users where phone = ?";
+
+            ps = connection.prepareStatement(query);
+            ps.setLong(1,phoneNum);
+
+            rs = ps.executeQuery();
+
+            int uid = 0;
+
+            if(rs.next()){
+
+                uid = rs.getInt("user_id");
+                if (userId == uid){
+                    return false;
+                }else {
+                    return true;
+                }
+
+            }else {
+                return false;
+            }
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }finally {
+            DBConnection.closeConnection(connection , ps , rs);
+        }
+    }
+
+    private boolean isExist(String columnName , String value){
+
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+
+            connection = dbConnection.getConnection();
+            String query = "select "+columnName+" ,user_id from tbl_users where "+columnName+" = ?";
+
+            ps = connection.prepareStatement(query);
+            ps.setString(1,value.toLowerCase());
+
+            rs = ps.executeQuery();
+
+            int uid = 0;
+
+            if(rs.next()){
+
+                uid = rs.getInt("user_id");
+                if (userId == uid){
+                    return false;
+                }else {
+                    return true;
+                }
+
+            }else {
+                return false;
+            }
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }finally {
+            DBConnection.closeConnection(connection , ps , rs);
         }
     }
 }

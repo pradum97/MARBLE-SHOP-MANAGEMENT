@@ -7,8 +7,10 @@ import com.shop.management.Model.TAX;
 import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -56,35 +58,18 @@ public class GstUpdate implements Initializable {
         igstTF.setText(String.valueOf(tax.getIgst()));
         gstNameTF.setText(tax.getGstName());
         descriptionTF.setText(tax.getTaxDescription());
+        hsn_sacTf.setEditable(false);
+        hsn_sacTf.setFocusTraversable(false);
+
+        hsn_sacTf.setOnMouseClicked(new EventHandler<>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                customDialog.showAlertBox("Not Allow", "You Can't Update HSN Code");
+            }
+        });
 
     }
 
-    private boolean isExist(long enterHsnCode){
-
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-
-            connection = dbConnection.getConnection();
-            String query = "select HSN_SAC from TBL_PRODUCT_TAX where HSN_SAC = ?";
-
-            System.out.println(query);
-
-            ps = connection.prepareStatement(query);
-            ps.setLong(1,enterHsnCode);
-
-            rs = ps.executeQuery();
-
-            return rs.next();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }finally {
-            DBConnection.closeConnection(connection , ps , rs);
-        }
-    }
 
     public void updateTax(ActionEvent event) {
 
@@ -121,12 +106,6 @@ public class GstUpdate implements Initializable {
 
             return;
         }
-         if (isExist(hsn_sac)){
-            method.show_popup("THIS HSN CODE IS ALREADY EXIST!", hsn_sacTf);
-            return;
-        }
-
-
         try {
             sGst = Integer.parseInt(sgst);
         } catch (NumberFormatException e) {
@@ -177,8 +156,7 @@ public class GstUpdate implements Initializable {
             } else {
                 ps.setString(5, description);
             }
-            ps.setInt(6, hsn_sac);
-            ps.setInt(7, tax.getTaxID());
+            ps.setInt(6, tax.getTaxID());
 
             int res = ps.executeUpdate();
 

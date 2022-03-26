@@ -109,7 +109,9 @@ public class UpdateSize implements Initializable {
 
         productQuantity.setOnMouseClicked(mouseEvent -> {
 
-            quantityDialog();
+            if (!productQuantity.isEditable()){
+                quantityDialog();
+            }
         });
     }
 
