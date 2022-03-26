@@ -171,7 +171,7 @@ public class StockReport implements Initializable {
                         stockList.add(new StockMainModel(productId, stockId, quantity, productCode, type, category, size, color, fullQuantity, purchasePrice, mrp, minSellPrice));
                     }
                     case "Out Of Stock" -> {
-                        if (quantity < 1) {
+                        if (quantity <= requiredQuantity) {
                             stockList.add(new StockMainModel(productId, stockId, quantity, productCode, type, category, size, color, fullQuantity, purchasePrice, mrp, minSellPrice));
                         } else {
                             if (null != stockList) {
@@ -183,7 +183,7 @@ public class StockReport implements Initializable {
                     }
                     case "LOW" -> {
 
-                        if (quantity >= 1 && quantity <= lowQuantity) {
+                        if (quantity > requiredQuantity && quantity <= lowQuantity) {
                             stockList.add(new StockMainModel(productId, stockId, quantity, productCode, type, category, size, color, fullQuantity, purchasePrice, mrp, minSellPrice));
                         } else {
                             if (null != stockList) {
@@ -375,11 +375,11 @@ public class StockReport implements Initializable {
 
                     reStock.setStyle("-fx-alignment: center;-fx-padding: 5 6 5 6 ; -fx-background-color: #030c3d ; " +
                             "-fx-text-fill: white;-fx-background-radius: 5 ; -fx-cursor: hand");
-                    if (quantity < 1) {
+                    if (quantity <= requiredQuantity ) {
                         status.setText("Out Of Stock");
                         setStatusStyle(status, "#a90606");
 
-                    } else if (quantity >= 1 && quantity <= lowQuantity) {
+                    } else if (quantity >= requiredQuantity && quantity <= lowQuantity) {
                         status.setText("LOW");
                         setStatusStyle(status, "#f33737");
                     } else if (quantity >= lowQuantity && quantity <= mediumQuantity) {

@@ -47,11 +47,12 @@ public class GenerateInvoice {
             String query = "select tsi.product_name , tsi.product_size  , tsi.discount_name  , tsi.sell_price ,\n" +
                     "       tsi.discountper , tsi.discount_amount, tc.customer_name , tc.customer_phone , tc.customer_address, tsm.invoice_number , (TO_CHAR(tsm.sale_date, 'DD-MM-YYYY')) as sale_date,\n" +
                     "       tsi.product_quantity as fullQuantity ,(SPLIT_PART(tsi.product_quantity, ' -', 1)) as quantity,\n" +
-                    "       tsd.shop_name , tsd.shop_address , tsd.shop_email , tsd.shop_gst_number , tsd.shop_phone_1 , tsd.shop_phone_2 , tsd.shop_prop,\n" +
+                    "       tsd.shop_name , tsd.shop_address , tsd.shop_email , tsd.shop_gst_number, tsm.received_amount , td.dues_amount , tsd.shop_phone_1 , tsd.shop_phone_2 , tsd.shop_prop,\n" +
                     "       tsi.sgst , tsi.cgst,tsi.igst , tsi.hsn_sac  , tsm.additional_discount\n" +
                     "       from tbl_sale_main tsm\n" +
                     "       Left Join tbl_saleitems tsi on tsm.sale_main_id = tsi.sale_main_id\n" +
                     "       LEFT JOIN tbl_customer tc on tsm.customer_id = tc.customer_id\n" +
+                     "      LEFT JOIN tbl_dues td on tsm.sale_main_id = td.sale_main_id\n" +
                     "       CROSS JOIN tbl_shop_details tsd\n" +
                     "       where tsm.sale_main_id = ?";
 
@@ -93,10 +94,13 @@ public class GenerateInvoice {
                 String shopProp = rs.getString("shop_prop");
 
                 double additional_discount = rs.getDouble("additional_discount");
+                double receivedAmount = rs.getDouble("received_amount");
+                double duesAmount = rs.getDouble("dues_amount");
 
                 modelList.add(new GstInvoiceModel(productName,fullQuantity,discountName,salePrice,discountAmount,productSize , quantity,hsn , sgst , cgst , igst));
 
-                shop_customer_details(param, rs, customerName, customerPhone, customerAddress, invoiceNum, saleDate, shopName, shopAddress, shopEmail, shopPhone1, shopPhone2, shopGstNum, shopProp, additional_discount);
+                shop_customer_details(param, rs, customerName, customerPhone, customerAddress, invoiceNum, saleDate,
+                        shopName, shopAddress, shopEmail, shopPhone1, shopPhone2, shopGstNum, shopProp, additional_discount,receivedAmount,duesAmount);
             }
 
 
@@ -162,7 +166,7 @@ public class GenerateInvoice {
     private void shop_customer_details(Map<String, Object> param, ResultSet rs, String customerName,
                                        String customerPhone, String customerAddress, String invoiceNum, String saleDate,
                                        String shopName, String shopAddress, String shopEmail, String shopPhone1, String shopPhone2, String shopGstNum,
-                                       String shopProp, double additional_discount) throws SQLException {
+                                       String shopProp, double additional_discount , double paidAmount , double dues) throws SQLException {
         if (rs.isLast()){
 
             // SHOP DETAILS
@@ -178,10 +182,12 @@ public class GenerateInvoice {
             param.put("INVOICE_DATE", saleDate);
 
             // CUSTOMER DETAILS
-            param.put("CUSTOMER_NAME", customerName);
-            param.put("CUSTOMER_PHONE", customerPhone);
-            param.put("CUSTOMER_ADDRESS", customerAddress);
+            param.put("CUSTOMER_NAME", customerName.toUpperCase());
+            param.put("CUSTOMER_PHONE", customerPhone.toUpperCase());
+            param.put("CUSTOMER_ADDRESS", customerAddress.toUpperCase());
             param.put("ADDITIONAL_DISCOUNT", additional_discount);
+            param.put("TOTAL_PAID", paidAmount);
+            param.put("DUES", dues);
         }
     }
 
@@ -206,12 +212,13 @@ public class GenerateInvoice {
             String query = "select tsi.product_name , tsi.product_size  , tsi.discount_name  , tsi.sell_price ,\n" +
                     "       tsi.discountper , tsi.discount_amount, tc.customer_name , tc.customer_phone , tc.customer_address, tsm.invoice_number ,(TO_CHAR(tsm.sale_date, 'DD-MM-YYYY')) as sale_date,\n" +
                     "       tsi.product_quantity as fullQuantity ,(SPLIT_PART(tsi.product_quantity, ' -', 1)) as quantity,\n" +
-                    "       tsd.shop_name , tsd.shop_address , tsd.shop_email , tsd.shop_gst_number , tsd.shop_phone_1 ,tsm.additional_discount, tsd.shop_phone_2 , tsd.shop_prop\n" +
-                    "       from tbl_sale_main tsm\n" +
-                    "       Left Join tbl_saleitems tsi on tsm.sale_main_id = tsi.sale_main_id\n" +
-                    "       LEFT JOIN tbl_customer tc on tsm.customer_id = tc.customer_id\n" +
-                    "       CROSS JOIN tbl_shop_details tsd\n" +
-                    "       where tsm.sale_main_id = ?";
+                    "       tsd.shop_name , tsd.shop_address , tsd.shop_email , tsm.received_amount , td.dues_amount, tsd.shop_gst_number , tsd.shop_phone_1 ,tsm.additional_discount, tsd.shop_phone_2 , tsd.shop_prop\n" +
+                    "from tbl_sale_main tsm\n" +
+                    "         Left Join tbl_saleitems tsi on tsm.sale_main_id = tsi.sale_main_id\n" +
+                    "         LEFT JOIN tbl_customer tc on tsm.customer_id = tc.customer_id\n" +
+                    "         LEFT JOIN tbl_dues td on tsm.sale_main_id = td.sale_main_id\n" +
+                    "         CROSS JOIN tbl_shop_details tsd\n" +
+                    "where tsm.sale_main_id = ?";
 
             ps = connection.prepareStatement(query);
             ps.setInt(1, saleMainId);
@@ -247,7 +254,11 @@ public class GenerateInvoice {
 
                 double additional_discount = rs.getDouble("additional_discount");
 
-                shop_customer_details(param, rs, customerName, customerPhone, customerAddress, invoiceNum, saleDate, shopName, shopAddress, shopEmail, shopPhone1, shopPhone2, shopGstNum, shopProp, additional_discount);
+                double receivedAmount = rs.getDouble("received_amount");
+                double duesAmount = rs.getDouble("dues_amount");
+
+                shop_customer_details(param, rs, customerName, customerPhone, customerAddress, invoiceNum, saleDate, shopName, shopAddress,
+                        shopEmail, shopPhone1, shopPhone2, shopGstNum, shopProp, additional_discount,receivedAmount,duesAmount);
             }
 
             JRBeanCollectionDataSource cartBean = new JRBeanCollectionDataSource(modelList);

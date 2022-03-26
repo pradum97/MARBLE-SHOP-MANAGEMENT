@@ -164,7 +164,6 @@ public class AddGst implements Initializable {
     }
 
     private boolean isExist(long enterHsnCode){
-
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet rs = null;

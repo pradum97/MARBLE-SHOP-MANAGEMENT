@@ -238,7 +238,6 @@ public class GstConfig implements Initializable {
     }
 
     public void addGST(ActionEvent event) {
-
         customDialog.showFxmlDialog("setting/addGst.fxml", "ADD NEW GST");
         setGstTableData();
     }

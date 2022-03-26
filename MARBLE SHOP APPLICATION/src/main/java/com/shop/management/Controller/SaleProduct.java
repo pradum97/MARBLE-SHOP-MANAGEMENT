@@ -65,8 +65,6 @@ public class SaleProduct implements Initializable {
 
     private ObservableList<Products> productsList = FXCollections.observableArrayList();
     FilteredList<Products> filteredData;
-
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -207,8 +205,6 @@ public class SaleProduct implements Initializable {
             stage.initModality(Modality.WINDOW_MODAL);
             stage.initOwner(Main.primaryStage);
             stage.showAndWait();
-
-
         } catch (IOException e) {
             e.printStackTrace();
         }
