@@ -348,7 +348,10 @@ public class ReturnProduct implements Initializable {
                     return_main_id = rs.getInt(1);
                 }
                 for (ReturnProductModel rp : tableView.getItems()) {
-                    String quantityUnit = rp.getQuantity().split(" -")[1];
+
+                    if (rp.isReturn()){
+
+                          String quantityUnit = rp.getQuantity().split(" -")[1];
                     res = 0;
                     int returnQuantity = 0;
                     try {
@@ -379,6 +382,9 @@ public class ReturnProduct implements Initializable {
                         res = updatePstmt.executeUpdate();
 
                     }
+                    }
+
+
                 }
             }
             if (res > 0) {

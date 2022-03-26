@@ -69,10 +69,10 @@ public class ViewReturnItem implements Initializable {
             String query = "select tri.quantity_unit , tri.return_quantity ,ts.product_name , ts.product_size , tri.rate,\n" +
                     "tri.return_items_id from tbl_return_items tri\n" +
                     "LEFT JOIN tbl_return_main trm on tri.return_main_id = trm.return_main_id\n" +
-                    "LEFT JOIN tbl_saleitems ts on tri.sale_item_id = ts.sale_item_id";
-
+                    "LEFT JOIN tbl_saleitems ts on tri.sale_item_id = ts.sale_item_id where trm.return_main_id = ?";
 
             ps = connection.prepareStatement(query);
+            ps.setInt(1,returnMainId);
 
             rs = ps.executeQuery();
 
