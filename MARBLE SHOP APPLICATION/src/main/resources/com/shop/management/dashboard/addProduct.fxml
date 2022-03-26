@@ -219,7 +219,7 @@
                                                               </HBox>
                                                               <VBox alignment="CENTER" layoutX="271.0" layoutY="10.0" spacing="5.0" HBox.hgrow="ALWAYS">
                                                                   <children>
-                                                                      <Button fx:id="bnAddSize" alignment="CENTER" minHeight="30.0" minWidth="100.0" mnemonicParsing="false" onAction="#bnAddSize" onKeyReleased="#enterPress" prefHeight="30.0" prefWidth="130.0" style="-fx-border-color: gray; -fx-background-color: blue; -fx-border-radius: 3; -fx-text-fill: white; -fx-font-weight: bold;" text="ADD" textAlignment="CENTER">
+                                                                      <Button fx:id="bnAddSize" alignment="CENTER" minHeight="30.0" minWidth="100.0" mnemonicParsing="false" onAction="#bnAddSize" onKeyReleased="#enterPress" prefHeight="30.0" prefWidth="130.0" style="-fx-border-color: gray; -fx-background-color: blue; -fx-border-radius: 3; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" text="ADD" textAlignment="CENTER">
                                                                           <VBox.margin>
                                                                               <Insets top="26.0" />
                                                                           </VBox.margin>

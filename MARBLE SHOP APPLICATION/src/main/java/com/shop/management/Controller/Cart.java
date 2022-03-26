@@ -793,4 +793,13 @@ public class Cart implements Initializable {
 
 
     }
+
+    public void pay100(ActionEvent event) {
+        receivedAmountTF.setText(String.valueOf(totalPayAbleL.getText()));
+    }
+
+    public void pay50(ActionEvent event) {
+
+        receivedAmountTF.setText(String.valueOf(Double.parseDouble(totalPayAbleL.getText()) / 2));
+    }
 }

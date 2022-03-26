@@ -8,6 +8,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
+<?import org.controlsfx.control.Rating?>
 <VBox alignment="CENTER" fillWidth="false" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.FeedbackDialog">
    <children>
       <StackPane style="-fx-background-color: white; -fx-background-radius: 10;">

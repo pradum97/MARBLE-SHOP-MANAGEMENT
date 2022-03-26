@@ -100,7 +100,17 @@
                                                                             <Font name="Bookman Old Style Bold" size="12.0" />
                                                                         </font>
                                                                     </Label>
-                                                                    <TextField fx:id="receivedAmountTF" focusTraversable="false" minWidth="150.0" prefHeight="33.0" prefWidth="150.0" promptText="Enter Received Amount" style="-fx-background-radius: 0;" />
+                                                                    <TextField fx:id="receivedAmountTF" focusTraversable="false" minWidth="150.0" prefHeight="33.0" prefWidth="150.0" promptText="Enter Received Amount" style="-fx-border-color: gray;" />
+                                                   <HBox spacing="20.0">
+                                                      <children>
+                                                         <Button mnemonicParsing="false" onAction="#pay100" prefHeight="27.0" style="-fx-border-color: gray; -fx-cursor: hand;" text="Pay 100%">
+                                                            <HBox.margin>
+                                                               <Insets left="3.0" />
+                                                            </HBox.margin>
+                                                         </Button>
+                                                         <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#pay50" prefHeight="26.0" prefWidth="56.0" style="-fx-border-color: gray; -fx-cursor: hand;" text="50%" />
+                                                      </children>
+                                                   </HBox>
                                                                 </children>
                                                             </VBox>
                                                             <VBox alignment="TOP_CENTER" layoutX="230.0" layoutY="15.0" spacing="5.0">
@@ -110,7 +120,7 @@
                                                                             <Font name="Bookman Old Style Bold" size="12.0" />
                                                                         </font>
                                                                     </Label>
-                                                                    <TextField fx:id="duesAmountTF" focusTraversable="false" minWidth="150.0" prefHeight="33.0" prefWidth="150.0" promptText="DUES" style="-fx-background-radius: 1;" />
+                                                                    <TextField fx:id="duesAmountTF" focusTraversable="false" minWidth="150.0" prefHeight="33.0" prefWidth="150.0" promptText="DUES" style="-fx-border-color: gray;" />
                                                                 </children>
                                                             </VBox>
                                                         </children>
@@ -123,6 +133,7 @@
                                                     </HBox>
                                                 </children>
                                             </HBox>
+                                 <HBox alignment="CENTER" VBox.vgrow="ALWAYS" />
                                             <HBox alignment="BOTTOM_CENTER" spacing="50.0" VBox.vgrow="ALWAYS">
                                                 <children>
                                                     <HBox alignment="BOTTOM_CENTER" spacing="25.0" HBox.hgrow="ALWAYS">
