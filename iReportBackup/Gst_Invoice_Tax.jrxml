@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="invoiceMain_tax" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="2a22544b-53f8-4228-878f-b1ca14928db0">
-	<property name="ireport.zoom" value="2.143588810000046"/>
+	<property name="ireport.zoom" value="1.771561000000038"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<style name="BOTTOM_RIGHT" mode="Opaque" backcolor="#FFFFFF">
@@ -33,23 +33,26 @@
 	<field name="cgst" class="java.lang.Double">
 		<fieldDescription><![CDATA[cgst]]></fieldDescription>
 	</field>
-	<field name="sGstAmount" class="java.lang.Double"/>
-	<field name="iGstAmount" class="java.lang.Double"/>
-	<field name="cGstAmount" class="java.lang.Double"/>
 	<variable name="totalTaxable" class="java.lang.Double" calculation="Sum">
-		<variableExpression><![CDATA[$F{taxableAmount}]]></variableExpression>
-	</variable>
-	<variable name="totSgstAmount" class="java.lang.Double" calculation="Sum">
-		<variableExpression><![CDATA[$F{sGstAmount}]]></variableExpression>
-	</variable>
-	<variable name="totCgstAmount" class="java.lang.Double" calculation="Sum">
-		<variableExpression><![CDATA[$F{cGstAmount}]]></variableExpression>
-	</variable>
-	<variable name="totIgstAmount" class="java.lang.Double" calculation="Sum">
-		<variableExpression><![CDATA[$F{iGstAmount}]]></variableExpression>
+		<variableExpression><![CDATA[new BigDecimal($F{taxableAmount}).setScale(2, BigDecimal.ROUND_HALF_DOWN)]]></variableExpression>
 	</variable>
 	<variable name="sGstAmount" class="java.lang.Double">
-		<variableExpression><![CDATA[($F{taxableAmount}*$F{sgst})/100]]></variableExpression>
+		<variableExpression><![CDATA[(new BigDecimal(($F{taxableAmount}*$F{sgst})/100).setScale(2, BigDecimal.ROUND_HALF_DOWN)).doubleValue()]]></variableExpression>
+	</variable>
+	<variable name="cGstAmount" class="java.lang.Double">
+		<variableExpression><![CDATA[(new BigDecimal(($F{taxableAmount}*$F{cgst})/100).setScale(2, BigDecimal.ROUND_HALF_DOWN)).doubleValue()]]></variableExpression>
+	</variable>
+	<variable name="iGstAmount" class="java.lang.Double">
+		<variableExpression><![CDATA[(new BigDecimal(($F{taxableAmount}*$F{igst})/100).setScale(2, BigDecimal.ROUND_HALF_DOWN)).doubleValue()]]></variableExpression>
+	</variable>
+	<variable name="totSgstAmount" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[new BigDecimal($V{sGstAmount}).setScale(2, BigDecimal.ROUND_HALF_DOWN)]]></variableExpression>
+	</variable>
+	<variable name="totCgstAmount" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[new BigDecimal($V{cGstAmount}).setScale(2, BigDecimal.ROUND_HALF_DOWN)]]></variableExpression>
+	</variable>
+	<variable name="totIgstAmount" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[new BigDecimal($V{iGstAmount}).setScale(2, BigDecimal.ROUND_HALF_DOWN)]]></variableExpression>
 	</variable>
 	<columnHeader>
 		<band height="39" splitType="Stretch">
@@ -65,7 +68,7 @@
 					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="8"/>
+					<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
 				<text><![CDATA[TAX DETAILS]]></text>
 			</staticText>
@@ -81,7 +84,7 @@
 					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="8"/>
+					<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
 				<text><![CDATA[SGST]]></text>
 			</staticText>
@@ -97,7 +100,7 @@
 					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="8"/>
+					<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
 				<text><![CDATA[CGST]]></text>
 			</staticText>
@@ -114,7 +117,7 @@
 					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="8"/>
+					<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
 				<text><![CDATA[IGST]]></text>
 			</staticText>
@@ -130,7 +133,7 @@
 					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="8"/>
+					<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
 				<text><![CDATA[HSN]]></text>
 			</staticText>
@@ -146,7 +149,7 @@
 					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="8"/>
+					<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
 				<text><![CDATA[Taxable]]></text>
 			</staticText>
@@ -162,7 +165,7 @@
 					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="8"/>
+					<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
 				<text><![CDATA[Rate]]></text>
 			</staticText>
@@ -178,7 +181,7 @@
 					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="8"/>
+					<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
 				<text><![CDATA[Amount]]></text>
 			</staticText>
@@ -194,7 +197,7 @@
 					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="8"/>
+					<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
 				<text><![CDATA[Rate]]></text>
 			</staticText>
@@ -211,7 +214,7 @@
 					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="8"/>
+					<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
 				<text><![CDATA[Amount]]></text>
 			</staticText>
@@ -225,7 +228,7 @@
 					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="8"/>
+					<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
 				<text><![CDATA[Rate]]></text>
 			</staticText>
@@ -242,7 +245,7 @@
 					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="8"/>
+					<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
 				<text><![CDATA[Amount]]></text>
 			</staticText>
@@ -265,7 +268,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{taxableAmount}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new BigDecimal($F{taxableAmount}).setScale(2, BigDecimal.ROUND_HALF_DOWN).toString()]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="LEFT_RIGHT_BORDER" x="168" y="0" width="54" height="14" uuid="8d8f78c4-dc2a-4e6c-8949-2bc118d439fa"/>
@@ -292,18 +295,25 @@
 				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="-1" y="0" width="1" height="14" uuid="5e728c64-3998-4468-99bc-1f509f9872cc"/>
 			</line>
 			<textField>
-				<reportElement x="354" y="0" width="84" height="14" uuid="419ae313-c84a-42ce-93a6-edfb88e6f368"/>
+				<reportElement x="222" y="0" width="83" height="14" uuid="ba71ad6f-d853-4c50-a0be-dab7e5d841d2"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{cGstAmount}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{sGstAmount}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="488" y="0" width="83" height="14" uuid="bb5b214f-9c77-497c-b128-d9d8f4246096"/>
+				<reportElement x="354" y="0" width="84" height="14" uuid="ef0232de-c3a8-47ba-b8bd-c486b060be70"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{iGstAmount}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{cGstAmount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="488" y="0" width="85" height="14" uuid="9f704acd-833a-4b71-bcfc-2f98daed516f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{iGstAmount}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
@@ -319,7 +329,7 @@
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Serif" size="8" isBold="true"/>
+					<font fontName="Arial" size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
 				</textElement>
 				<text><![CDATA[Total]]></text>
 			</staticText>
@@ -333,9 +343,9 @@
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
-					<font fontName="Serif" size="8" isBold="true"/>
+					<font fontName="Arial" size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{totalTaxable}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[ (new BigDecimal($V{totalTaxable}).setScale(2, BigDecimal.ROUND_HALF_DOWN)).doubleValue()]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="168" y="0" width="137" height="20" uuid="83043b9e-74fa-4648-8a42-2a26d787f5bb"/>
@@ -347,7 +357,7 @@
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
-					<font fontName="Serif" size="8" isBold="true"/>
+					<font fontName="Arial" size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{totSgstAmount}]]></textFieldExpression>
 			</textField>
@@ -361,7 +371,7 @@
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
-					<font fontName="Serif" size="8" isBold="true"/>
+					<font fontName="Arial" size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{totCgstAmount}]]></textFieldExpression>
 			</textField>
@@ -375,7 +385,7 @@
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
-					<font fontName="Serif" size="8" isBold="true"/>
+					<font fontName="Arial" size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{totIgstAmount}]]></textFieldExpression>
 			</textField>
