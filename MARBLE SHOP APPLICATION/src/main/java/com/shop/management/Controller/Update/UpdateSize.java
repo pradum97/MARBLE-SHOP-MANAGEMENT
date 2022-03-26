@@ -1,17 +1,21 @@
 package com.shop.management.Controller.Update;
 
+import com.shop.management.Controller.Login;
 import com.shop.management.CustomDialog;
+import com.shop.management.ImageLoader;
 import com.shop.management.Main;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.Stock;
 import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.math.BigDecimal;
@@ -20,6 +24,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
@@ -102,6 +107,34 @@ public class UpdateSize implements Initializable {
         productQuantityUnit.setItems(method.getSizeQuantityUnit());
 
 
+        productQuantity.setOnMouseClicked(mouseEvent -> {
+
+            quantityDialog();
+        });
+    }
+
+    private void quantityDialog (){
+
+        ImageView image = new ImageView(new ImageLoader().load("img/icon/warning_ic.png"));
+        image.setFitWidth(45);
+        image.setFitHeight(45);
+        Alert alert = new Alert(Alert.AlertType.NONE);
+        alert.setAlertType(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Warning ");
+        alert.setGraphic(image);
+        alert.setHeaderText("Note : If you update from it, it will not be updated in the purchase history.");
+        alert.setContentText("If you've added the wrong quantity, you can update from here.");
+        alert.initModality(Modality.APPLICATION_MODAL);
+        alert.initOwner(Main.primaryStage);
+        Optional<ButtonType> result = alert.showAndWait();
+        ButtonType button = result.orElse(ButtonType.CANCEL);
+        if (button == ButtonType.OK) {
+
+            productQuantity.setEditable(true);
+
+        } else {
+            alert.close();
+        }
     }
 
     public void enterPress(KeyEvent keyEvent) {

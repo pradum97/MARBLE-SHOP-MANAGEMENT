@@ -282,8 +282,10 @@ public class InvoiceReport implements Initializable {
                     Label bnDownload = new Label("DOWNLOAD");
                     Label bnPrint = new Label("PRINT");
 
-                    bnDownload.setMinWidth(110);
-                    bnPrint.setMinWidth(80);
+                    bnDownload.setMinWidth(60);
+                    bnPrint.setMinWidth(60);
+                    bnPrint.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+                    bnDownload.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
 
                     bnDownload.setStyle("-fx-background-color: #030c3d; -fx-background-radius: 3 ;  " +
                             "-fx-padding: 4 11 4 11 ;-fx-font-family: Arial; -fx-text-fill: white;-fx-font-weight: bold; -fx-alignment: center;-fx-cursor: hand");
