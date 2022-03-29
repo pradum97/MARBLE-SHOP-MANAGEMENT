@@ -25,6 +25,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -61,6 +62,7 @@ public class Cart implements Initializable {
     public TextField receivedAmountTF;
     public ComboBox<String> paymentModeC;
     public Label taxableValueL;
+    public VBox gstContainer;
     private DBConnection dbconnection;
     private Method method;
     private CustomDialog customDialog;
@@ -73,7 +75,6 @@ public class Cart implements Initializable {
     double totalPayableD = 0;
     double subTotAmount = 0;
     double discountPrice = 0;
-    double totGstPer = 0;
     double gstPrice = 0;
     double totTaxable = 0;
 
@@ -98,7 +99,7 @@ public class Cart implements Initializable {
         });
         comboBoxConfig();
         textFieldConfig();
-
+        gstContainer.managedProperty().bind(gstContainer.visibleProperty());
 
     }
 
@@ -353,6 +354,12 @@ public class Cart implements Initializable {
             DBConnection.closeConnection(connection, ps, rs);
         }
 
+        setOptionalCell();
+
+    }
+
+    private void setOptionalCell() {
+
         Callback<TableColumn<CartModel, String>, TableCell<CartModel, String>>
                 cellFactory = (TableColumn<CartModel, String> param) -> new TableCell<>() {
             @Override
@@ -376,36 +383,29 @@ public class Cart implements Initializable {
                     ivUpdate.setPreserveRatio(true);
                     ivUpdate.setSmooth(true);
 
-                    ivDelete.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                        @Override
-                        public void handle(MouseEvent event) {
+                    ivDelete.setOnMouseClicked(event -> {
 
-                            CartModel cartModel = cartTableView.getSelectionModel().getSelectedItem();
+                        CartModel cartModel = cartTableView.getSelectionModel().getSelectedItem();
 
-                            if (null == cartModel) {
-                                return;
-                            }
-
-                            deleteCartItem(cartModel);
+                        if (null == cartModel) {
+                            return;
                         }
+
+                        deleteCartItem(cartModel);
                     });
 
-                    ivUpdate.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                        @Override
-                        public void handle(MouseEvent event) {
+                    ivUpdate.setOnMouseClicked(event -> {
+                        CartModel cartModel = cartTableView.getSelectionModel().getSelectedItem();
 
-                            CartModel cartModel = cartTableView.getSelectionModel().getSelectedItem();
-
-                            if (null == cartModel) {
-                                System.out.println("not found");
-                                return;
-                            }
-
-                            Main.primaryStage.setUserData(cartModel);
-                            customDialog.showFxmlDialog("sellitems/cartQuantityUpdate.fxml", "");
-                            refresh();
-                            cartTableView.refresh();
+                        if (null == cartModel) {
+                            System.out.println("not found");
+                            return;
                         }
+
+                        Main.primaryStage.setUserData(cartModel);
+                        customDialog.showFxmlDialog2("sellitems/cartQuantityUpdate.fxml", "");
+                        refresh();
+                        cartTableView.refresh();
                     });
 
                     ImageLoader loader = new ImageLoader();
@@ -426,7 +426,6 @@ public class Cart implements Initializable {
 
         colAction.setCellFactory(cellFactory);
         customColumn(colProduct_name);
-
     }
 
     private void deleteCartItem(CartModel cartModel) {
@@ -791,7 +790,6 @@ public class Cart implements Initializable {
             }
         }
 
-
     }
 
     public void pay100(ActionEvent event) {
@@ -801,5 +799,13 @@ public class Cart implements Initializable {
     public void pay50(ActionEvent event) {
 
         receivedAmountTF.setText(String.valueOf(Double.parseDouble(totalPayAbleL.getText()) / 2));
+    }
+
+    public void closeBn(ActionEvent event) {
+
+        Stage stage  = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        if (stage.isShowing()){
+            stage.close();
+        }
     }
 }

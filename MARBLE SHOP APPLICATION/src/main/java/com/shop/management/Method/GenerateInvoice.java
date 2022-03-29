@@ -8,15 +8,14 @@ import com.shop.management.Model.TaxDetails;
 import com.shop.management.util.DBConnection;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.xml.JRPrintFontFactory;
 import net.sf.jasperreports.view.JasperViewer;
 
-import java.io.File;
+import java.awt.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +24,7 @@ import java.util.Map;
 public class GenerateInvoice {
 
     private FileLoader fileLoader;
+    private float pdfZoomRatio = 0.65f;
 
     public void gstInvoice(int saleMainId, boolean isDownLoad , String downloadPath) {
 
@@ -154,7 +154,7 @@ public class GenerateInvoice {
 
             }else{
                 JasperViewer viewer = new JasperViewer(print, false);
-                viewer.setZoomRatio((0.533f));
+                viewer.setZoomRatio(pdfZoomRatio);
                 viewer.setVisible(true);
             }
 
@@ -275,7 +275,7 @@ public class GenerateInvoice {
 
             }else{
                 JasperViewer viewer = new JasperViewer(print, false);
-                viewer.setZoomRatio((0.533f));
+                viewer.setZoomRatio(pdfZoomRatio);
                 viewer.setVisible(true);
             }
 
@@ -287,6 +287,4 @@ public class GenerateInvoice {
         }
 
     }
-
-
 }

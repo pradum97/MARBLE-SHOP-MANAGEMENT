@@ -1,5 +1,7 @@
 package com.shop.management.Controller.SellItems;
 
+import com.shop.management.Controller.Login;
+import com.shop.management.ImageLoader;
 import com.shop.management.Main;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.CustomerModel;
@@ -9,10 +11,10 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -20,6 +22,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class CustomerDetails implements Initializable {
@@ -75,39 +78,57 @@ public class CustomerDetails implements Initializable {
 
     public void submit_bn(ActionEvent event) {
 
-        if (customerId > 0) {
+        ImageView image = new ImageView(new ImageLoader().load("img/icon/warning_ic.png"));
+        image.setFitWidth(45);
+        image.setFitHeight(45);
+        Alert alert = new Alert(Alert.AlertType.NONE);
+        alert.setAlertType(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("WARNING ");
+        alert.setGraphic(image);
+        alert.setHeaderText("ARE YOU SURE YOU WANT TO SELL ?");
+        alert.initModality(Modality.APPLICATION_MODAL);
+        alert.initOwner(Main.primaryStage);
+        Optional<ButtonType> result = alert.showAndWait();
+        ButtonType button = result.orElse(ButtonType.CANCEL);
+        if (button == ButtonType.OK) {
 
-            sellNow(customerId, event);
+            if (customerId > 0) {
 
+                sellNow(customerId, event);
+
+            } else {
+
+                String fullName = c_name.getText();
+                String cPhone = c_phone.getText();
+                String address = c_address.getText();
+
+                long phoneNum;
+
+                if (cPhone.isEmpty()) {
+                    method.show_popup("ENTER CUSTOMER PHONE NUMBER", c_phone);
+                    return;
+                } else if (fullName.isEmpty()) {
+                    method.show_popup("ENTER CUSTOMER FULL-NAME", c_name);
+                    return;
+                }
+                try {
+
+                    phoneNum = Long.parseLong(cPhone.replaceAll("[^0-9.]", ""));
+
+                } catch (NumberFormatException e) {
+                    c_phone.setText("");
+                    return;
+                }
+                if (address.isEmpty()) {
+                    method.show_popup("ENTER CUSTOMER ADDRESS", c_address);
+                    return;
+                }
+                addNewCustomer(fullName, phoneNum, address, event);
+            }
         } else {
-
-            String fullName = c_name.getText();
-            String cPhone = c_phone.getText();
-            String address = c_address.getText();
-
-            long phoneNum;
-
-            if (cPhone.isEmpty()) {
-                method.show_popup("ENTER CUSTOMER PHONE NUMBER", c_phone);
-                return;
-            } else if (fullName.isEmpty()) {
-                method.show_popup("ENTER CUSTOMER FULL-NAME", c_name);
-                return;
-            }
-            try {
-
-                phoneNum = Long.parseLong(cPhone.replaceAll("[^0-9.]", ""));
-
-            } catch (NumberFormatException e) {
-                c_phone.setText("");
-                return;
-            }
-            if (address.isEmpty()) {
-                method.show_popup("ENTER CUSTOMER ADDRESS", c_address);
-                return;
-            }
-            addNewCustomer(fullName, phoneNum, address, event);
+            alert.close();
         }
+
     }
 
 

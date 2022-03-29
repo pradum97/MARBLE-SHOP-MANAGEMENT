@@ -408,7 +408,7 @@ public class Dashboard implements Initializable {
         alert.setAlertType(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Warning ");
         alert.setGraphic(image);
-        alert.setHeaderText("Are you sure you want to Logout");
+        alert.setHeaderText("ARE YOU SURE YOU WANT TO LOGOUT ?");
         alert.initModality(Modality.APPLICATION_MODAL);
         alert.initOwner(Main.primaryStage);
         Optional<ButtonType> result = alert.showAndWait();

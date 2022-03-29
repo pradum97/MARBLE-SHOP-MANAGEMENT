@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="invoice" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="575" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="10" isFloatColumnFooter="true" uuid="fc24451b-4ab4-4dfb-820f-a2c80d6950b1">
-	<property name="ireport.zoom" value="1.2100000000000082"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.zoom" value="1.7715610000000124"/>
+	<property name="ireport.x" value="9"/>
+	<property name="ireport.y" value="227"/>
 	<style name="Table_CH" mode="Opaque" backcolor="#FFFFFF">
 		<box>
 			<pen lineWidth="0.7" lineColor="#000000"/>
@@ -475,9 +475,9 @@
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="9" isBold="false"/>
+					<font fontName="Arial" size="10" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Total As Per MRP :]]></text>
+				<text><![CDATA[Total Amount :]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="407" y="24" width="80" height="20" forecolor="#050000" uuid="6520bf09-9ffb-47bd-9c91-fb766575dcbb">
@@ -491,7 +491,7 @@
 			<textField>
 				<reportElement x="492" y="4" width="81" height="20" uuid="0824a56a-8bd3-482d-aa83-30ab90e3667f"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
-					<font fontName="Serif" size="10"/>
+					<font fontName="Arial" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{Sub_Total_M}]]></textFieldExpression>
 			</textField>
@@ -549,7 +549,7 @@
 			<textField>
 				<reportElement x="491" y="62" width="80" height="18" uuid="aa63a359-a701-46ce-9dec-babf41888266"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Serif" size="10" isBold="false"/>
+					<font fontName="Arial" size="10" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{ADDITIONAL_DISCOUNT}]]></textFieldExpression>
 			</textField>
@@ -565,7 +565,7 @@
 			<textField>
 				<reportElement x="491" y="46" width="80" height="18" uuid="fd8795ef-f9d5-47fe-8371-a21d5375938b"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Serif" size="10" isBold="false"/>
+					<font fontName="Arial" size="10" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{TOTAL_NET_AMOUNT}]]></textFieldExpression>
 			</textField>
@@ -612,7 +612,7 @@
 				<text><![CDATA[Authorized Signatory]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement x="27" y="68" width="307" height="50" uuid="5a34ff8c-c302-4dea-a7ca-f2021993b086"/>
+				<reportElement x="27" y="73" width="307" height="45" uuid="5a34ff8c-c302-4dea-a7ca-f2021993b086"/>
 				<graphicElement>
 					<pen lineStyle="Dashed"/>
 				</graphicElement>

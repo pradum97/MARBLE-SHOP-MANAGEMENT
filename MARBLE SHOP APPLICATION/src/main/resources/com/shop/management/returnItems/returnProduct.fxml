@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane minWidth="800.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.ReturnItems.ReturnProduct">
+<BorderPane minWidth="800.0" style="-fx-background-color: white;" stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.ReturnItems.ReturnProduct">
    <top>
       <VBox spacing="9.0" style="-fx-background-color: white;">
          <children>
@@ -251,13 +251,15 @@
                      <children>
                         <TableView fx:id="tableView" editable="true" focusTraversable="false" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                           <columns>
-                            <TableColumn fx:id="colCheckBox" maxWidth="100.0" minWidth="60.0" prefWidth="-1.0" sortable="false" text="#" />
                             <TableColumn fx:id="colSrNo" editable="false" maxWidth="100.0" minWidth="60.0" prefWidth="-1.0" sortable="false" text="SrNo" />
                             <TableColumn fx:id="colProductName" editable="false" minWidth="-Infinity" sortable="false" text="PRODUCT NAME " />
                               <TableColumn fx:id="colProductSIze" editable="false" minWidth="-Infinity" sortable="false" text="SIZE" />
-                              <TableColumn fx:id="colQuantity" editable="false" minWidth="-Infinity" sortable="false" text="QTY" />
-                              <TableColumn fx:id="colRate" editable="false" minWidth="-Infinity" sortable="false" text="RATE" />
-                              <TableColumn fx:id="colAction" minWidth="-Infinity" sortable="false" text="ENTER RETURN QUANTITY" />
+                             <TableColumn fx:id="colRate" editable="false" minWidth="-Infinity" sortable="false" text="RATE" />
+                              <TableColumn fx:id="colQuantity" editable="false" minWidth="-Infinity" sortable="false" text="TOT QTY" />
+                              <TableColumn fx:id="colAlreadyReturned" editable="false" minWidth="-Infinity" sortable="false" text="ALREADY RETURNED" />
+                              <TableColumn fx:id="colReturnable" editable="false" minWidth="-Infinity" sortable="false" text="RETURNABLE" />
+                              <TableColumn fx:id="colAction" minWidth="-Infinity" sortable="false" text="ENTER RETURN QTY" />
+                             <TableColumn fx:id="colCheckBox" maxWidth="100.0" minWidth="60.0" sortable="false" text="#" />
 
                           </columns>
                            <columnResizePolicy>

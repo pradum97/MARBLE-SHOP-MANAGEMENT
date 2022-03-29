@@ -4,6 +4,7 @@ import com.shop.management.CustomDialog;
 import com.shop.management.Main;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.ReturnMainModel;
+import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -22,31 +23,35 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class ReturnHistory implements Initializable {
 
     private int rowsPerPage = 15;
 
-    public TableColumn<ReturnMainModel , Integer> colSrNo;
-    public TableColumn<ReturnMainModel , String> colCusName;
-    public TableColumn<ReturnMainModel , String> colCusPhone;
-    public TableColumn<ReturnMainModel , String> colRefundable;
-    public TableColumn<ReturnMainModel , String> colOldVoiceNum;
-    public TableColumn<ReturnMainModel , String> colNewInvoice;
-    public TableColumn<ReturnMainModel , String> colReturnDate;
-    public TableColumn<ReturnMainModel , String> colCheckItem;
-    public TableColumn<ReturnMainModel , String> colRemark;
-    public TableView<ReturnMainModel > tableView;
+    public TableColumn<ReturnMainModel, Integer> colSrNo;
+    public TableColumn<ReturnMainModel, String> colCusName;
+    public TableColumn<ReturnMainModel, String> colCusPhone;
+    public TableColumn<ReturnMainModel, String> colRefundable;
+    public TableColumn<ReturnMainModel, String> colOldVoiceNum;
+    public TableColumn<ReturnMainModel, String> colNewInvoice;
+    public TableColumn<ReturnMainModel, String> colReturnDate;
+    public TableColumn<ReturnMainModel, String> colCheckItem;
+    public TableColumn<ReturnMainModel, String> colRemark;
+    public TableView<ReturnMainModel> tableView;
     public TextField searchTF;
     public Pagination pagination;
 
     private ObservableList<ReturnMainModel> returnList = FXCollections.observableArrayList();
     private Method method;
     private CustomDialog customDialog;
-    private DBConnection dbConnection ;
+    private DBConnection dbConnection;
 
-   private FilteredList<ReturnMainModel> filteredData;
+    private FilteredList<ReturnMainModel> filteredData;
+
+    private Properties propInsert, propDelete, propUpdate, propRead;
+    private PropertiesLoader propLoader;
 
 
     @Override
@@ -56,13 +61,19 @@ public class ReturnHistory implements Initializable {
         customDialog = new CustomDialog();
         dbConnection = new DBConnection();
 
+        propLoader = new PropertiesLoader();
+        propDelete = propLoader.load("delete.properties");
+        propUpdate = propLoader.load("update.properties");
+        propRead = propLoader.load("read.properties");
+        propInsert = propLoader.load("insert.properties");
+
         getReturnItem();
 
     }
 
     private void getReturnItem() {
 
-        if (returnList != null){
+        if (returnList != null) {
             returnList.clear();
         }
 
@@ -72,7 +83,7 @@ public class ReturnHistory implements Initializable {
 
         try {
             connection = dbConnection.getConnection();
-            if (null ==  connection){
+            if (null == connection) {
                 System.out.println("connection Failed");
                 return;
             }
@@ -87,7 +98,7 @@ public class ReturnHistory implements Initializable {
 
             rs = ps.executeQuery();
 
-            while (rs.next()){
+            while (rs.next()) {
                 int returnMainId = rs.getInt("return_main_id");
                 int saleMainId = rs.getInt("sale_main_id");
                 int sellerId = rs.getInt("seller_id");
@@ -102,7 +113,7 @@ public class ReturnHistory implements Initializable {
                 String customer_name = rs.getString("customer_name");
                 String customer_phone = rs.getString("customer_phone");
 
-                returnList.add(new ReturnMainModel(returnMainId,saleMainId ,sellerId , oldInvoice , newInvoice , remark , returnDate ,totalRefundAmount , customer_name , customer_phone));
+                returnList.add(new ReturnMainModel(returnMainId, saleMainId, sellerId, oldInvoice, newInvoice, remark, returnDate, totalRefundAmount, customer_name, customer_phone));
 
 
             }
@@ -114,7 +125,8 @@ public class ReturnHistory implements Initializable {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        }DBConnection.closeConnection(connection , ps,rs);
+        }
+        DBConnection.closeConnection(connection, ps, rs);
     }
 
     private void search_Item() {
@@ -185,6 +197,7 @@ public class ReturnHistory implements Initializable {
         tableView.setItems(sortedData);
         setOptionalCell();
     }
+
     private void customColumn(TableColumn<ReturnMainModel, String> columnName) {
 
         columnName.setCellFactory(tc -> {
@@ -233,15 +246,15 @@ public class ReturnHistory implements Initializable {
                         Main.primaryStage.setUserData(rmm.getReturnMainId());
 
 
-                        customDialog.showFxmlFullDialog("returnItems/view_Return_Item.fxml", "All Items - "+rmm.getCustomerName()+" / "+rmm.getTotalRefundableAmount()+" / Invoice- "+
+                        customDialog.showFxmlFullDialog("returnItems/view_Return_Item.fxml", "All Items - " + rmm.getCustomerName() + " / " + rmm.getTotalRefundableAmount() + " / Invoice- " +
                                 rmm.getNewInvoiceNum());
 
-                       getReturnItem();
+                        getReturnItem();
                     });
 
                     HBox container = new HBox(bnCheckItem);
                     container.setStyle("-fx-alignment:center");
-                 //   HBox.setMargin(bnCheckItem, new Insets(2, 20, 2, 20));
+                    //   HBox.setMargin(bnCheckItem, new Insets(2, 20, 2, 20));
                     setGraphic(container);
 
                     setText(null);

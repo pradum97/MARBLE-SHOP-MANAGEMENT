@@ -14,10 +14,8 @@ import java.util.Objects;
 public class Main extends Application {
     public static Stage primaryStage;
 
-
     @Override
     public void start(Stage stage) throws IOException {
-
         primaryStage = stage;
         Parent root = FXMLLoader.load(Objects.requireNonNull(Main.class.getResource("login.fxml")));
         stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream(AppConfig.APPLICATION_ICON))));

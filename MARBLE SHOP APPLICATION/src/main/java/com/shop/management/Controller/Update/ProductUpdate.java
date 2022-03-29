@@ -310,7 +310,11 @@ public class ProductUpdate implements Initializable {
         } catch (SQLException e) {
             customDialog.showAlertBox("Failed", e.getMessage());
         }
-
-
+    }
+    public void cancel(ActionEvent event) {
+        Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+        if (stage.isShowing()){
+            stage.close();
+        }
     }
 }

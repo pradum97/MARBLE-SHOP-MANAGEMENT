@@ -12,14 +12,17 @@ import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 
 import java.net.URL;
@@ -136,11 +139,10 @@ public class SelectSize implements Initializable {
                         if (null != stock) {
 
                             if (requiredQuantity >= stock.getQuantity()){
-                                customDialog.showAlertBox("Error","You Can't Sell This Item Because The Quantity Is Very Low. ! Your Required Quantity Is "+requiredQuantity);
+
+                                customDialog.showAlertBox("Error","You Can't Sell This Item Because The Quantity Is Very Low. \nYour Required Quantity Is "+requiredQuantity);
                                 return;
                             }
-
-
                             Main.primaryStage.setUserData(stock);
                             customDialog.showFxmlDialog("sellItems/quantityDialog.fxml", "");
 
@@ -219,5 +221,13 @@ public class SelectSize implements Initializable {
     private void refreshCartItemCount() {
 
 
+    }
+
+    public void cancel(ActionEvent event) {
+
+        Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+        if (stage.isShowing()){
+            stage.close();
+        }
     }
 }

@@ -226,4 +226,12 @@ public class PayDues implements Initializable {
             alert.close();
         }
     }
+
+    public void cancel(ActionEvent event) {
+
+        Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+        if (stage.isShowing()){
+            stage.close();
+        }
+    }
 }

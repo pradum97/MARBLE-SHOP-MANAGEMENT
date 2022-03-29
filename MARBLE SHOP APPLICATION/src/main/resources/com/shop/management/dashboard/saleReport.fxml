@@ -67,7 +67,7 @@
                     <children>
                         <Label lineSpacing="1.0" text="SALE REPORTS" textAlignment="CENTER">
                             <font>
-                                <Font name="Bookman Old Style" size="17.0" />
+                                <Font name="Arial Black" size="17.0" />
                             </font>
                         </Label>
                         <HBox alignment="CENTER_RIGHT" spacing="20.0" VBox.vgrow="ALWAYS">

@@ -197,9 +197,10 @@
       </AnchorPane>
    </center>
    <bottom>
-      <HBox alignment="TOP_CENTER" prefHeight="42.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+      <HBox alignment="TOP_CENTER" prefHeight="42.0" prefWidth="600.0" spacing="70.0" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" onAction="#addStock" prefHeight="26.0" prefWidth="129.0" style="-fx-background-color: blue; -fx-text-fill: white; -fx-background-radius: 3; -fx-font-weight: bold; -fx-cursor: hand;" text="ADD STOCK" />
+            <Button mnemonicParsing="false" onAction="#cancel" prefHeight="26.0" prefWidth="129.0" style="-fx-background-color: RED; -fx-text-fill: white; -fx-background-radius: 3; -fx-font-weight: bold; -fx-cursor: hand;" text="CANCEL" />
+            <Button layoutX="245.0" layoutY="10.0" mnemonicParsing="false" onAction="#addStock" prefHeight="26.0" prefWidth="129.0" style="-fx-background-color: blue; -fx-text-fill: white; -fx-background-radius: 3; -fx-font-weight: bold; -fx-cursor: hand;" text="ADD STOCK" />
          </children>
       </HBox>
    </bottom>

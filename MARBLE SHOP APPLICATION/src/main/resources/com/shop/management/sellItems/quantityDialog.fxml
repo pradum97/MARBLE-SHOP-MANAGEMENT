@@ -185,18 +185,29 @@
       </AnchorPane>
    </center>
    <bottom>
-      <HBox alignment="CENTER" onKeyReleased="#enterPress" BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER" onKeyReleased="#enterPress" spacing="50.0" BorderPane.alignment="CENTER">
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </padding>
          <children>
-            <Button fx:id="bnAddCart" mnemonicParsing="false" onAction="#bnAddToCart" onKeyReleased="#enterPress" style="-fx-background-color: #625603; -fx-text-fill: WHITE;                     -fx-background-radius: 5; -fx-cursor: hand;" textAlignment="CENTER">
+            <Button mnemonicParsing="false" onAction="#cancel" onKeyReleased="#enterPress" prefHeight="27.0" prefWidth="88.0" style="-fx-background-color: RED; -fx-text-fill: WHITE; -fx-background-radius: 2; -fx-cursor: hand;" text="CANCEL" textAlignment="CENTER">
                <HBox.margin>
                   <Insets right="20.0" />
                </HBox.margin>
                <padding>
                   <Insets bottom="5.0" left="8.0" right="8.0" top="5.0" />
                </padding>
+               <font>
+                  <Font name="Arial Black" size="12.0" />
+               </font>
+            </Button>
+            <Button fx:id="bnAddCart" layoutX="241.0" layoutY="15.0" mnemonicParsing="false" onAction="#bnAddToCart" onKeyReleased="#enterPress" style="-fx-background-color: #625603; -fx-text-fill: WHITE;                     -fx-background-radius: 5; -fx-cursor: hand;" textAlignment="CENTER">
+               <padding>
+                  <Insets bottom="5.0" left="8.0" right="8.0" top="5.0" />
+               </padding>
+               <font>
+                  <Font name="Arial Black" size="12.0" />
+               </font>
             </Button>
          </children>
          <BorderPane.margin>

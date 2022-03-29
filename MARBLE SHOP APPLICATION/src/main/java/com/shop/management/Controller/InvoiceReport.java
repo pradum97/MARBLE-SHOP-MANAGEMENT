@@ -76,7 +76,6 @@ public class InvoiceReport implements Initializable {
 
     }
     private void comboBoxConfig() {
-
         searchTypeC.setItems(FXCollections.observableArrayList("SUMA","+91"));
         searchTypeC.getSelectionModel().selectFirst();
 
@@ -187,6 +186,8 @@ public class InvoiceReport implements Initializable {
             if (invoiceList.size() > 0) {
                 pagination.setVisible(true);
                 search_Item();
+            }else {
+                changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);
             }
 
         } catch (SQLException e) {

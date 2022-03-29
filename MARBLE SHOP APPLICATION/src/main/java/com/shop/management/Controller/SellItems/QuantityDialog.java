@@ -8,6 +8,7 @@ import com.shop.management.Model.Stock;
 import com.shop.management.util.DBConnection;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -309,6 +310,14 @@ public class QuantityDialog implements Initializable {
             //do something
 
             bnAddToCart(null);
+        }
+    }
+
+    public void cancel(ActionEvent event) {
+
+        Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+        if (stage.isShowing()){
+            stage.close();
         }
     }
 }

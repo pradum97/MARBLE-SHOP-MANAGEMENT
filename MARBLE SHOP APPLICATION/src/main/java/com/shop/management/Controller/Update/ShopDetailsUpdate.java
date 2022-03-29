@@ -5,6 +5,7 @@ import com.shop.management.Main;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.Shop;
 import com.shop.management.util.DBConnection;
+import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
@@ -129,5 +130,12 @@ public class ShopDetailsUpdate implements Initializable {
         }
 
 
+    }
+
+    public void cancel(ActionEvent event) {
+        Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+        if (stage.isShowing()){
+            stage.close();
+        }
     }
 }

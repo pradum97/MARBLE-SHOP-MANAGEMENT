@@ -7,11 +7,8 @@ import com.shop.management.Main;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.ReturnProductModel;
 import com.shop.management.util.DBConnection;
-import javafx.beans.Observable;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -21,12 +18,12 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
-import javafx.util.Callback;
 
 import java.net.URL;
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -47,6 +44,8 @@ public class ReturnProduct implements Initializable {
     public TableColumn<ReturnProductModel, String> colQuantity;
     public TableColumn<ReturnProductModel, String> colRate;
     public TableColumn<ReturnProductModel, String> colAction;
+    public TableColumn<ReturnProductModel, String> colAlreadyReturned;
+    public TableColumn<ReturnProductModel, String> colReturnable;
     public Button searchBn;
     public TextField invoicePrefetchTF;
     public TableColumn<ReturnProductModel, CheckBox> colCheckBox;
@@ -62,7 +61,7 @@ public class ReturnProduct implements Initializable {
     private int saleMainID;
     private double discountPer;
     private String oldInvoiceNumber;
-    private double totalDiscount , netAmount;
+    private double totalDiscount, netAmount;
     private ObservableList<ReturnProductModel> itemList = FXCollections.observableArrayList();
 
     @Override
@@ -75,7 +74,6 @@ public class ReturnProduct implements Initializable {
     }
 
     private void textChangeListener() {
-
         discountTF.textProperty().addListener((observableValue, s, t1) -> {
 
             double currentDiscount = 0;
@@ -85,8 +83,8 @@ public class ReturnProduct implements Initializable {
                 e.printStackTrace();
             }
 
-            if (netReturnAmtTot < currentDiscount){
-                method.show_popup("Discount Amount Should Not Be Exceed Price !",discountTF);
+            if (netReturnAmtTot < currentDiscount) {
+                method.show_popup("Discount Amount Should Not Be Exceed Price !", discountTF);
                 return;
 
             }
@@ -129,16 +127,18 @@ public class ReturnProduct implements Initializable {
 
             String query = "select tsm.sale_main_id,tsm.tot_disc_amount  ,tsi.product_id,tsi.stock_id,tsi.discountPer , tsi.sale_item_id ,tsm.invoice_number , tc.customer_name , tc.customer_phone, tc.customer_address,\n" +
                     "       (TO_CHAR( tsm.sale_date, 'DD-MM-YYYY HH12:MI AM')) as sale_date , tsm.net_amount , tsm.bill_type ,td.dues_amount,\n" +
-                    "       tsi.product_name , tsi.product_size , tsi.product_quantity , tsi.sell_price\n" +
-                    "from tbl_sale_main tsm\n" +
+                    "       tsi.product_name , tsi.product_size , tsi.product_quantity , tsi.sell_price , tri.return_quantity as alreadyReturned ,tri.quantity_unit " +
+                    "from tbl_sale_main tsm \n" +
                     "         LEFT JOIN tbl_saleitems tsi on tsm.sale_main_id = tsi.sale_main_id\n" +
                     "         LEFT JOIN tbl_customer tc on tsm.customer_id = tc.customer_id\n" +
+                    "         LEFT JOIN tbl_return_items tri on tsi.sale_item_id = tri.sale_item_id\n" +
                     "         LEFT JOIN tbl_dues td on tsm.sale_main_id = td.sale_main_id where tsm.invoice_number = ?";
 
             ps = connection.prepareStatement(query);
             ps.setString(1, invPrefix + invoiceNumber);
 
             rs = ps.executeQuery();
+            Map<Integer , ReturnProductModel> map = new HashMap<>();
 
             int res = 0;
             while (rs.next()) {
@@ -156,7 +156,7 @@ public class ReturnProduct implements Initializable {
                 String saleDate = rs.getString("sale_date");
                 String billType = rs.getString("bill_type");
                 String productName = rs.getString("product_name");
-                String ReturnProductModelize = rs.getString("product_size");
+                String size = rs.getString("product_size");
                 String productQuantity = rs.getString("product_quantity");
 
                 double net_Amount = rs.getDouble("net_amount");
@@ -164,7 +164,9 @@ public class ReturnProduct implements Initializable {
                 double rate = rs.getDouble("sell_price");
                 double discountPer = rs.getDouble("discountPer");
 
+                int alreadyReturned = rs.getInt("alreadyReturned");
 
+                String qtyUnit = productQuantity.split(" -")[1];
                 if (rs.isLast()) {
                     res++;
                     totalDiscount = rs.getDouble("tot_disc_amount");
@@ -181,7 +183,28 @@ public class ReturnProduct implements Initializable {
                     saleMainID = saleMainId;
                     oldInvoiceNumber = invoiceNum;
                 }
-                itemList.add(new ReturnProductModel(false, productId, stockId, saleMainId, saleItemId, productName, ReturnProductModelize, productQuantity, rate, discountPer, "0"));
+
+                int key = saleItemId;
+
+                if (map.containsKey(key)) {
+
+                    int totReturned =Integer.parseInt(map.get(key).getAlreadyReturned().split(" -")[0])+alreadyReturned;
+
+                  int totQty = Integer.parseInt(productQuantity.split(" -")[0]) - totReturned;
+
+                    ReturnProductModel rpm = new ReturnProductModel(false, productId, stockId, saleMainId, saleItemId, productName,
+                            size, productQuantity, rate, discountPer,totReturned+" -"+qtyUnit , "0",totQty+" -"+qtyUnit);
+
+                    map.put(saleItemId, rpm);
+
+                } else {
+                    String returnable = (Integer.parseInt(productQuantity.split(" -")[0]) - alreadyReturned) + " -" + qtyUnit;
+                    ReturnProductModel rpm = new ReturnProductModel(false, productId, stockId, saleMainId, saleItemId, productName,
+                            size, productQuantity, rate, discountPer, alreadyReturned+" -"+qtyUnit, "0", returnable);
+                    map.put(saleItemId, rpm);
+                }
+
+                itemList = FXCollections.observableArrayList(map.values());
 
             }
             if (res < 1) {
@@ -196,16 +219,32 @@ public class ReturnProduct implements Initializable {
             colRate.setCellValueFactory(new PropertyValueFactory<>("rate"));
             colAction.setCellValueFactory(new PropertyValueFactory<>("returnQuantity"));
             colCheckBox.setCellValueFactory(new PropertyValueFactory<>("isReturn"));
+            colAlreadyReturned.setCellValueFactory(new PropertyValueFactory<>("alreadyReturned"));
+            colReturnable.setCellValueFactory(new PropertyValueFactory<>("returnable"));
 
             setCellF();
 
             colAction.setCellFactory(TextFieldTableCell.forTableColumn());
             colAction.setOnEditCommit(e -> {
-                e.getTableView().getItems().get(e.getTablePosition().getRow()).setReturnQuantity(e.getNewValue());
+                String qtyUnit = e.getTableView().getItems().get(e.getTablePosition().getRow()).getReturnable().split(" -")[1];
+                int avlQuantity = Integer.parseInt(e.getTableView().getItems().get(e.getTablePosition().getRow()).getReturnable().split(" -")[0].replaceAll("[^0-9.]", ""));
+                int inputQuantity = Integer.parseInt(e.getNewValue().replaceAll("[^0-9.]", ""));
 
+                if (inputQuantity > avlQuantity) {
+                    String msg = "AVAILABLE QUANTITY :  " + avlQuantity + " -" + qtyUnit
+                            + "\n\nENTER QUANTITY :  " + inputQuantity + " -" + qtyUnit;
+
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("QUANTITY NOT AVAILABLE");
+                    alert.setHeaderText(msg);
+                    alert.setContentText("Please Enter Less Then :  " + avlQuantity + " -" + qtyUnit);
+                    alert.initOwner(Main.primaryStage);
+                    alert.showAndWait();
+                    tableView.refresh();
+                } else {
+                    e.getTableView().getItems().get(e.getTablePosition().getRow()).setReturnQuantity(e.getNewValue());
+                }
             });
-
-
             tableView.setItems(itemList);
 
         } catch (SQLException e) {
@@ -216,44 +255,31 @@ public class ReturnProduct implements Initializable {
     }
 
     private void setCellF() {
-
         colCheckBox.setCellValueFactory(arg0 -> {
             ReturnProductModel rpm = arg0.getValue();
-
             CheckBox checkBox = new CheckBox();
-
+            checkBox.autosize();
             checkBox.selectedProperty().setValue(rpm.isReturn());
-
-            checkBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
-                public void changed(ObservableValue<? extends Boolean> ov,
-                                    Boolean old_val, Boolean new_val) {
-
-                    int returnQuantity = 0;
-                    int quantity = 0;
-                    try {
-                        quantity = Integer.parseInt(rpm.getQuantity().split(" -")[0].replaceAll("[^0-9.]", ""));
-                        returnQuantity = Integer.parseInt(rpm.getReturnQuantity().replaceAll("[^0-9.]", ""));
-                    } catch (NumberFormatException e) {
-                        e.printStackTrace();
-                    }
-
-
-                    if (returnQuantity < 1) {
-                        method.show_popup("Please Enter Return Quantity ", checkBox);
-                        checkBox.setSelected(false);
-                        return;
-                    }
-                    if (returnQuantity > quantity) {
-
-                        method.show_popup("ENTER VALID RETURN QUANTITY " +
-                                "Available Quality : " + rpm.getQuantity() + " You Enter :" + returnQuantity, checkBox);
-
-                        checkBox.setSelected(false);
-                        return;
-                    }
-                    rpm.setReturn(new_val);
-                    calculate();
+            checkBox.selectedProperty().addListener((ov, old_val, new_val) -> {
+                int returnQuantity = 0;
+                int quantity = 0;
+                try {
+                    quantity = Integer.parseInt(rpm.getReturnable().split(" -")[0].replaceAll("[^0-9.]", ""));
+                    returnQuantity = Integer.parseInt(rpm.getReturnQuantity().replaceAll("[^0-9.]", ""));
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
                 }
+                if (returnQuantity < 1) {
+
+                    ContextMenu menu = new ContextMenu();
+                    menu.setAutoHide(true);
+                    menu.getItems().add(new MenuItem("ENTER RETURN ITEM QUANTITY"));
+                    menu.show(checkBox, Side.BOTTOM, 10, 0);
+                    checkBox.setSelected(false);
+                    return;
+                }
+                rpm.setReturn(new_val);
+                calculate();
             });
             return new SimpleObjectProperty<CheckBox>(checkBox);
         });
@@ -349,39 +375,34 @@ public class ReturnProduct implements Initializable {
                 }
                 for (ReturnProductModel rp : tableView.getItems()) {
 
-                    if (rp.isReturn()){
-
-                          String quantityUnit = rp.getQuantity().split(" -")[1];
-                    res = 0;
-                    int returnQuantity = 0;
-                    try {
-                        returnQuantity = Integer.parseInt(rp.getReturnQuantity().replaceAll("[^0-9.]", ""));
-                    } catch (NumberFormatException e) {
-                        e.printStackTrace();
-                    }
-                    String returnItemsQuery = "INSERT INTO tbl_return_items(return_main_id, product_id, return_quantity, discount_per, rate , quantity_Unit , sale_item_id ) VALUES (?,?,?,?,?,?,?)";
-                    psReturnItem = connection.prepareStatement(returnItemsQuery);
-                    psReturnItem.setInt(1, return_main_id);
-                    psReturnItem.setInt(2, rp.getProductID());
-                    psReturnItem.setInt(3, returnQuantity);
-                    psReturnItem.setDouble(4, discountPer);
-                    psReturnItem.setDouble(5, rp.getRate());
-                    psReturnItem.setString(6, quantityUnit);
-                    psReturnItem.setInt(7, rp.getSaleItemId());
-
-
-                    res = psReturnItem.executeUpdate();
-
-
-                    if (res > 0) {
+                    if (rp.isReturn()) {
+                        String quantityUnit = rp.getQuantity().split(" -")[1];
                         res = 0;
-                        String updateQuery = "UPDATE tbl_product_stock SET quantity = quantity + ? where stock_id = ?  ";
-                        PreparedStatement updatePstmt = connection.prepareStatement(updateQuery);
-                        updatePstmt.setInt(1, returnQuantity);
-                        updatePstmt.setInt(2, rp.getStockId());
-                        res = updatePstmt.executeUpdate();
+                        int returnQuantity = 0;
+                        try {
+                            returnQuantity = Integer.parseInt(rp.getReturnQuantity().replaceAll("[^0-9.]", ""));
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        }
+                        String returnItemsQuery = "INSERT INTO tbl_return_items(return_main_id, product_id, return_quantity, discount_per, rate , quantity_Unit , sale_item_id ) VALUES (?,?,?,?,?,?,?)";
+                        psReturnItem = connection.prepareStatement(returnItemsQuery);
+                        psReturnItem.setInt(1, return_main_id);
+                        psReturnItem.setInt(2, rp.getProductID());
+                        psReturnItem.setInt(3, returnQuantity);
+                        psReturnItem.setDouble(4, discountPer);
+                        psReturnItem.setDouble(5, rp.getRate());
+                        psReturnItem.setString(6, quantityUnit);
+                        psReturnItem.setInt(7, rp.getSaleItemId());
+                        res = psReturnItem.executeUpdate();
+                        if (res > 0) {
+                            res = 0;
+                            String updateQuery = "UPDATE tbl_product_stock SET quantity = quantity + ? where stock_id = ?  ";
+                            PreparedStatement updatePstmt = connection.prepareStatement(updateQuery);
+                            updatePstmt.setInt(1, returnQuantity);
+                            updatePstmt.setInt(2, rp.getStockId());
+                            res = updatePstmt.executeUpdate();
 
-                    }
+                        }
                     }
 
 
@@ -407,7 +428,6 @@ public class ReturnProduct implements Initializable {
         }
     }
 
-
     private void calculate() {
         netReturnAmtTot = 0;
         totalReturnDisctAmount = 0;
@@ -427,7 +447,7 @@ public class ReturnProduct implements Initializable {
                 int stockId = rp.getStockId();
                 double rate = rp.getRate();
 
-                discountPer = (totalDiscount*100)/(netAmount+totalDiscount) ;
+                discountPer = (totalDiscount * 100) / (netAmount + totalDiscount);
 
                 System.out.println(discountPer);
 
@@ -442,37 +462,29 @@ public class ReturnProduct implements Initializable {
     }
 
     public void bnReturnHistory(ActionEvent event) {
-
         customDialog.showFxmlFullDialog("returnItems/returnHistory.fxml", "RETURN HISTORY");
     }
 
     public String getInvoiceNumber() {
         dbConnection = new DBConnection();
-
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-
         try {
             connection = dbConnection.getConnection();
             ps = connection.prepareStatement("select max(RETURN_MAIN_ID) from TBL_RETURN_MAIN");
             rs = ps.executeQuery();
             String invoiceNum = null;
-
             if (rs.next()) {
                 long id = rs.getInt(1) + 1;
-
                 invoiceNum = String.format("%07d", id);
             }
-
-
             return "SUMA" + invoiceNum + "R";
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
         } finally {
             DBConnection.closeConnection(connection, ps, rs);
-
         }
 
     }

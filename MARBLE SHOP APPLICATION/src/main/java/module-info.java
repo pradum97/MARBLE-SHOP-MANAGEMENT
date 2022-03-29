@@ -9,6 +9,7 @@ module com.shop.management {
     requires org.apache.commons.io;
     requires org.controlsfx.controls;
     requires jasperreports;
+    requires java.desktop;
 
 
     exports com.shop.management;

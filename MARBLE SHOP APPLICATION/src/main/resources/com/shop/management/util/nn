@@ -1,0 +1,14 @@
+
+
+
+
+
+     private Properties propInsert , propDelete , propUpdate , propRead;
+     private PropertiesLoader propLoader;
+
+
+      propLoader = new PropertiesLoader();
+      propDelete = propLoader.load("delete.properties");
+      propUpdate = propLoader.load("update.properties");
+      propRead = propLoader.load("read.properties");
+      propInsert = propLoader.load("insert.properties");

@@ -1,3 +1,23 @@
+.context-menu {
+    -fx-background-color: red;
+    -fx-border-color: red;
+    -fx-padding: 1;
+    -fx-text-fill: white;
+}
+
+
+.menu-item:focused .label {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.menu-item:focused {
+    -fx-background-color: red;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-selection-bar-text;
+}
+
 .table-view .column-header .label{
     -fx-text-fill: black;
     -fx-alignment: CENTER;

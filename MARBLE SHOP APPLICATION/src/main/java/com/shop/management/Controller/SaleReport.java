@@ -111,14 +111,13 @@ public class SaleReport implements Initializable {
                     "         LEFT JOIN tbl_users tu on (tsm.seller_id = tu.user_id)\n" +
                     "         LEFT JOIN tbl_dues td on tsm.sale_main_id = td.sale_main_id";
 
+
             if (isDateFilter) {
-                String q = query.concat(" where TO_CHAR(tsm.sale_date, 'YYYY-MM-DD') between ? and ? order by sale_main_id asc  ");
+                String q = query.concat(" where TO_CHAR(tsm.sale_date, 'YYYY-MM-DD') between ? and ? order by sale_main_id desc  ");
 
                 ps = connection.prepareStatement(q);
                 ps.setString(1, fromDateP.getValue().toString());
                 ps.setString(2, toDateP.getValue().toString());
-
-                System.out.println(fromDateP.getValue().toString());
 
             } else {
                 query = query.concat("  order by sale_main_id desc");
@@ -127,7 +126,7 @@ public class SaleReport implements Initializable {
             rs = ps.executeQuery();
             double totalNetAmount = 0, totalProfit = 0, totalPurchaseAmount = 0;
 
-            while (rs != null && rs.next()) {
+            while (rs.next()) {
 
                 int saleMainId = rs.getInt("sale_main_id");
                 int customerId = rs.getInt("customer_id");
@@ -142,7 +141,6 @@ public class SaleReport implements Initializable {
                 String billType = rs.getString("bill_type");
 
                 String sale_date = rs.getString("saleDate");
-
 
                 String customerName = rs.getString("customer_name");
                 String customerPhone = rs.getString("customer_phone");
@@ -165,6 +163,7 @@ public class SaleReport implements Initializable {
                 totalPurchaseAmount = totalPurchaseAmount + totPurAmount;
 
             }
+
             if (totalNetAmount > totalPurchaseAmount) {
                 totalProfit = Double.parseDouble(df.format(totalNetAmount - totalPurchaseAmount));
                 double percentage = Double.parseDouble(df.format((totalProfit / totalPurchaseAmount) * 100));
@@ -189,8 +188,9 @@ public class SaleReport implements Initializable {
             if (reportList.size() > 0) {
                 pagination.setVisible(true);
                 search_Item();
+            }else {
+                changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);
             }
-
 
         } catch (SQLException e) {
             e.printStackTrace();

@@ -11,9 +11,11 @@ import com.shop.management.util.DBConnection;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.Properties;
@@ -90,5 +92,13 @@ public class Userprofile implements Initializable {
     public void changePassword(ActionEvent event) {
 
         customDialog.showFxmlDialog("dashboard/forgotPassword.fxml", "CHANGE PASSWORD");
+    }
+
+    public void cancel(ActionEvent event) {
+
+        Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+        if (stage.isShowing()){
+            stage.close();
+        }
     }
 }

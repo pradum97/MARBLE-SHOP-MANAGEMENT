@@ -18,7 +18,6 @@
    <center>
       <VBox alignment="CENTER" BorderPane.alignment="CENTER">
          <children>
-      
             <TableView fx:id="tableView" focusTraversable="false" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
               <columns>
 

@@ -7,6 +7,7 @@ import com.shop.management.Model.CartModel;
 import com.shop.management.util.DBConnection;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -32,11 +33,11 @@ public class CartQuantityUpdate implements Initializable {
     public Label mrpL;
     private Method method;
     private CartModel cartModel;
-
     private double minSellingPrice, productMrp;
     private String quantity_unit;
-
     private long availableQuantity;
+    private int requiredQuantity;
+     private long avlQty;
 
 
     @Override
@@ -49,6 +50,7 @@ public class CartQuantityUpdate implements Initializable {
             return;
         }
 
+        getStockSetting();
         getProductStock();
 
     }
@@ -56,18 +58,19 @@ public class CartQuantityUpdate implements Initializable {
     private void setDefaultValue() {
 
         quantityTf.setText(String.valueOf(cartModel.getQuantity()));
-
         BigDecimal sell_price = BigDecimal.valueOf(cartModel.getSellingPrice());
-
-
         sellingPriceTf.setText(sell_price.stripTrailingZeros().toPlainString());
-
-        availableQuantityL.setText(availableQuantity + " -" + quantity_unit);
         minSellPriceL.setText(minSellingPrice + " INR");
         mrpL.setText(productMrp + " INR");
-
         quantityUnit.getItems().add(cartModel.getQuantityUnit());
         quantityUnit.getSelectionModel().selectFirst();
+
+        avlQty = (availableQuantity-requiredQuantity);
+
+        availableQuantityL.setText(avlQty+"-"+quantity_unit+" ( Tot Avl : "+availableQuantity+"-"+quantity_unit+" - Required : "+requiredQuantity+" )");
+
+
+       // availableQuantityL.setText(availableQuantity + " h-" + quantity_unit);
     }
 
     public void enterPress(KeyEvent e) {
@@ -100,8 +103,7 @@ public class CartQuantityUpdate implements Initializable {
             int res = ps.executeUpdate();
 
             if (res > 0) {
-
-                Stage stage = CustomDialog.stage;
+                Stage stage = CustomDialog.stage2;
 
                 if (stage.isShowing()) {
                     stage.close();
@@ -158,15 +160,13 @@ public class CartQuantityUpdate implements Initializable {
             return;
         }
 
-
         if (sellingPrice < 1) {
             method.show_popup("ENTER VALID PRICE", sellingPriceTf);
             return;
 
         }
 
-        if (quantity <= availableQuantity) {
-
+        if (quantity <= avlQty) {
             if (sellingPrice >= cartModel.getMinSellPrice()) {
 
                 if (sellingPrice <= cartModel.getProductMRP()) {
@@ -174,23 +174,17 @@ public class CartQuantityUpdate implements Initializable {
                     updateQuantity(quantity, unit, sellingPrice);
 
                 } else {
-
-                    method.show_popup("PLEASE ENTER LESS THEN " + cartModel.getProductMRP() + " OR " + cartModel.getProductMRP() + " RS.", sellingPriceTf);
+                    method.show_popup("PLEASE ENTER LESS THEN " + cartModel.getProductMRP(), sellingPriceTf);
                 }
-
-
             } else {
-
                 method.show_popup("PLEASE ENTER MORE THAN " + cartModel.getMinSellPrice() + " RS.", sellingPriceTf);
             }
-
         } else {
+            String msg = "QUANTITY NOT AVAILABLE \n AVAILABLE QTY : "+ avlQty + " -"+quantity_unit;
 
-            method.show_popup("QUANTITY NOT AVAILABLE", quantityTf);
+            method.show_popup(msg, quantityTf);
         }
-
     }
-
     private void getProductStock() {
 
         Connection connection = null;
@@ -227,5 +221,45 @@ public class CartQuantityUpdate implements Initializable {
         }
 
         setDefaultValue();
+    }
+    private void getStockSetting() {
+        requiredQuantity = 0;
+
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            connection = new DBConnection().getConnection();
+            if (null == connection) {
+                System.out.println("connection failed");
+                return;
+            }
+
+            String query = "SELECT REQUIRED FROM STOCK_CONTROL";
+
+            ps = connection.prepareStatement(query);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+
+                requiredQuantity = rs.getInt("REQUIRED");
+                setDefaultValue();
+            }
+
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DBConnection.closeConnection(connection, ps, rs);
+        }
+    }
+
+    public void cancel(ActionEvent event) {
+
+        Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+        if (stage.isShowing()){
+            stage.close();
+        }
     }
 }
