@@ -42,11 +42,10 @@ public class SelectSize implements Initializable {
     private Method method;
     private CustomDialog customDialog;
     private DBConnection dbConnection;
-    private Properties properties;
     private Products products;
+    private Properties propInsert, propRead;
 
     private int requiredQuantity;
-
     private ObservableList<Stock> stockList = FXCollections.observableArrayList();
 
     @Override
@@ -55,7 +54,9 @@ public class SelectSize implements Initializable {
         method = new Method();
         customDialog = new CustomDialog();
         dbConnection = new DBConnection();
-        properties =new PropertiesLoader().load("query.properties");
+        PropertiesLoader propLoader = new PropertiesLoader();
+        propRead = propLoader.getReadProp();
+        propInsert = propLoader.getInsertProp();
 
         getStockSetting();
 
@@ -64,6 +65,7 @@ public class SelectSize implements Initializable {
             setTableData(products.getProductID());
         }
     }
+
     private void getStockSetting() {
         requiredQuantity = 0;
 
@@ -79,9 +81,7 @@ public class SelectSize implements Initializable {
                 return;
             }
 
-            String query = "SELECT REQUIRED FROM STOCK_CONTROL";
-
-            ps = connection.prepareStatement(query);
+            ps = connection.prepareStatement(propRead.getProperty("READ_STOCK_CONTROL"));
             rs = ps.executeQuery();
 
             if (rs.next()) {
@@ -106,17 +106,14 @@ public class SelectSize implements Initializable {
             customDialog.showAlertBox("Failed", "Data Not Found");
             return;
         }
-
         tableView.setItems(stockList);
-
         colPurchasePrice.setCellValueFactory(new PropertyValueFactory<>("purchasePrice"));
         colMrp.setCellValueFactory(new PropertyValueFactory<>("productMRP"));
         colMinSellPrice.setCellValueFactory(new PropertyValueFactory<>("minSellingPrice"));
         colQuantity.setCellValueFactory(new PropertyValueFactory<>("fullQuantity"));
         colSize.setCellValueFactory(new PropertyValueFactory<>("fullSize"));
 
-        Callback<TableColumn<Stock, String>, TableCell<Stock, String>>
-                cellFactory = (TableColumn<Stock, String> param) -> new TableCell<>() {
+        Callback<TableColumn<Stock, String>, TableCell<Stock, String>> cellFactory = (TableColumn<Stock, String> param) -> new TableCell<>() {
             @Override
             public void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
@@ -128,19 +125,15 @@ public class SelectSize implements Initializable {
 
                     Label selectBn = new Label("SELECT");
 
-                    selectBn.setStyle("-fx-background-color: #0881ea;" +
-                            "-fx-padding: 5 15 5 15 ; -fx-background-radius: 30; -fx-text-fill: white; " +
-                            "-fx-alignment: center;-fx-cursor: hand");
+                    selectBn.setStyle("-fx-background-color: #0881ea;" + "-fx-padding: 5 15 5 15 ; -fx-background-radius: 30; -fx-text-fill: white; " + "-fx-alignment: center;-fx-cursor: hand");
 
                     selectBn.setOnMouseClicked(event -> {
-
                         Stock stock = tableView.getSelectionModel().getSelectedItem();
 
                         if (null != stock) {
+                            if (requiredQuantity >= stock.getQuantity()) {
 
-                            if (requiredQuantity >= stock.getQuantity()){
-
-                                customDialog.showAlertBox("Error","You Can't Sell This Item Because The Quantity Is Very Low. \nYour Required Quantity Is "+requiredQuantity);
+                                customDialog.showAlertBox("Error", "You Can't Sell This Item Because The Quantity Is Very Low. \nYour Required Quantity Is " + requiredQuantity);
                                 return;
                             }
                             Main.primaryStage.setUserData(stock);
@@ -190,11 +183,8 @@ public class SelectSize implements Initializable {
                 System.out.println("Select Size : Connection Failed");
                 return;
             }
-            String query = "INSERT INTO TBL_CART(PRODUCT_ID, SELLER_ID, SELLPRICE, STOCK_ID, QUANTITY, QUANTITY_UNIT) VALUES\n" +
-                    "(?,?,?,?,?,?)";
 
-            ps = connection.prepareStatement(query);
-
+            ps = connection.prepareStatement(propInsert.getProperty("INSERT_CART_DETAILS"));
             ps.setInt(1, products.getProductID());
             ps.setInt(2, Login.currentlyLogin_Id);
             ps.setDouble(3, quantity.getSellingPrice());
@@ -219,14 +209,12 @@ public class SelectSize implements Initializable {
     }
 
     private void refreshCartItemCount() {
-
-
     }
 
     public void cancel(ActionEvent event) {
 
-        Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
-        if (stage.isShowing()){
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        if (stage.isShowing()) {
             stage.close();
         }
     }

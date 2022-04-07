@@ -30,7 +30,7 @@ public class GetDiscount {
                 return null;
             }
 
-            ps = connection.prepareStatement(new PropertiesLoader().load("query.properties").getProperty("GET_DISCOUNT"));
+            ps = connection.prepareStatement(new PropertiesLoader().getReadProp().getProperty("GET_DISCOUNT"));
             rs = ps.executeQuery();
 
             while (rs.next()) {

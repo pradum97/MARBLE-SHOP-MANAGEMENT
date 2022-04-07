@@ -4,9 +4,10 @@ public class PurchaseHistoryModel {
 
     private int purchaseId , supplierId , productId , StockId , sellerId;
     private String supplierName , invoiceNum , productCode , size , quantity , activity , date ;
+    private double purchasePrice , mrp , minSell;
 
-    public PurchaseHistoryModel(int purchaseId, int supplierId, int productId, int stockId, int sellerId, String
-            supplierName, String invoiceNum, String productCode, String size, String quantity, String activity, String date) {
+    public PurchaseHistoryModel(int purchaseId, int supplierId, int productId, int stockId, int sellerId, String supplierName, String invoiceNum, String productCode,
+                                String size, String quantity, String activity, String date, double purchasePrice, double mrp, double minSell) {
         this.purchaseId = purchaseId;
         this.supplierId = supplierId;
         this.productId = productId;
@@ -19,6 +20,33 @@ public class PurchaseHistoryModel {
         this.quantity = quantity;
         this.activity = activity;
         this.date = date;
+        this.purchasePrice = purchasePrice;
+        this.mrp = mrp;
+        this.minSell = minSell;
+    }
+
+    public double getPurchasePrice() {
+        return purchasePrice;
+    }
+
+    public void setPurchasePrice(double purchasePrice) {
+        this.purchasePrice = purchasePrice;
+    }
+
+    public double getMrp() {
+        return mrp;
+    }
+
+    public void setMrp(double mrp) {
+        this.mrp = mrp;
+    }
+
+    public double getMinSell() {
+        return minSell;
+    }
+
+    public void setMinSell(double minSell) {
+        this.minSell = minSell;
     }
 
     public int getPurchaseId() {

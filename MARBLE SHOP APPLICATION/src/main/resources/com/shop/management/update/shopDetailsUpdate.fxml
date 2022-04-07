@@ -28,7 +28,7 @@
                                     <Font name="Bookman Old Style Bold" size="13.0" />
                                  </font>
                               </Label>
-                              <TextField fx:id="shopNameTf" minHeight="55.0" minWidth="400.0" prefHeight="55.0" promptText="Enter Shop Full Name" />
+                              <TextField fx:id="shopNameTf" minHeight="55.0" minWidth="400.0" onKeyReleased="#enterPress" prefHeight="55.0" promptText="Enter Shop Full Name" />
                            </children>
                         </VBox>
                      </children>
@@ -48,7 +48,7 @@
                                     <Font name="Bookman Old Style Bold" size="13.0" />
                                  </font>
                               </Label>
-                              <TextField fx:id="phone_1Tf" minHeight="40.0" minWidth="400.0" prefHeight="40.0" promptText="Enter Phone Number-1" />
+                              <TextField fx:id="phone_1Tf" minHeight="40.0" minWidth="400.0" onKeyReleased="#enterPress" prefHeight="40.0" promptText="Enter Phone Number-1" />
                            </children>
                         </VBox>
                      </children>
@@ -65,7 +65,7 @@
                                     <Font name="Bookman Old Style Bold" size="13.0" />
                                  </font>
                               </Label>
-                              <TextField fx:id="phone_2TF" minHeight="40.0" minWidth="400.0" prefHeight="40.0" promptText="Enter Phone Number-2" />
+                              <TextField fx:id="phone_2TF" minHeight="40.0" minWidth="400.0" onKeyReleased="#enterPress" prefHeight="40.0" promptText="Enter Phone Number-2" />
                            </children>
                         </VBox>
                      </children>
@@ -82,7 +82,7 @@
                                     <Font name="Bookman Old Style Bold" size="13.0" />
                                  </font>
                               </Label>
-                              <TextField fx:id="propNameTF" minHeight="40.0" minWidth="400.0" prefHeight="40.0" promptText="Enter Prop Name : " />
+                              <TextField fx:id="propNameTF" minHeight="40.0" minWidth="400.0" onKeyReleased="#enterPress" prefHeight="40.0" promptText="Enter Prop Name : " />
                            </children>
                         </VBox>
                      </children>
@@ -99,7 +99,7 @@
                                     <Font name="Bookman Old Style Bold" size="13.0" />
                                  </font>
                               </Label>
-                              <TextField fx:id="emailTF" minHeight="40.0" minWidth="400.0" prefHeight="40.0" promptText="Enter Email : " />
+                              <TextField fx:id="emailTF" minHeight="40.0" minWidth="400.0" onKeyReleased="#enterPress" prefHeight="40.0" promptText="Enter Email : " />
                            </children>
                         </VBox>
                      </children>
@@ -116,7 +116,7 @@
                                     <Font name="Bookman Old Style Bold" size="13.0" />
                                  </font>
                               </Label>
-                              <TextField fx:id="addressTF" minHeight="60.0" minWidth="400.0" prefHeight="60.0" promptText="Enter Shop Address :" />
+                              <TextField fx:id="addressTF" minHeight="60.0" minWidth="400.0" onKeyReleased="#enterPress" prefHeight="60.0" promptText="Enter Shop Address :" />
                            </children>
                         </VBox>
                      </children>
@@ -147,7 +147,7 @@
                 <Insets bottom="10.0" top="10.0" />
             </padding>
             <children>
-            <Button mnemonicParsing="false" onAction="#cancel" prefHeight="29.0" style="-fx-background-color: RED; -fx-text-fill: WHITE;" text="CANCEL">
+            <Button focusTraversable="false" mnemonicParsing="false" onAction="#cancel" prefHeight="29.0" style="-fx-background-color: RED; -fx-text-fill: WHITE;" text="CANCEL">
                <font>
                   <Font name="Arial Black" size="12.0" />
                </font>

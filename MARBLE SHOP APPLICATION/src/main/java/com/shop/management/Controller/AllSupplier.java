@@ -24,6 +24,7 @@ import javafx.util.Callback;
 
 import java.net.URL;
 import java.sql.*;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
@@ -255,6 +256,9 @@ public class AllSupplier implements Initializable {
                     ivDelete.setFitHeight(20);
 
                     ivDelete.setImage(new ImageLoader().load("img/icon/delete_ic.png"));
+
+                    ivDelete.managedProperty().bind(ivDelete.visibleProperty());
+                    ivDelete.setVisible(Objects.equals(Login.currentRoleName.toLowerCase(), "admin".toLowerCase()));
 
                     HBox managebtn = new HBox(ivDelete);
 

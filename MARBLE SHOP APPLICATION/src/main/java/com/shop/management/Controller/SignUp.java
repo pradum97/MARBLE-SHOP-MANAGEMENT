@@ -4,6 +4,7 @@ import com.shop.management.CustomDialog;
 import com.shop.management.Main;
 import com.shop.management.Method.Method;
 import com.shop.management.Method.StaticData;
+import com.shop.management.Model.Role;
 import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.event.ActionEvent;
@@ -34,18 +35,17 @@ public class SignUp implements Initializable {
     public TextField phone_f;
     public TextField email_f;
     public ComboBox<String> gender_comboBox;
-    public ComboBox<String> role_combobox;
+    public ComboBox<Role> role_combobox;
     public TextArea full_address_f;
     public PasswordField password_f;
     public TextField con_password_f;
-    public Button profile_img_choose;
     public Button already_account;
     public Button submit_bn;
     private Method method;
-    private Properties properties;
     private DBConnection dbConnection;
     private CustomDialog customDialog;
     private Main main;
+    private Properties  propRead;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -53,7 +53,8 @@ public class SignUp implements Initializable {
         customDialog = new CustomDialog();
         dbConnection = new DBConnection();
         main = new Main();
-        properties = new PropertiesLoader().load("query.properties");
+        PropertiesLoader propLoader = new PropertiesLoader();
+        propRead = propLoader.getReadProp();
 
         setData();
 
@@ -65,7 +66,6 @@ public class SignUp implements Initializable {
     }
 
     private void setData() {
-
         gender_comboBox.setItems(new StaticData().getGender());
         role_combobox.setItems(method.getRole());
 
@@ -140,9 +140,7 @@ public class SignUp implements Initializable {
             customDialog.showAlertBox("Registration Failed ", "Enter 10-digit Phone Number Without Country Code");
             return;
         }
-
         Pattern pattern = Pattern.compile(new StaticData().emailRegex);
-
         Matcher matcher = pattern.matcher(email);
 
         if (first_name.isEmpty()) {
@@ -173,6 +171,7 @@ public class SignUp implements Initializable {
 
         Pattern phone_pattern = Pattern.compile("^\\d{10}$");
         Matcher phone_matcher = phone_pattern.matcher(phone);
+        int role_id = role_combobox.getSelectionModel().getSelectedItem().getRoleId();
 
         if (!phone_matcher.matches()) {
             customDialog.showAlertBox("Registration Failed ", "Enter 10-digit Phone Number Without Country Code");
@@ -210,18 +209,18 @@ public class SignUp implements Initializable {
         } else if (!password.equals(confirm_password)) {
             method.show_popup("confirm password doesn't match", con_password_f);
             return;
-        } else if (mac_address.isEmpty()) {
+        } else if (null == mac_address) {
             mac_address = "Not-Found";
         }
 
         try {
             connection = dbConnection.getConnection();
-            ps_insert_data = connection.prepareStatement(properties.getProperty("SIGNUP"));
+            ps_insert_data = connection.prepareStatement(propRead.getProperty("SIGNUP"));
 
             ps_insert_data.setString(1, first_name);
             ps_insert_data.setString(2, last_name);
             ps_insert_data.setString(3, gender_comboBox.getValue());
-            ps_insert_data.setString(4, role_combobox.getValue());
+            ps_insert_data.setInt(4, role_id);
             ps_insert_data.setString(5, email);
             ps_insert_data.setString(6, username);
             ps_insert_data.setString(7, password);

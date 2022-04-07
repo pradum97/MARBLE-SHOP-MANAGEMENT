@@ -37,7 +37,7 @@
                                         <font>
                                             <Font name="System Bold" size="12.0" />
                                         </font></Label>
-                                    <TextField fx:id="first_name_f" maxHeight="131.0" prefHeight="40.0" prefWidth="300.0" promptText="Enter First Name" />
+                                    <TextField fx:id="first_name_f" maxHeight="131.0" onKeyReleased="#enterPress" prefHeight="40.0" prefWidth="300.0" promptText="Enter First Name" />
 
                                 </VBox>
 
@@ -47,7 +47,7 @@
                                         <font>
                                             <Font name="System Bold" size="12.0" />
                                         </font></Label>
-                                    <TextField fx:id="last_name_f" maxHeight="80.0" prefHeight="40.0" prefWidth="300.0" promptText="Enter Last Name" />
+                                    <TextField fx:id="last_name_f" maxHeight="80.0" onKeyReleased="#enterPress" prefHeight="40.0" prefWidth="300.0" promptText="Enter Last Name" />
 
                                 </VBox>
                             </HBox>
@@ -58,7 +58,7 @@
                                         <font>
                                             <Font name="System Bold" size="12.0" />
                                         </font></Label>
-                                    <TextField fx:id="username_f" maxHeight="375.0" prefHeight="40.0" prefWidth="300.0" promptText="Enter username" />
+                                    <TextField fx:id="username_f" maxHeight="375.0" onKeyReleased="#enterPress" prefHeight="40.0" prefWidth="300.0" promptText="Enter username" />
 
                                 </VBox>
 
@@ -68,7 +68,7 @@
                                             <Font name="System Bold" size="12.0" />
                                         </font>
                                     </Label>
-                                    <TextField fx:id="phone_f" layoutX="45.0" layoutY="27.0" maxHeight="80.0" prefHeight="40.0" prefWidth="300.0" promptText="Enter 10-Digit Phone Number" />
+                                    <TextField fx:id="phone_f" layoutX="45.0" layoutY="27.0" maxHeight="80.0" onKeyReleased="#enterPress" prefHeight="40.0" prefWidth="300.0" promptText="Enter 10-Digit Phone Number" />
 
                                 </VBox>
 
@@ -81,7 +81,7 @@
                                         <font>
                                             <Font name="System Bold" size="12.0" />
                                         </font></Label>
-                                    <TextField fx:id="email_f" maxHeight="70.0" prefHeight="40.0" prefWidth="616" promptText="Enter Valid Email" />
+                                    <TextField fx:id="email_f" maxHeight="70.0" onKeyReleased="#enterPress" prefHeight="40.0" prefWidth="616" promptText="Enter Valid Email" />
 
                                 </VBox>
                             </HBox>
@@ -93,7 +93,7 @@
                                         <font>
                                             <Font name="System Bold" size="12.0" />
                                         </font></Label>
-                                    <ComboBox fx:id="gender_comboBox" prefHeight="40.0" prefWidth="300.0" promptText="Select Gender" />
+                                    <ComboBox fx:id="gender_comboBox" onKeyReleased="#enterPress" prefHeight="40.0" prefWidth="300.0" promptText="Select Gender" />
 
                                 </VBox>
 
@@ -102,7 +102,7 @@
                                         <font>
                                             <Font name="System Bold" size="12.0" />
                                         </font></Label>
-                                    <ComboBox fx:id="role_combobox" prefHeight="40.0" prefWidth="300.0" promptText="Select Role" />
+                                    <ComboBox fx:id="role_combobox" onKeyReleased="#enterPress" prefHeight="40.0" prefWidth="300.0" promptText="Select Role" />
 
                                 </VBox>
                         <VBox layoutX="276.0" layoutY="10.0" spacing="4">
@@ -112,7 +112,7 @@
                                     <Font name="System Bold" size="12.0" />
                                  </font>
                               </Label>
-                              <ComboBox fx:id="combo_accountStatus" prefHeight="40.0" prefWidth="300.0" />
+                              <ComboBox fx:id="combo_accountStatus" onKeyReleased="#enterPress" prefHeight="40.0" prefWidth="300.0" />
                            </children>
                         </VBox>
 
@@ -124,7 +124,7 @@
                                         <font>
                                             <Font name="System Bold" size="12.0" />
                                         </font></Label>
-                                    <TextArea fx:id="full_address_f" maxHeight="80.0" prefHeight="80.0" prefWidth="616.0" promptText="Enter Full Address" style="-fx-text-alignment: CENTER">
+                                    <TextArea fx:id="full_address_f" maxHeight="80.0" onKeyReleased="#enterPress" prefHeight="80.0" prefWidth="616.0" promptText="Enter Full Address" style="-fx-text-alignment: CENTER">
                               <padding>
                                  <Insets right="3.0" />
                               </padding></TextArea>
@@ -137,9 +137,9 @@
 
                         <HBox alignment="CENTER" prefWidth="516.0" spacing="30">
 
-                            <Button fx:id="bnCancel" alignment="CENTER" lineSpacing="1.0" onAction="#bnCancel" prefHeight="30.0" prefWidth="218.0" style="-fx-cursor: hand;-fx-background-color: #5e0cee;" text="CANCEL" textAlignment="CENTER" textFill="#ffffff" />
+                            <Button fx:id="bnCancel" alignment="CENTER" focusTraversable="false" lineSpacing="1.0" onAction="#bnCancel" prefHeight="30.0" prefWidth="218.0" style="-fx-cursor: hand;-fx-background-color: #5e0cee;" text="CANCEL" textAlignment="CENTER" textFill="#ffffff" />
 
-                            <Button fx:id="bnUpdate" alignment="CENTER" lineSpacing="1.0" onAction="#update_bn" prefHeight="30.0" prefWidth="218.0" style="-fx-cursor: hand;-fx-background-color: #5e0cee;" text="UPDATE" textAlignment="CENTER" textFill="#ffffff" />
+                            <Button fx:id="bnUpdate" alignment="CENTER" lineSpacing="1.0" onAction="#update_bn" onKeyReleased="#enterPress" prefHeight="30.0" prefWidth="218.0" style="-fx-cursor: hand;-fx-background-color: #5e0cee;" text="UPDATE" textAlignment="CENTER" textFill="#ffffff" />
 
 
                         </HBox>

@@ -27,6 +27,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -41,8 +42,6 @@ public class ViewFeedback implements Initializable {
     private Method method;
     private DBConnection dbConnection;
     private CustomDialog customDialog;
-    private Properties properties;
-
     public TableColumn<Feedback, String> col_id;
     public TableColumn<Feedback, String> col_name;
     public TableColumn<Feedback, String> col_email;
@@ -61,8 +60,6 @@ public class ViewFeedback implements Initializable {
         method = new Method();
         dbConnection = new DBConnection();
         customDialog = new CustomDialog();
-        properties = new PropertiesLoader().load("query.properties");
-
         setData();
 
     }
@@ -85,7 +82,7 @@ public class ViewFeedback implements Initializable {
                 return;
             }
 
-            ps = connection.prepareStatement(properties.getProperty("GET_FEEDBACK"));
+            ps = connection.prepareStatement(new PropertiesLoader().getReadProp().getProperty("GET_FEEDBACK"));
 
             rs = ps.executeQuery();
 
@@ -193,6 +190,9 @@ public class ViewFeedback implements Initializable {
                         iv_delete.setFitWidth(17);
                         iv_delete.setPreserveRatio(true);
 
+                        iv_delete.managedProperty().bind(iv_delete.visibleProperty());
+                        iv_delete.setVisible(Objects.equals(Login.currentRoleName.toLowerCase(), "admin".toLowerCase()));
+
 
                         iv_edit.setStyle(
                                 " -fx-cursor: hand ;"
@@ -273,8 +273,6 @@ public class ViewFeedback implements Initializable {
         tableView.setItems(sortedData);
 
     }
-
-
     private void refreshTableData() {
 
         setData();

@@ -29,7 +29,7 @@ public class GetTax {
                 return null;
             }
 
-            ps = connection.prepareStatement(new PropertiesLoader().load("query.properties").getProperty("GET_TAX"));
+            ps = connection.prepareStatement(new PropertiesLoader().getReadProp().getProperty("GET_TAX"));
             rs = ps.executeQuery();
 
             ObservableList<TAX> tax = FXCollections.observableArrayList();

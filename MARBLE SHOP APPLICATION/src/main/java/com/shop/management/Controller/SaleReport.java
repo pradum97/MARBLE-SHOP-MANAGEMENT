@@ -35,6 +35,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
 public class SaleReport implements Initializable {
+
     int rowsPerPage = 15;
 
     public TableColumn<Sale_Main, Integer> col_sno;
@@ -54,6 +55,7 @@ public class SaleReport implements Initializable {
     public TableColumn<Sale_Main, String> colTotTax;
     public TableColumn<Sale_Main, String> colPaymentMode;
     public TableColumn<Sale_Main, String> colTotItem;
+    public TableColumn<Sale_Main, String> colGstClaimed;
     public TextField searchTf;
     public TableView<Sale_Main> tableView;
     public TableColumn<Sale_Main, String> colInvoiceNumber;
@@ -100,7 +102,7 @@ public class SaleReport implements Initializable {
 
             String query = "select (select count(sale_item_id) from tbl_saleitems tsi where (tsi.sale_main_id = tsm.sale_main_id) )\n" +
                     "    as totalItem ,tsm.sale_main_id, td.dues_id ,tc.customer_id,tsm.seller_id,tsm.additional_discount,\n" +
-                    "       tsm.received_amount,tsm.tot_disc_amount,tsm.tot_tax_amount,tsm.net_amount,tsm.payment_mode,tsm.invoice_number,\n" +
+                    "       tsm.received_amount,tsm.gst_claimed,tsm.tot_disc_amount,tsm.tot_tax_amount,tsm.net_amount,tsm.payment_mode,tsm.invoice_number,\n" +
                     "       tsm.bill_type, (TO_CHAR(tsm.sale_date , 'YYYY-MM-DD HH12:MI:SS AM')) as saleDate,tc.customer_name,tc.customer_phone,tc.customer_address ,\n" +
                     "       tu.first_name,tu.last_name,td.dues_amount ,(select sum( tsi.purchase_price*(cast(split_part(tsi.product_quantity::TEXT,' -', 1) as double precision)))as purchasePrice from tbl_saleitems tsi\n" +
                     "           where tsi.sale_main_id = tsm.sale_main_id group by tsm.sale_main_id),\n" +
@@ -155,9 +157,10 @@ public class SaleReport implements Initializable {
 
                 double totPurAmount = rs.getDouble("purchasePrice");
                 double totNetAmount = rs.getDouble("netAmount");
+                double gstClaimed = rs.getDouble("gst_claimed");
 
                 reportList.add(new Sale_Main(saleMainId, duesId, customerId, sellerId, customerName, customerPhone, customerAddress, additionalDisc, receivedAmount, totDiscAmt,
-                        totTaxAmt, netAmount, paymentMode, billType, invoiceNumber, sellerName, sale_date, totalItems, duesAmount));
+                        totTaxAmt, netAmount, paymentMode, billType, invoiceNumber, sellerName, sale_date, totalItems, duesAmount,gstClaimed));
 
                 totalNetAmount = totalNetAmount + totNetAmount;
                 totalPurchaseAmount = totalPurchaseAmount + totPurAmount;
@@ -283,6 +286,7 @@ public class SaleReport implements Initializable {
         colBillType.setCellValueFactory(new PropertyValueFactory<>("billType"));
         colSellerName.setCellValueFactory(new PropertyValueFactory<>("sellerName"));
         colDate.setCellValueFactory(new PropertyValueFactory<>("sellingDate"));
+        colGstClaimed.setCellValueFactory(new PropertyValueFactory<>("gstClaimedAmt"));
 
         setOptional();
 
@@ -382,7 +386,7 @@ public class SaleReport implements Initializable {
                         Main.primaryStage.setUserData(saleMain);
 
 
-                        customDialog.showFxmlFullDialog("sellItems/payDues.fxml", "PAY DUES - " + saleMain.getCustomerName() + " / " + saleMain.getSellingDate() + " / Invoice- " +
+                        customDialog.showFxmlDialog("sellItems/payDues.fxml", "PAY DUES - " + saleMain.getCustomerName() + " / " + saleMain.getSellingDate() + " / Invoice- " +
                                 saleMain.getInvoiceNumber() + "DUES-ID- " + saleMain.getDuesId());
                         bnRefresh(null);
                     });

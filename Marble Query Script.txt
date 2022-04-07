@@ -153,10 +153,7 @@ CREATE TABLE TBL_ROLE
 
 INSERT INTO TBL_ROLE (ROLE)
 VALUES ('ADMIN'),
-       ('MANAGER'),
-       ('ASSISTANT MANAGER'),
-       ('SELLER'),
-       ('STOCKIST');
+       ('SELLER');
 
 CREATE TABLE TBL_PRODUCTS
 (
@@ -193,10 +190,7 @@ CREATE TABLE TBL_CART
     SELLPrice     NUMERIC               NOT NULL,
     STOCK_ID      INTEGER               NOT NULL,
     QUANTITY      NUMERIC               NOT NULL,
-    QUANTITY_UNIT VARCHAR(100)          NOT NULL,
-
-    FOREIGN KEY (SELLER_ID)
-        REFERENCES TBL_USERS (USER_ID)
+    QUANTITY_UNIT VARCHAR(100)          NOT NULL
 )
 ;
 
@@ -380,6 +374,8 @@ CREATE TABLE Supplier
 
 );
 
+
+
 CREATE TABLE PURCHASE_HISTORY
 (
     PURCHASE_ID   SERIAL PRIMARY KEY,
@@ -392,3 +388,49 @@ CREATE TABLE PURCHASE_HISTORY
     QUANTITY      VARCHAR NOT NULL,
     PURCHASE_DATE TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+// NEW ADDED
+
+
+CREATE TABLE PROPOSAL_MAIN
+(
+    PROPOSAL_MAIN_ID serial primary key not null,
+    CUSTOMER_ID      integer            not null,
+    SELLER_ID        INTEGER            NOT NULL,
+    INVOICE_NUM          VARCHAR(20)        NOT NULL,
+    PROPOSAL_DATE    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+);
+
+CREATE TABLE PROPOSAL_ITEMS
+(
+    PROPOSAL_ITEMS_ID SERIAL PRIMARY KEY,
+    PROPOSAL_MAIN_ID  INTEGER      NOT NULL,
+    PRODUCT_ID        INTEGER      NOT NULL,
+    SELLPrice         NUMERIC      NOT NULL,
+    STOCK_ID          INTEGER      NOT NULL,
+    QUANTITY          NUMERIC      NOT NULL,
+    QUANTITY_UNIT     VARCHAR(100) NOT NULL
+);
+
+ALTER TABLE tbl_menu ADD CONSTRAINT constraint_name UNIQUE (MENU_NAME);
+
+INSERT INTO TBL_MENU (MENU_ICON_PATH, MENU_NAME, MENU_LOCATION)
+VALUES('enquiry_ic.png', 'PROPOSAL', 'SIDE');
+
+alter table tbl_users
+    rename column role to role_id;
+
+alter table tbl_users
+    alter column role_id type integer using role_id::integer;
+
+ALTER TABLE tbl_customer ADD COLUMN GST_NUMBER VARCHAR(60);
+
+ALTER TABLE tbl_sale_main ADD COLUMN GST_CLAIMED NUMERIC;
+
+
+ALTER TABLE PURCHASE_HISTORY ADD COLUMN PURCHASE_PRICE NUMERIC ,
+							 ADD COLUMN MRP NUMERIC ,
+							 ADD COLUMN MIN_SELL NUMERIC;
+
+alter table tbl_customer add column gstNumber varchar(50);

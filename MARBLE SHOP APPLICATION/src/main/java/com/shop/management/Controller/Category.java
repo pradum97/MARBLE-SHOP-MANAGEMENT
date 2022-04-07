@@ -19,6 +19,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
@@ -32,6 +34,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -175,6 +178,9 @@ public class Category implements Initializable
                     ivEdit.setFitWidth(21);
                     ivEdit.setPreserveRatio(true);
 
+                    iv_delete.managedProperty().bind(iv_delete.visibleProperty());
+                    iv_delete.setVisible(Objects.equals(Login.currentRoleName.toLowerCase(), "admin".toLowerCase()));
+
                     iv_delete.setStyle(
                             " -fx-cursor: hand ;"
 
@@ -295,4 +301,11 @@ public class Category implements Initializable
     }
 
 
+    public void enterPress(KeyEvent event) {
+
+        if (event.getCode() == KeyCode.ENTER){
+
+            addCategory(null);
+        }
+    }
 }

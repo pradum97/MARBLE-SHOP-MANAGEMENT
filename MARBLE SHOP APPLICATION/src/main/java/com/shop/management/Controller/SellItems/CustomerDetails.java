@@ -1,29 +1,27 @@
 package com.shop.management.Controller.SellItems;
 
-import com.shop.management.Controller.Login;
+import com.shop.management.CustomDialog;
 import com.shop.management.ImageLoader;
 import com.shop.management.Main;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.CustomerModel;
+import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.sql.*;
+import java.util.*;
 
 public class CustomerDetails implements Initializable {
     public TextField c_name;
@@ -32,39 +30,137 @@ public class CustomerDetails implements Initializable {
     public Button bnCheckOut;
     public VBox detailsContainer;
     public Label messageL;
-    Method method;
-    int customerId;
+    public RadioButton radioYes;
+    public RadioButton radioNo;
+    public TextField gstNumTf;
+    public Button bnCheckGstNum;
+    public HBox gstClaimContainer;
+    public VBox gstContainer;
+    public Label billTypeL;
+    public Label gstClaimedL;
+    public Label totalPayableL;
+    public VBox gstClaimLabel;
+    public Label payableAmount;
+    public HBox gstVerifyContainer;
+    public TextField paidAmountTF;
+    public TextField duesAmountTF;
+    private Method method;
+    private int customerId;
+    private Properties propInsert, propRead;
+    private boolean isGstClaimed = false;
+    private CustomDialog customDialog;
+    private Map<String, Object> map;
+    private double totalPayable;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         method = new Method();
+        customDialog = new CustomDialog();
+        PropertiesLoader propLoader = new PropertiesLoader();
+        propRead = propLoader.getReadProp();
+        propInsert = propLoader.getInsertProp();
+
+        map = (Map) Main.primaryStage.getUserData();
+
+        if (null == map) {
+            customDialog.showAlertBox("Failed", "Error");
+            return;
+        }
+
+        radioNo.setSelected(true);
+        gstClaimLabel.managedProperty().bind(gstClaimLabel.visibleProperty());
+        gstClaimLabel.setVisible(false);
 
         detailsContainer.setDisable(true);
-
-        c_phone.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
-
-
-                String newValue = c_phone.getText();
-
-                if (newValue.length() != 10) {
-
-                    method.show_popup("ENTER 10-DIGIT PHONE NUMBER", c_phone);
-
-
-                    detailsContainer.setDisable(true);
-
-                    bnCheckOut.setVisible(true);
-                    messageL.setVisible(false);
-                    c_name.setText("");
-                    c_address.setText("");
-
-                }
-
-
+        c_phone.textProperty().addListener((observableValue, s, t1) -> {
+            String newValue = c_phone.getText();
+            if (newValue.length() != 10) {
+                method.show_popup("ENTER 10-DIGIT PHONE NUMBER", c_phone);
+                detailsContainer.setDisable(true);
+                bnCheckOut.setVisible(true);
+                messageL.setVisible(false);
+                c_name.setText("");
+                c_address.setText("");
+                gstNumTf.setText("");
+                isGstClaimed = false;
             }
         });
+
+        radioYes.setOnMouseClicked(mouseEvent -> {
+
+            radioYes.setSelected(true);
+            radioNo.setSelected(false);
+            isGstClaimed = true;
+            gstClaimLabel.setVisible(true);
+
+            totalPayable = ((Double) map.get("totalPayable")) - ((Double) map.get("gstAmount"));
+            gstClaimedL.setText(String.valueOf(map.get("gstAmount")));
+            totalPayableL.setText(String.valueOf(totalPayable));
+            duesAmountTF.setText(String.valueOf(totalPayable));
+        });
+
+        radioNo.setOnMouseClicked(mouseEvent -> {
+            gstClaimLabel.managedProperty().bind(gstClaimLabel.visibleProperty());
+            gstClaimLabel.setVisible(false);
+            radioYes.setSelected(false);
+            radioNo.setSelected(true);
+            isGstClaimed = false;
+        });
+
+        paidAmountTF.textProperty().addListener((observableValue, s, t1) -> {
+            double receivedAmount = 0;
+            try {
+                receivedAmount = Double.parseDouble(t1);
+            } catch (NumberFormatException ignored) {
+            }
+
+            if (receivedAmount <= totalPayable) {
+
+                double totDues = totalPayable - receivedAmount;
+
+                duesAmountTF.setText(String.valueOf(Math.round(totDues)));
+            } else {
+                paidAmountTF.setText("");
+                duesAmountTF.setText("");
+                method.show_popup("YOUR PAYABLE AMOUNT IS : " + totalPayable, paidAmountTF);
+            }
+        });
+
+        other();
+    }
+
+    private void other() {
+
+        billTypeL.setText((String) map.get("billType"));
+        payableAmount.setText(String.valueOf(map.get("totalPayable")));
+
+        if (Objects.equals(map.get("billType"), "GST")) {
+            gstContainer.setVisible(true);
+
+            gstContainerClaim();
+            gstNumTf.textProperty().addListener((observableValue, s, t1) -> {
+                gstContainerClaim();
+            });
+        } else {
+
+            gstContainer.managedProperty().bind(gstContainer.visibleProperty());
+            gstContainer.setVisible(false);
+
+        }
+    }
+
+    private void gstContainerClaim() {
+        if (null == gstNumTf && gstNumTf.getText().isEmpty()) {
+            gstClaimContainer.managedProperty().bind(gstClaimContainer.visibleProperty());
+            gstClaimContainer.setVisible(false);
+            gstClaimLabel.managedProperty().bind(gstClaimLabel.visibleProperty());
+            gstClaimLabel.setVisible(false);
+        } else {
+            gstClaimContainer.setVisible(true);
+            if (isGstClaimed) {
+                gstClaimLabel.setVisible(true);
+            }
+        }
     }
 
     public void cancel_Bn(ActionEvent event) {
@@ -101,6 +197,7 @@ public class CustomerDetails implements Initializable {
                 String fullName = c_name.getText();
                 String cPhone = c_phone.getText();
                 String address = c_address.getText();
+                String gstNumber = gstNumTf.getText();
 
                 long phoneNum;
 
@@ -123,7 +220,7 @@ public class CustomerDetails implements Initializable {
                     method.show_popup("ENTER CUSTOMER ADDRESS", c_address);
                     return;
                 }
-                addNewCustomer(fullName, phoneNum, address, event);
+                addNewCustomer(fullName, phoneNum, address, event, gstNumber);
             }
         } else {
             alert.close();
@@ -133,10 +230,26 @@ public class CustomerDetails implements Initializable {
 
 
     private void sellNow(int customerId, ActionEvent event) {
+        Map<String, Object> mapS = new HashMap<>();
 
-        CustomerModel customer = new CustomerModel(customerId);
+        if (isGstClaimed) {
+            double paidAmount = 0 , avlDues = 0;
+            try {
+                paidAmount = Double.parseDouble(paidAmountTF.getText());
+                avlDues = Double.parseDouble(duesAmountTF.getText());
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
 
-        Main.primaryStage.setUserData(customer);
+            mapS.put("isGstClaimed", isGstClaimed);
+            mapS.put("gstClaimedAmount", map.get("gstAmount"));
+            mapS.put("billType", map.get("billType"));
+            mapS.put("totalPayable", totalPayable);
+            mapS.put("paidAmount", paidAmount);
+            mapS.put("avlDues", avlDues);
+        }
+        mapS.put("customerId", customerId);
+        Main.primaryStage.setUserData(mapS);
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
@@ -146,7 +259,7 @@ public class CustomerDetails implements Initializable {
 
     }
 
-    private void addNewCustomer(String fullName, long phoneNum, String address, ActionEvent event) {
+    private void addNewCustomer(String fullName, long phoneNum, String address, ActionEvent event, String gstNumber) {
 
         Connection connection = null;
         PreparedStatement ps = null;
@@ -159,13 +272,17 @@ public class CustomerDetails implements Initializable {
                 System.out.println("CustomerDetails : Connection Failed");
                 return;
             }
-
-            ps = connection.prepareStatement("INSERT INTO tbl_customer (CUSTOMER_NAME, CUSTOMER_PHONE, CUSTOMER_ADDRESS)\n" +
-                    " VALUES (?,?,?)", new String[]{"customer_id"});
+            ps = connection.prepareStatement(propInsert.getProperty("INSERT_CUSTOMER_DETAILS"), new String[]{"customer_id"});
 
             ps.setString(1, fullName);
             ps.setLong(2, phoneNum);
             ps.setString(3, address);
+
+            if (gstNumber.isEmpty()) {
+                ps.setNull(4, Types.NULL);
+            } else {
+                ps.setString(4, gstNumber);
+            }
 
             int res = ps.executeUpdate();
 
@@ -194,7 +311,7 @@ public class CustomerDetails implements Initializable {
 
         if (newValue.length() == 10) {
 
-            long phoneNum = 0;
+            long phoneNum;
 
             try {
                 phoneNum = Long.parseLong(newValue.replaceAll("[^0-9.]", ""));
@@ -226,7 +343,7 @@ public class CustomerDetails implements Initializable {
                 return;
             }
 
-            ps = connection.prepareStatement("select customer_phone ,customer_name ,customer_address , customer_id  from tbl_customer where customer_phone = ?");
+            ps = connection.prepareStatement(propRead.getProperty("READ_CUSTOMER_DETAILS"));
             ps.setLong(1, phoneNumber);
 
             rs = ps.executeQuery();
@@ -241,29 +358,41 @@ public class CustomerDetails implements Initializable {
 
                 String name = rs.getString("customer_name");
                 String address = rs.getString("customer_address");
+                String gstNum = rs.getString("gst_number");
                 customerId = rs.getInt("customer_id");
-
                 c_name.setText(name);
                 c_address.setText(address);
 
+                if (null == gstNum) {
+
+                    gstNumTf.setPromptText("GST NUM NOT AVAILABLE");
+                    gstClaimContainer.setVisible(false);
+                } else {
+                    gstNumTf.setText(gstNum);
+                }
                 c_name.setEditable(false);
                 c_address.setEditable(false);
+                gstNumTf.setEditable(false);
                 detailsContainer.setDisable(false);
+                gstVerifyContainer.managedProperty().bind(gstVerifyContainer.visibleProperty());
+                gstVerifyContainer.setVisible(false);
+                gstNumTf.setFocusTraversable(false);
 
             } else {
                 customerId = 0;
                 detailsContainer.setDisable(true);
-                messageL.setText("Add New Customer");
-                messageL.setStyle("-fx-text-fill: blue");
+                messageL.setText("Add New Customer".toUpperCase());
+                messageL.setStyle("-fx-text-fill: #f10707");
                 c_name.setEditable(true);
                 c_address.setEditable(true);
-
+                gstNumTf.setEditable(true);
+                gstNumTf.setPromptText("Enter GST Number :");
                 detailsContainer.setVisible(true);
+                gstVerifyContainer.setVisible(true);
                 bnCheckOut.setVisible(false);
+                gstNumTf.setFocusTraversable(true);
                 bnCheckOut.managedProperty().bind(bnCheckOut.visibleProperty());
             }
-
-
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -272,4 +401,15 @@ public class CustomerDetails implements Initializable {
 
     }
 
+    public void gstVerification(ActionEvent event) {
+
+        new CustomDialog().showFxmlFullDialog("sellItems/gstVerification.fxml", "GST VERIFICATION");
+    }
+
+    public void enterPress(KeyEvent event) {
+
+        if (event.getCode() == KeyCode.ENTER) {
+            bnCheckOut(null);
+        }
+    }
 }

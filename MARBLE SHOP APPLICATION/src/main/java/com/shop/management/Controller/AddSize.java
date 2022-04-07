@@ -37,7 +37,6 @@ public class AddSize implements Initializable {
     private Method method;
     private CustomDialog customDialog;
     private DBConnection dbConnection;
-    private Properties properties;
     private double profitPrice = 20; // in %
 
 
@@ -54,8 +53,6 @@ public class AddSize implements Initializable {
         method = new Method();
         customDialog = new CustomDialog();
         dbConnection = new DBConnection();
-        properties = new PropertiesLoader().load("query.properties");
-
         productSizeUnit.setItems(method.getSizeUnit());
         productQuantityUnit.setItems(method.getSizeQuantityUnit());
 
@@ -184,7 +181,7 @@ public class AddSize implements Initializable {
                 return;
             }
 
-            ps = connection.prepareStatement(properties.getProperty("ADD_SIZE"));
+            ps = connection.prepareStatement(new PropertiesLoader().getInsertProp().getProperty("ADD_SIZE"));
             ps.setDouble(1, purchase_price);
             ps.setDouble(2, mrp);
             ps.setDouble(3, min_Sell_Price);

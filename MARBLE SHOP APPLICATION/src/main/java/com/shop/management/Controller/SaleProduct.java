@@ -61,7 +61,6 @@ public class SaleProduct implements Initializable {
     private DBConnection dbconnection;
     private Method method;
     private CustomDialog customDialog;
-    private Properties properties;
 
     private ObservableList<Products> productsList = FXCollections.observableArrayList();
     FilteredList<Products> filteredData;
@@ -71,7 +70,6 @@ public class SaleProduct implements Initializable {
         method = new Method();
         dbconnection = new DBConnection();
         customDialog = new CustomDialog();
-        properties = new PropertiesLoader().load("query.properties");
         getProduct();
 
     }
@@ -232,9 +230,7 @@ public class SaleProduct implements Initializable {
             rs = ps.executeQuery();
 
             while (rs.next()) {
-
                 int count = rs.getInt("count");
-
                 cartCountL.setText(String.valueOf(count));
             }
 

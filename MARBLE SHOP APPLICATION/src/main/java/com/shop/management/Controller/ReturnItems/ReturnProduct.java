@@ -6,6 +6,7 @@ import com.shop.management.ImageLoader;
 import com.shop.management.Main;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.ReturnProductModel;
+import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleObjectProperty;
@@ -22,10 +23,7 @@ import javafx.stage.Modality;
 
 import java.net.URL;
 import java.sql.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class ReturnProduct implements Initializable {
 
@@ -63,13 +61,19 @@ public class ReturnProduct implements Initializable {
     private String oldInvoiceNumber;
     private double totalDiscount, netAmount;
     private ObservableList<ReturnProductModel> itemList = FXCollections.observableArrayList();
+    private Properties propInsert;
+    private Properties propUpdate;
+    private Properties propRead;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         method = new Method();
         dbConnection = new DBConnection();
         customDialog = new CustomDialog();
-
+        PropertiesLoader propLoader = new PropertiesLoader();
+        propUpdate = propLoader.getUpdateProp();
+        propRead = propLoader.getReadProp();
+        propInsert = propLoader.getInsertProp();
         textChangeListener();
     }
 
@@ -125,14 +129,7 @@ public class ReturnProduct implements Initializable {
                 return;
             }
 
-            String query = "select tsm.sale_main_id,tsm.tot_disc_amount  ,tsi.product_id,tsi.stock_id,tsi.discountPer , tsi.sale_item_id ,tsm.invoice_number , tc.customer_name , tc.customer_phone, tc.customer_address,\n" +
-                    "       (TO_CHAR( tsm.sale_date, 'DD-MM-YYYY HH12:MI AM')) as sale_date , tsm.net_amount , tsm.bill_type ,td.dues_amount,\n" +
-                    "       tsi.product_name , tsi.product_size , tsi.product_quantity , tsi.sell_price , tri.return_quantity as alreadyReturned ,tri.quantity_unit " +
-                    "from tbl_sale_main tsm \n" +
-                    "         LEFT JOIN tbl_saleitems tsi on tsm.sale_main_id = tsi.sale_main_id\n" +
-                    "         LEFT JOIN tbl_customer tc on tsm.customer_id = tc.customer_id\n" +
-                    "         LEFT JOIN tbl_return_items tri on tsi.sale_item_id = tri.sale_item_id\n" +
-                    "         LEFT JOIN tbl_dues td on tsm.sale_main_id = td.sale_main_id where tsm.invoice_number = ?";
+            String query = propRead.getProperty("SEARCH_SALE_ITEM");
 
             ps = connection.prepareStatement(query);
             ps.setString(1, invPrefix + invoiceNumber);
@@ -350,8 +347,7 @@ public class ReturnProduct implements Initializable {
             connection = dbConnection.getConnection();
             connection.setAutoCommit(false);
 
-            String returnMainQuery = "INSERT INTO tbl_return_main (SALE_MAIN_ID, seller_id, TOTAL_REFUND_AMOUNT,invoice_number , REMARK ," +
-                    " old_invoice_number)VALUES (?,?, ?, ?, ?,?)";
+            String returnMainQuery = propInsert.getProperty("INSERT_RETURN_MAIN");
 
             psReturnMain = connection.prepareStatement(returnMainQuery, new String[]{"return_main_id"});
             psReturnMain.setInt(1, saleMainID);
@@ -384,7 +380,7 @@ public class ReturnProduct implements Initializable {
                         } catch (NumberFormatException e) {
                             e.printStackTrace();
                         }
-                        String returnItemsQuery = "INSERT INTO tbl_return_items(return_main_id, product_id, return_quantity, discount_per, rate , quantity_Unit , sale_item_id ) VALUES (?,?,?,?,?,?,?)";
+                        String returnItemsQuery = propInsert.getProperty("INSERT_RETURN_ITEM");
                         psReturnItem = connection.prepareStatement(returnItemsQuery);
                         psReturnItem.setInt(1, return_main_id);
                         psReturnItem.setInt(2, rp.getProductID());
@@ -396,7 +392,7 @@ public class ReturnProduct implements Initializable {
                         res = psReturnItem.executeUpdate();
                         if (res > 0) {
                             res = 0;
-                            String updateQuery = "UPDATE tbl_product_stock SET quantity = quantity + ? where stock_id = ?  ";
+                            String updateQuery = propUpdate.getProperty("UPDATE_STOCK_AFTER_RETURN");
                             PreparedStatement updatePstmt = connection.prepareStatement(updateQuery);
                             updatePstmt.setInt(1, returnQuantity);
                             updatePstmt.setInt(2, rp.getStockId());

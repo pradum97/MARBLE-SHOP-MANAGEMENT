@@ -44,15 +44,15 @@ public class InvoiceReport implements Initializable {
     public DatePicker toDateP;
     public TextField searchTf;
     public ComboBox<String> searchTypeC;
-    public TableView <InvoiceModel>tableView;
-    public TableColumn<InvoiceModel , Integer> colSrNo;
-    public TableColumn<InvoiceModel , String> colCusName;
-    public TableColumn<InvoiceModel , String> colCusPhone;
-    public TableColumn<InvoiceModel , String> colTotItems;
-    public TableColumn<InvoiceModel , String> colBillType;
-    public TableColumn<InvoiceModel , String> colDate;
-    public TableColumn<InvoiceModel , String> colInvoice;
-    public TableColumn<InvoiceModel , String> colAction;
+    public TableView<InvoiceModel> tableView;
+    public TableColumn<InvoiceModel, Integer> colSrNo;
+    public TableColumn<InvoiceModel, String> colCusName;
+    public TableColumn<InvoiceModel, String> colCusPhone;
+    public TableColumn<InvoiceModel, String> colTotItems;
+    public TableColumn<InvoiceModel, String> colBillType;
+    public TableColumn<InvoiceModel, String> colDate;
+    public TableColumn<InvoiceModel, String> colInvoice;
+    public TableColumn<InvoiceModel, String> colAction;
     public Pagination pagination;
 
     private Method method;
@@ -72,11 +72,12 @@ public class InvoiceReport implements Initializable {
 
         getSaleItem(false);
         comboBoxConfig();
-        convertDateFormat(fromDateP,toDateP);
+        convertDateFormat(fromDateP, toDateP);
 
     }
+
     private void comboBoxConfig() {
-        searchTypeC.setItems(FXCollections.observableArrayList("SUMA","+91"));
+        searchTypeC.setItems(FXCollections.observableArrayList("SUMA", "+91"));
         searchTypeC.getSelectionModel().selectFirst();
 
         searchTypeC.setButtonCell(new ListCell<>() {
@@ -110,7 +111,7 @@ public class InvoiceReport implements Initializable {
         });
         String searchType = searchTypeC.getSelectionModel().getSelectedItem();
 
-        switch (searchType){
+        switch (searchType) {
 
             case "SUMA" -> {
                 searchTf.setPromptText("ENTER INVOICE NUMBER");
@@ -120,27 +121,27 @@ public class InvoiceReport implements Initializable {
             }
         }
 
-       searchTypeC.valueProperty().addListener((observableValue, s, sType) -> {
+        searchTypeC.valueProperty().addListener((observableValue, s, sType) -> {
 
-           switch (sType){
+            switch (sType) {
 
-               case "SUMA" -> {
-                   searchTf.setPromptText("ENTER INVOICE NUMBER");
-               }
-               case "+91" -> {
-                   searchTf.setPromptText("ENTER PHONE NUMBER");
-               }
-           }
-           changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);
-           searchTf.setText("");
+                case "SUMA" -> {
+                    searchTf.setPromptText("ENTER INVOICE NUMBER");
+                }
+                case "+91" -> {
+                    searchTf.setPromptText("ENTER PHONE NUMBER");
+                }
+            }
+            changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);
+            searchTf.setText("");
 
 
-       });
+        });
     }
 
     private void getSaleItem(boolean isDateFilter) {
 
-        if (null != invoiceList){
+        if (null != invoiceList) {
             invoiceList.clear();
         }
         Connection connection = null;
@@ -152,23 +153,23 @@ public class InvoiceReport implements Initializable {
             connection = dbConnection.getConnection();
 
             String query = "select tc.customer_name , tc.customer_phone , tsm.bill_type ,(TO_CHAR(tsm.sale_date , 'DD-MM-YYYY HH12:MI:SS AM')) sale_date ,tsm.sale_main_id,\n" +
-                    "       tsm.invoice_number ,(select count(*) from tbl_saleitems tsi where tsm.sale_main_id = tsi.sale_main_id) \n" +
+                    "       tsm.invoice_number,tsm.gst_claimed ,(select count(*) from tbl_saleitems tsi where tsm.sale_main_id = tsi.sale_main_id) \n" +
                     "           as totalItem from tbl_sale_main tsm\n" +
                     " LEFT JOIN tbl_customer tc on tsm.customer_id = tc.customer_id";
 
-            if (isDateFilter){
-                String   q = query.concat(" where TO_CHAR(tsm.sale_date, 'YYYY-MM-DD') between ? and ? order by sale_main_id asc  ");
+            if (isDateFilter) {
+                String q = query.concat(" where TO_CHAR(tsm.sale_date, 'YYYY-MM-DD') between ? and ? order by sale_main_id asc  ");
                 ps = connection.prepareStatement(q);
                 ps.setString(1, fromDateP.getValue().toString());
                 ps.setString(2, toDateP.getValue().toString());
 
-            }else {
+            } else {
                 query = query.concat("  order by sale_main_id desc");
                 ps = connection.prepareStatement(query);
             }
             rs = ps.executeQuery();
 
-            while (rs.next()){
+            while (rs.next()) {
 
                 int saleMainId = rs.getInt("sale_main_id");
                 String customerName = rs.getString("customer_name");
@@ -179,21 +180,23 @@ public class InvoiceReport implements Initializable {
 
                 int totalItem = rs.getInt("totalItem");
 
-                invoiceList.add(new InvoiceModel(saleMainId,totalItem,customerName,customerPhone,billType,saleDate , invoiceNum));
+                double gstClaimedAmount = rs.getDouble("gst_claimed");
+
+                invoiceList.add(new InvoiceModel(saleMainId, totalItem, customerName, customerPhone, billType, saleDate, invoiceNum, gstClaimedAmount));
             }
 
 
             if (invoiceList.size() > 0) {
                 pagination.setVisible(true);
                 search_Item();
-            }else {
+            } else {
                 changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
-            DBConnection.closeConnection(connection,ps,rs);
+        } finally {
+            DBConnection.closeConnection(connection, ps, rs);
         }
 
     }
@@ -282,6 +285,7 @@ public class InvoiceReport implements Initializable {
 
                     Label bnDownload = new Label("DOWNLOAD");
                     Label bnPrint = new Label("PRINT");
+                    double gstClaimedAmount = tableView.getItems().get(getIndex()).getGstClaimedAMount();
 
                     bnDownload.setMinWidth(60);
                     bnPrint.setMinWidth(60);
@@ -317,27 +321,35 @@ public class InvoiceReport implements Initializable {
                         DirectoryChooser directoryChooser = new DirectoryChooser();
                         File selectedPath = directoryChooser.showDialog(Main.primaryStage);
 
-                        if(selectedPath!= null){
+                        if (selectedPath != null) {
 
                             int saleMainId = invoiceList.get(getIndex()).getSale_main_id();
-                            String billType =  invoiceList.get(getIndex()).getBillType();
-                            String invoiceNmber =  invoiceList.get(getIndex()).getInvoiceNumber();
+                            String billType = invoiceList.get(getIndex()).getBillType();
+                            String invoiceNmber = invoiceList.get(getIndex()).getInvoiceNumber();
 
                             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
                             LocalDateTime now = LocalDateTime.now();
 
-                            String fileName = invoiceNmber+"_"+dtf.format(now)+".pdf";
+                            String fileName = invoiceNmber + "_" + dtf.format(now) + ".pdf";
 
-                            String fullPath = selectedPath+"\\"+fileName;
+                            String fullPath = selectedPath + "\\" + fileName;
 
 
                             System.out.println(fullPath);
 
-                            switch (billType){
+                            switch (billType) {
 
-                                case "REGULAR" ->  new GenerateInvoice().regularInvoice(saleMainId,true , fullPath);
+                                case "REGULAR" -> new GenerateInvoice().regularInvoice(saleMainId, true, fullPath);
 
-                                case "GST" -> new GenerateInvoice().gstInvoice(saleMainId,true , fullPath);
+                                case "GST" -> {
+                                    {
+                                        if (gstClaimedAmount > 0) {
+                                            new GenerateInvoice().gstClaimedInvoice(saleMainId, true, fullPath);
+                                        } else {
+                                            new GenerateInvoice().gstClaimedInvoice(saleMainId, true, fullPath);
+                                        }
+                                    }
+                                }
                             }
 
                         }
@@ -345,13 +357,22 @@ public class InvoiceReport implements Initializable {
 
                     bnPrint.setOnMouseClicked(mouseEvent -> {
                         int saleMainId = invoiceList.get(getIndex()).getSale_main_id();
-                        String billType =  invoiceList.get(getIndex()).getBillType();
+                        String billType = invoiceList.get(getIndex()).getBillType();
 
-                        switch (billType){
+                        switch (billType) {
 
-                            case "REGULAR" ->  new GenerateInvoice().regularInvoice(saleMainId,false , null);
+                            case "REGULAR" -> new GenerateInvoice().regularInvoice(saleMainId, false, null);
 
-                            case "GST" -> new GenerateInvoice().gstInvoice(saleMainId,false , null);
+                            case "GST" -> {
+
+                                if (gstClaimedAmount > 0) {
+                                    new GenerateInvoice().gstClaimedInvoice(saleMainId, false, null);
+                                } else {
+                                    new GenerateInvoice().gstInvoice(saleMainId, false, null);
+                                }
+                            }
+
+
                         }
                     });
 
@@ -390,11 +411,11 @@ public class InvoiceReport implements Initializable {
 
     public void searchInvoice(ActionEvent event) {
 
-        if (null == fromDateP.getValue()){
+        if (null == fromDateP.getValue()) {
             method.show_popup("SELECT START DATE", fromDateP);
             return;
-        }else  if (null == toDateP.getValue()){
-            method.show_popup("SELECT END DATE",toDateP);
+        } else if (null == toDateP.getValue()) {
+            method.show_popup("SELECT END DATE", toDateP);
             return;
         }
         getSaleItem(true);
@@ -435,11 +456,11 @@ public class InvoiceReport implements Initializable {
         changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);
         setOptionalCell();
 
-        if (null != fromDateP){
+        if (null != fromDateP) {
             fromDateP.setValue(null);
         }
 
-        if (null != toDateP){
+        if (null != toDateP) {
             toDateP.setValue(null);
         }
     }

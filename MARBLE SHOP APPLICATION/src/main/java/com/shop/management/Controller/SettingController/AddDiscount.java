@@ -11,6 +11,8 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -30,7 +32,7 @@ public class AddDiscount implements Initializable {
     private CustomDialog customDialog;
     private Method method;
     private DBConnection dbConnection;
-    private Properties properties;
+    private Properties propInsert;
 
 
     @Override
@@ -39,10 +41,29 @@ public class AddDiscount implements Initializable {
         customDialog = new CustomDialog();
         method = new Method();
         dbConnection = new DBConnection();
-        properties =new PropertiesLoader().load("query.properties");
+        PropertiesLoader propLoader = new PropertiesLoader();
+        propInsert = propLoader.getInsertProp();
     }
 
     public void submitBn(ActionEvent event) {
+        addDiscount();
+    }
+    public void cancel(ActionEvent event) {
+
+        Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+        if (stage.isShowing()){
+            stage.close();
+        }
+    }
+
+    public void pressEnter(KeyEvent event) {
+
+        if (event.getCode() == KeyCode.ENTER){
+            addDiscount();
+        }
+    }
+
+    private void addDiscount() {
 
         String discountTf = discountTF.getText();
         String descriptionTf = descriptionTF.getText();
@@ -77,7 +98,7 @@ public class AddDiscount implements Initializable {
                 return;
             }
 
-            ps = connection.prepareStatement(properties.getProperty("ADD_DISCOUNT"));
+            ps = connection.prepareStatement(propInsert.getProperty("ADD_DISCOUNT"));
             ps.setInt(1, discountD);
             ps.setString(2, descriptionTf);
             ps.setString(3, discountName);
@@ -85,31 +106,16 @@ public class AddDiscount implements Initializable {
             int res = ps.executeUpdate();
 
             if (res > 0) {
-
                 Stage stage = CustomDialog.stage;
 
                 if (stage.isShowing()) {
                     stage.close();
                 }
             }
-
-
         } catch (SQLException e) {
             e.getStackTrace();
-
         } finally {
-
             DBConnection.closeConnection(connection, ps, null);
-        }
-
-
-    }
-
-    public void cancel(ActionEvent event) {
-
-        Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
-        if (stage.isShowing()){
-            stage.close();
         }
     }
 }

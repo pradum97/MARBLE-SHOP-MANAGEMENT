@@ -43,10 +43,8 @@ public class Users implements Initializable {
     public TableColumn<UserDetails, String> col_address;
     public TableColumn<UserDetails, String> col_account_status;
     public TableColumn<UserDetails, String> action;
-    public TableColumn<UserDetails, String> col_userImg;
 
     private DBConnection dbConnection;
-    private Properties properties;
     private CustomDialog customDialog;
     private Method method;
     private Main main;
@@ -60,7 +58,6 @@ public class Users implements Initializable {
 
         method = new Method();
         dbConnection = new DBConnection();
-        properties = new PropertiesLoader().load("query.properties");
         customDialog = new CustomDialog();
         main = new Main();
         userID = Login.currentlyLogin_Id;
@@ -102,7 +99,10 @@ public class Users implements Initializable {
 
                 } else {
 
+                    int userId = user_table_view.getItems().get(getIndex()).getUserID();
+
                     ImageLoader loader = new ImageLoader();
+
 
                     ImageView iv_edit, iv_view, iv_delete;
 
@@ -118,25 +118,36 @@ public class Users implements Initializable {
                     iv_view.setPreserveRatio(true);
 
                     iv_delete = new ImageView(loader.load("img/icon/delete_ic.png"));
-                    iv_delete.setFitHeight(17);
-                    iv_delete.setFitWidth(17);
                     iv_delete.setPreserveRatio(true);
 
-                    Label txt = new Label();
+                    if (Login.currentlyLogin_Id == userId) {
 
-                    int table_userID = userList.get(getIndex()).getUserID();
-
-                    if (Login.currentlyLogin_Id == table_userID) {
-
-                        iv_delete.setVisible(false);
-                        txt.setText("Signed");
-                        txt.setVisible(true);
-
+                        if (null != iv_delete){
+                            iv_delete.setImage(null);
+                            iv_delete.setImage(loader.load("img/icon/active_ic.png"));
+                            iv_delete.setFitHeight(20);
+                            iv_delete.setFitWidth(20);
+                        }
 
                     } else {
 
                         iv_delete.setVisible(true);
-                        txt.setVisible(false);
+                        iv_delete.setFitHeight(17);
+                        iv_delete.setFitWidth(17);
+                        iv_delete.setOnMouseClicked((MouseEvent event) -> {
+
+
+                            UserDetails delete_selection = user_table_view.
+                                    getSelectionModel().getSelectedItem();
+
+                            if (null == delete_selection) {
+                                method.show_popup("Please Select ", user_table_view);
+                                return;
+                            }
+
+                            deleteUsers(delete_selection);
+
+                        });
                     }
 
 
@@ -186,20 +197,7 @@ public class Users implements Initializable {
                         Main.primaryStage.setUserData(view_selection.getUserID());
                         customDialog.showFxmlDialog("dashboard/userprofile.fxml", "User Profile");
                     });
-                    iv_delete.setOnMouseClicked((MouseEvent event) -> {
 
-
-                        UserDetails delete_selection = user_table_view.
-                                getSelectionModel().getSelectedItem();
-
-                        if (null == delete_selection) {
-                            method.show_popup("Please Select ", user_table_view);
-                            return;
-                        }
-
-                        deleteUsers(delete_selection);
-
-                    });
 
                     HBox managebtn = new HBox(iv_edit, iv_delete, iv_view);
 
@@ -216,45 +214,6 @@ public class Users implements Initializable {
             }
 
         };
-
-
-        Callback<TableColumn<UserDetails, String>, TableCell<UserDetails, String>>
-                userImageCellFactory = (TableColumn<UserDetails, String> param) -> new TableCell<>() {
-            @Override
-            public void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setGraphic(null);
-                    setText(null);
-
-                } else {
-
-                    ImageView iv = new ImageView();
-                    iv.setFitHeight(45);
-                    iv.setFitWidth(45);
-                    iv.setPreserveRatio(true);
-
-                    ImageLoader loader = new ImageLoader();
-
-
-                    String userImgPath = user_table_view.getItems().get(getIndex()).getUserImage();
-
-                    iv.setImage(loader.load("img/Avatar/" + userImgPath));
-
-
-                    HBox managebtn = new HBox(iv);
-                    managebtn.setStyle("-fx-alignment:center");
-                    HBox.setMargin(iv, new Insets(2, 2, 0, 3));
-
-                    setGraphic(managebtn);
-
-                    setText(null);
-
-                }
-            }
-
-        };
-
 
         Callback<TableColumn<UserDetails, String>, TableCell<UserDetails, String>>
                 acStatusCellFactory = (TableColumn<UserDetails, String> param) -> {
@@ -294,7 +253,6 @@ public class Users implements Initializable {
         };
 
         action.setCellFactory(cellFactory);
-        col_userImg.setCellFactory(userImageCellFactory);
         col_account_status.setCellFactory(acStatusCellFactory);
 
         customColumn(col_role);

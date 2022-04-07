@@ -10,12 +10,13 @@ public class UserDetails {
     private long phone;
     private String firstName, lastName, gender, role, email,
             username, password, fullAddress, userImage, createdTime;
+    private int role_id;
 
     //  public UserProfile (){}
 
     public UserDetails(int userID, String accountStatus, long phone, String firstName, String lastName,
                        String gender, String role, String email, String username, String password,
-                       String fullAddress, String userImage, String createdTime) {
+                       String fullAddress, String userImage, String createdTime , int role_id) {
         this.userID = userID;
         this.accountStatus = accountStatus;
         this.phone = phone;
@@ -29,6 +30,15 @@ public class UserDetails {
         this.fullAddress = fullAddress;
         this.userImage = userImage;
         this.createdTime = createdTime;
+        this.role_id = role_id;
+    }
+
+    public int getRole_id() {
+        return role_id;
+    }
+
+    public void setRole_id(int role_id) {
+        this.role_id = role_id;
     }
 
     public int getUserID() {

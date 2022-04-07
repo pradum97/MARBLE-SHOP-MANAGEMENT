@@ -42,5 +42,15 @@
          </padding>
       </HBox>
    </top>
+   <bottom>
+      <HBox alignment="CENTER" BorderPane.alignment="CENTER">
+         <children>
+            <Button mnemonicParsing="false" onAction="#cancel" prefHeight="26.0" prefWidth="80.0" style="-fx-background-color: RED; -fx-text-fill: WHITE; -fx-font-weight: BOLD; -fx-background-radius: 2;" text="CANCEL" />
+         </children>
+         <BorderPane.margin>
+            <Insets bottom="5.0" top="5.0" />
+         </BorderPane.margin>
+      </HBox>
+   </bottom>
 
 </BorderPane>

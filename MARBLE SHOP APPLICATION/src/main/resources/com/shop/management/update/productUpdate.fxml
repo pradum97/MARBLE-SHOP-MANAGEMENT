@@ -38,7 +38,7 @@
                                     <Insets left="5.0" />
                                 </VBox.margin>
                             </Label>
-                     <TextField fx:id="productCodeTF" minHeight="40.0" prefWidth="240.0" promptText="ENTER PRODUCT CODE :" />
+                     <TextField fx:id="productCodeTF" minHeight="40.0" onKeyReleased="#enterPress" prefWidth="240.0" promptText="ENTER PRODUCT CODE :" />
                         </children>
                     </VBox>
                <VBox layoutX="10.0" layoutY="10.0" spacing="5.0">
@@ -117,12 +117,12 @@
                             <Font name="Bookman Old Style Bold" size="12.0" />
                         </font>
                     </Label>
-               <TextArea fx:id="productDescription" minHeight="75.0" minWidth="500.0" prefHeight="70.0" prefWidth="508.0" promptText="Enter Descrption :" />
+               <TextArea fx:id="productDescription" minHeight="75.0" minWidth="500.0" onKeyReleased="#enterPress" prefHeight="70.0" prefWidth="508.0" promptText="Enter Descrption :" />
                 </children>
             </VBox>
             <HBox alignment="BOTTOM_CENTER" fillHeight="false" spacing="80.0">
             <children>
-               <Button mnemonicParsing="false" onAction="#cancel" prefHeight="26.0" prefWidth="99.0" style="-fx-cursor: hand; -fx-background-color: RED; -fx-text-fill: WHITE;" text="CANCEL">
+               <Button focusTraversable="false" mnemonicParsing="false" onAction="#cancel" prefHeight="26.0" prefWidth="99.0" style="-fx-cursor: hand; -fx-background-color: RED; -fx-text-fill: WHITE;" text="CANCEL">
                   <font>
                      <Font name="Arial Black" size="12.0" />
                   </font></Button>

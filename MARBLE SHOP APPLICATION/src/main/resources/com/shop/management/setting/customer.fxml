@@ -8,6 +8,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Text?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.SettingController.Customer">
    <center>
@@ -17,6 +18,7 @@
           <TableColumn fx:id="colCId" maxWidth="100.0" minWidth="60.0" prefWidth="-1.0" text="ID" />
             <TableColumn fx:id="colName" minWidth="150.0" text="NAME" />
             <TableColumn fx:id="colPhone" minWidth="130.0" text="PHONE" />
+            <TableColumn fx:id="colGstNum" minWidth="150.0" text="GST NUM" />
             <TableColumn fx:id="colAddress" minWidth="180.0" prefWidth="-1.0" text="ADDRESS" />
             <TableColumn fx:id="colDate" minWidth="180.0" prefWidth="-1.0" text="REGISTERED DATE" />
             <TableColumn fx:id="colDesc" minWidth="140.0" prefWidth="-1.0" text="DESCRIPTION" />
@@ -24,6 +26,9 @@
          <columnResizePolicy>
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
          </columnResizePolicy>
+         <BorderPane.margin>
+            <Insets top="15.0" />
+         </BorderPane.margin>
       </TableView>
    </center>
    <bottom>
@@ -36,20 +41,32 @@
    <top>
       <HBox alignment="CENTER_RIGHT" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" onAction="#addCustomer" prefHeight="26.0" prefWidth="134.0" style="-fx-cursor: hand;-fx-background-color: BLUE; -fx-text-fill: WHITE; -fx-font-weight: BOLD;" text="+ ADD CUSTOMER">
+            <HBox fx:id="gstVerifyContainer" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+               <children>
+                  <Text fill="#ea0202" strokeType="OUTSIDE" strokeWidth="0.0" text="* Please verify the GST number carefully !" />
+                  <Button fx:id="bnCheckGstNum" mnemonicParsing="false" onAction="#gstVerification" style="-fx-font-weight: BOLD; -fx-background-radius: 3; -fx-background-color: transparent; -fx-text-fill: blue; -fx-cursor: hand;" text="Verify GST Number" underline="true" />
+               </children>
+               <HBox.margin>
+                  <Insets left="10.0" />
+               </HBox.margin>
+            </HBox>
+            <Button mnemonicParsing="false" onAction="#addCustomer" prefHeight="26.0" prefWidth="134.0" style="-fx-cursor: hand;-fx-background-color: BLUE; -fx-text-fill: WHITE; -fx-font-weight: BOLD;" text="+ ADD CUSTOMER" visible="false">
                <HBox.margin>
                   <Insets right="70.0" />
                </HBox.margin>
             </Button>
             <TextField fx:id="searchTf" minWidth="38.0" prefHeight="42.0" prefWidth="290.0" promptText="Enter ID / PHONE NUM / NAME" style="-fx-border-color: gray; -fx-border-radius: 3;">
-               <HBox.margin>
-                  <Insets bottom="6.0" left="6.0" right="50.0" top="10.0" />
-               </HBox.margin>
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
+               <HBox.margin>
+                  <Insets right="15.0" />
+               </HBox.margin>
             </TextField>
          </children>
+         <BorderPane.margin>
+            <Insets top="10.0" />
+         </BorderPane.margin>
       </HBox>
    </top>
 </BorderPane>

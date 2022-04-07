@@ -2,7 +2,6 @@ package com.shop.management.Controller.ReturnItems;
 
 import com.shop.management.CustomDialog;
 import com.shop.management.Main;
-import com.shop.management.Method.Method;
 import com.shop.management.Model.ReturnMainModel;
 import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
@@ -44,28 +43,18 @@ public class ReturnHistory implements Initializable {
     public Pagination pagination;
 
     private ObservableList<ReturnMainModel> returnList = FXCollections.observableArrayList();
-    private Method method;
     private CustomDialog customDialog;
     private DBConnection dbConnection;
-
     private FilteredList<ReturnMainModel> filteredData;
-
-    private Properties propInsert, propDelete, propUpdate, propRead;
-    private PropertiesLoader propLoader;
-
+    private Properties  propRead;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        method = new Method();
         customDialog = new CustomDialog();
         dbConnection = new DBConnection();
-
-        propLoader = new PropertiesLoader();
-        propDelete = propLoader.load("delete.properties");
-        propUpdate = propLoader.load("update.properties");
-        propRead = propLoader.load("read.properties");
-        propInsert = propLoader.load("insert.properties");
+        PropertiesLoader propLoader = new PropertiesLoader();
+        propRead = propLoader.getReadProp();
 
         getReturnItem();
 
@@ -87,12 +76,7 @@ public class ReturnHistory implements Initializable {
                 System.out.println("connection Failed");
                 return;
             }
-
-            String query = "select trm.return_main_id ,trm.sale_main_id ,trm.seller_id,  (TO_CHAR(trm.created_date, 'DD-MM-YYYY HH:MM'))as returnDate ," +
-                    "trm.total_refund_amount ,trm.old_invoice_number\n" +
-                    "        ,trm.invoice_number ,trm.remark, tc.customer_name , tc.customer_phone  from tbl_return_main trm\n" +
-                    "LEFT JOIN tbl_sale_main tsm ON trm.sale_main_id =  tsm.sale_main_id\n" +
-                    "LEFT JOIN tbl_customer tc on tsm.customer_id = tc.customer_id";
+            String query = propRead.getProperty("GET_ALL_RETURN_ITEMS");
 
             ps = connection.prepareStatement(query);
 
@@ -150,10 +134,7 @@ public class ReturnHistory implements Initializable {
                     return true;
                 } else if (rList.getOldInvoiceNum().toLowerCase().contains(lowerCaseFilter)) {
                     return true;
-                } else if (rList.getNewInvoiceNum().toLowerCase().contains(lowerCaseFilter)) {
-                    return true;
-                }
-                return false;
+                } else return rList.getNewInvoiceNum().toLowerCase().contains(lowerCaseFilter);
             });
 
             changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);
@@ -262,8 +243,6 @@ public class ReturnHistory implements Initializable {
             }
 
         };
-
-
         colCheckItem.setCellFactory(checkItems);
 
     }

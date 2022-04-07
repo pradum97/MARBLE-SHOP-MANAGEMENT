@@ -40,7 +40,7 @@
                               <Insets left="3.0" />
                            </VBox.margin>
                         </Label>
-                        <TextField fx:id="nameTf" prefHeight="44.0" prefWidth="417.0" promptText="Enter Full Name :" style="-fx-border-color: gray; -fx-border-radius: 2;" />
+                        <TextField fx:id="nameTf" onKeyReleased="#enterPress" prefHeight="44.0" prefWidth="417.0" promptText="Enter Full Name :" style="-fx-border-color: gray; -fx-border-radius: 2;" />
                      </children>
                   </VBox>
                   <VBox layoutX="101.0" layoutY="10.0" spacing="4.0">
@@ -53,7 +53,7 @@
                               <Insets left="3.0" />
                            </VBox.margin>
                         </Label>
-                        <TextField fx:id="phoneTf" prefHeight="44.0" prefWidth="417.0" promptText="Enter Phone Number :" style="-fx-border-color: gray; -fx-border-radius: 2;" />
+                        <TextField fx:id="phoneTf" onKeyReleased="#enterPress" prefHeight="44.0" prefWidth="417.0" promptText="Enter Phone Number :" style="-fx-border-color: gray; -fx-border-radius: 2;" />
                      </children>
                   </VBox>
                   <VBox layoutX="101.0" layoutY="141.0" spacing="4.0">
@@ -66,7 +66,7 @@
                               <Insets left="3.0" />
                            </VBox.margin>
                         </Label>
-                        <TextField fx:id="addressTf" prefHeight="44.0" prefWidth="417.0" promptText="Enter Full Address :" style="-fx-border-color: gray; -fx-border-radius: 2;" />
+                        <TextField fx:id="addressTf" onKeyReleased="#enterPress" prefHeight="44.0" prefWidth="417.0" promptText="Enter Full Address :" style="-fx-border-color: gray; -fx-border-radius: 2;" />
                      </children>
                   </VBox>
                   <VBox layoutX="101.0" layoutY="164.0" spacing="4.0">
@@ -79,7 +79,7 @@
                               <Insets left="3.0" />
                            </VBox.margin>
                         </Label>
-                        <TextArea fx:id="descriptionTf" prefHeight="62.0" prefWidth="418.0" promptText="Enter Description :" style="-fx-border-color: gray; -fx-border-radius: 2;" />
+                        <TextArea fx:id="descriptionTf" onKeyReleased="#enterPress" prefHeight="62.0" prefWidth="418.0" promptText="Enter Description :" style="-fx-border-color: gray; -fx-border-radius: 2;" />
                      </children>
                   </VBox>
                </children>

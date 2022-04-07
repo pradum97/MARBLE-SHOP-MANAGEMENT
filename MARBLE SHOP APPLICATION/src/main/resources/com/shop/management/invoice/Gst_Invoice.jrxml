@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="invoice" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="575" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="10" isFloatColumnFooter="true" uuid="fc24451b-4ab4-4dfb-820f-a2c80d6950b1">
 	<property name="ireport.zoom" value="1.7715610000000124"/>
 	<property name="ireport.x" value="9"/>
-	<property name="ireport.y" value="227"/>
+	<property name="ireport.y" value="193"/>
 	<style name="Table_CH" mode="Opaque" backcolor="#FFFFFF">
 		<box>
 			<pen lineWidth="0.7" lineColor="#000000"/>
@@ -461,7 +461,7 @@
 		</band>
 	</detail>
 	<summary>
-		<band height="168">
+		<band height="149">
 			<rectangle radius="0">
 				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="398" y="0" width="176" height="147" isRemoveLineWhenBlank="true" forecolor="#545050" backcolor="#FFFFFF" uuid="52028e21-ea17-4242-b62b-b35fc85efce9">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>

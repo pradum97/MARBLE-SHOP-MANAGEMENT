@@ -40,13 +40,14 @@
                                         <TableColumn fx:id="colReceivedAmt" editable="false" minWidth="-Infinity" sortable="false" text="PAID AMOUNT" />
                                         <TableColumn fx:id="colPayDues" editable="false" minWidth="-Infinity" sortable="false" />
                                         <TableColumn fx:id="colDuesAmt" editable="false" minWidth="-Infinity" sortable="false" text="DUES AMOUNT" />
+                                        <TableColumn fx:id="colBillType" editable="false" prefWidth="90.0" sortable="false" text="BILL TYPE" />
+                                        <TableColumn fx:id="colGstClaimed" editable="false" minWidth="-Infinity" sortable="false" text="GST CLAIMED" />
                                         <TableColumn fx:id="colNetAmount" editable="false" minWidth="-Infinity" sortable="false" text="NET AMOUNT" />
                                         <TableColumn fx:id="colAddiDisc" editable="false" minWidth="-Infinity" prefWidth="100.0" sortable="false" text="ADDI DISC" />
                                         <TableColumn fx:id="colTotDisc" editable="false" minWidth="-Infinity" sortable="false" text="TOT DISC ₹" />
                                         <TableColumn fx:id="colTotTax" editable="false" minWidth="-Infinity" sortable="false" text=" TOT TAX ₹" />
                                         <TableColumn fx:id="colInvoiceNumber" editable="false" minWidth="-Infinity" sortable="false" text="INVOICE NUM" />
                                         <TableColumn fx:id="colPaymentMode" editable="false" minWidth="-Infinity" sortable="false" text="PAYMENT MODE" />
-                                        <TableColumn fx:id="colBillType" editable="false" prefWidth="90.0" sortable="false" text="BILL TYPE" />
                                         <TableColumn fx:id="colSellerName" editable="false" minWidth="-Infinity" sortable="false" text="SELLER NAME" />
 
 

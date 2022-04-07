@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.web.WebView?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.SellItems.GstVerification">
+   <center>
+
+   </center>
+   <top>
+      <VBox BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="10.0" top="10.0" />
+         </BorderPane.margin>
+         <children>
+            <HBox alignment="CENTER">
+               <children>
+                  <Label text="GST NUMBER VERIFICATION">
+                     <font>
+                        <Font name="Arial Black" size="15.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER">
+               <children>
+                  <ProgressBar fx:id="progBar" prefHeight="10.0" prefWidth="795.0" progress="0.0" style="-fx-border-radius: 2; -fx-background-radius: 2;" HBox.hgrow="ALWAYS" />
+               </children>
+               <VBox.margin>
+                  <Insets top="20.0" />
+               </VBox.margin>
+            </HBox>
+         </children>
+      </VBox>
+   </top>
+   <center>
+      <VBox alignment="CENTER" BorderPane.alignment="CENTER">
+         <children>
+            <WebView fx:id="webView" minHeight="-Infinity" minWidth="-Infinity" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS" />
+            <Label fx:id="messageLabel" text="The Internet connection is not available. Please connect to the Internet" textFill="#ff0909">
+               <font>
+                  <Font size="21.0" />
+               </font>
+            </Label>
+         </children>
+      </VBox>
+   </center>
+</BorderPane>

@@ -27,12 +27,11 @@ public class GstUpdate implements Initializable {
     public TextField gstNameTF;
     public TextField descriptionTF;
     public TextField hsn_sacTf;
-
     private Method method;
     private DBConnection dbConnection;
-    private Properties properties;
     private CustomDialog customDialog;
     private TAX tax;
+    private Properties propUpdate ;
 
 
     @Override
@@ -44,8 +43,9 @@ public class GstUpdate implements Initializable {
 
         method = new Method();
         dbConnection = new DBConnection();
-        properties = new PropertiesLoader().load("query.properties");
         customDialog = new CustomDialog();
+        PropertiesLoader propLoader = new PropertiesLoader();
+        propUpdate = propLoader.getUpdateProp();
 
         setPreviousData(tax);
 
@@ -141,7 +141,7 @@ public class GstUpdate implements Initializable {
                 return;
             }
 
-            ps = connection.prepareStatement(properties.getProperty("UPDATE_GST"));
+            ps = connection.prepareStatement(propUpdate.getProperty("UPDATE_GST"));
             ps.setInt(1, sGst);
             ps.setInt(2, cGst);
             ps.setInt(3, iGst);

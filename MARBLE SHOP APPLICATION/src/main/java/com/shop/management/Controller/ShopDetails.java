@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class ShopDetails implements Initializable {
@@ -29,6 +30,7 @@ public class ShopDetails implements Initializable {
     public Label sGstNum;
     public Label sAddress;
     public Label propName;
+    public Label updateBn;
 
     private DBConnection dbConnection;
     private Method method;
@@ -41,7 +43,8 @@ public class ShopDetails implements Initializable {
         customDialog = new CustomDialog();
 
         setData();
-
+        updateBn.managedProperty().bind(updateBn.visibleProperty());
+        updateBn.setVisible(Objects.equals(Login.currentRoleName.toLowerCase(), "admin".toLowerCase()));
 
     }
 

@@ -1,12 +1,12 @@
 package com.shop.management.Controller.SettingController;
 
+import com.shop.management.Controller.Login;
 import com.shop.management.CustomDialog;
 import com.shop.management.ImageLoader;
 import com.shop.management.Main;
 import com.shop.management.Method.GetTax;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.TAX;
-import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -27,8 +27,8 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class GstConfig implements Initializable {
@@ -47,7 +47,6 @@ public class GstConfig implements Initializable {
 
     private Method method;
     private DBConnection dbConnection;
-    private Properties properties;
     private CustomDialog customDialog;
 
     @Override
@@ -55,7 +54,6 @@ public class GstConfig implements Initializable {
 
         method = new Method();
         dbConnection = new DBConnection();
-        properties = new PropertiesLoader().load("query.properties");
         customDialog = new CustomDialog();
 
         setGstTableData();
@@ -98,6 +96,9 @@ public class GstConfig implements Initializable {
                         iv_delete.setFitHeight(17);
                         iv_delete.setFitWidth(17);
                         iv_delete.setPreserveRatio(true);
+
+                        iv_delete.managedProperty().bind(iv_delete.visibleProperty());
+                        iv_delete.setVisible(Objects.equals(Login.currentRoleName.toLowerCase(), "admin".toLowerCase()));
 
                         iv_edit.setStyle(
                                 " -fx-cursor: hand ;"

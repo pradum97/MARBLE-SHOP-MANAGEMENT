@@ -1,11 +1,11 @@
 package com.shop.management.Controller.SellItems;
 
-import com.shop.management.Controller.Login;
 import com.shop.management.ImageLoader;
 import com.shop.management.Main;
 import com.shop.management.Method.Method;
 import com.shop.management.Method.StaticData;
 import com.shop.management.Model.Sale_Main;
+import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
@@ -14,14 +14,19 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
 import java.net.URL;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class PayDues implements Initializable {
@@ -32,10 +37,16 @@ public class PayDues implements Initializable {
     private Sale_Main saleMain;
     private DecimalFormat df = new DecimalFormat("0.##");
     private Method method;
+    private Properties propInsert , propDelete , propUpdate , propRead;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         method = new Method();
+        PropertiesLoader propLoader = new PropertiesLoader();
+        propDelete = propLoader.getDeleteProp();
+        propUpdate = propLoader.getUpdateProp();
+        propRead = propLoader.getReadProp();
+        propInsert = propLoader.getInsertProp();
 
         saleMain = (Sale_Main) Main.primaryStage.getUserData();
 
@@ -114,6 +125,26 @@ public class PayDues implements Initializable {
 
     public void payDues(ActionEvent event) {
 
+      pay(event.getSource());
+    }
+
+    public void cancel(ActionEvent event) {
+
+        Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+        if (stage.isShowing()){
+            stage.close();
+        }
+    }
+
+    public void enterClick(KeyEvent e) {
+
+        if (e.getCode() == KeyCode.ENTER) {
+            pay(e.getSource());
+        }
+    }
+
+    private void pay(Object source){
+
         String paidAmount = receivedAmountTF.getText();
         String avlDues = duesAmountTF.getText();
         String paymentMode = paymentModeC.getSelectionModel().getSelectedItem();
@@ -164,7 +195,7 @@ public class PayDues implements Initializable {
                     System.out.println("Connection failed");
                     return;
                 }
-                ps = connection.prepareStatement("UPDATE tbl_dues SET dues_amount = dues_amount-? where dues_id = ?");
+                ps = connection.prepareStatement(propUpdate.getProperty("UPDATE_DUES_IN_PAYDUES"));
                 ps.setDouble(1, paidAmountD);
                 ps.setInt(2, saleMain.getDuesId());
 
@@ -174,15 +205,22 @@ public class PayDues implements Initializable {
 
                     ps = null;
 
-                    ps = connection.prepareStatement("UPDATE TBL_SALE_MAIN SET received_amount = received_amount+? WHERE SALE_MAIN_ID = ?");
+                    ps = connection.prepareStatement(propUpdate.getProperty("UPDATE_SALE_MAIN_IN_PAYDUES"));
                     ps.setDouble(1,paidAmountD);
                     ps.setInt(2,saleMain.getSale_main_id());
                     ps.executeUpdate();
 
-                    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                    Stage stage = null;
 
-                    String query = "INSERT INTO dues_history (DUES_ID, CUSTOMER_ID, SALE_MAIN_ID, PREVIOUS_DUES, PAID_AMOUNT, CURRENT_DUES, PAYMENT_MODE)\n" +
-                            " VALUES (?,?,?,?,?,?,?)";
+                    if (source instanceof ActionEvent){
+                        stage = (Stage) ((Node)source).getScene().getWindow();
+                    }else {
+                        stage = (Stage) ((Node)source).getScene().getWindow();
+                    }
+
+
+
+                    String query = propInsert.getProperty("INSERT_DUES_HISTORY_IN_PAYDUES");
                     psH = connection.prepareStatement(query);
                     psH.setInt(1, saleMain.getDuesId());
                     psH.setInt(2, saleMain.getCustomerId());
@@ -200,7 +238,7 @@ public class PayDues implements Initializable {
                             ps  = null;
                             String duesQuery = "DELETE FROM TBL_DUES where dues_id ="+saleMain.getDuesId();
                             ps = connection.prepareStatement(duesQuery);
-                           ps.executeUpdate();
+                            ps.executeUpdate();
 
                         }
                         stage.close();
@@ -221,17 +259,8 @@ public class PayDues implements Initializable {
                     e.printStackTrace();
                 }
             }
-
         } else {
             alert.close();
-        }
-    }
-
-    public void cancel(ActionEvent event) {
-
-        Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
-        if (stage.isShowing()){
-            stage.close();
         }
     }
 }

@@ -7,12 +7,13 @@ public class Sale_Main {
     private String paymentMode, billType, invoiceNumber;
     private String sellerName, sellingDate;
     private int totalItems;
-    private double duesAmount;
+    private double duesAmount , gstClaimedAmt;
 
-    public Sale_Main(int sale_main_id,int duesId , int customerId, int sellerId, String customerName, String customerPhone,
-                     String customerAddress, double additionalDisc, double receivedAmount, double totalDiscountAmount,
-                     double totalTaxAmount, double netAmount, String paymentMode, String billType,
-                     String invoiceNumber, String sellerName, String sellingDate , int totalItems , double duesAmount) {
+    public Sale_Main(int sale_main_id, int duesId, int customerId, int sellerId, String customerName, String customerPhone,
+                     String customerAddress,
+                     double additionalDisc, double receivedAmount, double totalDiscountAmount, double totalTaxAmount,
+                     double netAmount, String paymentMode, String billType, String invoiceNumber, String sellerName, String sellingDate,
+                     int totalItems, double duesAmount, double gstClaimedAmt) {
         this.sale_main_id = sale_main_id;
         this.duesId = duesId;
         this.customerId = customerId;
@@ -32,6 +33,15 @@ public class Sale_Main {
         this.sellingDate = sellingDate;
         this.totalItems = totalItems;
         this.duesAmount = duesAmount;
+        this.gstClaimedAmt = gstClaimedAmt;
+    }
+
+    public double getGstClaimedAmt() {
+        return gstClaimedAmt;
+    }
+
+    public void setGstClaimedAmt(double gstClaimedAmt) {
+        this.gstClaimedAmt = gstClaimedAmt;
     }
 
     public int getDuesId() {

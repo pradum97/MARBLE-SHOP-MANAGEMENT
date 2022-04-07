@@ -5,6 +5,7 @@ import com.shop.management.Main;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.Quantity;
 import com.shop.management.Model.Stock;
+import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
@@ -24,6 +25,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class QuantityDialog implements Initializable {
@@ -46,14 +48,18 @@ public class QuantityDialog implements Initializable {
     private int stock_id;
     private int requiredQuantity;
     private long avlQty;
-
+    private Properties propInsert , propDelete , propUpdate , propRead;
     private final static String UPDATE_QUANTITY = "UPDATE QUANTITY";
     private final static String ADD_CART = "➕ ADD TO CART";
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         stock = (Stock) Main.primaryStage.getUserData();
+        PropertiesLoader propLoader = new PropertiesLoader();
+        propDelete = propLoader.getDeleteProp();
+        propUpdate = propLoader.getUpdateProp();
+        propRead = propLoader.getReadProp();
+        propInsert = propLoader.getInsertProp();
 
         if (null == stock) {
             return;
@@ -80,8 +86,7 @@ public class QuantityDialog implements Initializable {
                 return;
             }
 
-            ps = connection.prepareStatement("SELECT stock_id, sellprice ,quantity , sellprice ," +
-                    " quantity_unit FROM TBL_CART WHERE STOCK_ID = ?");
+            ps = connection.prepareStatement(propRead.getProperty("CHECK_STOCK_IS_EXIST_IN_QTY_DIALOG"));
             ps.setInt(1, stock.getStockID());
 
             rs = ps.executeQuery();
@@ -235,9 +240,7 @@ public class QuantityDialog implements Initializable {
                 return;
             }
 
-            String query = "SELECT REQUIRED FROM STOCK_CONTROL";
-
-            ps = connection.prepareStatement(query);
+            ps = connection.prepareStatement(propRead.getProperty("READ_STOCK_CONTROL"));
             rs = ps.executeQuery();
 
             if (rs.next()) {
@@ -268,7 +271,7 @@ public class QuantityDialog implements Initializable {
                 return;
             }
 
-            ps = connection.prepareStatement("UPDATE tbl_cart SET quantity = ? , quantity_unit = ? , sellprice = ? WHERE stock_id = ?");
+            ps = connection.prepareStatement(propUpdate.getProperty("UPDATE_CART_IN_QTY_DIALOG"));
             ps.setLong(1, quantity);
             ps.setString(2, quantity_Unit);
             ps.setDouble(3, sellingPrice);

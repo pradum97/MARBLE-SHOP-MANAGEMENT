@@ -10,6 +10,7 @@ module com.shop.management {
     requires org.controlsfx.controls;
     requires jasperreports;
     requires java.desktop;
+    requires javafx.web;
 
 
     exports com.shop.management;
@@ -31,4 +32,6 @@ module com.shop.management {
     opens com.shop.management;
     exports com.shop.management.Controller.ReturnItems;
     opens com.shop.management.Controller.ReturnItems to javafx.fxml;
+    exports com.shop.management.Controller.Proposal;
+    opens com.shop.management.Controller.Proposal to javafx.fxml;
 }

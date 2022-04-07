@@ -32,8 +32,8 @@ public class DiscountUpdate implements Initializable {
     private CustomDialog customDialog;
     private Method method;
     private DBConnection dbConnection;
-    private Properties properties;
     private Discount discount;
+    private Properties propUpdate;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -41,7 +41,8 @@ public class DiscountUpdate implements Initializable {
         customDialog = new CustomDialog();
         method = new Method();
         dbConnection = new DBConnection();
-        properties = new PropertiesLoader().load("query.properties");
+        PropertiesLoader propLoader = new PropertiesLoader();
+        propUpdate = propLoader.getUpdateProp();
 
         discount = (Discount) Main.primaryStage.getUserData();
 
@@ -54,7 +55,6 @@ public class DiscountUpdate implements Initializable {
         discountTF.setText(String.valueOf(discount.getDiscount()));
         descriptionTF.setText(discount.getDescription());
         discountNameC.setText(discount.getDiscountName());
-
     }
 
     public void updateBn(ActionEvent event) {
@@ -92,7 +92,7 @@ public class DiscountUpdate implements Initializable {
                 return;
             }
 
-            ps = connection.prepareStatement(properties.getProperty("UPDATE_DISCOUNT"));
+            ps = connection.prepareStatement(propUpdate.getProperty("UPDATE_DISCOUNT"));
             ps.setInt(1, discountD);
             ps.setString(2, descriptionTf);
             ps.setString(3, discountName);

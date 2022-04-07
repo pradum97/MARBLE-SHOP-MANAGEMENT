@@ -9,13 +9,11 @@ import com.shop.management.Method.Method;
 import com.shop.management.Method.StaticData;
 import com.shop.management.Model.CartModel;
 import com.shop.management.Model.CustomerModel;
-import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -23,7 +21,6 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -33,8 +30,9 @@ import javafx.util.Callback;
 
 import java.net.URL;
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class Cart implements Initializable {
@@ -66,9 +64,11 @@ public class Cart implements Initializable {
     private DBConnection dbconnection;
     private Method method;
     private CustomDialog customDialog;
-    private Properties properties;
-
     private static String invoiceNumber;
+
+    // container
+    public HBox paidAmountContainer;
+    public VBox paymentModeContainer;
 
     private ObservableList<CartModel> cartList = FXCollections.observableArrayList();
 
@@ -83,7 +83,6 @@ public class Cart implements Initializable {
         method = new Method();
         dbconnection = new DBConnection();
         customDialog = new CustomDialog();
-        properties = new PropertiesLoader().load("query.properties");
         invoiceNumber = new GenerateInvoiceNumber().generate();
 
         if (null == invoiceNumber) {
@@ -95,7 +94,19 @@ public class Cart implements Initializable {
         duesAmountTF.setEditable(false);
 
         billingTypeC.valueProperty().addListener((observableValue, s, t1) -> {
-            getCart(t1);
+            if (t1.equals("PROPOSAL")) {
+                paidAmountContainer.setDisable(true);
+                paymentModeContainer.setDisable(true);
+                addDiscTF.setText("");
+                receivedAmountTF.setText("");
+                duesAmountTF.setText("");
+                addDiscTF.setDisable(true);
+            } else {
+                paidAmountContainer.setDisable(false);
+                paymentModeContainer.setDisable(false);
+                addDiscTF.setDisable(false);
+
+            }
         });
         comboBoxConfig();
         textFieldConfig();
@@ -121,7 +132,7 @@ public class Cart implements Initializable {
             } else {
                 receivedAmountTF.setText("");
                 duesAmountTF.setText("");
-                method.show_popup("YOUR INVOICE VALUE IS : " + totalPayable, receivedAmountTF);
+                method.show_popup("YOUR PAYABLE AMOUNT IS : " + totalPayable, receivedAmountTF);
             }
 
         });
@@ -191,6 +202,8 @@ public class Cart implements Initializable {
                 };
             }
         });
+
+
     }
 
     private void setBillType() {
@@ -199,7 +212,7 @@ public class Cart implements Initializable {
         billingTypeC.getSelectionModel().selectFirst();
     }
 
-    private void getCart(String billType) {
+    private void getCart() {
         if (null != cartList) {
             cartList.clear();
         }
@@ -313,6 +326,8 @@ public class Cart implements Initializable {
             totalPayAbleL.setText(String.valueOf(Math.ceil(totalPayableD)));
             taxableValueL.setText(String.valueOf(totTaxable));
 
+            duesAmountTF.setText(String.valueOf(Math.ceil(totalPayableD)));
+
 
             addDiscTF.textProperty().addListener((observableValue, s, t1) -> {
 
@@ -327,9 +342,11 @@ public class Cart implements Initializable {
                 if (inputDiscount < totalPayableD) {
                     double totPayable = totalPayableD - inputDiscount;
                     totalPayAbleL.setText(String.valueOf((Math.ceil(totPayable))));
+                    duesAmountTF.setText(totalPayAbleL.getText());
                 } else {
                     inputDiscount = 0;
                     totalPayAbleL.setText(String.valueOf(Math.ceil(totalPayableD)));
+                    duesAmountTF.setText(String.valueOf(Math.ceil(totalPayableD)));
                     addDiscTF.setText(String.valueOf(0));
                     method.show_popup("Discount Amount Not Greater Then " + totalPayableD, addDiscTF);
                 }
@@ -513,7 +530,6 @@ public class Cart implements Initializable {
         Connection con = null;
         Statement ps = null;
 
-
         String deleteQuery = "DELETE FROM tbl_cart";
         String sequenceOrder = "ALTER SEQUENCE tbl_cart_cart_id_seq RESTART WITH 1;";
 
@@ -567,72 +583,148 @@ public class Cart implements Initializable {
     }
 
     private void refresh() {
-        String billingType = billingTypeC.getSelectionModel().getSelectedItem();
-        getCart(billingType);
-
+        getCart();
     }
 
-    public void sellNow_bn(ActionEvent event) {
+    public void checkOutBn(ActionEvent event) {
 
         if (cartList.size() < 1) {
             customDialog.showAlertBox("NOT AVAILABLE", "ITEM NOT AVAILABLE PLEASE ADD AT LEAST ONE ITEM");
             return;
         }
-        String receivedAmountS = receivedAmountTF.getText();
+        String billType = billingTypeC.getSelectionModel().getSelectedItem();
 
-        if (receivedAmountS.isEmpty()) {
-            method.show_popup("Please Enter Received Amount", receivedAmountTF);
-            return;
-        }
-        double receivedAmountD = 0;
-        try {
-            receivedAmountD = Double.parseDouble(receivedAmountS);
-        } catch (NumberFormatException e) {
-            method.show_popup("Enter Valid Amount", receivedAmountTF);
-            return;
-        }
-
-        if (receivedAmountD < 0) {
-            method.show_popup("Enter more than 0", receivedAmountTF);
-            return;
-        } else if (addDiscTF.getText().isEmpty()) {
-            addDiscTF.setText(String.valueOf(0));
-        }
-
-        customDialog.showFxmlDialog2("sellItems/customerDetails.fxml", "ENTER CUSTOMER DETAILS");
-        CustomerModel customer = null;
-
-        try {
-            customer = (CustomerModel) Main.primaryStage.getUserData();
-        } catch (ClassCastException ignored) {
-        }
-
-        if (null == customer) {
-            System.out.println("customer not found");
-            return;
-        }
-        // "REGULAR", "GST", "PROPOSAL" billType
-
-        int customerId = customer.getCustomerId();
-        String billingType = billingTypeC.getSelectionModel().getSelectedItem();
-        switch (billingType) {
-            case "PROPOSAL" -> {
-
+        if (billType.equals("PROPOSAL")) {
+            customDialog.showFxmlDialog2("sellItems/customerDetails.fxml", "ENTER CUSTOMER DETAILS");
+            CustomerModel customer = null;
+            try {
+                customer = (CustomerModel) Main.primaryStage.getUserData();
+            } catch (ClassCastException ignored) {
+                return;
             }
-            case "GST", "REGULAR" -> {
 
-                try {
-                    addSaleItem(customer, billingType, receivedAmountD, event);
-                } catch (SQLException e) {
-                    e.printStackTrace();
+            Connection connection = null;
+            PreparedStatement ps = null;
+            ResultSet rs = null;
+
+            try {
+                connection = dbconnection.getConnection();
+                if (null == connection) {
+                    System.out.println("connection Failed");
+                    return;
+                }
+                String query = "INSERT INTO PROPOSAL_MAIN (CUSTOMER_ID, SELLER_ID , invoice_num) VALUES (?, ? , ?)";
+
+                ps = connection.prepareStatement(query, new String[]{"proposal_main_id"});
+                ps.setInt(1, customer.getCustomerId());
+                ps.setInt(2, Login.currentlyLogin_Id);
+                ps.setString(3, generateProposalInvoiceNum());
+
+                int res = ps.executeUpdate();
+
+                if (res > 0) {
+                    rs = ps.getGeneratedKeys();
+
+                    if (rs.next()) {
+                        int proposalMainId = rs.getInt(1);
+                        ps = null;
+                        res = 0;
+
+                        String itemsQuery = "INSERT INTO PROPOSAL_ITEMS (PROPOSAL_MAIN_ID, PRODUCT_ID, SELLPrice, STOCK_ID, QUANTITY, QUANTITY_UNIT) VALUES (?, ?, ?, ?, ?, ?)";
+                        for (CartModel cm : cartList) {
+
+                            ps = connection.prepareStatement(itemsQuery);
+                            ps.setInt(1, proposalMainId);
+                            ps.setInt(2, cm.getProductId());
+                            ps.setDouble(3, cm.getSellingPrice());
+                            ps.setInt(4, cm.getProductStockID());
+                            ps.setInt(5, cm.getQuantity());
+                            ps.setString(6, cm.getQuantityUnit());
+
+                            res = ps.executeUpdate();
+                        }
+                        if (res > 0) {
+                            deleteAll(event);
+                            customDialog.showAlertBox("", "SUCCESSFUL");
+                            // generate Proposal Item
+                            System.out.println(customer.getCustomerId());
+                            new GenerateInvoice().proposalInvoice(proposalMainId);
+                        }
+                    }
                 }
 
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                DBConnection.closeConnection(connection, ps, rs);
+            }
+
+        } else {
+            String receivedAmountS = receivedAmountTF.getText();
+
+            if (receivedAmountS.isEmpty()) {
+                method.show_popup("Please Enter Received Amount", receivedAmountTF);
+                return;
+            }
+            double receivedAmountD = 0;
+            try {
+                receivedAmountD = Double.parseDouble(receivedAmountS);
+            } catch (NumberFormatException e) {
+                method.show_popup("Enter Valid Amount", receivedAmountTF);
+                return;
+            }
+
+            if (receivedAmountD < 0) {
+                method.show_popup("Enter more than 0", receivedAmountTF);
+                return;
+            } else if (addDiscTF.getText().isEmpty()) {
+                addDiscTF.setText(String.valueOf(0));
+            }
+            double totalPayable = Double.parseDouble(totalPayAbleL.getText());
+            Map<String, Object> map = new HashMap<>();
+            map.put("billType", billType);
+            map.put("gstAmount", gstPrice);
+            map.put("totalPayable", totalPayable);
+            map.put("dues", duesAmountTF.getText());
+            map.put("paidAmount", receivedAmountTF.getText());
+            Main.primaryStage.setUserData(map);
+            customDialog.showFxmlDialog("sellItems/customerDetails.fxml", "ENTER CUSTOMER DETAILS");
+            Map<String, Object> receiveMap;
+            try {
+                receiveMap = (Map<String, Object>) Main.primaryStage.getUserData();
+            } catch (ClassCastException ignored) {
+                return;
+            }
+
+            if (null == receiveMap.get("customerId")){
+                return;
+            }
+
+            int customerId = (int) receiveMap.get("customerId");
+
+            if (customerId < 0) {
+                System.out.println("customer not found");
+                return;
+            }
+
+            // "REGULAR", "GST", "PROPOSAL" billType
+            String billingType = billingTypeC.getSelectionModel().getSelectedItem();
+            switch (billingType) {
+                case "GST", "REGULAR" -> {
+
+                    try {
+                        addSaleItem(customerId, billingType, receivedAmountD, event, receiveMap);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+
+                }
             }
         }
     }
 
-    private void addSaleItem(CustomerModel customer, String billingType,
-                             double receivedAmountD, ActionEvent event) throws SQLException {
+    private void addSaleItem(int customerId, String billingType,
+                             double receivedAmountD, ActionEvent event, Map<String, Object> receiveMap) throws SQLException {
 
         double additionalDisc = 0;
         try {
@@ -641,10 +733,28 @@ public class Cart implements Initializable {
         }
 
         String paytmModeS = paymentModeC.getSelectionModel().getSelectedItem();
-        double duesAmtD = Double.parseDouble(duesAmountTF.getText());
+        double duesAmtD = 0 , paidAmount = 0;
         double totalDisAmtD = discountPrice + additionalDisc;
         double totalTaxAmtD = gstPrice;
-        double invoiceValue = Double.parseDouble(totalPayAbleL.getText());
+        double invoiceValue = 0;
+
+        if (null != receiveMap.get("isGstClaimed")) {
+            if ((Boolean) receiveMap.get("isGstClaimed")) {
+                invoiceValue = (Double) receiveMap.get("totalPayable");
+                duesAmtD = (Double) receiveMap.get("avlDues");
+                paidAmount = (Double)receiveMap.get("paidAmount");
+
+            } else {
+                invoiceValue = Double.parseDouble(totalPayAbleL.getText());
+                duesAmtD = Double.parseDouble(duesAmountTF.getText());
+                paidAmount = receivedAmountD;
+            }
+        } else {
+            invoiceValue = Double.parseDouble(totalPayAbleL.getText());
+            duesAmtD = Double.parseDouble(duesAmountTF.getText());
+            paidAmount = receivedAmountD;
+        }
+
         long timestamp = System.currentTimeMillis();
 
         ObservableList<CartModel> items = cartTableView.getItems();
@@ -662,25 +772,34 @@ public class Cart implements Initializable {
             addiDisc = Double.parseDouble(addDiscTF.getText());
         } catch (NumberFormatException ignored) {
         }
-
-
         try {
             String saleMainQuery = "INSERT INTO tbl_sale_main(CUSTOMER_ID, SELLER_ID, ADDITIONAL_DISCOUNT, RECEIVED_AMOUNT," +
                     " PAYMENT_MODE, TOT_DISC_AMOUNT,\n" +
-                    "                          TOT_TAX_AMOUNT, NET_AMOUNT, INVOICE_NUMBER, BILL_TYPE)\n" +
-                    "                           VALUES (?,?,?,?,?,?,?,?,?,?)";
+                    "                          TOT_TAX_AMOUNT, NET_AMOUNT, INVOICE_NUMBER, BILL_TYPE , GST_CLAIMED)\n" +
+                    "                           VALUES (?,?,?,?,?,?,?,?,?,?,?)";
 
             ps3 = connection.prepareStatement(saleMainQuery, new String[]{"sale_main_id"});
-            ps3.setInt(1, customer.getCustomerId());
+            ps3.setInt(1, customerId);
             ps3.setInt(2, Login.currentlyLogin_Id);
             ps3.setDouble(3, addiDisc);
-            ps3.setDouble(4, receivedAmountD);
+            ps3.setDouble(4, paidAmount);
             ps3.setString(5, paytmModeS);
             ps3.setDouble(6, totalDisAmtD);
             ps3.setDouble(7, totalTaxAmtD);
             ps3.setDouble(8, invoiceValue);
             ps3.setString(9, invoiceNumber);
             ps3.setString(10, billingType);
+
+            if (null != receiveMap.get("isGstClaimed")) {
+
+                if ((Boolean) receiveMap.get("isGstClaimed")) {
+                    ps3.setDouble(11, (Double) receiveMap.get("gstClaimedAmount"));
+                } else {
+                    ps3.setDouble(11, 0);
+                }
+            } else {
+                ps3.setDouble(11, 0);
+            }
 
             int resMain = ps3.executeUpdate();
             if (resMain > 0) {
@@ -696,7 +815,7 @@ public class Cart implements Initializable {
                                 " DUES_NOTES, PAYMENT_MODE, LAST_PAYMENT,INVOICE_NUMBER)\n" +
                                 "VALUES (?,?,?,?,?,?,?)";
                         psDues = connection.prepareStatement(duesQuery);
-                        psDues.setInt(1, customer.getCustomerId());
+                        psDues.setInt(1, customerId);
                         psDues.setInt(2, sale_main_id);
                         psDues.setDouble(3, duesAmtD);
                         psDues.setNull(4, Types.NULL);
@@ -759,11 +878,24 @@ public class Cart implements Initializable {
                         addDiscTF.setText(String.valueOf(0));
                         deleteAll(event);
 
-                        switch (billingType){
+                        switch (billingType) {
 
-                            case "REGULAR" ->  new GenerateInvoice().regularInvoice(sale_main_id,false , null);
+                            case "REGULAR" -> new GenerateInvoice().regularInvoice(sale_main_id, false, null);
 
-                            case "GST" -> new GenerateInvoice().gstInvoice(sale_main_id,false , null);
+                            case "GST" -> {
+
+                                if (null != receiveMap.get("isGstClaimed")) {
+
+                                    if ((Boolean) receiveMap.get("isGstClaimed")) {
+                                        new GenerateInvoice().gstClaimedInvoice(sale_main_id, false, null);
+                                    } else {
+                                        new GenerateInvoice().gstInvoice(sale_main_id, false, null);
+                                    }
+
+                                } else {
+                                    new GenerateInvoice().gstInvoice(sale_main_id, false, null);
+                                }
+                            }
                         }
                     }
 
@@ -789,11 +921,38 @@ public class Cart implements Initializable {
                 psDues.close();
             }
         }
-
     }
 
     public void pay100(ActionEvent event) {
         receivedAmountTF.setText(String.valueOf(totalPayAbleL.getText()));
+    }
+
+    private String generateProposalInvoiceNum() {
+
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            connection = new DBConnection().getConnection();
+            ps = connection.prepareStatement("select max(PROPOSAL_MAIN_ID) from PROPOSAL_MAIN");
+            rs = ps.executeQuery();
+            String invoiceNum = null;
+
+            if (rs.next()) {
+                long id = rs.getInt(1) + 1;
+                invoiceNum = String.format("%07d", id);
+            }
+
+            return "SUMA" + invoiceNum + "P";
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            DBConnection.closeConnection(connection, ps, rs);
+
+        }
+
     }
 
     public void pay50(ActionEvent event) {
@@ -803,8 +962,8 @@ public class Cart implements Initializable {
 
     public void closeBn(ActionEvent event) {
 
-        Stage stage  = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        if (stage.isShowing()){
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        if (stage.isShowing()) {
             stage.close();
         }
     }

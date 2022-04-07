@@ -8,10 +8,10 @@ public class CustomerModel {
     private String address;
     private double duesAmount;
     private String notes , description;
-    private String registered_date;
+    private String registered_date , gstNum;
 
-    public CustomerModel(int customerId, String name, long phone, String address, double duesAmount,
-                         String notes, String description, String registered_date) {
+    public CustomerModel(int customerId, String name, long phone, String address,
+                         double duesAmount, String notes, String description, String registered_date, String gstNum) {
         this.customerId = customerId;
         this.name = name;
         this.phone = phone;
@@ -20,11 +20,20 @@ public class CustomerModel {
         this.notes = notes;
         this.description = description;
         this.registered_date = registered_date;
+        this.gstNum = gstNum;
     }
 
     public CustomerModel(int customerId) {
         this.customerId = customerId;
 
+    }
+
+    public String getGstNum() {
+        return gstNum;
+    }
+
+    public void setGstNum(String gstNum) {
+        this.gstNum = gstNum;
     }
 
     public String getRegistered_date() {

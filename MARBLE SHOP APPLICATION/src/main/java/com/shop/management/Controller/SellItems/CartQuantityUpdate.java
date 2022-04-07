@@ -4,6 +4,7 @@ import com.shop.management.CustomDialog;
 import com.shop.management.Main;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.CartModel;
+import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
@@ -21,6 +22,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class CartQuantityUpdate implements Initializable {
@@ -37,12 +39,16 @@ public class CartQuantityUpdate implements Initializable {
     private String quantity_unit;
     private long availableQuantity;
     private int requiredQuantity;
-     private long avlQty;
+    private long avlQty;
+    private Properties propUpdate, propRead;
 
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         method = new Method();
+        PropertiesLoader propLoader = new PropertiesLoader();
+        propUpdate = propLoader.getUpdateProp();
+        propRead = propLoader.getReadProp();
 
         cartModel = (CartModel) Main.primaryStage.getUserData();
         if (null == cartModel) {
@@ -65,12 +71,9 @@ public class CartQuantityUpdate implements Initializable {
         quantityUnit.getItems().add(cartModel.getQuantityUnit());
         quantityUnit.getSelectionModel().selectFirst();
 
-        avlQty = (availableQuantity-requiredQuantity);
+        avlQty = (availableQuantity - requiredQuantity);
 
-        availableQuantityL.setText(avlQty+"-"+quantity_unit+" ( Tot Avl : "+availableQuantity+"-"+quantity_unit+" - Required : "+requiredQuantity+" )");
-
-
-       // availableQuantityL.setText(availableQuantity + " h-" + quantity_unit);
+        availableQuantityL.setText(avlQty + "-" + quantity_unit + " ( Tot Avl : " + availableQuantity + "-" + quantity_unit + " - Required : " + requiredQuantity + " )");
     }
 
     public void enterPress(KeyEvent e) {
@@ -94,7 +97,7 @@ public class CartQuantityUpdate implements Initializable {
                 return;
             }
 
-            ps = connection.prepareStatement("UPDATE tbl_cart SET quantity = ? , quantity_unit = ? , sellprice = ? WHERE cart_id = ?");
+            ps = connection.prepareStatement(propUpdate.getProperty("UPDATE_CART_QUANTITY"));
             ps.setLong(1, quantity);
             ps.setString(2, quantity_Unit);
             ps.setDouble(3, sellingPrice);
@@ -124,8 +127,8 @@ public class CartQuantityUpdate implements Initializable {
         String sellPrice = sellingPriceTf.getText();
         String unit = quantityUnit.getSelectionModel().getSelectedItem();
 
-        long quantity = 0;
-        double sellingPrice = 0;
+        long quantity;
+        double sellingPrice;
 
         if (quan.isEmpty()) {
             method.show_popup("ENTER QUANTITY", quantityTf);
@@ -159,13 +162,11 @@ public class CartQuantityUpdate implements Initializable {
             method.show_popup("ENTER VALID PRICE", sellingPriceTf);
             return;
         }
-
         if (sellingPrice < 1) {
             method.show_popup("ENTER VALID PRICE", sellingPriceTf);
             return;
 
         }
-
         if (quantity <= avlQty) {
             if (sellingPrice >= cartModel.getMinSellPrice()) {
 
@@ -180,11 +181,12 @@ public class CartQuantityUpdate implements Initializable {
                 method.show_popup("PLEASE ENTER MORE THAN " + cartModel.getMinSellPrice() + " RS.", sellingPriceTf);
             }
         } else {
-            String msg = "QUANTITY NOT AVAILABLE \n AVAILABLE QTY : "+ avlQty + " -"+quantity_unit;
+            String msg = "QUANTITY NOT AVAILABLE \n AVAILABLE QTY : " + avlQty + " -" + quantity_unit;
 
             method.show_popup(msg, quantityTf);
         }
     }
+
     private void getProductStock() {
 
         Connection connection = null;
@@ -199,7 +201,7 @@ public class CartQuantityUpdate implements Initializable {
                 return;
             }
 
-            ps = connection.prepareStatement("select quantity,product_mrp , quantity_unit ,min_sellingprice from tbl_product_stock where stock_id = ? ");
+            ps = connection.prepareStatement(propRead.getProperty("READ_PRODUCT_STOCK_IN_CART_UPDATE"));
             ps.setInt(1, cartModel.getProductStockID());
 
             rs = ps.executeQuery();
@@ -210,10 +212,7 @@ public class CartQuantityUpdate implements Initializable {
                 quantity_unit = rs.getString("quantity_unit");
                 minSellingPrice = rs.getDouble("min_sellingprice");
                 productMrp = rs.getDouble("product_mrp");
-
             }
-
-
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -222,6 +221,7 @@ public class CartQuantityUpdate implements Initializable {
 
         setDefaultValue();
     }
+
     private void getStockSetting() {
         requiredQuantity = 0;
 
@@ -235,7 +235,7 @@ public class CartQuantityUpdate implements Initializable {
                 return;
             }
 
-            String query = "SELECT REQUIRED FROM STOCK_CONTROL";
+            String query = propRead.getProperty("READ_STOCK_CONTROL");
 
             ps = connection.prepareStatement(query);
             rs = ps.executeQuery();
@@ -247,7 +247,6 @@ public class CartQuantityUpdate implements Initializable {
             }
 
 
-
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -257,8 +256,8 @@ public class CartQuantityUpdate implements Initializable {
 
     public void cancel(ActionEvent event) {
 
-        Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
-        if (stage.isShowing()){
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        if (stage.isShowing()) {
             stage.close();
         }
     }

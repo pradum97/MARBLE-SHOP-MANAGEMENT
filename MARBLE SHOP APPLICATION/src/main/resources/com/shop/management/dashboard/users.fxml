@@ -25,7 +25,6 @@
         <TableView fx:id="user_table_view" focusTraversable="false" AnchorPane.leftAnchor="10.0" VBox.vgrow="ALWAYS">
             <columns>
                 <TableColumn fx:id="col_id"  prefWidth="60" editable="false" reorderable="false" sortable="false" styleClass="table-column" text="ID" />
-                <TableColumn fx:id="col_userImg" editable="false" prefWidth="60" reorderable="false" sortable="false" styleClass="table-column" text="IMG" />
                 <TableColumn fx:id="col_username" editable="false" prefWidth="120" reorderable="false" sortable="false" styleClass="table-column" text="USERNAME" />
                 <TableColumn fx:id="col_FirstName" editable="false" prefWidth="140" reorderable="false" sortable="false" styleClass="table-column" text="FIRST NAME" />
                 <TableColumn fx:id="col_LastName" editable="false" prefWidth="140" reorderable="false" sortable="false" styleClass="table-column" text="LAST NAME" />

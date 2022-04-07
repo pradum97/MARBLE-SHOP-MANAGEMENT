@@ -36,7 +36,6 @@ public class Forgot_Password implements Initializable {
     private Connection connection;
     private Method method;
     private PreparedStatement ps;
-    private Properties properties;
     private DBConnection dbConnection;
     private CustomDialog customDialog;
 
@@ -47,7 +46,6 @@ public class Forgot_Password implements Initializable {
         dbConnection = new DBConnection();
         password_container.setVisible(false);
         password_container.managedProperty().bind(password_container.visibleProperty());
-        properties = new PropertiesLoader().load("query.properties");
 
     }
 
@@ -69,14 +67,9 @@ public class Forgot_Password implements Initializable {
             return;
         }
 
-        if (null == properties) {
-            System.out.println("invalid properties");
-            return;
-        }
-
         try {
 
-            ps = connection.prepareStatement(properties.getProperty("UPDATE_PASSWORD"));
+            ps = connection.prepareStatement(new PropertiesLoader().getUpdateProp().getProperty("UPDATE_PASSWORD"));
             ps.setString(1, con_Password);
             ps.setString(2, email);
             int update_result = ps.executeUpdate();
