@@ -1,9 +1,0 @@
-
-     private Properties propInsert , propDelete , propUpdate , propRead;
-
-
-     PropertiesLoader propLoader = new PropertiesLoader();
-        propDelete = propLoader.getDeleteProp();
-        propUpdate = propLoader.getUpdateProp();
-        propRead = propLoader.getReadProp();
-        propInsert = propLoader.getInsertProp();
