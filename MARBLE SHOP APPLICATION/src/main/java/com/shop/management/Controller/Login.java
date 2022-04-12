@@ -55,7 +55,6 @@ public class Login implements Initializable {
         startLogin();
 
     }
-
     private void getProfileDetails(ResultSet rs , PreparedStatement ps) throws SQLException {
 
         int userID = rs.getInt("user_id");
