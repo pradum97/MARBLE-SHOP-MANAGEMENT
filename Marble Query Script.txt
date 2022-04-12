@@ -21,6 +21,8 @@ DROP TABLE IF EXISTS tbl_saleItems;
 DROP TABLE IF EXISTS TBL_SALE_MAIN;
 DROP TABLE IF EXISTS TBL_USERS;
 DROP TABLE IF EXISTS TBL_CUSTOMER;
+DROP TABLE IF EXISTS PROPOSAL_ITEMS;
+DROP TABLE IF EXISTS PROPOSAL_MAIN;
 
 CREATE TABLE TBL_SHOP_DETAILS
 (
@@ -53,7 +55,7 @@ CREATE TABLE TBL_MENU
 (
 
     MENU_ID        SERIAL PRIMARY KEY,
-    MENU_NAME      VARCHAR(30),
+    MENU_NAME      VARCHAR(30) UNIQUE,
     MENU_LOCATION  VARCHAR(10),
     MENU_ICON_PATH VARCHAR(500)
 
@@ -69,7 +71,8 @@ VALUES ('home_icon.png', 'HOME', 'SIDE'),
        ('invoice_ic.png', 'INVOICE', 'SIDE'),
        ('add_icon.png', 'ADD PRODUCT', 'TOP'),
        ('feedback_ic.png', 'FEEDBACK', 'TOP'),
-       ('settings_ic.png', 'SETTING', 'TOP');
+       ('settings_ic.png', 'SETTING', 'TOP'),
+       ('enquiry_ic.png', 'PROPOSAL', 'SIDE');
 
 CREATE TABLE TBL_USERS
 (
@@ -78,7 +81,7 @@ CREATE TABLE TBL_USERS
     LAST_NAME      VARCHAR(15),
     USERNAME       VARCHAR(100)          NOT NULL UNIQUE,
     GENDER         VARCHAR(6)            NOT NULL,
-    ROLE           VARCHAR(20)           NOT NULL,
+    role_id        integer               NOT NULL,
     EMAIL          VARCHAR(100) UNIQUE   NOT NULL,
     PHONE          bigint UNIQUE         NOT NULL,
     PASSWORD       VARCHAR(200)          NOT NULL,
@@ -163,7 +166,7 @@ CREATE TABLE TBL_PRODUCTS
     PRODUCT_COLOR       VARCHAR(50)                         NOT NULL,
     PRODUCT_TYPE        VARCHAR(100)                        NOT NULL,
     CATEGORY_ID         INTEGER                             NOT NULL,
-    PRODUCT_CODE        VARCHAR(100)      unique            not null,
+    PRODUCT_CODE        VARCHAR(100) unique                 not null,
     DISCOUNT_ID         INTEGER,
     ADDED_DATE          timestamp default CURRENT_TIMESTAMP not null,
     TAX_ID              INTEGER,
@@ -216,13 +219,14 @@ CREATE TABLE TBL_PRODUCT_STOCK
 
 CREATE TABLE TBL_CUSTOMER
 (
-    CUSTOMER_ID      SERIAL PRIMARY KEY NOT NULL,
-    CUSTOMER_NAME    VARCHAR(100)       NOT NULL,
-    CUSTOMER_PHONE   NUMERIC UNIQUE     NOT NULL,
-    CUSTOMER_ADDRESS VARCHAR(200)       NOT NULL,
+    CUSTOMER_ID      SERIAL PRIMARY KEY                  NOT NULL,
+    CUSTOMER_NAME    VARCHAR(100)                        NOT NULL,
+    CUSTOMER_PHONE   NUMERIC UNIQUE                      NOT NULL,
+    CUSTOMER_ADDRESS VARCHAR(200)                        NOT NULL,
     DUES_AMOUNT      NUMERIC,
     NOTES            VARCHAR(300),
     DESCRIPTION      VARCHAR(300),
+    GST_NUMBER       VARCHAR(60),
     registered_date  timestamp default CURRENT_TIMESTAMP NOT NULL
 );
 
@@ -239,6 +243,7 @@ CREATE TABLE TBL_SALE_MAIN
     NET_AMOUNT          NUMERIC                             NOT NULL,
     INVOICE_NUMBER      VARCHAR(100)                        NOT NULL,
     BILL_TYPE           VARCHAR(100)                        NOT NULL,
+    GST_CLAIMED         NUMERIC,
     sale_date           timestamp default CURRENT_TIMESTAMP NOT NULL,
 
     FOREIGN KEY (CUSTOMER_ID)
@@ -301,7 +306,6 @@ CREATE TABLE TBL_DUES
     LAST_PAYMENT   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (CUSTOMER_ID)
         REFERENCES tbl_customer (CUSTOMER_ID)
-
 
 );
 
@@ -374,22 +378,21 @@ CREATE TABLE Supplier
 
 );
 
-
-
 CREATE TABLE PURCHASE_HISTORY
 (
-    PURCHASE_ID   SERIAL PRIMARY KEY,
-    supplier_id   INTEGER NOT NULL,
-    PRODUCT_ID    INTEGER NOT NULL,
-    STOCK_ID      INTEGER NOT NULL,
-    SELLER_ID     INTEGER NOT NULL,
-    INVOICE_NUM   VARCHAR(30),
-    ACTIVITY_TYPE VARCHAR NOT NULL,
-    QUANTITY      VARCHAR NOT NULL,
-    PURCHASE_DATE TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    PURCHASE_ID    SERIAL PRIMARY KEY,
+    supplier_id    INTEGER NOT NULL,
+    PRODUCT_ID     INTEGER NOT NULL,
+    STOCK_ID       INTEGER NOT NULL,
+    SELLER_ID      INTEGER NOT NULL,
+    INVOICE_NUM    VARCHAR(30),
+    ACTIVITY_TYPE  VARCHAR NOT NULL,
+    QUANTITY       VARCHAR NOT NULL,
+    PURCHASE_PRICE NUMERIC,
+    MRP            NUMERIC,
+    MIN_SELL       NUMERIC,
+    PURCHASE_DATE  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
-// NEW ADDED
 
 
 CREATE TABLE PROPOSAL_MAIN
@@ -397,7 +400,7 @@ CREATE TABLE PROPOSAL_MAIN
     PROPOSAL_MAIN_ID serial primary key not null,
     CUSTOMER_ID      integer            not null,
     SELLER_ID        INTEGER            NOT NULL,
-    INVOICE_NUM          VARCHAR(20)        NOT NULL,
+    INVOICE_NUM      VARCHAR(20)        NOT NULL,
     PROPOSAL_DATE    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
 );
@@ -412,25 +415,3 @@ CREATE TABLE PROPOSAL_ITEMS
     QUANTITY          NUMERIC      NOT NULL,
     QUANTITY_UNIT     VARCHAR(100) NOT NULL
 );
-
-ALTER TABLE tbl_menu ADD CONSTRAINT constraint_name UNIQUE (MENU_NAME);
-
-INSERT INTO TBL_MENU (MENU_ICON_PATH, MENU_NAME, MENU_LOCATION)
-VALUES('enquiry_ic.png', 'PROPOSAL', 'SIDE');
-
-alter table tbl_users
-    rename column role to role_id;
-
-alter table tbl_users
-    alter column role_id type integer using role_id::integer;
-
-ALTER TABLE tbl_customer ADD COLUMN GST_NUMBER VARCHAR(60);
-
-ALTER TABLE tbl_sale_main ADD COLUMN GST_CLAIMED NUMERIC;
-
-
-ALTER TABLE PURCHASE_HISTORY ADD COLUMN PURCHASE_PRICE NUMERIC ,
-							 ADD COLUMN MRP NUMERIC ,
-							 ADD COLUMN MIN_SELL NUMERIC;
-
-alter table tbl_customer add column gstNumber varchar(50);

@@ -26,7 +26,7 @@
                                         <Font name="System Bold" size="12.0" />
                                     </font>
                                 </Label>
-                        <TextField fx:id="discountNameC" editable="true" minHeight="40.0" prefHeight="40.0" prefWidth="312.0" promptText="Enter Discount Name ex- special offer" style="-fx-border-color: gray; -fx-border-radius: 3;" />
+                        <TextField fx:id="discountNameC" editable="true" minHeight="40.0" onKeyReleased="#enterPress" prefHeight="40.0" prefWidth="312.0" promptText="Enter Discount Name ex- special offer" style="-fx-border-color: gray; -fx-border-radius: 3;" />
                             </children>
                         </VBox>
 
@@ -40,7 +40,7 @@
                                                 <Font name="System Bold" size="12.0" />
                                             </font>
                                         </Label>
-                                        <TextField fx:id="discountTF" minHeight="37.0" prefHeight="42.0" prefWidth="312.0" promptText="ENTER DISCOUNT % :" style="-fx-border-color: gray; -fx-border-radius: 3;">
+                                        <TextField fx:id="discountTF" minHeight="37.0" onKeyReleased="#enterPress" prefHeight="42.0" prefWidth="312.0" promptText="ENTER DISCOUNT % :" style="-fx-border-color: gray; -fx-border-radius: 3;">
                                             <padding>
                                                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                             </padding>
@@ -56,7 +56,7 @@
                                         <Font name="System Bold" size="12.0" />
                                     </font>
                                 </Label>
-                                <TextArea fx:id="descriptionTF" minHeight="50.0" prefHeight="60.0" prefWidth="312.0" promptText="ENTER DESCRIPTION :" style="-fx-border-color: gray; -fx-border-radius: 3;" />
+                                <TextArea fx:id="descriptionTF" minHeight="50.0" onKeyReleased="#enterPress" prefHeight="60.0" prefWidth="312.0" promptText="ENTER DESCRIPTION :" style="-fx-border-color: gray; -fx-border-radius: 3;" />
                             </children>
                             <VBox.margin>
                                 <Insets />

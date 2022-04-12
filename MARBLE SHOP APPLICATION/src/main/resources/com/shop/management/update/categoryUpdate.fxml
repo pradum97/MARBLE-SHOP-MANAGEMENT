@@ -23,7 +23,7 @@
                                <Insets left="5.0" />
                            </VBox.margin>
                        </Label>
-                       <TextField fx:id="categoryNameTF" prefHeight="42.0" prefWidth="350.0" promptText="Enter Category Name :" />
+                       <TextField fx:id="categoryNameTF" onKeyReleased="#enterPress" prefHeight="42.0" prefWidth="350.0" promptText="Enter Category Name :" />
                    </children>
                </VBox>
            </children>

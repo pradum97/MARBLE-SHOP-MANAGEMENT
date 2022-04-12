@@ -13,6 +13,8 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -124,6 +126,13 @@ public class DiscountUpdate implements Initializable {
         Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
         if (stage.isShowing()){
             stage.close();
+        }
+    }
+
+    public void enterPress(KeyEvent event) {
+
+        if (event.getCode() == KeyCode.ENTER){
+            updateBn(null);
         }
     }
 }

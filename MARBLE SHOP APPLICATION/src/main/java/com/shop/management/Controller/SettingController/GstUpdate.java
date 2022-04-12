@@ -11,6 +11,8 @@ import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
@@ -59,7 +61,8 @@ public class GstUpdate implements Initializable {
         igstTF.setText(String.valueOf(tax.getIgst()));
         gstNameTF.setText(tax.getGstName());
         descriptionTF.setText(tax.getTaxDescription());
-        hsn_sacTf.setEditable(false);
+
+       /* hsn_sacTf.setEditable(false);
         hsn_sacTf.setFocusTraversable(false);
 
         hsn_sacTf.setOnMouseClicked(new EventHandler<>() {
@@ -67,7 +70,7 @@ public class GstUpdate implements Initializable {
             public void handle(MouseEvent mouseEvent) {
                 customDialog.showAlertBox("Not Allow", "You Can't Update HSN Code");
             }
-        });
+        });*/
 
     }
 
@@ -81,8 +84,21 @@ public class GstUpdate implements Initializable {
         String description = descriptionTF.getText();
         String hsn_sacS = hsn_sacTf.getText();
 
+        int  hsn_sac = 0;
+
+        try {
+            hsn_sac = Integer.parseInt(hsn_sacS.replaceAll("[^0-9.]", ""));
+        } catch (NumberFormatException e) {
+            hsn_sacTf.setText("");
+
+            return;
+        }
+
         if (hsn_sacS.isEmpty()) {
             method.show_popup("Enter HSN / SAC", hsn_sacTf);
+            return;
+        }else if (isHsnCodeExist(hsn_sac)){
+            method.show_popup("HSN Code Already Exists", hsn_sacTf);
             return;
         }else if (sgst.isEmpty()) {
             method.show_popup("Enter sgst", sgstTF);
@@ -98,15 +114,9 @@ public class GstUpdate implements Initializable {
             return;
         }
 
-        int sGst = 0, cGst = 0, iGst = 0, hsn_sac = 0;
+        int sGst = 0, cGst = 0, iGst = 0;
 
-        try {
-            hsn_sac = Integer.parseInt(hsn_sacS.replaceAll("[^0-9.]", ""));
-        } catch (NumberFormatException e) {
-            hsn_sacTf.setText("");
 
-            return;
-        }
         try {
             sGst = Integer.parseInt(sgst);
         } catch (NumberFormatException e) {
@@ -157,7 +167,8 @@ public class GstUpdate implements Initializable {
             } else {
                 ps.setString(5, description);
             }
-            ps.setInt(6, tax.getTaxID());
+            ps.setInt(6, hsn_sac);
+            ps.setInt(7, tax.getTaxID());
 
             int res = ps.executeUpdate();
 
@@ -201,6 +212,38 @@ public class GstUpdate implements Initializable {
         Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
         if (stage.isShowing()){
             stage.close();
+        }
+    }
+
+    public void enterPress(KeyEvent event) {
+
+        if (event.getCode() == KeyCode.ENTER){
+            updateTax(null);
+        }
+    }
+
+    private boolean isHsnCodeExist(int value){
+
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+
+            connection = dbConnection.getConnection();
+            String query = "select hsn_sac from tbl_product_tax where hsn_sac = ?";
+
+            ps = connection.prepareStatement(query);
+            ps.setInt(1,value);
+
+         System.out.println(   rs = ps.executeQuery());
+
+            return rs.next();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }finally {
+            DBConnection.closeConnection(connection , ps , rs);
         }
     }
 }

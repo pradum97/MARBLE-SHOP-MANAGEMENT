@@ -96,6 +96,7 @@ public class Category implements Initializable
                 pagination.setVisible(true);
                 pagination.setCurrentPageIndex(0);
                 changeTableView(0, rowsPerPage);
+                changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);
             }
 
 
@@ -268,7 +269,6 @@ public class Category implements Initializable
             PreparedStatement ps = null;
 
             try {
-
                 con = dbConnection.getConnection();
 
                 if (null == con) {
@@ -281,8 +281,8 @@ public class Category implements Initializable
                 int res = ps.executeUpdate();
 
                 if (res > 0) {
-
                     getCategory();
+                    changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);
                     customDialog.showAlertBox("", "Successfully Deleted");
                     alert.close();
 
