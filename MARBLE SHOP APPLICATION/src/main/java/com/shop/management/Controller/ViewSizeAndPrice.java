@@ -12,20 +12,26 @@ import com.shop.management.util.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -42,7 +48,6 @@ public class ViewSizeAndPrice implements Initializable {
     private Method method;
     private CustomDialog customDialog;
     private DBConnection dbConnection;
-    private Properties properties;
     private Products products;
     private ObservableList<Stock> stockList = FXCollections.observableArrayList();
 
@@ -52,7 +57,6 @@ public class ViewSizeAndPrice implements Initializable {
         method = new Method();
         customDialog = new CustomDialog();
         dbConnection = new DBConnection();
-        properties = new PropertiesLoader().load("query.properties");
 
         products = (Products) Main.primaryStage.getUserData();
 
@@ -104,6 +108,8 @@ public class ViewSizeAndPrice implements Initializable {
                     iv_delete.setFitHeight(17);
                     iv_delete.setFitWidth(17);
                     iv_delete.setPreserveRatio(true);
+                    iv_delete.managedProperty().bind(iv_delete.visibleProperty());
+                    iv_delete.setVisible(Objects.equals(Login.currentRoleName.toLowerCase(), "admin".toLowerCase()));
 
                     iv_edit.setStyle(
                             " -fx-cursor: hand ;"
@@ -220,5 +226,13 @@ public class ViewSizeAndPrice implements Initializable {
         Main.primaryStage.setUserData(products);
         customDialog.showFxmlDialog2("addSize.fxml", "ADD NEW SIZE");
         setTableData(products.getProductID());
+    }
+
+    public void cancel(ActionEvent event) {
+
+        Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+        if (stage.isShowing()){
+            stage.close();
+        }
     }
 }

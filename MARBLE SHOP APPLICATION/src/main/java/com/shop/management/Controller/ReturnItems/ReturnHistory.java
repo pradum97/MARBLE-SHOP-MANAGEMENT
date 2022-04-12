@@ -2,8 +2,8 @@ package com.shop.management.Controller.ReturnItems;
 
 import com.shop.management.CustomDialog;
 import com.shop.management.Main;
-import com.shop.management.Method.Method;
 import com.shop.management.Model.ReturnMainModel;
+import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -22,39 +22,39 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class ReturnHistory implements Initializable {
 
     private int rowsPerPage = 15;
 
-    public TableColumn<ReturnMainModel , Integer> colSrNo;
-    public TableColumn<ReturnMainModel , String> colCusName;
-    public TableColumn<ReturnMainModel , String> colCusPhone;
-    public TableColumn<ReturnMainModel , String> colRefundable;
-    public TableColumn<ReturnMainModel , String> colOldVoiceNum;
-    public TableColumn<ReturnMainModel , String> colNewInvoice;
-    public TableColumn<ReturnMainModel , String> colReturnDate;
-    public TableColumn<ReturnMainModel , String> colCheckItem;
-    public TableColumn<ReturnMainModel , String> colRemark;
-    public TableView<ReturnMainModel > tableView;
+    public TableColumn<ReturnMainModel, Integer> colSrNo;
+    public TableColumn<ReturnMainModel, String> colCusName;
+    public TableColumn<ReturnMainModel, String> colCusPhone;
+    public TableColumn<ReturnMainModel, String> colRefundable;
+    public TableColumn<ReturnMainModel, String> colOldVoiceNum;
+    public TableColumn<ReturnMainModel, String> colNewInvoice;
+    public TableColumn<ReturnMainModel, String> colReturnDate;
+    public TableColumn<ReturnMainModel, String> colCheckItem;
+    public TableColumn<ReturnMainModel, String> colRemark;
+    public TableView<ReturnMainModel> tableView;
     public TextField searchTF;
     public Pagination pagination;
 
     private ObservableList<ReturnMainModel> returnList = FXCollections.observableArrayList();
-    private Method method;
     private CustomDialog customDialog;
-    private DBConnection dbConnection ;
-
-   private FilteredList<ReturnMainModel> filteredData;
-
+    private DBConnection dbConnection;
+    private FilteredList<ReturnMainModel> filteredData;
+    private Properties  propRead;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        method = new Method();
         customDialog = new CustomDialog();
         dbConnection = new DBConnection();
+        PropertiesLoader propLoader = new PropertiesLoader();
+        propRead = propLoader.getReadProp();
 
         getReturnItem();
 
@@ -62,7 +62,7 @@ public class ReturnHistory implements Initializable {
 
     private void getReturnItem() {
 
-        if (returnList != null){
+        if (returnList != null) {
             returnList.clear();
         }
 
@@ -72,22 +72,17 @@ public class ReturnHistory implements Initializable {
 
         try {
             connection = dbConnection.getConnection();
-            if (null ==  connection){
+            if (null == connection) {
                 System.out.println("connection Failed");
                 return;
             }
-
-            String query = "select trm.return_main_id ,trm.sale_main_id ,trm.seller_id,  (TO_CHAR(trm.created_date, 'DD-MM-YYYY HH:MM'))as returnDate ," +
-                    "trm.total_refund_amount ,trm.old_invoice_number\n" +
-                    "        ,trm.invoice_number ,trm.remark, tc.customer_name , tc.customer_phone  from tbl_return_main trm\n" +
-                    "LEFT JOIN tbl_sale_main tsm ON trm.sale_main_id =  tsm.sale_main_id\n" +
-                    "LEFT JOIN tbl_customer tc on tsm.customer_id = tc.customer_id";
+            String query = propRead.getProperty("GET_ALL_RETURN_ITEMS");
 
             ps = connection.prepareStatement(query);
 
             rs = ps.executeQuery();
 
-            while (rs.next()){
+            while (rs.next()) {
                 int returnMainId = rs.getInt("return_main_id");
                 int saleMainId = rs.getInt("sale_main_id");
                 int sellerId = rs.getInt("seller_id");
@@ -102,7 +97,7 @@ public class ReturnHistory implements Initializable {
                 String customer_name = rs.getString("customer_name");
                 String customer_phone = rs.getString("customer_phone");
 
-                returnList.add(new ReturnMainModel(returnMainId,saleMainId ,sellerId , oldInvoice , newInvoice , remark , returnDate ,totalRefundAmount , customer_name , customer_phone));
+                returnList.add(new ReturnMainModel(returnMainId, saleMainId, sellerId, oldInvoice, newInvoice, remark, returnDate, totalRefundAmount, customer_name, customer_phone));
 
 
             }
@@ -114,7 +109,8 @@ public class ReturnHistory implements Initializable {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        }DBConnection.closeConnection(connection , ps,rs);
+        }
+        DBConnection.closeConnection(connection, ps, rs);
     }
 
     private void search_Item() {
@@ -138,10 +134,7 @@ public class ReturnHistory implements Initializable {
                     return true;
                 } else if (rList.getOldInvoiceNum().toLowerCase().contains(lowerCaseFilter)) {
                     return true;
-                } else if (rList.getNewInvoiceNum().toLowerCase().contains(lowerCaseFilter)) {
-                    return true;
-                }
-                return false;
+                } else return rList.getNewInvoiceNum().toLowerCase().contains(lowerCaseFilter);
             });
 
             changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);
@@ -185,6 +178,7 @@ public class ReturnHistory implements Initializable {
         tableView.setItems(sortedData);
         setOptionalCell();
     }
+
     private void customColumn(TableColumn<ReturnMainModel, String> columnName) {
 
         columnName.setCellFactory(tc -> {
@@ -233,15 +227,15 @@ public class ReturnHistory implements Initializable {
                         Main.primaryStage.setUserData(rmm.getReturnMainId());
 
 
-                        customDialog.showFxmlFullDialog("returnItems/view_Return_Item.fxml", "All Items - "+rmm.getCustomerName()+" / "+rmm.getTotalRefundableAmount()+" / Invoice- "+
+                        customDialog.showFxmlFullDialog("returnItems/view_Return_Item.fxml", "All Items - " + rmm.getCustomerName() + " / " + rmm.getTotalRefundableAmount() + " / Invoice- " +
                                 rmm.getNewInvoiceNum());
 
-                       getReturnItem();
+                        getReturnItem();
                     });
 
                     HBox container = new HBox(bnCheckItem);
                     container.setStyle("-fx-alignment:center");
-                 //   HBox.setMargin(bnCheckItem, new Insets(2, 20, 2, 20));
+                    //   HBox.setMargin(bnCheckItem, new Insets(2, 20, 2, 20));
                     setGraphic(container);
 
                     setText(null);
@@ -249,8 +243,6 @@ public class ReturnHistory implements Initializable {
             }
 
         };
-
-
         colCheckItem.setCellFactory(checkItems);
 
     }

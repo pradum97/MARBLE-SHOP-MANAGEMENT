@@ -6,10 +6,11 @@ public class ReturnProductModel {
     private int productID , stockId , saleMainId , saleItemId;
     private String productName, productSize, quantity;
     private double rate, discountPercentage ;
-    private String returnQuantity ;
+    private String alreadyReturned, inputReturnQuantity ,returnable;
+    private double gstAmount , totalGstPercentage , gstClaimedAmount;
 
-    public ReturnProductModel(boolean isReturn, int productID, int stockId, int saleMainId, int saleItemId,  String productName,
-                              String productSize, String quantity, double rate, double discountPercentage, String returnQuantity) {
+    public ReturnProductModel(boolean isReturn, int productID, int stockId, int saleMainId, int saleItemId, String productName, String productSize, String quantity, double rate, double discountPercentage, String alreadyReturned,
+                              String inputReturnQuantity, String returnable, double gstAmount, double totalGstPercentage, double gstClaimedAmount) {
         this.isReturn = isReturn;
         this.productID = productID;
         this.stockId = stockId;
@@ -20,7 +21,60 @@ public class ReturnProductModel {
         this.quantity = quantity;
         this.rate = rate;
         this.discountPercentage = discountPercentage;
-        this.returnQuantity = returnQuantity;
+        this.alreadyReturned = alreadyReturned;
+        this.inputReturnQuantity = inputReturnQuantity;
+        this.returnable = returnable;
+        this.gstAmount = gstAmount;
+        this.totalGstPercentage = totalGstPercentage;
+        this.gstClaimedAmount = gstClaimedAmount;
+    }
+
+    public double getGstClaimedAmount() {
+        return gstClaimedAmount;
+    }
+
+    public void setGstClaimedAmount(double gstClaimedAmount) {
+        this.gstClaimedAmount = gstClaimedAmount;
+    }
+
+    public double getGstAmount() {
+        return gstAmount;
+    }
+
+    public void setGstAmount(double gstAmount) {
+        this.gstAmount = gstAmount;
+    }
+
+    public String getInputReturnQuantity() {
+        return inputReturnQuantity;
+    }
+
+    public void setInputReturnQuantity(String inputReturnQuantity) {
+        this.inputReturnQuantity = inputReturnQuantity;
+    }
+
+    public double getTotalGstPercentage() {
+        return totalGstPercentage;
+    }
+
+    public void setTotalGstPercentage(double totalGstPercentage) {
+        this.totalGstPercentage = totalGstPercentage;
+    }
+
+    public String getReturnable() {
+        return returnable;
+    }
+
+    public void setReturnable(String returnable) {
+        this.returnable = returnable;
+    }
+
+    public String getAlreadyReturned() {
+        return alreadyReturned;
+    }
+
+    public void setAlreadyReturned(String alreadyReturned) {
+        this.alreadyReturned = alreadyReturned;
     }
 
     public int getSaleItemId() {
@@ -73,11 +127,11 @@ public class ReturnProductModel {
     }
 
     public String getReturnQuantity() {
-        return returnQuantity;
+        return inputReturnQuantity;
     }
 
     public void setReturnQuantity(String returnQuantity) {
-        this.returnQuantity = returnQuantity;
+        this.inputReturnQuantity = returnQuantity;
     }
 
     public String getProductName() {

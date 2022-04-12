@@ -6,10 +6,12 @@ import com.shop.management.Main;
 import com.shop.management.Method.GetUserProfile;
 import com.shop.management.Method.Method;
 import com.shop.management.Method.StaticData;
+import com.shop.management.Model.Role;
 import com.shop.management.Model.UserDetails;
 import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -17,6 +19,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -37,25 +42,25 @@ public class UpdateProfile implements Initializable {
     public TextField phone_f;
     public TextField email_f;
     public ComboBox<String> gender_comboBox;
-    public ComboBox<String> role_combobox;
+    public ComboBox<Role> role_combobox;
     public TextArea full_address_f;
     public Button bnCancel;
     public Button bnUpdate;
     public ComboBox<String> combo_accountStatus;
     private Method method;
-    private Properties properties;
     private DBConnection dbConnection;
     private CustomDialog customDialog;
     private int userId;
+    private Properties propUpdate ;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         method = new Method();
         customDialog = new CustomDialog();
         dbConnection = new DBConnection();
-        properties = new PropertiesLoader().load("query.properties");
-
         userId = ((int) Main.primaryStage.getUserData());
+        PropertiesLoader propLoader = new PropertiesLoader();
+        propUpdate = propLoader.getUpdateProp();
         setUserDetails(userId);
     }
     private void setUserDetails(int userId) {
@@ -75,12 +80,24 @@ public class UpdateProfile implements Initializable {
         full_address_f.setText(userDetails.getFullAddress());
         gender_comboBox.getItems().add(userDetails.getGender());
         gender_comboBox.getSelectionModel().selectFirst();
-        role_combobox.getItems().add(userDetails.getRole());
+        Role role = new Role(userDetails.getRole_id() , userDetails.getRole());
+        role_combobox.getItems().add(role);
+
         role_combobox.getSelectionModel().selectFirst();
-        role_combobox.setItems(method.getRole());
+         role_combobox.setOnMouseClicked(mouseEvent -> {
+             if (null != role_combobox){
+                 role_combobox.getItems().clear();
+             }
+             assert role_combobox != null;
+             role_combobox.setItems(method.getRole());
+         });
+
+
+
         gender_comboBox.setItems(method.getGender());
         combo_accountStatus.setItems(method.getAccountStatus());
         combo_accountStatus.setDisable(userDetails.getUserID() == Login.currentlyLogin_Id);
+        role_combobox.setDisable(userDetails.getUserID() == Login.currentlyLogin_Id);
 
         switch (userDetails.getAccountStatus()) {
 
@@ -95,6 +112,11 @@ public class UpdateProfile implements Initializable {
     }
 
     public void update_bn(ActionEvent event) {
+
+        update(event.getSource());
+    }
+
+    private void update(Object source) {
 
         Connection connection = null;
         PreparedStatement ps_insert_data = null;
@@ -168,14 +190,16 @@ public class UpdateProfile implements Initializable {
             return;
         }
 
+        int role_id = role_combobox.getSelectionModel().getSelectedItem().getRoleId();
+
         try {
 
             connection = dbConnection.getConnection();
-            ps_insert_data = connection.prepareStatement(properties.getProperty("UPDATE_USER"));
+            ps_insert_data = connection.prepareStatement((propUpdate.getProperty("UPDATE_USER")));
             ps_insert_data.setString(1, first_name);
             ps_insert_data.setString(2, last_name);
             ps_insert_data.setString(3, gender_comboBox.getValue());
-            ps_insert_data.setString(4, role_combobox.getValue());
+            ps_insert_data.setInt(4, role_id);
             ps_insert_data.setString(5, email);
             ps_insert_data.setString(6, username);
             ps_insert_data.setLong(7, phoneNum);
@@ -189,7 +213,7 @@ public class UpdateProfile implements Initializable {
 
                 customDialog.showAlertBox("Congratulations 🎉🎉🎉", "Successfully Updated");
 
-                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                Stage stage = (Stage) ((Node) source).getScene().getWindow();
 
                 if (stage.isShowing()) {
 
@@ -303,6 +327,14 @@ public class UpdateProfile implements Initializable {
             return false;
         }finally {
             DBConnection.closeConnection(connection , ps , rs);
+        }
+    }
+
+    public void enterPress(KeyEvent event) {
+
+        if (event.getCode() == KeyCode.ENTER){
+
+            update(event.getSource());
         }
     }
 }

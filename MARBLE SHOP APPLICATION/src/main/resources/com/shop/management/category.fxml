@@ -27,7 +27,7 @@
                         <Insets left="5.0" />
                      </VBox.margin>
                   </Label>
-                  <TextField fx:id="categoryNameTF" prefHeight="42.0" prefWidth="400.0" promptText="Enter Category Name :" />
+                  <TextField onKeyReleased="#enterPress" fx:id="categoryNameTF" prefHeight="42.0" prefWidth="400.0" promptText="Enter Category Name :" />
                </children>
             </VBox>
             <Button mnemonicParsing="false" onAction="#addCategory" style="-fx-cursor: hand;-fx-background-color: BLUE; -fx-text-fill: WHITE; -fx-background-radius: 3;" text="ADD CATEGORY">

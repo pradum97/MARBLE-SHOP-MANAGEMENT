@@ -8,6 +8,7 @@ import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
@@ -36,7 +37,6 @@ public class AddSize implements Initializable {
     private Method method;
     private CustomDialog customDialog;
     private DBConnection dbConnection;
-    private Properties properties;
     private double profitPrice = 20; // in %
 
 
@@ -53,8 +53,6 @@ public class AddSize implements Initializable {
         method = new Method();
         customDialog = new CustomDialog();
         dbConnection = new DBConnection();
-        properties = new PropertiesLoader().load("query.properties");
-
         productSizeUnit.setItems(method.getSizeUnit());
         productQuantityUnit.setItems(method.getSizeQuantityUnit());
 
@@ -183,7 +181,7 @@ public class AddSize implements Initializable {
                 return;
             }
 
-            ps = connection.prepareStatement(properties.getProperty("ADD_SIZE"));
+            ps = connection.prepareStatement(new PropertiesLoader().getInsertProp().getProperty("ADD_SIZE"));
             ps.setDouble(1, purchase_price);
             ps.setDouble(2, mrp);
             ps.setDouble(3, min_Sell_Price);
@@ -213,5 +211,11 @@ public class AddSize implements Initializable {
         }
 
     }
+    public void cancel(ActionEvent event) {
 
+        Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+        if (stage.isShowing()){
+            stage.close();
+        }
+    }
 }

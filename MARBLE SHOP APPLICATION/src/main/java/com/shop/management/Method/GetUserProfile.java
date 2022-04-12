@@ -15,13 +15,11 @@ import java.util.Properties;
 public class GetUserProfile {
     Method method;
     DBConnection dbConnection;
-    Properties properties;
 
     public UserDetails getUser(int userId){
 
         method = new Method();
         dbConnection = new DBConnection();
-        properties =new PropertiesLoader().load("query.properties");
 
         Connection connection = null;
         PreparedStatement userPs = null;
@@ -29,15 +27,13 @@ public class GetUserProfile {
         UserDetails userDetails = null;
 
         try{
-
             connection = dbConnection.getConnection();
 
             if (null == connection){
                 System.out.println("GetUserProfile : connection Failed");
                 return null;
             }
-
-            userPs = connection.prepareStatement(properties.getProperty("USERS"));
+            userPs = connection.prepareStatement(new PropertiesLoader().getReadProp().getProperty("USERS"));
             userPs.setInt(1,userId);
             userRs = userPs.executeQuery();
 
@@ -52,18 +48,18 @@ public class GetUserProfile {
                 String gender = userRs.getString("gender");
                 String email = userRs.getString("email");
                 String role = userRs.getString("role");
+                int role_id = userRs.getInt("role_id");
                 String username = userRs.getString("username");
                 String address = userRs.getString("full_address");
                 String create_time = userRs.getString("created_time");
                 int accountStatus = userRs.getInt("account_status");
                 String acStatus = switch (accountStatus) {
-
                     case 0 -> "Inactive";
                     default -> "Active";
                 };
 
                 userDetails = new UserDetails(id,acStatus,phone,first_name,last_name,gender,role,
-                        email,username,password,address,user_image,create_time);
+                        email,username,password,address,user_image,create_time,role_id);
 
             }else {
                 System.out.println("User Not Found..");
@@ -85,7 +81,6 @@ public class GetUserProfile {
 
         method = new Method();
         dbConnection = new DBConnection();
-        properties = new PropertiesLoader().load("query.properties");
         ObservableList<UserDetails> usersList = FXCollections.observableArrayList();
 
         Connection connection = null;
@@ -101,7 +96,8 @@ public class GetUserProfile {
                 return null;
             }
 
-            userPs = connection.prepareStatement("SELECT  (TO_CHAR(created_time, 'YYYY-MM-DD HH12:MI:SS AM')) as created_time ,* FROM TBL_USERS ORDER BY USER_ID ASC");
+            userPs = connection.prepareStatement("SELECT  (TO_CHAR(created_time, 'YYYY-MM-DD HH12:MI:SS AM')) as created_time ,* FROM TBL_USERS tu \n" +
+                    "    left join tbl_role tr on tu.role_id = tr.role_id ORDER BY USER_ID ASC");
             userRs = userPs.executeQuery();
 
             while (userRs.next()){
@@ -115,6 +111,7 @@ public class GetUserProfile {
                 String gender = userRs.getString("gender");
                 String email = userRs.getString("email");
                 String role = userRs.getString("role");
+                int role_id = userRs.getInt("role_id");
                 String username = userRs.getString("username");
                 String address = userRs.getString("full_address");
                 String create_time = userRs.getString("created_time");
@@ -127,7 +124,7 @@ public class GetUserProfile {
 
 
                 usersList.add(new UserDetails(id,acStatus,phone,first_name,last_name,gender,role,
-                        email,username,password,address,user_image,create_time));
+                        email,username,password,address,user_image,create_time,role_id));
 
             }
             return usersList;

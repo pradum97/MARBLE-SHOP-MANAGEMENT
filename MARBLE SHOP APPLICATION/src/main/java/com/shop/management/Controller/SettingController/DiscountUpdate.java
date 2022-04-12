@@ -9,9 +9,12 @@ import com.shop.management.util.DBConnection;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -31,8 +34,8 @@ public class DiscountUpdate implements Initializable {
     private CustomDialog customDialog;
     private Method method;
     private DBConnection dbConnection;
-    private Properties properties;
     private Discount discount;
+    private Properties propUpdate;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -40,7 +43,8 @@ public class DiscountUpdate implements Initializable {
         customDialog = new CustomDialog();
         method = new Method();
         dbConnection = new DBConnection();
-        properties = new PropertiesLoader().load("query.properties");
+        PropertiesLoader propLoader = new PropertiesLoader();
+        propUpdate = propLoader.getUpdateProp();
 
         discount = (Discount) Main.primaryStage.getUserData();
 
@@ -53,7 +57,6 @@ public class DiscountUpdate implements Initializable {
         discountTF.setText(String.valueOf(discount.getDiscount()));
         descriptionTF.setText(discount.getDescription());
         discountNameC.setText(discount.getDiscountName());
-
     }
 
     public void updateBn(ActionEvent event) {
@@ -91,7 +94,7 @@ public class DiscountUpdate implements Initializable {
                 return;
             }
 
-            ps = connection.prepareStatement(properties.getProperty("UPDATE_DISCOUNT"));
+            ps = connection.prepareStatement(propUpdate.getProperty("UPDATE_DISCOUNT"));
             ps.setInt(1, discountD);
             ps.setString(2, descriptionTf);
             ps.setString(3, discountName);
@@ -116,5 +119,20 @@ public class DiscountUpdate implements Initializable {
             DBConnection.closeConnection(connection, ps, null);
         }
 
+    }
+
+    public void cancel(ActionEvent event) {
+
+        Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+        if (stage.isShowing()){
+            stage.close();
+        }
+    }
+
+    public void enterPress(KeyEvent event) {
+
+        if (event.getCode() == KeyCode.ENTER){
+            updateBn(null);
+        }
     }
 }

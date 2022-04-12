@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.ReStock">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="520.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.ReStock">
    <top>
       <VBox BorderPane.alignment="CENTER">
          <children>
@@ -28,7 +28,7 @@
             <Separator prefWidth="200.0" />
             <HBox alignment="CENTER_RIGHT">
                <children>
-                  <Button mnemonicParsing="false" onAction="#addSupplier" style="-fx-cursor: hand;-fx-background-color: BLUE; -fx-text-fill: WHITE; -fx-font-weight: BOLD; -fx-background-radius: 2;" text="+ ADD SUPPLIER">
+                  <Button focusTraversable="false" mnemonicParsing="false" onAction="#addSupplier" style="-fx-cursor: hand;-fx-background-color: BLUE; -fx-text-fill: WHITE; -fx-font-weight: BOLD; -fx-background-radius: 2;" text="+ ADD SUPPLIER">
                      <HBox.margin>
                         <Insets right="30.0" />
                      </HBox.margin>
@@ -52,7 +52,7 @@
                                     <Font name="System Bold" size="12.0" />
                                  </font>
                               </Label>
-                              <ComboBox fx:id="supplierCom" prefHeight="34.0" prefWidth="223.0" style="-fx-border-color: gray; -fx-border-radius: 3;" />
+                              <ComboBox fx:id="supplierCom" onKeyReleased="#enterPress" prefHeight="34.0" prefWidth="223.0" style="-fx-border-color: gray; -fx-border-radius: 3;" />
                            </children>
                         </VBox>
                      </children>
@@ -72,7 +72,7 @@
                                     <Insets left="2.0" />
                                  </VBox.margin>
                               </Label>
-                              <TextField fx:id="sNameTf" disable="true" editable="false" prefHeight="35.0" prefWidth="200.0" style="-fx-border-color: gray; -fx-border-radius: 3;" />
+                              <TextField fx:id="sNameTf" disable="true" editable="false" onKeyReleased="#enterPress" prefHeight="35.0" prefWidth="200.0" style="-fx-border-color: gray; -fx-border-radius: 3;" />
                            </children>
                            <HBox.margin>
                               <Insets left="10.0" />
@@ -88,7 +88,7 @@
                                     <Insets left="2.0" />
                                  </VBox.margin>
                               </Label>
-                              <TextField fx:id="sPhoneTf" disable="true" editable="false" prefHeight="35.0" prefWidth="200.0" style="-fx-border-color: gray; -fx-border-radius: 3;" />
+                              <TextField fx:id="sPhoneTf" disable="true" editable="false" onKeyReleased="#enterPress" prefHeight="35.0" prefWidth="200.0" style="-fx-border-color: gray; -fx-border-radius: 3;" />
                            </children>
                            <HBox.margin>
                               <Insets right="10.0" />
@@ -114,7 +114,7 @@
                                     <Insets left="2.0" />
                                  </VBox.margin>
                               </Label>
-                              <TextField fx:id="sEmailTf" disable="true" editable="false" prefHeight="35.0" prefWidth="200.0" style="-fx-border-color: gray; -fx-border-radius: 3;" />
+                              <TextField fx:id="sEmailTf" disable="true" editable="false" onKeyReleased="#enterPress" prefHeight="35.0" prefWidth="200.0" style="-fx-border-color: gray; -fx-border-radius: 3;" />
                            </children>
                            <HBox.margin>
                               <Insets left="10.0" />
@@ -130,7 +130,7 @@
                                     <Insets left="2.0" />
                                  </VBox.margin>
                               </Label>
-                              <TextField fx:id="sInvoiceNumberTf" prefHeight="35.0" prefWidth="200.0" promptText="Enter Invoice Number :" style="-fx-border-color: gray; -fx-border-radius: 3;" />
+                              <TextField fx:id="sInvoiceNumberTf" onKeyReleased="#enterPress" prefHeight="35.0" prefWidth="200.0" promptText="Enter Invoice Number :" style="-fx-border-color: gray; -fx-border-radius: 3;" />
                            </children>
                            <HBox.margin>
                               <Insets right="10.0" />
@@ -161,7 +161,7 @@
                                     <Insets left="2.0" />
                                  </VBox.margin>
                               </Label>
-                              <TextField fx:id="quantityTf" prefHeight="35.0" prefWidth="200.0" promptText="Enter Quantity :" style="-fx-border-color: gray; -fx-border-radius: 3;" />
+                              <TextField fx:id="quantityTf" onKeyReleased="#enterPress" prefHeight="35.0" prefWidth="200.0" promptText="Enter Quantity :" style="-fx-border-color: gray; -fx-border-radius: 3;" />
                            </children>
                            <HBox.margin>
                               <Insets left="10.0" />
@@ -177,7 +177,7 @@
                                     <Insets left="2.0" />
                                  </VBox.margin>
                               </Label>
-                              <ComboBox fx:id="unitCom" prefHeight="35.0" prefWidth="150.0" style="-fx-border-color: gray; -fx-border-radius: 3;" />
+                              <ComboBox fx:id="unitCom" onKeyReleased="#enterPress" prefHeight="35.0" prefWidth="150.0" style="-fx-border-color: gray; -fx-border-radius: 3;" />
                            </children>
                            <HBox.margin>
                               <Insets right="10.0" />
@@ -188,7 +188,59 @@
                         <Insets left="15.0" right="15.0" />
                      </padding>
                      <VBox.margin>
-                        <Insets top="15.0" />
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="260.0" spacing="20.0">
+                     <children>
+                        <VBox alignment="CENTER_LEFT" spacing="5.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label text="PURCHASE PRICE * ">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets left="2.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <TextField fx:id="purchasePriceTf" onKeyReleased="#enterPress" prefHeight="35.0" prefWidth="200.0" promptText="Enter Purchase Price :" style="-fx-border-color: gray; -fx-border-radius: 3;" />
+                           </children>
+                           <HBox.margin>
+                              <Insets left="10.0" />
+                           </HBox.margin>
+                        </VBox>
+                        <VBox alignment="CENTER_LEFT" layoutX="36.0" layoutY="10.0" spacing="5.0">
+                           <children>
+                              <Label text="MRP  * ">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets left="2.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <TextField fx:id="mrpTf" onKeyReleased="#enterPress" prefHeight="35.0" prefWidth="200.0" promptText="Enter MRP :" style="-fx-border-color: gray; -fx-border-radius: 3;" />
+                           </children>
+                        </VBox>
+                        <VBox alignment="CENTER_LEFT" layoutX="394.0" layoutY="10.0" spacing="5.0">
+                           <children>
+                              <Label text="MIN PRICE  * ">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets left="2.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <TextField fx:id="minSaleTf" onKeyReleased="#enterPress" prefHeight="35.0" prefWidth="200.0" promptText="Enter Minium Price :" style="-fx-border-color: gray; -fx-border-radius: 3;" />
+                           </children>
+                        </VBox>
+                     </children>
+                     <padding>
+                        <Insets left="15.0" right="15.0" />
+                     </padding>
+                     <VBox.margin>
+                        <Insets top="20.0" />
                      </VBox.margin>
                   </HBox>
                </children>
@@ -197,9 +249,10 @@
       </AnchorPane>
    </center>
    <bottom>
-      <HBox alignment="TOP_CENTER" prefHeight="42.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+      <HBox alignment="TOP_CENTER" prefHeight="42.0" prefWidth="600.0" spacing="70.0" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" onAction="#addStock" prefHeight="26.0" prefWidth="129.0" style="-fx-background-color: blue; -fx-text-fill: white; -fx-background-radius: 3; -fx-font-weight: bold; -fx-cursor: hand;" text="ADD STOCK" />
+            <Button mnemonicParsing="false" onAction="#cancel" prefHeight="26.0" prefWidth="129.0" style="-fx-background-color: RED; -fx-text-fill: white; -fx-background-radius: 3; -fx-font-weight: bold; -fx-cursor: hand;" text="CANCEL" />
+            <Button layoutX="245.0" layoutY="10.0" mnemonicParsing="false" onAction="#addStock" prefHeight="26.0" prefWidth="129.0" style="-fx-background-color: blue; -fx-text-fill: white; -fx-background-radius: 3; -fx-font-weight: bold; -fx-cursor: hand;" text="ADD STOCK" />
          </children>
       </HBox>
    </bottom>

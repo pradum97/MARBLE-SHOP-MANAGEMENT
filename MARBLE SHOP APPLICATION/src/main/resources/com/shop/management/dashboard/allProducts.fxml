@@ -18,7 +18,6 @@
    <center>
       <VBox alignment="CENTER" BorderPane.alignment="CENTER">
          <children>
-      
             <TableView fx:id="tableView" focusTraversable="false" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
               <columns>
 
@@ -34,7 +33,7 @@
                   <TableColumn fx:id="colHsnSan" editable="false" minWidth="-Infinity" sortable="false" text="HSN/SAC" />
                   <TableColumn fx:id="colTax" editable="false" sortable="false" text="TAX %" />
                   <TableColumn fx:id="colDiscount" editable="false" sortable="false" text="DISCOUNT %" />
-                  <TableColumn fx:id="colAction" editable="false" minWidth="150" prefWidth="150.0" sortable="false" text="ACTION" />
+                  <TableColumn fx:id="colAction" editable="false" minWidth="85" prefWidth="85.0" sortable="false" text="ACTION" />
                   <TableColumn fx:id="colDate" editable="false" minWidth="-Infinity" sortable="false" text="DATE" />
                   <TableColumn fx:id="colDescription" editable="false" prefWidth="150.0" sortable="false" text="DESCRIPTION" />
       
@@ -97,8 +96,11 @@
                <children>
                   <Label lineSpacing="1.0" text="ALL PRODUCTS" textAlignment="CENTER">
                      <font>
-                        <Font name="Bookman Old Style" size="17.0" />
+                        <Font name="Arial Black" size="17.0" />
                      </font>
+                     <HBox.margin>
+                        <Insets left="300.0" />
+                     </HBox.margin>
                   </Label>
                </children>
             </HBox>

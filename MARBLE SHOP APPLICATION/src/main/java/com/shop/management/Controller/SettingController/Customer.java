@@ -1,12 +1,9 @@
 package com.shop.management.Controller.SettingController;
 
 import com.shop.management.CustomDialog;
-import com.shop.management.ImageLoader;
-import com.shop.management.Main;
 import com.shop.management.Method.Method;
-import com.shop.management.Method.StaticData;
 import com.shop.management.Model.CustomerModel;
-import com.shop.management.Model.SupplierModel;
+import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -15,30 +12,27 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.scene.control.*;
+import javafx.scene.control.Pagination;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.stage.Modality;
-import javafx.util.Callback;
 
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Optional;
+import java.util.Properties;
 import java.util.ResourceBundle;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Customer implements Initializable {
     private int rowsPerPage = 15;
     public TableView<CustomerModel> tableView;
     public TableColumn<CustomerModel, Integer> colSrNo;
     public TableColumn<CustomerModel, String> colCId;
+    public TableColumn<CustomerModel, String> colGstNum;
     public TableColumn<CustomerModel, String> colName;
     public TableColumn<CustomerModel, String> colPhone;
     public TableColumn<CustomerModel, String> colAddress;
@@ -46,7 +40,7 @@ public class Customer implements Initializable {
     public TableColumn<CustomerModel, String> colDate;
     public Pagination pagination;
     public TextField searchTf;
-
+    private Properties propRead;
     private Method method;
     private DBConnection dbConnection;
     private CustomDialog customDialog;
@@ -61,6 +55,8 @@ public class Customer implements Initializable {
         method = new Method();
         dbConnection = new DBConnection();
         customDialog = new CustomDialog();
+        PropertiesLoader propLoader = new PropertiesLoader();
+        propRead = propLoader.getReadProp();
 
         getCustomer();
 
@@ -127,17 +123,13 @@ public class Customer implements Initializable {
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-
         try {
             connection = dbConnection.getConnection();
             if (null == connection) {
                 System.out.println("connection failed");
                 return;
             }
-
-            String query = "select customer_id,(TO_CHAR(registered_date, 'DD-MM-YYYY HH12:MI:SS AM')) as registered_date , customer_name , customer_phone , customer_address , description from tbl_customer order by customer_id asc ";
-
-            ps = connection.prepareStatement(query);
+            ps = connection.prepareStatement(propRead.getProperty("READ_ALL_CUSTOMER"));
 
             rs = ps.executeQuery();
 
@@ -148,7 +140,8 @@ public class Customer implements Initializable {
                 String customer_address = rs.getString("customer_address");
                 String description = rs.getString("description");
                 String registered_date = rs.getString("registered_date");
-                customerList.add(new CustomerModel(customer_id, customer_name, customer_phone, customer_address, 0, null, description, registered_date));
+                String gstNum = rs.getString("GST_NUMBER");
+                customerList.add(new CustomerModel(customer_id, customer_name, customer_phone, customer_address, 0, null, description, registered_date,gstNum));
 
             }
 
@@ -185,10 +178,7 @@ public class Customer implements Initializable {
 
                 } else if (String.valueOf(products.getPhone()).toLowerCase().contains(lowerCaseFilter)) {
                     return true;
-                } else if (products.getName().toLowerCase().contains(lowerCaseFilter)) {
-                    return true;
-                }
-                return false;
+                } else return products.getName().toLowerCase().contains(lowerCaseFilter);
             });
 
             changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);
@@ -216,10 +206,12 @@ public class Customer implements Initializable {
         colAddress.setCellValueFactory(new PropertyValueFactory<>("address"));
         colDate.setCellValueFactory(new PropertyValueFactory<>("registered_date"));
         colDesc.setCellValueFactory(new PropertyValueFactory<>("description"));
+        colGstNum.setCellValueFactory(new PropertyValueFactory<>("gstNum"));
 
         onColumnEdit(colName, "customer_name");
         onColumnEdit(colAddress, "customer_address");
         onColumnEdit(colDesc, "description");
+        onColumnEdit(colGstNum, "GST_NUMBER");
 
         int fromIndex = index * limit;
         int toIndex = Math.min(fromIndex + limit, customerList.size());
@@ -235,5 +227,10 @@ public class Customer implements Initializable {
     public void addCustomer(ActionEvent event) {
         customDialog.showFxmlDialog("setting/addCustomer.fxml","ADD NEW CUSTOMER");
         getCustomer();
+    }
+
+    public void gstVerification(ActionEvent event) {
+        new CustomDialog().showFxmlFullDialog("sellItems/gstVerification.fxml" , "GST VERIFICATION");
+
     }
 }

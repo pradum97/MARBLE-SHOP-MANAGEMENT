@@ -488,23 +488,23 @@
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="10" isBold="false"/>
+					<font fontName="Arial" size="10" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Total As Per MRP :]]></text>
+				<text><![CDATA[Total Amount :]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="410" y="22" width="83" height="20" forecolor="#050000" uuid="6520bf09-9ffb-47bd-9c91-fb766575dcbb">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="10" isBold="false"/>
+					<font fontName="Arial" size="10" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Saving :]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="493" y="3" width="80" height="20" uuid="0824a56a-8bd3-482d-aa83-30ab90e3667f"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
-					<font fontName="Serif"/>
+					<font fontName="Arial"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{Sub_Total_M}]]></textFieldExpression>
 			</textField>
@@ -538,13 +538,15 @@
 			</staticText>
 			<textField>
 				<reportElement x="493" y="23" width="81" height="19" uuid="2880d11a-413a-4920-b543-8aac8054988a"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$V{Total_Disount_Amount}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="493" y="44" width="80" height="20" uuid="f07e5150-2f43-48f7-bba6-55d1c535882e"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+					<font fontName="Arial" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($V{TOTAL_PAYABLE}-$P{ADDITIONAL_DISCOUNT})]]></textFieldExpression>
 			</textField>
@@ -560,7 +562,7 @@
 			<textField>
 				<reportElement x="493" y="64" width="80" height="16" uuid="e6744148-db3a-4ec5-935d-be65a04b44cc"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
-					<font fontName="Serif" size="10" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+					<font fontName="Arial" size="10" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{TOTAL_PAID}]]></textFieldExpression>
 			</textField>
@@ -576,7 +578,7 @@
 			<textField isBlankWhenNull="true">
 				<reportElement x="493" y="80" width="80" height="16" uuid="27dd9168-8138-4228-a793-2d8cb3e18201"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
-					<font fontName="Serif" size="10" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+					<font fontName="Arial" size="10" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{DUES}]]></textFieldExpression>
 			</textField>

@@ -3,55 +3,63 @@ package com.shop.management.Controller.ReturnItems;
 import com.shop.management.CustomDialog;
 import com.shop.management.Main;
 import com.shop.management.Method.Method;
-import com.shop.management.Model.ReturnMainModel;
 import com.shop.management.Model.Return_ItemsModel;
+import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class ViewReturnItem implements Initializable {
 
     public TableView<Return_ItemsModel> tableView;
-    public TableColumn<Return_ItemsModel , Integer> colSrNo;
-    public TableColumn<Return_ItemsModel , String> colProductName;
-    public TableColumn<Return_ItemsModel , String> colProductSize;
-    public TableColumn<Return_ItemsModel , String> colReturnQuantity;
-    public TableColumn<Return_ItemsModel , String> rate;
+    public TableColumn<Return_ItemsModel, Integer> colSrNo;
+    public TableColumn<Return_ItemsModel, String> colProductName;
+    public TableColumn<Return_ItemsModel, String> colProductSize;
+    public TableColumn<Return_ItemsModel, String> colReturnQuantity;
+    public TableColumn<Return_ItemsModel, String> rate;
     private Method method;
     private CustomDialog customDialog;
-    private DBConnection dbConnection ;
+    private DBConnection dbConnection;
     private ObservableList<Return_ItemsModel> itemList = FXCollections.observableArrayList();
-    int returnMainId;
+    private int returnMainId;
+    private Properties propRead;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         method = new Method();
         customDialog = new CustomDialog();
         dbConnection = new DBConnection();
+        PropertiesLoader propLoader = new PropertiesLoader();
+        propRead = propLoader.getReadProp();
+
         returnMainId = (int) Main.primaryStage.getUserData();
-        if (returnMainId <1){
-            customDialog.showAlertBox("Failed","Item Not Found");
+        if (returnMainId < 1) {
+            customDialog.showAlertBox("Failed", "Item Not Found");
             return;
         }
-
-       getItem();
+        getItem();
 
     }
 
     private void getItem() {
 
-        if (null != itemList){
+        if (null != itemList) {
             itemList.clear();
         }
 
@@ -61,30 +69,27 @@ public class ViewReturnItem implements Initializable {
 
         try {
             connection = dbConnection.getConnection();
-            if (null ==  connection){
+            if (null == connection) {
                 System.out.println("connection Failed");
                 return;
             }
 
-            String query = "select tri.quantity_unit , tri.return_quantity ,ts.product_name , ts.product_size , tri.rate,\n" +
-                    "tri.return_items_id from tbl_return_items tri\n" +
-                    "LEFT JOIN tbl_return_main trm on tri.return_main_id = trm.return_main_id\n" +
-                    "LEFT JOIN tbl_saleitems ts on tri.sale_item_id = ts.sale_item_id where trm.return_main_id = ?";
+            String query = propRead.getProperty("GET_RETURN_ITEM");
 
             ps = connection.prepareStatement(query);
-            ps.setInt(1,returnMainId);
+            ps.setInt(1, returnMainId);
 
             rs = ps.executeQuery();
 
-            while (rs.next()){
+            while (rs.next()) {
                 int returnItemsId = rs.getInt("return_items_id");
 
                 String productName = rs.getString("product_name");
                 String productSize = rs.getString("product_Size");
-                String returnQuantity = rs.getString("return_quantity")+" -"+rs.getString("quantity_unit");
+                String returnQuantity = rs.getString("return_quantity") + " -" + rs.getString("quantity_unit");
                 double rate = rs.getDouble("rate");
 
-                itemList.add(new Return_ItemsModel(returnItemsId,productName,productSize,returnQuantity , rate));
+                itemList.add(new Return_ItemsModel(returnItemsId, productName, productSize, returnQuantity, rate));
 
             }
 
@@ -99,6 +104,14 @@ public class ViewReturnItem implements Initializable {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        }DBConnection.closeConnection(connection , ps,rs);
+        }
+        DBConnection.closeConnection(connection, ps, rs);
+    }
+
+    public void cancel(ActionEvent event) {
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        if (stage.isShowing()) {
+            stage.close();
+        }
     }
 }

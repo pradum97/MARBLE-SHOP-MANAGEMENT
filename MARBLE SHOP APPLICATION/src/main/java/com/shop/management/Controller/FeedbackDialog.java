@@ -38,7 +38,6 @@ public class FeedbackDialog implements Initializable {
     public Rating rate;
     public Button bn_feedback_submit;
     public Label titleL;
-    private Properties  queryProp;
     private DBConnection dbConnection;
     private CustomDialog customDialog;
     private Method method;
@@ -49,8 +48,6 @@ public class FeedbackDialog implements Initializable {
         method = new Method();
         dbConnection = new DBConnection();
         customDialog = new CustomDialog();
-        queryProp = new PropertiesLoader().load("query.properties");
-
         rate.setRating(4);
 
         titleL.setText("we want to know what you thought of your experience at "+ AppConfig.COMPANY_NAME +" so we'd love to here you feedback");
@@ -119,7 +116,7 @@ public class FeedbackDialog implements Initializable {
                 System.out.println("connection Faield");
                 return;
             }
-            ps = con.prepareStatement(queryProp.getProperty("FEEDBACK"));
+            ps = con.prepareStatement(new PropertiesLoader().getReadProp().getProperty("FEEDBACK"));
             ps.setString(1, fullname);
             ps.setString(2, emailID);
             ps.setString(3, phoneNum);

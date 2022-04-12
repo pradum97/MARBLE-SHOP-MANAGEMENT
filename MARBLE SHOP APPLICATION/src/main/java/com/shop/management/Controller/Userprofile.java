@@ -11,11 +11,14 @@ import com.shop.management.util.DBConnection;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
 
 import java.net.URL;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
@@ -33,7 +36,6 @@ public class Userprofile implements Initializable {
     public Button bnChangePassword;
     public Button bnEdit;
     private DBConnection dbConnection;
-    private Properties properties;
     private CustomDialog customDialog;
     private Method method;
     private int userId;
@@ -42,13 +44,22 @@ public class Userprofile implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         method = new Method();
         dbConnection = new DBConnection();
-        properties =new PropertiesLoader().load("query.properties");
         customDialog = new CustomDialog();
 
 
         userId = ((int) Main.primaryStage.getUserData());
 
         setUserData(userId);
+
+        if (Objects.equals(Login.currentRoleName.toLowerCase(), "seller".toLowerCase())){
+            bnChangePassword.managedProperty().bind(bnChangePassword.visibleProperty());
+            bnChangePassword.setVisible(false);
+            bnEdit.managedProperty().bind(bnEdit.visibleProperty());
+            bnEdit.setVisible(false);
+        }else {
+            bnChangePassword.setVisible(true);
+            bnEdit.setVisible(true);
+        }
 
     }
 
@@ -90,5 +101,13 @@ public class Userprofile implements Initializable {
     public void changePassword(ActionEvent event) {
 
         customDialog.showFxmlDialog("dashboard/forgotPassword.fxml", "CHANGE PASSWORD");
+    }
+
+    public void cancel(ActionEvent event) {
+
+        Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+        if (stage.isShowing()){
+            stage.close();
+        }
     }
 }

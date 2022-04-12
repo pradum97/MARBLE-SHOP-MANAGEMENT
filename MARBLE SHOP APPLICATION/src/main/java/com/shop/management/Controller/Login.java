@@ -24,19 +24,25 @@ public class Login implements Initializable {
     public PasswordField password_f;
     private Main main;
     private Method method;
-    private Properties properties;
     private CustomDialog customDialog;
     private DBConnection dbConnection;
     public static int currentlyLogin_Id = 0;
+    public static int currentRole_Id = 0;
+    public static String currentRoleName ;
     private Connection connection;
+    private Properties propInsert , propDelete , propUpdate , propRead;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         main = new Main();
         method = new Method();
         customDialog = new CustomDialog();
-        properties = new PropertiesLoader().load("query.properties");
         dbConnection = new DBConnection();
+        PropertiesLoader propLoader = new PropertiesLoader();
+        propDelete = propLoader.getDeleteProp();
+        propUpdate = propLoader.getUpdateProp();
+        propRead = propLoader.getReadProp();
+        propInsert = propLoader.getInsertProp();
     }
 
     @FXML
@@ -49,7 +55,6 @@ public class Login implements Initializable {
         startLogin();
 
     }
-
     private void getProfileDetails(ResultSet rs , PreparedStatement ps) throws SQLException {
 
         int userID = rs.getInt("user_id");
@@ -68,7 +73,8 @@ public class Login implements Initializable {
             customDialog.showAlertBox("Failed", "User Not Found");
         } else {
 
-           // CloseConnection.closeConnection(connection ,ps ,rs);
+            currentRole_Id = userDetails.getRole_id();
+            currentRoleName = userDetails.getRole();
 
             Main.primaryStage.setUserData(userDetails);
             main.changeScene("dashboard.fxml", "DASHBOARD");
@@ -112,11 +118,6 @@ public class Login implements Initializable {
         }
         try {
             connection = dbConnection.getConnection();
-
-            if (null == properties) {
-                System.out.println("Properties File Not Found");
-                return;
-            }
             // Email Login
             long phoneNum = 0;
             try {
@@ -124,7 +125,7 @@ public class Login implements Initializable {
             } catch (NumberFormatException e) {
                 // e.printStackTrace();
             }
-            ps = connection.prepareStatement(properties.getProperty("LOGIN_WITH_PHONE"));
+            ps = connection.prepareStatement(propRead.getProperty("LOGIN_WITH_PHONE"));
             ps.setLong(1, phoneNum);
             ps.setString(2, password);
             rs = ps.executeQuery();
@@ -132,7 +133,7 @@ public class Login implements Initializable {
                 getProfileDetails(rs , ps);
             } else {
                 // USERNAME LOGIN
-                ps = connection.prepareStatement(properties.getProperty("LOGIN_WITH_USERNAME"));
+                ps = connection.prepareStatement(propRead.getProperty("LOGIN_WITH_USERNAME"));
                 ps.setString(1, inputValue);
                 ps.setString(2, password);
                 rs = ps.executeQuery();
@@ -140,7 +141,7 @@ public class Login implements Initializable {
                     getProfileDetails(rs,ps);
                 } else {
 
-                    ps = connection.prepareStatement(properties.getProperty("LOGIN_WITH_EMAIL"));
+                    ps = connection.prepareStatement(propRead.getProperty("LOGIN_WITH_EMAIL"));
                     ps.setString(1, inputValue);
                     ps.setString(2, password);
                     rs = ps.executeQuery();

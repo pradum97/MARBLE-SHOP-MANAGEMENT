@@ -7,7 +7,10 @@ import com.shop.management.util.DBConnection;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -16,7 +19,7 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class AddGst implements Initializable {
- @FXML
+    @FXML
     public TextField sgstTF;
     public TextField cgstTF;
     public TextField igstTF;
@@ -26,19 +29,65 @@ public class AddGst implements Initializable {
 
     private Method method;
     private DBConnection dbConnection;
-    private Properties properties;
     private CustomDialog customDialog;
+    private Properties propInsert;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         method = new Method();
         dbConnection = new DBConnection();
-        properties = new PropertiesLoader().load("query.properties");
         customDialog = new CustomDialog();
-
+        PropertiesLoader propLoader = new PropertiesLoader();
+        propInsert = propLoader.getInsertProp();
     }
+
     public void addTax(ActionEvent event) {
+
+        addGst(event.getSource());
+    }
+
+    private boolean isExist(long enterHsnCode) {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+
+            connection = dbConnection.getConnection();
+            String query = "select HSN_SAC from TBL_PRODUCT_TAX where HSN_SAC = ?";
+
+            ps = connection.prepareStatement(query);
+            ps.setLong(1, enterHsnCode);
+
+            rs = ps.executeQuery();
+
+            return rs.next();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            DBConnection.closeConnection(connection, ps, rs);
+        }
+    }
+
+    public void cancel(ActionEvent event) {
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        if (stage.isShowing()) {
+            stage.close();
+        }
+    }
+
+    public void enterPress(KeyEvent event) {
+
+        if (event.getCode() == KeyCode.ENTER){
+
+            addGst(event.getSource());
+        }
+    }
+
+    private void addGst(Object source) {
 
         String sgst = sgstTF.getText();
         String cgst = cgstTF.getText();
@@ -50,7 +99,7 @@ public class AddGst implements Initializable {
         if (hsn_sacS.isEmpty()) {
             method.show_popup("Enter HSN / SAC", hsn_sacTf);
             return;
-        }else if (sgst.isEmpty()) {
+        } else if (sgst.isEmpty()) {
             method.show_popup("Enter sgst", sgstTF);
             return;
         } else if (cgst.isEmpty()) {
@@ -59,21 +108,21 @@ public class AddGst implements Initializable {
         } else if (igst.isEmpty()) {
             method.show_popup("Enter igst", igstTF);
             return;
-        }else if (gstName.isEmpty()) {
+        } else if (gstName.isEmpty()) {
             method.show_popup("Enter Gst Name", gstNameTF);
             return;
         }
 
-        int sGst = 0, cGst = 0, iGst = 0 , hsn_sac = 0;
+        int sGst = 0, cGst = 0, iGst = 0, hsn_sac = 0;
 
         try {
             hsn_sac = Integer.parseInt(hsn_sacS.replaceAll("[^0-9.]", ""));
         } catch (NumberFormatException e) {
             hsn_sacTf.setText("");
-          return;
+            return;
         }
 
-         if (isExist(hsn_sac)){
+        if (isExist(hsn_sac)) {
             method.show_popup("THIS HSN CODE IS ALREADY EXIST!", hsn_sacTf);
             return;
         }
@@ -100,7 +149,6 @@ public class AddGst implements Initializable {
             return;
         }
 
-
         Connection connection = null;
         PreparedStatement ps = null;
 
@@ -111,7 +159,7 @@ public class AddGst implements Initializable {
                 return;
             }
 
-            ps = connection.prepareStatement(properties.getProperty("SET_GST"));
+            ps = connection.prepareStatement(propInsert.getProperty("ADD_GST"));
             ps.setInt(1, hsn_sac);
             ps.setDouble(2, sGst);
             ps.setInt(3, cGst);
@@ -119,7 +167,7 @@ public class AddGst implements Initializable {
 
             if (gstName.isEmpty()) {
                 ps.setNull(5, Types.NULL);
-            }else {
+            } else {
                 ps.setString(5, gstName);
             }
 
@@ -140,54 +188,28 @@ public class AddGst implements Initializable {
                 gstNameTF.setText("");
                 descriptionTF.setText("");
 
-                Stage stage = CustomDialog.stage;
-                if (stage.isShowing()){
+                Stage stage = (Stage) ((Node)source).getScene().getWindow();
+                if (stage.isShowing()) {
                     stage.close();
                 }
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
 
             try {
-                if (null != connection){
+                if (null != connection) {
                     connection.close();
                 }
-                if (null != ps){
+                if (null != ps) {
                     ps.close();
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+
+            System.out.println();
         }
     }
-
-    private boolean isExist(long enterHsnCode){
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-
-            connection = dbConnection.getConnection();
-            String query = "select HSN_SAC from TBL_PRODUCT_TAX where HSN_SAC = ?";
-
-            System.out.println(query);
-
-            ps = connection.prepareStatement(query);
-            ps.setLong(1,enterHsnCode);
-
-            rs = ps.executeQuery();
-
-            return rs.next();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }finally {
-            DBConnection.closeConnection(connection , ps , rs);
-        }
-    }
-
-
 }

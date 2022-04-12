@@ -13,8 +13,7 @@ public class DBConnection {
     public Connection getConnection() {
         method = new Method();
 
-        Properties properties = new PropertiesLoader().load("query.properties");
-
+        Properties properties = new PropertiesLoader().getDbDetails();
         String DB_URL = properties.getProperty("DB_URL");
         String DB_USERNAME = properties.getProperty("DB_USERNAME");
         String DB_PASSWORD = properties.getProperty("DB_PASSWORD");

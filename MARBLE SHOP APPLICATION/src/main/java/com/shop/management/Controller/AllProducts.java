@@ -5,7 +5,6 @@ import com.shop.management.ImageLoader;
 import com.shop.management.Main;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.Products;
-import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -27,8 +26,8 @@ import javafx.util.Callback;
 
 import java.net.URL;
 import java.sql.*;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class AllProducts implements Initializable {
@@ -61,7 +60,6 @@ public class AllProducts implements Initializable {
     private DBConnection dbconnection;
     private Method method;
     private CustomDialog customDialog;
-    private Properties properties;
 
     FilteredList<Products> filteredData;
 
@@ -73,7 +71,6 @@ public class AllProducts implements Initializable {
         method = new Method();
         dbconnection = new DBConnection();
         customDialog = new CustomDialog();
-        properties = new PropertiesLoader().load("query.properties");
 
         getProduct();
 
@@ -267,6 +264,7 @@ public class AllProducts implements Initializable {
                     iv_delete.setFitHeight(17);
                     iv_delete.setFitWidth(17);
                     iv_delete.setPreserveRatio(true);
+                    iv_delete.setVisible(Objects.equals(Login.currentRoleName.toLowerCase(), "admin".toLowerCase()));
 
                     iv_edit.setStyle(
                             " -fx-cursor: hand ;"

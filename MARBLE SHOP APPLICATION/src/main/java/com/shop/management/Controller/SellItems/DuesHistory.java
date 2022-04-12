@@ -5,25 +5,27 @@ import com.shop.management.Main;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.DuesHistoryModel;
 import com.shop.management.Model.Sale_Main;
+import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseButton;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import org.w3c.dom.events.MouseEvent;
 
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class DuesHistory implements Initializable {
@@ -40,20 +42,21 @@ public class DuesHistory implements Initializable {
     public Label cusAddressL;
     public Label invoiceNumL;
     public BorderPane main;
-
     private Method method;
     private CustomDialog customDialog;
     private DBConnection dbConnection;
-
     private final ObservableList<DuesHistoryModel> historyList = FXCollections.observableArrayList();
     private int saleMainId;
     private Sale_Main saleMain;
+    private Properties propRead;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         method = new Method();
         customDialog = new CustomDialog();
         dbConnection = new DBConnection();
+        PropertiesLoader propLoader = new PropertiesLoader();
+        propRead = propLoader.getReadProp();
 
         saleMain = (Sale_Main) Main.primaryStage.getUserData();
         if (null == saleMain) {
@@ -61,26 +64,21 @@ public class DuesHistory implements Initializable {
             return;
         }
         saleMainId = saleMain.getSale_main_id();
-
         setData();
-
         getDuesHistory();
     }
 
     private void setData() {
-
         cusNameL.setText(saleMain.getCustomerName());
         cusPhoneL.setText(saleMain.getCustomerPhone());
         cusAddressL.setText(saleMain.getCustomerAddress());
         invoiceNumL.setText(saleMain.getInvoiceNumber());
-
     }
 
     private void getDuesHistory() {
         if (null != historyList) {
             historyList.clear();
         }
-
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -91,7 +89,7 @@ public class DuesHistory implements Initializable {
                 System.out.println("Connection Failed");
                 return;
             }
-            ps = connection.prepareStatement("select  (TO_CHAR(payment_date, 'YYYY-MM-DD HH:MM')) as payment_date  ,* from dues_history where sale_main_id = ? order by dues_history_id ASC");
+            ps = connection.prepareStatement(propRead.getProperty("READ_DUES_HISTORY"));
             ps.setInt(1, saleMainId);
             rs = ps.executeQuery();
 
@@ -126,14 +124,11 @@ public class DuesHistory implements Initializable {
             colPaymentMode.setCellValueFactory(new PropertyValueFactory<>("paymentMode"));
             colDate.setCellValueFactory(new PropertyValueFactory<>("paymentDate"));
 
-           // customColumn(colDate);
-
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             DBConnection.closeConnection(connection, ps, rs);
         }
-
         tableView.setPlaceholder(new Label("History Not Available!"));
     }
 
@@ -150,5 +145,18 @@ public class DuesHistory implements Initializable {
             text.textProperty().bind(cell.itemProperty());
             return cell;
         });
+    }
+
+    public void escPresss(KeyEvent e) {
+
+        /*if (e.getCode() == KeyCode.ESCAPE){
+
+            Stage stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+            if (stage.isShowing()){
+                stage.close();
+            }
+
+
+        }*/
     }
 }

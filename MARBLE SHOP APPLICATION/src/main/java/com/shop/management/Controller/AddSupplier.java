@@ -8,6 +8,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -40,6 +42,12 @@ public class AddSupplier implements Initializable {
     }
 
     public void bnAddSupplier(ActionEvent event) {
+
+       addSupplier(event.getSource());
+
+    }
+
+    private void addSupplier(Object source) {
 
         String sName = sNameTf.getText();
         String sPhone = sPhoneTf.getText();
@@ -107,7 +115,7 @@ public class AddSupplier implements Initializable {
 
             if (res > 0) {
 
-                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                Stage stage = (Stage) ((Node) source).getScene().getWindow();
 
                 if (stage.isShowing()) {
                     stage.close();
@@ -123,6 +131,20 @@ public class AddSupplier implements Initializable {
         } finally {
             DBConnection.closeConnection(connection, ps, null);
         }
+    }
 
+    public void cancel(ActionEvent event) {
+
+        Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+        if (stage.isShowing()){
+            stage.close();
+        }
+    }
+
+    public void enterPress(KeyEvent event) {
+
+        if (event.getCode() == KeyCode.ENTER){
+            addSupplier(event.getSource());
+        }
     }
 }

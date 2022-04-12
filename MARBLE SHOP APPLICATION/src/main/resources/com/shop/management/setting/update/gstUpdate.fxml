@@ -23,7 +23,7 @@
                                   <Font name="System Bold" size="12.0" />
                               </font>
                           </Label>
-                          <TextField fx:id="hsn_sacTf" minHeight="40.0" minWidth="290.0" prefHeight="40.0" prefWidth="290.0" promptText="Enter HSN / SAC" style="-fx-border-color: gray; -fx-border-radius: 3;" />
+                          <TextField fx:id="hsn_sacTf" minHeight="40.0" minWidth="290.0" onKeyReleased="#enterPress" prefHeight="40.0" prefWidth="290.0" promptText="Enter HSN / SAC" style="-fx-border-color: gray; -fx-border-radius: 3;" />
                       </children>
                   </VBox>
 
@@ -36,7 +36,7 @@
                                           <Font name="System Bold" size="12.0" />
                                       </font>
                                   </Label>
-                                  <TextField fx:id="sgstTF" minWidth="140.0" prefHeight="36.0" prefWidth="140.0" promptText="Enter SGST" style="-fx-border-color: gray; -fx-border-radius: 3;" />
+                                  <TextField fx:id="sgstTF" minWidth="140.0" onKeyReleased="#enterPress" prefHeight="36.0" prefWidth="140.0" promptText="Enter SGST" style="-fx-border-color: gray; -fx-border-radius: 3;" />
                               </children>
                           </VBox>
                           <VBox fillWidth="false" layoutX="10.0" layoutY="10.0" HBox.hgrow="ALWAYS">
@@ -46,7 +46,7 @@
                                           <Font name="System Bold" size="12.0" />
                                       </font>
                                   </Label>
-                                  <TextField fx:id="cgstTF" minWidth="140.0" prefHeight="36.0" prefWidth="140.0" promptText="Enter CGST" style="-fx-border-color: gray; -fx-border-radius: 3;" />
+                                  <TextField fx:id="cgstTF" minWidth="140.0" onKeyReleased="#enterPress" prefHeight="36.0" prefWidth="140.0" promptText="Enter CGST" style="-fx-border-color: gray; -fx-border-radius: 3;" />
                               </children>
                           </VBox>
                       </children>
@@ -60,7 +60,7 @@
                                           <Font name="System Bold" size="12.0" />
                                       </font>
                                   </Label>
-                                  <TextField fx:id="igstTF" minWidth="140.0" prefHeight="36.0" prefWidth="140.0" promptText="Enter IGST" style="-fx-border-color: gray; -fx-border-radius: 3;" />
+                                  <TextField fx:id="igstTF" minWidth="140.0" onKeyReleased="#enterPress" prefHeight="36.0" prefWidth="140.0" promptText="Enter IGST" style="-fx-border-color: gray; -fx-border-radius: 3;" />
                               </children>
                           </VBox>
                           <VBox fillWidth="false" layoutX="10.0" layoutY="10.0" HBox.hgrow="ALWAYS">
@@ -70,7 +70,7 @@
                                           <Font name="System Bold" size="12.0" />
                                       </font>
                                   </Label>
-                                  <TextField fx:id="gstNameTF" minWidth="140.0" prefHeight="36.0" prefWidth="140.0" promptText="Enter GST NAME" style="-fx-border-color: gray; -fx-border-radius: 3;" />
+                                  <TextField fx:id="gstNameTF" minWidth="140.0" onKeyReleased="#enterPress" prefHeight="36.0" prefWidth="140.0" promptText="Enter GST NAME" style="-fx-border-color: gray; -fx-border-radius: 3;" />
                               </children>
                           </VBox>
                       </children>
@@ -84,14 +84,22 @@
                                           <Font name="System Bold" size="12.0" />
                                       </font>
                                   </Label>
-                                  <TextField fx:id="descriptionTF" minWidth="140.0" prefHeight="50.0" prefWidth="290.0" promptText="Enter Description" style="-fx-border-color: gray; -fx-border-radius: 3;" />
+                                  <TextField fx:id="descriptionTF" minWidth="140.0" onKeyReleased="#enterPress" prefHeight="50.0" prefWidth="290.0" promptText="Enter Description" style="-fx-border-color: gray; -fx-border-radius: 3;" />
                               </children>
                           </VBox>
                       </children>
                   </HBox>
-                  <HBox alignment="BOTTOM_CENTER" VBox.vgrow="ALWAYS">
+                  <HBox alignment="BOTTOM_CENTER" spacing="50.0" VBox.vgrow="ALWAYS">
                       <children>
-                          <Button mnemonicParsing="false" onAction="#updateTax" prefHeight="26.0" prefWidth="90.0" style="-fx-cursor: hand;-fx-background-color: #008080; -fx-text-fill: WHITE;" text="UPDATE" />
+                          <Button mnemonicParsing="false" onAction="#cancel" prefHeight="26.0" prefWidth="90.0" style="-fx-cursor: hand; -fx-background-color: RED; -fx-text-fill: WHITE;" text="CANCEL">
+                        <font>
+                           <Font name="Arial Black" size="12.0" />
+                        </font></Button>
+                     <Button layoutX="110.0" layoutY="10.0" mnemonicParsing="false" onAction="#updateTax" prefHeight="26.0" prefWidth="90.0" style="-fx-cursor: hand;-fx-background-color: #008080; -fx-text-fill: WHITE;" text="UPDATE">
+                        <font>
+                           <Font name="Arial Black" size="11.0" />
+                        </font>
+                     </Button>
                       </children>
                       <VBox.margin>
                           <Insets top="15.0" />

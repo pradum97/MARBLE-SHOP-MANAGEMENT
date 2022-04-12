@@ -9,6 +9,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -45,6 +47,12 @@ public class CategoryUpdate implements Initializable {
 
     public void updateCategory(ActionEvent event) {
 
+       update(event.getSource());
+
+    }
+
+    private void update(Object source) {
+
         String cName = categoryNameTF.getText();
 
         if (cName.isEmpty()){
@@ -70,7 +78,7 @@ public class CategoryUpdate implements Initializable {
             if (res >0){
                 categoryNameTF.setText("");
 
-                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                Stage stage = (Stage) ((Node) source).getScene().getWindow();
 
                 if (stage.isShowing()){
                     stage.close();
@@ -82,6 +90,20 @@ public class CategoryUpdate implements Initializable {
         }finally {
             DBConnection.closeConnection(connection,ps,null);
         }
+    }
 
+    public void cancel(ActionEvent event) {
+
+        Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+        if (stage.isShowing()){
+            stage.close();
+        }
+    }
+
+    public void enterPress(KeyEvent event) {
+
+        if (event.getCode() == KeyCode.ENTER){
+            update(event.getSource());
+        }
     }
 }

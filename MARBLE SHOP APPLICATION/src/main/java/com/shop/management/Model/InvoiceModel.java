@@ -3,9 +3,11 @@ package com.shop.management.Model;
 public class InvoiceModel {
 
     private int sale_main_id , totalItems;
-    private String customerName , customerPhone  ,billType , invoiceDate , invoiceNumber  ;
+    private String customerName , customerPhone  ,billType , invoiceDate , invoiceNumber ;
+    private double gstClaimedAMount  ;
 
-    public InvoiceModel(int sale_main_id, int totalItems, String customerName, String customerPhone, String billType, String invoiceDate, String invoiceNumber) {
+    public InvoiceModel(int sale_main_id, int totalItems, String customerName, String customerPhone,
+                        String billType, String invoiceDate, String invoiceNumber, double gstClaimedAMount) {
         this.sale_main_id = sale_main_id;
         this.totalItems = totalItems;
         this.customerName = customerName;
@@ -13,6 +15,15 @@ public class InvoiceModel {
         this.billType = billType;
         this.invoiceDate = invoiceDate;
         this.invoiceNumber = invoiceNumber;
+        this.gstClaimedAMount = gstClaimedAMount;
+    }
+
+    public double getGstClaimedAMount() {
+        return gstClaimedAMount;
+    }
+
+    public void setGstClaimedAMount(double gstClaimedAMount) {
+        this.gstClaimedAMount = gstClaimedAMount;
     }
 
     public int getSale_main_id() {

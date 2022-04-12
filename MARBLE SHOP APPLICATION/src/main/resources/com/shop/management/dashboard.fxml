@@ -16,7 +16,7 @@
                     <children>
                         <ImageView fx:id="userImage" fitHeight="65.0" fitWidth="65.0" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@img/icon/person_ic.png" />
+                                <Image url="@img/Avatar/avtar_3.png" />
                             </image>
                         </ImageView>
                         <Label fx:id="fullName" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="PRADUM KUMAR" wrapText="true">

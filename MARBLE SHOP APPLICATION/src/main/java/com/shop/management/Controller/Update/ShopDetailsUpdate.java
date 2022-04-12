@@ -5,9 +5,12 @@ import com.shop.management.Main;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.Shop;
 import com.shop.management.util.DBConnection;
+import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
@@ -59,6 +62,11 @@ public class ShopDetailsUpdate implements Initializable {
     }
 
     public void bnUpdate(MouseEvent event) {
+
+      submit(event.getSource());
+    }
+
+    private void submit(Object source) {
 
         String sName = shopNameTf.getText();
         String sPhone_1 = phone_1Tf.getText();
@@ -115,7 +123,7 @@ public class ShopDetailsUpdate implements Initializable {
 
             if (res > 0){
 
-                Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+                Stage stage = (Stage) ((Node)source).getScene().getWindow();
 
                 if (stage.isShowing()){
                     stage.close();
@@ -127,7 +135,19 @@ public class ShopDetailsUpdate implements Initializable {
         }finally {
             DBConnection.closeConnection(connection,ps,null);
         }
+    }
 
+    public void cancel(ActionEvent event) {
+        Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+        if (stage.isShowing()){
+            stage.close();
+        }
+    }
 
+    public void enterPress(KeyEvent event) {
+
+        if (event.getCode() == KeyCode.ENTER){
+            submit(event.getSource());
+        }
     }
 }

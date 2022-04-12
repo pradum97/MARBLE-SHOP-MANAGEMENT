@@ -35,8 +35,11 @@ public class PurchaseHistory implements Initializable {
     public TableColumn<PurchaseHistoryModel, String> colProductCode;
     public TableColumn<PurchaseHistoryModel, String> colSize;
     public TableColumn<PurchaseHistoryModel, String> colQuantity;
-    public TableColumn<PurchaseHistoryModel, String> colActivity;
     public TableColumn<PurchaseHistoryModel, String> colDate;
+    public TableColumn <PurchaseHistoryModel, String>  colPurPrice;
+    public TableColumn <PurchaseHistoryModel, String>  colMrp;
+    public TableColumn <PurchaseHistoryModel, String>  colMinSale;
+
     public TextField searchTf;
     public Pagination pagination;
 
@@ -72,7 +75,7 @@ public class PurchaseHistory implements Initializable {
                  return;
              }
 
-             String query = "SELECT s.supplier_name , s.supplier_id , ph.purchase_id , ph.product_id , ph.stock_id , ph.seller_id\n" +
+             String query = "SELECT s.supplier_name , s.supplier_id ,ph.purchase_price , ph.mrp , ph.min_sell, ph.purchase_id , ph.product_id , ph.stock_id , ph.seller_id\n" +
                      "       , ph.invoice_num , tp.product_code , (concat(tps.height,'x' , tps.width , ' ',tps.size_unit)) as size,\n" +
                      "       ph.quantity , ph.activity_type ,(TO_CHAR(ph.purchase_date, 'DD-MM-YYYY')) as purchase_date\n" +
                      "FROM purchase_history ph\n" +
@@ -99,9 +102,14 @@ public class PurchaseHistory implements Initializable {
                  String activity = rs.getString("activity_type");
                  String purchaseDate = rs.getString("purchase_date");
 
+                 double purchasePrice = rs.getDouble("purchase_price");
+                 double mrp = rs.getDouble("mrp");
+                 double minSell = rs.getDouble("min_sell");
+
                  String invoice = Objects.requireNonNullElse(invoiceNum, "-");
 
-                purchaseList.add(new PurchaseHistoryModel(purchaseId , supplierId , productId , stockId , sellerId , supplierName , invoice , productCode , size , quantity , activity , purchaseDate));
+                purchaseList.add(new PurchaseHistoryModel(purchaseId , supplierId , productId , stockId , sellerId , supplierName ,
+                        invoice , productCode , size , quantity , activity , purchaseDate , purchasePrice , mrp , minSell));
              }
 
             if (purchaseList.size() > 0) {
@@ -139,10 +147,7 @@ public class PurchaseHistory implements Initializable {
                     return true;
                 } else if (products.getSupplierName().toLowerCase().contains(lowerCaseFilter)) {
                     return true;
-                } else if (String.valueOf(products.getQuantity()).toLowerCase().contains(lowerCaseFilter)) {
-                    return true;
-                }
-                return false;
+                } else return String.valueOf(products.getQuantity()).toLowerCase().contains(lowerCaseFilter);
             });
 
             changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);
@@ -169,8 +174,10 @@ public class PurchaseHistory implements Initializable {
         colProductCode.setCellValueFactory(new PropertyValueFactory<>("productCode"));
         colSize.setCellValueFactory(new PropertyValueFactory<>("size"));
         colQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
-        colActivity.setCellValueFactory(new PropertyValueFactory<>("activity"));
         colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
+        colPurPrice.setCellValueFactory(new PropertyValueFactory<>("purchasePrice"));
+        colMrp.setCellValueFactory(new PropertyValueFactory<>("mrp"));
+        colMinSale.setCellValueFactory(new PropertyValueFactory<>("minSell"));
 
 
         int fromIndex = index * limit;

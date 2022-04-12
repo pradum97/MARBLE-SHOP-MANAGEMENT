@@ -10,6 +10,7 @@ import com.shop.management.util.DBConnection;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -33,7 +34,6 @@ public class UpdateFeedback implements Initializable {
     public TextArea comments;
     public Rating rate;
     public Button bn_feedback_submit;
-    private Properties queryProp;
     private DBConnection dbConnection;
     private CustomDialog customDialog;
     private Method method;
@@ -45,8 +45,6 @@ public class UpdateFeedback implements Initializable {
         method = new Method();
         dbConnection = new DBConnection();
         customDialog = new CustomDialog();
-        queryProp =new PropertiesLoader().load("query.properties");
-
         feed = (Feedback) Main.primaryStage.getUserData();
         setData(feed);
     }
@@ -109,7 +107,7 @@ public class UpdateFeedback implements Initializable {
                 return;
             }
 
-            ps = con.prepareStatement(queryProp.getProperty("FEEDBACK_UPDATE"));
+            ps = con.prepareStatement(new PropertiesLoader().getUpdateProp().getProperty("FEEDBACK_UPDATE"));
             ps.setString(1, fullname);
             ps.setString(2, emailID);
             ps.setString(3, phoneNum);
@@ -152,4 +150,11 @@ public class UpdateFeedback implements Initializable {
         }
     }
 
+    public void cancel(ActionEvent event) {
+
+        Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+        if (stage.isShowing()){
+            stage.close();
+        }
+    }
 }

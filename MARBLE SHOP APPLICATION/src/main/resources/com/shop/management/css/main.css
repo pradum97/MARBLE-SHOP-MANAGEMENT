@@ -1,19 +1,24 @@
+.button{
 
+    -fx-cursor: hand;
+}
 .context-menu {
-    -fx-background-color: #ff0000;
-    -fx-border-color: #f10707;
+    -fx-background-color: red;
+    -fx-border-color: red;
+    -fx-padding: 1;
     -fx-text-fill: white;
 }
 
 
 .menu-item:focused .label {
+    -fx-background-color: transparent;
     -fx-text-fill: white;
     -fx-font-weight: bold;
 }
 
 .menu-item:focused {
-    -fx-background: -fx-accent;
-    -fx-background-color: #f10707;
+    -fx-background-color: red;
+    -fx-font-weight: bold;
     -fx-text-fill: -fx-selection-bar-text;
 }
 

@@ -4,12 +4,11 @@ import com.shop.management.CustomDialog;
 import com.shop.management.Main;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.SaleItems;
-import com.shop.management.Model.Sale_Main;
+import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -21,12 +20,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class ViewSellItems implements Initializable {
 
     int rowsPerPage = 8;
-
     public TableColumn<SaleItems, Integer> col_sno;
     public TableColumn<SaleItems, String> colProductName;
     public TableColumn<SaleItems, String> colColor;
@@ -50,20 +49,18 @@ public class ViewSellItems implements Initializable {
     private CustomDialog customDialog;
     private DBConnection dbConnection;
     private int sale_main_id = 0;
-
+    private Properties  propRead;
     ObservableList<SaleItems> reportList = FXCollections.observableArrayList();
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         method = new Method();
         customDialog = new CustomDialog();
         dbConnection = new DBConnection();
-
+        PropertiesLoader propLoader = new PropertiesLoader();
+        propRead = propLoader.getReadProp();
         sale_main_id = (int) Main.primaryStage.getUserData();
         getSaleItem();
-
     }
-
     private void getSaleItem() {
         if (null != reportList) {
             reportList.clear();
@@ -78,7 +75,7 @@ public class ViewSellItems implements Initializable {
                 System.out.println("Connection Failed");
                 return;
             }
-            ps = connection.prepareStatement("select (TO_CHAR(sale_date, 'DD-MM-YYYY HH:MM')) as sale_date ,* from tbl_saleitems where sale_main_id = ? order by sale_item_id asc");
+            ps = connection.prepareStatement(propRead.getProperty("READ_SALE_ITEMS"));
             ps.setInt(1, sale_main_id);
             rs = ps.executeQuery();
             while (rs.next()) {

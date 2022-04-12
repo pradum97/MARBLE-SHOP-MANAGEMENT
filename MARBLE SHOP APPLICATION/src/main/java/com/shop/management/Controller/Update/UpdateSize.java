@@ -11,6 +11,7 @@ import com.shop.management.util.DBConnection;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
@@ -44,7 +45,6 @@ public class UpdateSize implements Initializable {
     private Method method;
     private CustomDialog customDialog;
     private DBConnection dbConnection;
-    private Properties properties;
     private double profitPrice = 20; // in %
 
     @Override
@@ -60,8 +60,6 @@ public class UpdateSize implements Initializable {
         method = new Method();
         customDialog = new CustomDialog();
         dbConnection = new DBConnection();
-        properties = new PropertiesLoader().load("query.properties");
-
         setPreviousData();
 
 
@@ -251,7 +249,7 @@ public class UpdateSize implements Initializable {
                 return;
             }
 
-            ps = connection.prepareStatement(properties.getProperty("UPDATE_SIZE"));
+            ps = connection.prepareStatement(new PropertiesLoader().getUpdateProp().getProperty("UPDATE_SIZE"));
             ps.setDouble(1, purchase_price);
             ps.setDouble(2, mrp);
             ps.setDouble(3, min_Sell_Price);
@@ -319,6 +317,14 @@ public class UpdateSize implements Initializable {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public void cancel(ActionEvent event) {
+
+        Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+        if (stage.isShowing()){
+            stage.close();
         }
     }
 }

@@ -24,7 +24,7 @@
                   </Label>
                   <ImageView fx:id="userImage" fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../img/icon/person_ic.png" />
+                        <Image url="@../img/Avatar/avtar_3.png" />
                      </image>
                   </ImageView>
                   <VBox alignment="TOP_CENTER" spacing="15.0">
@@ -132,11 +132,25 @@
                         </HBox>
                         <HBox alignment="BASELINE_LEFT" layoutX="20.0" layoutY="160.0" spacing="30.0" style="-fx-font-size: 15;">
                            <children>
-                              <Button fx:id="bnChangePassword" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#changePassword" style="-fx-cursor: hand;-fx-background-color: #5e0cee; -fx-text-fill: WHITE;" text="CHANGE PASSWORD">
+                              <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#cancel" style="-fx-cursor: hand; -fx-background-color: RED; -fx-text-fill: WHITE;" text="CANCEL">
                                  <HBox.margin>
                                     <Insets />
-                                 </HBox.margin></Button>
-                              <Button fx:id="bnEdit" mnemonicParsing="false" onAction="#editProfile" style=" -fx-cursor: hand;-fx-background-color: #5e0cee;                                       -fx-text-fill: WHITE;" text="EDIT PROFILE" />
+                                 </HBox.margin>
+                                 <font>
+                                    <Font name="Arial Black" size="12.0" />
+                                 </font></Button>
+                              <Button fx:id="bnChangePassword" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#changePassword" style="-fx-cursor: hand;-fx-background-color: #5e0cee; -fx-text-fill: WHITE;" text="CHANGE PASSWORD">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets bottom="5.0" left="8.0" right="8.0" top="5.0" />
+                                 </padding>
+                              </Button>
+                              <Button fx:id="bnEdit" mnemonicParsing="false" onAction="#editProfile" style=" -fx-cursor: hand;-fx-background-color: #5e0cee;                                       -fx-text-fill: WHITE;" text="EDIT PROFILE">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font></Button>
                            </children>
                            <VBox.margin>
                               <Insets top="20.0" />

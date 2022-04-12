@@ -46,26 +46,25 @@ public class Dashboard implements Initializable {
     public Label userRole;
     private Connection connection;
     private DBConnection dbConnection;
-    private Properties properties;
     private CustomDialog customDialog;
     private Method method;
     private Main main;
     public static Stage stage;
+    private Properties propRead;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         main_container.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/setting.css")).toExternalForm());
         method = new Method();
         dbConnection = new DBConnection();
-        properties = new PropertiesLoader().load("query.properties");
+        PropertiesLoader propLoader = new PropertiesLoader();
+        propRead = propLoader.getReadProp();
         customDialog = new CustomDialog();
         main = new Main();
-        replaceScene("dashboard/home.fxml");
         getMenuData();
         setCustomImage();
         setUserData();
         keyBoardShortcut();
-
     }
 
     private void keyBoardShortcut() {
@@ -74,7 +73,7 @@ public class Dashboard implements Initializable {
 
         scene.getAccelerators().put(
                 KeyCombination.keyCombination("CTRL+A"),
-                () -> showAddProductDialog()
+                this::showAddProductDialog
         );
 
         scene.getAccelerators().put(
@@ -116,7 +115,6 @@ public class Dashboard implements Initializable {
 
     }
 
-
     private void onClickAction(MenuItem appearance, Menu product, MenuItem gst, MenuItem discount, MenuItem help,
                                MenuItem shopData, MenuItem category, MenuItem profile, MenuItem users, MenuItem stockControl,
                                MenuItem supplier, MenuItem purchaseHistory, MenuItem customer) {
@@ -126,23 +124,31 @@ public class Dashboard implements Initializable {
         discount.setOnAction(event -> {
 
             customDialog.showFxmlDialog2("setting/discountConfig.fxml", "DISCOUNT");
-            refreshPage();
+            if (Objects.equals(Login.currentRoleName.toLowerCase(), "admin".toLowerCase())) {
+                refreshPage();
+            }
         });
 
 
         gst.setOnAction(event -> {
             customDialog.showFxmlDialog2("setting/gstConfig.fxml", "GST");
-            refreshPage();
+            if (Objects.equals(Login.currentRoleName.toLowerCase(), "admin".toLowerCase())) {
+                refreshPage();
+            }
         });
 
         help.setOnAction(event -> customDialog.showFxmlDialog2("setting/help.fxml", "HELP"));
         customer.setOnAction(event -> customDialog.showFxmlFullDialog("setting/customer.fxml", "ALL CUSTOMER"));
         shopData.setOnAction(event -> customDialog.showFxmlDialog2("shopDetails.fxml", ""));
         category.setOnAction(event -> customDialog.showFxmlDialog2("category.fxml", "CATEGORY"));
-        users.setOnAction(event ->{
-                    customDialog.showFxmlFullDialog("dashboard/users.fxml", "ALL USERS");
-                    refreshPage();
-                });
+        users.setOnAction(event -> {
+            customDialog.showFxmlFullDialog("dashboard/users.fxml", "ALL USERS");
+
+            if (Objects.equals(Login.currentRoleName.toLowerCase(), "admin".toLowerCase())) {
+                refreshPage();
+            }
+
+        });
         stockControl.setOnAction(event -> customDialog.showFxmlFullDialog("setting/stockControl.fxml", "STOCK SETTING"));
         supplier.setOnAction(event -> customDialog.showFxmlFullDialog("stock/allSupplier.fxml", "ALL SUPPLIER"));
         purchaseHistory.setOnAction(event -> customDialog.showFxmlFullDialog("purchaseHistory.fxml", ""));
@@ -150,12 +156,14 @@ public class Dashboard implements Initializable {
 
             Main.primaryStage.setUserData(Login.currentlyLogin_Id);
             customDialog.showFxmlDialog2("dashboard/userprofile.fxml", "MY PROFILE");
-            refreshPage();
+            if (Objects.equals(Login.currentRoleName.toLowerCase(), "admin".toLowerCase())) {
+                refreshPage();
+            }
         });
     }
 
     private void refreshPage() {
-        replaceScene("dashboard/home.fxml");
+         replaceScene("dashboard/home.fxml");
         getMenuData();
         setCustomImage();
         setUserData();
@@ -192,7 +200,6 @@ public class Dashboard implements Initializable {
 
             fullName.setText((userDetails.getFirstName() + " " + userDetails.getLastName()).toUpperCase());
 
-
             userRole.setText(userDetails.getRole().toUpperCase());
             String imgPath = "img/Avatar/" + userDetails.getUserImage();
             userImage.setImage(new ImageLoader().load(imgPath));
@@ -215,7 +222,7 @@ public class Dashboard implements Initializable {
 
         try {
             connection = dbConnection.getConnection();
-            PreparedStatement ps = connection.prepareStatement(properties.getProperty("SIDE_MENU"));
+            PreparedStatement ps = connection.prepareStatement(propRead.getProperty("SIDE_MENU"));
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 String item = rs.getString("menu_name");
@@ -234,7 +241,32 @@ public class Dashboard implements Initializable {
                         icon.setFitWidth(18);
                         icon.setFitHeight(18);
                         icon.setImage(new ImageLoader().load("img/menu_icon/" + icon_path));
-                        menu_button.setText(item);
+
+                        if (Objects.equals(Login.currentRoleName.toLowerCase(), "seller".toLowerCase())) {
+
+                            switch (item) {
+                                case "ALL PRODUCTS", "SALE PRODUCTS", "STOCK REPORT", "INVOICE",
+                                        "RETURN PRODUCT", "PROPOSAL" -> {
+                                    menu_button.setText(item);
+                                    replaceScene("dashboard/allProducts.fxml");
+                                    menu_button.setGraphic(icon);
+                                    gridPane.add(menu_button, 0, i);
+                                    gridPane.setVgap(10);
+
+                                    i++;
+                                }
+                            }
+
+                        } else {
+
+                            menu_button.setText(item);
+                            menu_button.setGraphic(icon);
+                            gridPane.add(menu_button, 0, i);
+                            gridPane.setVgap(10);
+                            replaceScene("dashboard/home.fxml");
+
+                            i++;
+                        }
 
                         menu_button.setOnAction(event -> {
 
@@ -248,17 +280,11 @@ public class Dashboard implements Initializable {
                                 case "STOCK REPORT" -> replaceScene("dashboard/stockReport.fxml");
                                 case "INVOICE" -> replaceScene("dashboard/invoiceReport.fxml");
                                 case "RETURN PRODUCT" -> replaceScene("returnItems/returnProduct.fxml");
+                                case "PROPOSAL" -> replaceScene("proposal/proposalMain.fxml");
                             }
 
 
                         });
-
-                        menu_button.setGraphic(icon);
-
-                        gridPane.add(menu_button, 0, i);
-                        gridPane.setVgap(10);
-
-                        i++;
                     }
 
                     case "TOP" -> {
@@ -284,19 +310,21 @@ public class Dashboard implements Initializable {
 
                                 help.setVisible(false);
 
+                                users.setVisible(Objects.equals(Login.currentRoleName.toLowerCase(), "admin".toLowerCase()));
+
 
                                 // product -- start
                                 Menu product = new Menu("PRODUCT");
                                 MenuItem category = new MenuItem("CATEGORY");
                                 MenuItem gst = new MenuItem("GST");
                                 MenuItem discount = new MenuItem("DISCOUNT");
-                                product.getItems().addAll(category , gst, discount);
+                                product.getItems().addAll(category, gst, discount);
 
                                 // product --  end
 
-                                menu_button.getItems().addAll(gen, product, profile, users, shopData, purchaseHistory,customer, help);
+                                menu_button.getItems().addAll(gen, product, profile, users, shopData, purchaseHistory, customer, help);
 
-                                onClickAction(appearance, product, gst, discount, help, shopData, category, profile, users, stockControl, supplier, purchaseHistory,customer);
+                                onClickAction(appearance, product, gst, discount, help, shopData, category, profile, users, stockControl, supplier, purchaseHistory, customer);
 
 
                                 ImageView icon = new ImageView();
@@ -408,7 +436,7 @@ public class Dashboard implements Initializable {
         alert.setAlertType(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Warning ");
         alert.setGraphic(image);
-        alert.setHeaderText("Are you sure you want to Logout");
+        alert.setHeaderText("ARE YOU SURE YOU WANT TO LOGOUT ?");
         alert.initModality(Modality.APPLICATION_MODAL);
         alert.initOwner(Main.primaryStage);
         Optional<ButtonType> result = alert.showAndWait();
@@ -416,6 +444,8 @@ public class Dashboard implements Initializable {
         if (button == ButtonType.OK) {
             main.changeScene("login.fxml", "LOGIN HERE");
             Login.currentlyLogin_Id = 0;
+            Login.currentRoleName = "";
+            Login.currentRole_Id = 0;
         } else {
             alert.close();
         }

@@ -6,12 +6,10 @@ import com.shop.management.ImageLoader;
 import com.shop.management.Main;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.ReturnProductModel;
+import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
-import javafx.beans.Observable;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -21,14 +19,14 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
-import javafx.util.Callback;
 
 import java.net.URL;
 import java.sql.*;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class ReturnProduct implements Initializable {
 
@@ -47,56 +45,50 @@ public class ReturnProduct implements Initializable {
     public TableColumn<ReturnProductModel, String> colQuantity;
     public TableColumn<ReturnProductModel, String> colRate;
     public TableColumn<ReturnProductModel, String> colAction;
+    public TableColumn<ReturnProductModel, String> colAlreadyReturned;
+    public TableColumn<ReturnProductModel, String> colReturnable;
     public Button searchBn;
     public TextField invoicePrefetchTF;
-    public TableColumn<ReturnProductModel, CheckBox> colCheckBox;
     public Label refundL;
     public TextArea remarkTF;
     public Button bnSubmit;
     public TextField discountTF;
+    public Label gstAmountL;
+    public HBox gstContainer;
+    public HBox addiDiscountContainer;
+    public Label addiDiscountL;
     private DBConnection dbConnection;
     private Method method;
     private CustomDialog customDialog;
-    double netReturnAmtTot = 0;
+    double netReturnAmtTot = 0 , gstAmount;
     private double totalReturnDisctAmount = 0;
     private int saleMainID;
     private double discountPer;
     private String oldInvoiceNumber;
-    private double totalDiscount , netAmount;
+    private double netAmount;
     private ObservableList<ReturnProductModel> itemList = FXCollections.observableArrayList();
+    private Properties propInsert;
+    private Properties propUpdate;
+    private Properties propRead;
+    private double additional_discount;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         method = new Method();
         dbConnection = new DBConnection();
         customDialog = new CustomDialog();
-
+        PropertiesLoader propLoader = new PropertiesLoader();
+        propUpdate = propLoader.getUpdateProp();
+        propRead = propLoader.getReadProp();
+        propInsert = propLoader.getInsertProp();
         textChangeListener();
-    }
-
-    private void textChangeListener() {
-
-        discountTF.textProperty().addListener((observableValue, s, t1) -> {
-
-            double currentDiscount = 0;
-            try {
-                currentDiscount = Double.parseDouble(t1.replaceAll("[^0-9.]", ""));
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-            }
-
-            if (netReturnAmtTot < currentDiscount){
-                method.show_popup("Discount Amount Should Not Be Exceed Price !",discountTF);
-                return;
-
-            }
-            refundL.setText(String.valueOf(netReturnAmtTot - currentDiscount));
-
-        });
+        gstContainer.managedProperty().bind(gstContainer.visibleProperty());
+        gstContainer.setVisible(false);
+        addiDiscountContainer.managedProperty().bind(addiDiscountContainer.visibleProperty());
+        addiDiscountContainer.setVisible(false);
     }
 
     public void bnSearch(ActionEvent event) {
-
         String str = searchBn.getText();
         if ("RESET".equals(str)) {
             resetValue();
@@ -112,33 +104,24 @@ public class ReturnProduct implements Initializable {
             menu.setAutoHide(true);
             menu.getItems().add(new MenuItem("Enter Invoice Number "));
             menu.show(invoiceNumTF, Side.BOTTOM, 10, 0);
-
             return;
         }
-
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-
         try {
             connection = dbConnection.getConnection();
             if (null == connection) {
                 System.out.println("connection Failed");
                 return;
             }
-
-            String query = "select tsm.sale_main_id,tsm.tot_disc_amount  ,tsi.product_id,tsi.stock_id,tsi.discountPer , tsi.sale_item_id ,tsm.invoice_number , tc.customer_name , tc.customer_phone, tc.customer_address,\n" +
-                    "       (TO_CHAR( tsm.sale_date, 'DD-MM-YYYY HH12:MI AM')) as sale_date , tsm.net_amount , tsm.bill_type ,td.dues_amount,\n" +
-                    "       tsi.product_name , tsi.product_size , tsi.product_quantity , tsi.sell_price\n" +
-                    "from tbl_sale_main tsm\n" +
-                    "         LEFT JOIN tbl_saleitems tsi on tsm.sale_main_id = tsi.sale_main_id\n" +
-                    "         LEFT JOIN tbl_customer tc on tsm.customer_id = tc.customer_id\n" +
-                    "         LEFT JOIN tbl_dues td on tsm.sale_main_id = td.sale_main_id where tsm.invoice_number = ?";
+            String query = propRead.getProperty("SEARCH_SALE_ITEM");
 
             ps = connection.prepareStatement(query);
             ps.setString(1, invPrefix + invoiceNumber);
 
             rs = ps.executeQuery();
+            Map<Integer, ReturnProductModel> map = new HashMap<>();
 
             int res = 0;
             while (rs.next()) {
@@ -156,18 +139,27 @@ public class ReturnProduct implements Initializable {
                 String saleDate = rs.getString("sale_date");
                 String billType = rs.getString("bill_type");
                 String productName = rs.getString("product_name");
-                String ReturnProductModelize = rs.getString("product_size");
+                String size = rs.getString("product_size");
                 String productQuantity = rs.getString("product_quantity");
 
                 double net_Amount = rs.getDouble("net_amount");
                 double duesAmount = rs.getDouble("dues_amount");
                 double rate = rs.getDouble("sell_price");
                 double discountPer = rs.getDouble("discountPer");
+                double gstClaimedAmt = rs.getDouble("gst_Claimed");
+                double gstAmount = rs.getDouble("tax_amount");
+                double totalGstPercentage = rs.getDouble("totalGstPercentage");
+                int alreadyReturned = rs.getInt("alreadyReturned");
 
+                int quantity = Integer.parseInt(rs.getString("product_quantity").split(" -")[0]);
 
+                String qtyUnit = productQuantity.split(" -")[1];
                 if (rs.isLast()) {
+                    additional_discount = rs.getDouble("additional_discount");
+
+                    addiDiscountContainer.setVisible(additional_discount > 0);
                     res++;
-                    totalDiscount = rs.getDouble("tot_disc_amount");
+                    //  actualAmount = net_Amount;
                     netAmount = net_Amount;
                     cusNameL.setText(customerName.toUpperCase());
                     cusPhoneL.setText(customerPhone);
@@ -180,9 +172,30 @@ public class ReturnProduct implements Initializable {
                     invoiceNumTF.setEditable(false);
                     saleMainID = saleMainId;
                     oldInvoiceNumber = invoiceNum;
-                }
-                itemList.add(new ReturnProductModel(false, productId, stockId, saleMainId, saleItemId, productName, ReturnProductModelize, productQuantity, rate, discountPer, "0"));
 
+                }
+
+                int key = saleItemId;
+                if (map.containsKey(key)) {
+
+                    int totReturned = Integer.parseInt(map.get(key).getAlreadyReturned().split(" -")[0]) + alreadyReturned;
+
+                    int totQty = Integer.parseInt(productQuantity.split(" -")[0]) - totReturned;
+
+                    ReturnProductModel rpm = new ReturnProductModel(false, productId, stockId, saleMainId, saleItemId, productName,
+                            size, productQuantity, rate, discountPer, totReturned + " -" + qtyUnit, "0",
+                            totQty + " -" + qtyUnit, gstAmount, totalGstPercentage, gstClaimedAmt);
+
+                    map.put(saleItemId, rpm);
+
+                } else {
+                    String returnable = (Integer.parseInt(productQuantity.split(" -")[0]) - alreadyReturned) + " -" + qtyUnit;
+                    ReturnProductModel rpm = new ReturnProductModel(false, productId, stockId, saleMainId, saleItemId, productName,
+                            size, productQuantity, rate, discountPer, alreadyReturned + " -" + qtyUnit, "0", returnable, gstAmount, totalGstPercentage, gstClaimedAmt);
+                    map.put(saleItemId, rpm);
+                }
+
+                itemList = FXCollections.observableArrayList(map.values());
             }
             if (res < 1) {
                 customDialog.showAlertBox("Failed", "Invoice Not Found");
@@ -195,17 +208,35 @@ public class ReturnProduct implements Initializable {
             colQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
             colRate.setCellValueFactory(new PropertyValueFactory<>("rate"));
             colAction.setCellValueFactory(new PropertyValueFactory<>("returnQuantity"));
-            colCheckBox.setCellValueFactory(new PropertyValueFactory<>("isReturn"));
-
-            setCellF();
+            colAlreadyReturned.setCellValueFactory(new PropertyValueFactory<>("alreadyReturned"));
+            colReturnable.setCellValueFactory(new PropertyValueFactory<>("returnable"));
 
             colAction.setCellFactory(TextFieldTableCell.forTableColumn());
             colAction.setOnEditCommit(e -> {
-                e.getTableView().getItems().get(e.getTablePosition().getRow()).setReturnQuantity(e.getNewValue());
+                String qtyUnit = e.getTableView().getItems().get(e.getTablePosition().getRow()).getReturnable().split(" -")[1];
+                int avlQuantity = Integer.parseInt(e.getTableView().getItems().get(e.getTablePosition().getRow()).getReturnable().split(" -")[0].replaceAll("[^0-9.]", ""));
+                int inputQuantity = Integer.parseInt(e.getNewValue().replaceAll("[^0-9.]", ""));
 
+                if (inputQuantity > avlQuantity) {
+                    String msg = "AVAILABLE QUANTITY :  " + avlQuantity + " -" + qtyUnit
+                            + "\n\nENTER QUANTITY :  " + inputQuantity + " -" + qtyUnit;
+
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("QUANTITY NOT AVAILABLE");
+                    alert.setHeaderText(msg);
+                    alert.setContentText("Please Enter Less Then :  " + avlQuantity + " -" + qtyUnit);
+                    alert.initOwner(Main.primaryStage);
+                    alert.showAndWait();
+                    tableView.refresh();
+                } else {
+
+                    if (inputQuantity > 0) {
+                        e.getTableView().getItems().get(e.getTablePosition().getRow()).setReturn(true);
+                    }
+                    e.getTableView().getItems().get(e.getTablePosition().getRow()).setReturnQuantity(e.getNewValue());
+                    calculate();
+                }
             });
-
-
             tableView.setItems(itemList);
 
         } catch (SQLException e) {
@@ -214,48 +245,30 @@ public class ReturnProduct implements Initializable {
             DBConnection.closeConnection(connection, ps, rs);
         }
     }
+    private void textChangeListener() {
+        discountTF.textProperty().addListener((observableValue, s, t1) -> {
 
-    private void setCellF() {
+            double currentDiscount = 0;
+            try {
+                currentDiscount = Double.parseDouble(t1.replaceAll("[^0-9.]", ""));
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+            if (netReturnAmtTot < currentDiscount) {
+                method.show_popup("Discount Amount Should Not Be Exceed Price !", discountTF);
+                discountTF.setText("0");
+                return;
+            }
 
-        colCheckBox.setCellValueFactory(arg0 -> {
-            ReturnProductModel rpm = arg0.getValue();
-
-            CheckBox checkBox = new CheckBox();
-
-            checkBox.selectedProperty().setValue(rpm.isReturn());
-
-            checkBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
-                public void changed(ObservableValue<? extends Boolean> ov,
-                                    Boolean old_val, Boolean new_val) {
-
-                    int returnQuantity = 0;
-                    int quantity = 0;
-                    try {
-                        quantity = Integer.parseInt(rpm.getQuantity().split(" -")[0].replaceAll("[^0-9.]", ""));
-                        returnQuantity = Integer.parseInt(rpm.getReturnQuantity().replaceAll("[^0-9.]", ""));
-                    } catch (NumberFormatException e) {
-                        e.printStackTrace();
-                    }
-
-
-                    if (returnQuantity < 1) {
-                        method.show_popup("Please Enter Return Quantity ", checkBox);
-                        checkBox.setSelected(false);
-                        return;
-                    }
-                    if (returnQuantity > quantity) {
-
-                        method.show_popup("ENTER VALID RETURN QUANTITY " +
-                                "Available Quality : " + rpm.getQuantity() + " You Enter :" + returnQuantity, checkBox);
-
-                        checkBox.setSelected(false);
-                        return;
-                    }
-                    rpm.setReturn(new_val);
-                    calculate();
-                }
-            });
-            return new SimpleObjectProperty<CheckBox>(checkBox);
+            if (netReturnAmtTot > 0) {
+                double additionalDis = Double.parseDouble(addiDiscountL.getText());
+                double total = (netReturnAmtTot - currentDiscount) - additionalDis;
+                refundL.setText(String.valueOf(Math.round(total)));
+            } else {
+                refundL.setText("0");
+                addiDiscountL.setText("0");
+                bnSubmit.setDisable(true);
+            }
         });
     }
 
@@ -276,8 +289,17 @@ public class ReturnProduct implements Initializable {
 
         calculate();
 
-        tableView.refresh();
+        gstContainer.managedProperty().bind(gstContainer.visibleProperty());
+        gstContainer.setVisible(false);
 
+        addiDiscountContainer.managedProperty().bind(addiDiscountContainer.visibleProperty());
+        addiDiscountContainer.setVisible(false);
+
+        gstAmountL.setText("0");
+        addiDiscountL.setText("0");
+        refundL.setText("0");
+
+        tableView.refresh();
     }
 
     public void bnSubmit(ActionEvent event) {
@@ -308,7 +330,6 @@ public class ReturnProduct implements Initializable {
 
         String remark = remarkTF.getText();
 
-
         double refundAmount = 0;
         try {
             refundAmount = Double.parseDouble(refundL.getText());
@@ -317,15 +338,14 @@ public class ReturnProduct implements Initializable {
         }
 
         Connection connection = null;
-        PreparedStatement psReturnMain = null, psReturnItem = null, psUpdateStock = null;
+        PreparedStatement psReturnMain = null, psReturnItem = null, psUpdateStock = null , psAddiDis = null;
         ResultSet rs = null;
 
         try {
             connection = dbConnection.getConnection();
             connection.setAutoCommit(false);
 
-            String returnMainQuery = "INSERT INTO tbl_return_main (SALE_MAIN_ID, seller_id, TOTAL_REFUND_AMOUNT,invoice_number , REMARK ," +
-                    " old_invoice_number)VALUES (?,?, ?, ?, ?,?)";
+            String returnMainQuery = propInsert.getProperty("INSERT_RETURN_MAIN");
 
             psReturnMain = connection.prepareStatement(returnMainQuery, new String[]{"return_main_id"});
             psReturnMain.setInt(1, saleMainID);
@@ -344,44 +364,51 @@ public class ReturnProduct implements Initializable {
             if (res > 0) {
                 int return_main_id = 0;
                 rs = psReturnMain.getGeneratedKeys();
+
                 if (rs.next()) {
                     return_main_id = rs.getInt(1);
+
+                    String addiDisUpdateQuery = "update tbl_sale_main set additional_discount = additional_discount - ?," +
+                            "net_amount = net_amount+ ? , tot_disc_amount = tot_disc_amount- ? where sale_main_id = ?";
+
+                    psAddiDis = connection.prepareStatement(addiDisUpdateQuery);
+                    psAddiDis.setDouble(1,additional_discount);
+                    psAddiDis.setDouble(2,additional_discount);
+                    psAddiDis.setDouble(3,additional_discount);
+                    psAddiDis.setInt(4,saleMainID);
+                    psAddiDis.executeUpdate();
                 }
+
                 for (ReturnProductModel rp : tableView.getItems()) {
 
-                    if (rp.isReturn()){
-
-                          String quantityUnit = rp.getQuantity().split(" -")[1];
-                    res = 0;
-                    int returnQuantity = 0;
-                    try {
-                        returnQuantity = Integer.parseInt(rp.getReturnQuantity().replaceAll("[^0-9.]", ""));
-                    } catch (NumberFormatException e) {
-                        e.printStackTrace();
-                    }
-                    String returnItemsQuery = "INSERT INTO tbl_return_items(return_main_id, product_id, return_quantity, discount_per, rate , quantity_Unit , sale_item_id ) VALUES (?,?,?,?,?,?,?)";
-                    psReturnItem = connection.prepareStatement(returnItemsQuery);
-                    psReturnItem.setInt(1, return_main_id);
-                    psReturnItem.setInt(2, rp.getProductID());
-                    psReturnItem.setInt(3, returnQuantity);
-                    psReturnItem.setDouble(4, discountPer);
-                    psReturnItem.setDouble(5, rp.getRate());
-                    psReturnItem.setString(6, quantityUnit);
-                    psReturnItem.setInt(7, rp.getSaleItemId());
-
-
-                    res = psReturnItem.executeUpdate();
-
-
-                    if (res > 0) {
+                    if (rp.isReturn()) {
+                        String quantityUnit = rp.getQuantity().split(" -")[1];
                         res = 0;
-                        String updateQuery = "UPDATE tbl_product_stock SET quantity = quantity + ? where stock_id = ?  ";
-                        PreparedStatement updatePstmt = connection.prepareStatement(updateQuery);
-                        updatePstmt.setInt(1, returnQuantity);
-                        updatePstmt.setInt(2, rp.getStockId());
-                        res = updatePstmt.executeUpdate();
+                        int returnQuantity = 0;
+                        try {
+                            returnQuantity = Integer.parseInt(rp.getReturnQuantity().replaceAll("[^0-9.]", ""));
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        }
+                        String returnItemsQuery = propInsert.getProperty("INSERT_RETURN_ITEM");
+                        psReturnItem = connection.prepareStatement(returnItemsQuery);
+                        psReturnItem.setInt(1, return_main_id);
+                        psReturnItem.setInt(2, rp.getProductID());
+                        psReturnItem.setInt(3, returnQuantity);
+                        psReturnItem.setDouble(4, discountPer);
+                        psReturnItem.setDouble(5, rp.getRate());
+                        psReturnItem.setString(6, quantityUnit);
+                        psReturnItem.setInt(7, rp.getSaleItemId());
+                        res = psReturnItem.executeUpdate();
+                        if (res > 0) {
+                            res = 0;
+                            String updateQuery = propUpdate.getProperty("UPDATE_STOCK_AFTER_RETURN");
+                            PreparedStatement updatePstmt = connection.prepareStatement(updateQuery);
+                            updatePstmt.setInt(1, returnQuantity);
+                            updatePstmt.setInt(2, rp.getStockId());
+                            res = updatePstmt.executeUpdate();
 
-                    }
+                        }
                     }
 
 
@@ -407,14 +434,16 @@ public class ReturnProduct implements Initializable {
         }
     }
 
-
     private void calculate() {
+
         netReturnAmtTot = 0;
         totalReturnDisctAmount = 0;
         discountPer = 0;
+        gstAmount = 0;
 
         bnSubmit.setDisable(true);
         for (ReturnProductModel rp : tableView.getItems()) {
+
             if (rp.isReturn()) {
                 bnSubmit.setDisable(false);
                 int returnQuantity = 0;
@@ -423,58 +452,68 @@ public class ReturnProduct implements Initializable {
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
-                int productId = rp.getProductID();
-                int stockId = rp.getStockId();
                 double rate = rp.getRate();
 
-                discountPer = (totalDiscount*100)/(netAmount+totalDiscount) ;
+                double disPer = rp.getDiscountPercentage();
+                double disAmt =( (rate * disPer) / 100)* returnQuantity;
+                double reAmt = (rate * returnQuantity);
 
-                System.out.println(discountPer);
+                double gstAmt = ((((reAmt-disAmt) * 100) / (100 + rp.getTotalGstPercentage()))*rp.getTotalGstPercentage())/100;
 
-                double returnAmount = rate * returnQuantity;
-                double discountAmount = (returnAmount * discountPer) / 100;
-                netReturnAmtTot = netReturnAmtTot + returnAmount;
-                totalReturnDisctAmount = totalReturnDisctAmount + discountAmount;
+
+                if (rp.getGstClaimedAmount() > 0) {
+                    gstContainer.setVisible(true);
+                    netReturnAmtTot = netReturnAmtTot - gstAmt;
+                    gstAmount += gstAmt;
+                } else {
+                    gstContainer.managedProperty().bind(gstContainer.visibleProperty());
+                    gstContainer.setVisible(false);
+                }
+
+                totalReturnDisctAmount += disAmt;
+                netReturnAmtTot += reAmt;
+                addiDiscountL.setText(String.valueOf(additional_discount));
             }
         }
-        refundL.setText(String.valueOf(Math.round(netReturnAmtTot)));
+
+        gstAmountL.setText(String.valueOf(Math.round(gstAmount)));
         discountTF.setText(String.valueOf(Math.round(totalReturnDisctAmount)));
+
     }
 
     public void bnReturnHistory(ActionEvent event) {
-
         customDialog.showFxmlFullDialog("returnItems/returnHistory.fxml", "RETURN HISTORY");
     }
 
     public String getInvoiceNumber() {
         dbConnection = new DBConnection();
-
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-
         try {
             connection = dbConnection.getConnection();
             ps = connection.prepareStatement("select max(RETURN_MAIN_ID) from TBL_RETURN_MAIN");
             rs = ps.executeQuery();
             String invoiceNum = null;
-
             if (rs.next()) {
                 long id = rs.getInt(1) + 1;
-
                 invoiceNum = String.format("%07d", id);
             }
-
-
             return "SUMA" + invoiceNum + "R";
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
         } finally {
             DBConnection.closeConnection(connection, ps, rs);
-
         }
 
+    }
+
+    public void enterPress(KeyEvent event) {
+
+        if (event.getCode() == KeyCode.ENTER) {
+            bnSearch(null);
+        }
     }
 }
 

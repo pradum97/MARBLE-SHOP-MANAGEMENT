@@ -27,7 +27,7 @@
 #### * AFTER SUCCESSFULLY CLONED AND THEN OPEN PROJECT IN INTELLIJ IDEA 
 
 
-###### GO TO : `src/main/resources/com/shop/management/util/query.properties` AND THEN OPEN `query.properties`
+###### GO TO : `src/main/resources/com/shop/management/util/db.properties` AND THEN OPEN `db.properties`
 
     DB_USERNAME = < Enter Your Database Username >
     DB_PASSWORD = <Enter Yur Database Password>

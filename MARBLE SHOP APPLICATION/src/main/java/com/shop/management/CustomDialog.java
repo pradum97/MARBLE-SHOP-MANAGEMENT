@@ -2,10 +2,15 @@ package com.shop.management;
 
 import com.shop.management.util.AppConfig;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.event.EventHandler;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -32,11 +37,26 @@ public class CustomDialog {
             Scene scene = new Scene(root);
             scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/main.css")).toExternalForm());
             stage.setScene(scene);
+
+            scene.setOnKeyReleased(e -> {
+
+                if (e.getCode() == KeyCode.ESCAPE){
+                    if (stage.isShowing()){
+                        stage.close();
+                    }
+
+                }
+            });
+
             stage.showAndWait();
+
+
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
     }
 
     public void showAlertBox(String title, String message) {
@@ -61,6 +81,17 @@ public class CustomDialog {
             scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/main.css")).toExternalForm());
             stage2.setScene(scene);
             stage2.setResizable(false);
+
+            scene.setOnKeyReleased(e -> {
+
+                if (e.getCode() == KeyCode.ESCAPE){
+                    if (stage2.isShowing()){
+                        stage2.close();
+                    }
+
+                }
+            });
+
             stage2.showAndWait();
 
         } catch (IOException e) {
@@ -82,6 +113,16 @@ public class CustomDialog {
             Scene scene = new Scene(root);
             scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/cartTable.css")).toExternalForm());
             stage3.setScene(scene);
+
+            scene.setOnKeyReleased(e -> {
+
+                if (e.getCode() == KeyCode.ESCAPE){
+                    if (stage3.isShowing()){
+                        stage3.close();
+                    }
+                }
+            });
+
             stage3.showAndWait();
 
         } catch (IOException e) {

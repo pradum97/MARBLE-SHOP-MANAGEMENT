@@ -1,6 +1,7 @@
 package com.shop.management.Controller;
 
 import com.shop.management.CustomDialog;
+import com.shop.management.ImageLoader;
 import com.shop.management.Main;
 import com.shop.management.Method.Method;
 import com.shop.management.Method.StaticData;
@@ -17,6 +18,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.util.Callback;
 
@@ -368,10 +370,16 @@ public class StockReport implements Initializable {
                     Label status = new Label();
                     Label reStock = new Label("Add Stock");
 
+                    ImageView iv = new ImageView(new ImageLoader().load("img/menu_icon/reStock_ic.png"));
+                    iv.setFitHeight(18);
+                    iv.setFitWidth(18);
+                    reStock.setGraphic(iv);
+                    reStock.setGraphicTextGap(6);
+
                     double minWidth = 150;
 
                     status.setMinWidth(minWidth);
-                    reStock.setMinWidth(120);
+                    reStock.setMinWidth(115);
 
                     reStock.setStyle("-fx-alignment: center;-fx-padding: 5 6 5 6 ; -fx-background-color: #030c3d ; " +
                             "-fx-text-fill: white;-fx-background-radius: 5 ; -fx-cursor: hand");

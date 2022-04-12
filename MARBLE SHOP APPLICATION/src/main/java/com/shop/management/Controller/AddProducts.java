@@ -15,6 +15,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
@@ -67,8 +68,6 @@ public class AddProducts implements Initializable {
     private Method method;
     private CustomDialog customDialog;
     private DBConnection dbConnection;
-    private Properties properties;
-
     private Connection connection;
 
     private ObservableList<ProductSize> sizeList = FXCollections.observableArrayList();
@@ -76,7 +75,7 @@ public class AddProducts implements Initializable {
     private ObservableList<TAX> taxList = FXCollections.observableArrayList();
     private ObservableList<CategoryModel> categoryList = FXCollections.observableArrayList();
 
-    double profitPrice = 20; // in %
+    public static double profitPercentage = 20; // in %
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -84,8 +83,6 @@ public class AddProducts implements Initializable {
         method = new Method();
         customDialog = new CustomDialog();
         dbConnection = new DBConnection();
-        properties = new PropertiesLoader().load("query.properties");
-
         connection = new DBConnection().getConnection();
 
         if (null == connection) {
@@ -127,7 +124,7 @@ public class AddProducts implements Initializable {
                 return;
             }
 
-            minPrice = purchasePrice + (profitPrice * purchasePrice / 100);
+            minPrice = purchasePrice + (profitPercentage * purchasePrice / 100);
 
             BigDecimal minSell_price = BigDecimal.valueOf(minPrice);
 
@@ -382,7 +379,7 @@ public class AddProducts implements Initializable {
         ResultSet rs = null;
 
         try {
-            ps = connection.prepareStatement(properties.getProperty("GET_DISCOUNT"));
+            ps = connection.prepareStatement(new PropertiesLoader().getReadProp().getProperty("GET_DISCOUNT"));
             rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -415,7 +412,7 @@ public class AddProducts implements Initializable {
 
         try {
 
-            ps = connection.prepareStatement(properties.getProperty("GET_TAX"));
+            ps = connection.prepareStatement(new PropertiesLoader().getReadProp().getProperty("GET_TAX"));
             rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -503,8 +500,10 @@ public class AddProducts implements Initializable {
         }else if (isExist(prodCode)){
             method.show_popup("PRODUCT CODE ALREADY EXIST", productCodeTF);
             return;
+        } else if (productTax.getSelectionModel().isEmpty()) {
+            method.show_popup("SELECT HSN CODE", productTax);
+            return;
         }
-
         else if (null == productCategory.getValue()) {
             method.show_popup("CHOOSE PRODUCT CATEGORY", productCategory);
             return;
@@ -606,4 +605,11 @@ public class AddProducts implements Initializable {
         }
     }
 
+    public void closeBn(ActionEvent event) {
+
+        Stage stage  = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        if (stage.isShowing()){
+            stage.close();
+        }
+    }
 }

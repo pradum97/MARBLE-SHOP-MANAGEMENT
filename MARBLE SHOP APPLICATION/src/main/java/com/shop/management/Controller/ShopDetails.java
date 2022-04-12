@@ -5,16 +5,20 @@ import com.shop.management.Main;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.Shop;
 import com.shop.management.util.DBConnection;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class ShopDetails implements Initializable {
@@ -26,6 +30,7 @@ public class ShopDetails implements Initializable {
     public Label sGstNum;
     public Label sAddress;
     public Label propName;
+    public Label updateBn;
 
     private DBConnection dbConnection;
     private Method method;
@@ -38,7 +43,8 @@ public class ShopDetails implements Initializable {
         customDialog = new CustomDialog();
 
         setData();
-
+        updateBn.managedProperty().bind(updateBn.visibleProperty());
+        updateBn.setVisible(Objects.equals(Login.currentRoleName.toLowerCase(), "admin".toLowerCase()));
 
     }
 
@@ -100,5 +106,13 @@ public class ShopDetails implements Initializable {
 
         customDialog.showFxmlDialog("update/shopDetailsUpdate.fxml", "UPDATE");
         setData();
+    }
+
+    public void cancel(ActionEvent event) {
+
+        Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+        if (stage.isShowing()){
+            stage.close();
+        }
     }
 }

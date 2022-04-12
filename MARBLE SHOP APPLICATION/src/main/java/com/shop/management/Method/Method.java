@@ -1,5 +1,6 @@
 package com.shop.management.Method;
 
+import com.shop.management.Model.Role;
 import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.collections.FXCollections;
@@ -22,15 +23,12 @@ import java.util.Properties;
 public class Method extends StaticData {
 
 
-    public ObservableList<String> getRole(){
+    public ObservableList<Role> getRole(){
 
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        ObservableList<String> role = FXCollections.observableArrayList();
-        PropertiesLoader loader = new PropertiesLoader();
-
-
+        ObservableList<Role> role = FXCollections.observableArrayList();
 
         try {
             connection = new DBConnection().getConnection();
@@ -38,19 +36,17 @@ public class Method extends StaticData {
                 System.out.println(" Signup ( 65 ) : Connection Failed");
                 return null;
             }
-            ps = connection.prepareStatement(loader.load("query.properties").getProperty("ROLE"));
+            ps = connection.prepareStatement(new PropertiesLoader().getReadProp().getProperty("ROLE"));
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                int role_ID = rs.getInt("ROLE_ID");
+                int role_Id = rs.getInt("ROLE_ID");
                 String roleName = rs.getString("ROLE");
 
-              role.add(roleName);
+              role.add(new Role(role_Id ,roleName));
 
             }
-
             return  role;
-
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -59,8 +55,6 @@ public class Method extends StaticData {
 
             DBConnection.closeConnection(connection, ps, rs);
         }
-
-
     }
 
     public ContextMenu show_popup(String message, Object textField){
@@ -85,11 +79,15 @@ public class Method extends StaticData {
 
             byte[] mac = network.getHardwareAddress();
 
-            sb = new StringBuilder();
-            for (int i = 0; i < mac.length; i++) {
-                sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));
+            if (null == mac){
+                return "Not-Found";
+            }else {
+                sb = new StringBuilder();
+                for (int i = 0; i < mac.length; i++) {
+                    sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));
+                }
+                return sb.toString();
             }
-            return sb.toString();
         } catch (Exception e) {
             e.printStackTrace();
             return null;
