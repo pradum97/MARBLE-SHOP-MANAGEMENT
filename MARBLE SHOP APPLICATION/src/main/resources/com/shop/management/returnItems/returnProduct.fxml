@@ -68,7 +68,7 @@
                                  <font>
                                     <Font name="Bookman Old Style Bold" size="12.0" />
                                  </font></TextField>
-                              <TextField fx:id="invoiceNumTF" focusTraversable="false" minWidth="250.0" prefHeight="40.0" promptText="Enter Invoice Number " style="-fx-background-radius: 2;">
+                              <TextField fx:id="invoiceNumTF" focusTraversable="false" minWidth="250.0" onKeyReleased="#enterPress" prefHeight="40.0" promptText="Enter Invoice Number " style="-fx-background-radius: 2;">
                                  <font>
                                     <Font name="Bookman Old Style Bold" size="13.0" />
                                  </font></TextField>
@@ -213,7 +213,7 @@
                         </VBox>
                         <VBox alignment="BOTTOM_CENTER" spacing="20.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <HBox alignment="CENTER_LEFT" spacing="6.0">
+                              <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="46.0" spacing="6.0">
                                  <children>
                                     <Label minWidth="90.0" text="BILL TYPE   :" textFill="#696666">
                                        <font>
@@ -259,7 +259,6 @@
                               <TableColumn fx:id="colAlreadyReturned" editable="false" minWidth="-Infinity" sortable="false" text="ALREADY RETURNED" />
                               <TableColumn fx:id="colReturnable" editable="false" minWidth="-Infinity" sortable="false" text="RETURNABLE" />
                               <TableColumn fx:id="colAction" minWidth="-Infinity" sortable="false" text="ENTER RETURN QTY" />
-                             <TableColumn fx:id="colCheckBox" maxWidth="100.0" minWidth="60.0" sortable="false" text="#" />
 
                           </columns>
                            <columnResizePolicy>
@@ -279,16 +278,47 @@
    <bottom>
       <HBox alignment="CENTER_LEFT" fillHeight="false" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #d9d9d9;" BorderPane.alignment="CENTER">
          <children>
-            <VBox spacing="15.0">
+            <VBox spacing="10.0">
                <children>
                   <HBox alignment="CENTER_LEFT" spacing="5.0">
                      <children>
-                        <Label text="Discount Amount :">
+                        <Label alignment="CENTER_RIGHT" prefHeight="16.0" prefWidth="143.0" text="Discount Amount  :  -">
                            <font>
                               <Font name="Arial Bold" size="13.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="discountTF" prefWidth="100.0" />
+                        <TextField fx:id="discountTF" prefWidth="100.0" style="-fx-text-inner-color: red;" text="0">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font></TextField>
+                     </children>
+                  </HBox>
+                  <HBox fx:id="addiDiscountContainer" alignment="CENTER_LEFT" layoutX="10.0" layoutY="72.0" spacing="5.0">
+                     <children>
+                        <Label alignment="CENTER_RIGHT" prefHeight="16.0" prefWidth="143.0" text="Addi. Discount  :  -">
+                           <font>
+                              <Font name="Arial Bold" size="13.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="addiDiscountL" layoutX="10.0" layoutY="10.0" text="0" textFill="#ff0501">
+                           <font>
+                              <Font name="Arial Bold" size="13.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </HBox>
+                  <HBox fx:id="gstContainer" alignment="CENTER_LEFT" layoutX="10.0" layoutY="51.0" spacing="5.0">
+                     <children>
+                        <Label alignment="CENTER_RIGHT" prefHeight="16.0" prefWidth="143.0" text="GST Amount  :  -">
+                           <font>
+                              <Font name="Arial Bold" size="13.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="gstAmountL" layoutX="10.0" layoutY="10.0" style="-fx-text-inner-color: red;" text="0" textFill="#f42404">
+                           <font>
+                              <Font name="Arial Bold" size="13.0" />
+                           </font>
+                        </Label>
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" spacing="5.0">
@@ -298,12 +328,15 @@
                               <Font name="Arial Bold" size="13.0" />
                            </font>
                         </Label>
-                        <Label fx:id="refundL" layoutX="10.0" layoutY="10.0" text="0.0" textFill="#077331">
+                        <Label fx:id="refundL" layoutX="10.0" layoutY="10.0" text="0" textFill="#077331">
                            <font>
                               <Font name="Arial Bold" size="13.0" />
                            </font>
                         </Label>
                      </children>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
                   </HBox>
                </children>
                <HBox.margin>

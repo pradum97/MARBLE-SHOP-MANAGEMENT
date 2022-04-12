@@ -7,9 +7,10 @@ public class ReturnProductModel {
     private String productName, productSize, quantity;
     private double rate, discountPercentage ;
     private String alreadyReturned, inputReturnQuantity ,returnable;
+    private double gstAmount , totalGstPercentage , gstClaimedAmount;
 
-    public ReturnProductModel(boolean isReturn, int productID, int stockId, int saleMainId, int saleItemId, String productName, String productSize, String quantity, double rate,
-                              double discountPercentage, String alreadyReturned, String returnQuantity, String returnable) {
+    public ReturnProductModel(boolean isReturn, int productID, int stockId, int saleMainId, int saleItemId, String productName, String productSize, String quantity, double rate, double discountPercentage, String alreadyReturned,
+                              String inputReturnQuantity, String returnable, double gstAmount, double totalGstPercentage, double gstClaimedAmount) {
         this.isReturn = isReturn;
         this.productID = productID;
         this.stockId = stockId;
@@ -21,8 +22,43 @@ public class ReturnProductModel {
         this.rate = rate;
         this.discountPercentage = discountPercentage;
         this.alreadyReturned = alreadyReturned;
-        this.inputReturnQuantity = returnQuantity;
+        this.inputReturnQuantity = inputReturnQuantity;
         this.returnable = returnable;
+        this.gstAmount = gstAmount;
+        this.totalGstPercentage = totalGstPercentage;
+        this.gstClaimedAmount = gstClaimedAmount;
+    }
+
+    public double getGstClaimedAmount() {
+        return gstClaimedAmount;
+    }
+
+    public void setGstClaimedAmount(double gstClaimedAmount) {
+        this.gstClaimedAmount = gstClaimedAmount;
+    }
+
+    public double getGstAmount() {
+        return gstAmount;
+    }
+
+    public void setGstAmount(double gstAmount) {
+        this.gstAmount = gstAmount;
+    }
+
+    public String getInputReturnQuantity() {
+        return inputReturnQuantity;
+    }
+
+    public void setInputReturnQuantity(String inputReturnQuantity) {
+        this.inputReturnQuantity = inputReturnQuantity;
+    }
+
+    public double getTotalGstPercentage() {
+        return totalGstPercentage;
+    }
+
+    public void setTotalGstPercentage(double totalGstPercentage) {
+        this.totalGstPercentage = totalGstPercentage;
     }
 
     public String getReturnable() {

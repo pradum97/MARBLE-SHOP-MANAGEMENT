@@ -266,6 +266,10 @@ public class SaleReport implements Initializable {
 
     private void changeTableView(int index, int limit) {
 
+        if (null == filteredData){
+            return;
+        }
+
         int totalPage = (int) (Math.ceil(filteredData.size() * 1.0 / rowsPerPage));
         pagination.setPageCount(totalPage);
 

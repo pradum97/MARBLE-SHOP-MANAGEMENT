@@ -96,8 +96,11 @@
                <children>
                   <Label lineSpacing="1.0" text="ALL PRODUCTS" textAlignment="CENTER">
                      <font>
-                        <Font name="Bookman Old Style" size="17.0" />
+                        <Font name="Arial Black" size="17.0" />
                      </font>
+                     <HBox.margin>
+                        <Insets left="300.0" />
+                     </HBox.margin>
                   </Label>
                </children>
             </HBox>
