@@ -114,6 +114,10 @@ public class AddSize implements Initializable {
             e.printStackTrace();
             return;
         }
+        if (purchase_price > mrp) {
+            method.show_popup("ENTER MRP MORE THAN PURCHASE PRICE", productMrp);
+            return;
+        }
         if (minSellPrice_s.isEmpty()) {
             method.show_popup("ENTER MIN SELLING PRICE ", minSellPrice);
             return;
@@ -126,7 +130,14 @@ public class AddSize implements Initializable {
             e.printStackTrace();
             return;
         }
+        if (purchase_price > min_Sell_Price) {
+            method.show_popup("ENTER MINIMUM SELLING PRICE MORE THAN PURCHASE PRICE", minSellPrice);
+            return;
+        } else if (min_Sell_Price > mrp) {
+            method.show_popup("ENTER MINIMUM SELLING PRICE LESS THAN MRP", minSellPrice);
+            return;
 
+        }
         if (heightS.isEmpty()) {
             method.show_popup("ENTER PRODUCT HEIGHT", productHeight);
             return;
@@ -169,7 +180,6 @@ public class AddSize implements Initializable {
         String sizeUnit = productSizeUnit.getValue();
         String quantityUnit = productQuantityUnit.getValue();
 
-
         Connection connection = null;
         PreparedStatement ps = null;
 
@@ -211,10 +221,11 @@ public class AddSize implements Initializable {
         }
 
     }
+
     public void cancel(ActionEvent event) {
 
-        Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
-        if (stage.isShowing()){
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        if (stage.isShowing()) {
             stage.close();
         }
     }

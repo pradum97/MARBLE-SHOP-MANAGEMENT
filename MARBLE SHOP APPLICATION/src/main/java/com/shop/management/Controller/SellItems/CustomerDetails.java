@@ -14,6 +14,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -44,6 +45,9 @@ public class CustomerDetails implements Initializable {
     public HBox gstVerifyContainer;
     public TextField paidAmountTF;
     public TextField duesAmountTF;
+    public BorderPane main_container;
+    public ScrollPane scrollView;
+    public HBox defaultPayable;
     private Method method;
     private int customerId;
     private Properties propInsert, propRead;
@@ -87,7 +91,7 @@ public class CustomerDetails implements Initializable {
         });
 
         radioYes.setOnMouseClicked(mouseEvent -> {
-
+            
             radioYes.setSelected(true);
             radioNo.setSelected(false);
             isGstClaimed = true;
@@ -97,6 +101,11 @@ public class CustomerDetails implements Initializable {
             gstClaimedL.setText(String.valueOf(map.get("gstAmount")));
             totalPayableL.setText(String.valueOf(totalPayable));
             duesAmountTF.setText(String.valueOf(totalPayable));
+
+            defaultPayable.managedProperty().bind(defaultPayable.visibleProperty());
+            defaultPayable.setVisible(false);
+
+
         });
 
         radioNo.setOnMouseClicked(mouseEvent -> {
@@ -105,6 +114,7 @@ public class CustomerDetails implements Initializable {
             radioYes.setSelected(false);
             radioNo.setSelected(true);
             isGstClaimed = false;
+            defaultPayable.setVisible(true);
         });
 
         paidAmountTF.textProperty().addListener((observableValue, s, t1) -> {
@@ -140,6 +150,7 @@ public class CustomerDetails implements Initializable {
             gstContainerClaim();
             gstNumTf.textProperty().addListener((observableValue, s, t1) -> {
                 gstContainerClaim();
+
             });
         } else {
 
@@ -150,7 +161,7 @@ public class CustomerDetails implements Initializable {
     }
 
     private void gstContainerClaim() {
-        if (null == gstNumTf && gstNumTf.getText().isEmpty()) {
+        if (gstNumTf.getText().isEmpty()) {
             gstClaimContainer.managedProperty().bind(gstClaimContainer.visibleProperty());
             gstClaimContainer.setVisible(false);
             gstClaimLabel.managedProperty().bind(gstClaimLabel.visibleProperty());
@@ -174,6 +185,33 @@ public class CustomerDetails implements Initializable {
 
     public void submit_bn(ActionEvent event) {
 
+        String fullName = c_name.getText();
+        String cPhone = c_phone.getText();
+        String address = c_address.getText();
+        String gstNumber = gstNumTf.getText();
+
+        long phoneNum;
+
+        if (cPhone.isEmpty()) {
+            method.show_popup("ENTER CUSTOMER PHONE NUMBER", c_phone);
+            return;
+        } else if (fullName.isEmpty()) {
+            method.show_popup("ENTER CUSTOMER FULL-NAME", c_name);
+            return;
+        }
+        try {
+
+            phoneNum = Long.parseLong(cPhone.replaceAll("[^0-9.]", ""));
+
+        } catch (NumberFormatException e) {
+            c_phone.setText("");
+            return;
+        }
+        if (address.isEmpty()) {
+            method.show_popup("ENTER CUSTOMER ADDRESS", c_address);
+            return;
+        }
+
         ImageView image = new ImageView(new ImageLoader().load("img/icon/warning_ic.png"));
         image.setFitWidth(45);
         image.setFitHeight(45);
@@ -194,32 +232,7 @@ public class CustomerDetails implements Initializable {
 
             } else {
 
-                String fullName = c_name.getText();
-                String cPhone = c_phone.getText();
-                String address = c_address.getText();
-                String gstNumber = gstNumTf.getText();
 
-                long phoneNum;
-
-                if (cPhone.isEmpty()) {
-                    method.show_popup("ENTER CUSTOMER PHONE NUMBER", c_phone);
-                    return;
-                } else if (fullName.isEmpty()) {
-                    method.show_popup("ENTER CUSTOMER FULL-NAME", c_name);
-                    return;
-                }
-                try {
-
-                    phoneNum = Long.parseLong(cPhone.replaceAll("[^0-9.]", ""));
-
-                } catch (NumberFormatException e) {
-                    c_phone.setText("");
-                    return;
-                }
-                if (address.isEmpty()) {
-                    method.show_popup("ENTER CUSTOMER ADDRESS", c_address);
-                    return;
-                }
                 addNewCustomer(fullName, phoneNum, address, event, gstNumber);
             }
         } else {
@@ -230,6 +243,7 @@ public class CustomerDetails implements Initializable {
 
 
     private void sellNow(int customerId, ActionEvent event) {
+
         Map<String, Object> mapS = new HashMap<>();
 
         if (isGstClaimed) {
@@ -306,7 +320,7 @@ public class CustomerDetails implements Initializable {
         }
     }
 
-    public void bnCheckOut(ActionEvent event) {
+    public void bnCheckOut(ActionEvent event)   {
         String newValue = c_phone.getText();
 
         if (newValue.length() == 10) {
@@ -392,7 +406,10 @@ public class CustomerDetails implements Initializable {
                 bnCheckOut.setVisible(false);
                 gstNumTf.setFocusTraversable(true);
                 bnCheckOut.managedProperty().bind(bnCheckOut.visibleProperty());
+                gstClaimContainer.managedProperty().bind(gstClaimContainer.visibleProperty());
+                gstClaimContainer.setVisible(false);
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
