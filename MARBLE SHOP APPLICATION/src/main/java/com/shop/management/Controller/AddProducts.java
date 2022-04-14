@@ -147,7 +147,7 @@ public class AddProducts implements Initializable {
         try {
             connection = dbConnection.getConnection();
 
-            if (null == connection){
+            if (null == connection) {
                 return;
             }
 
@@ -155,20 +155,20 @@ public class AddProducts implements Initializable {
 
             rs = ps.executeQuery();
 
-            while (rs.next()){
+            while (rs.next()) {
                 int categoryId = rs.getInt("category_id");
                 String cName = rs.getString("category_name");
 
-                categoryList.add(new CategoryModel(categoryId , cName));
+                categoryList.add(new CategoryModel(categoryId, cName));
 
             }
 
             productCategory.setItems(categoryList);
 
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
-            DBConnection.closeConnection(connection,ps,rs);
+        } finally {
+            DBConnection.closeConnection(connection, ps, rs);
         }
 
     }
@@ -200,7 +200,6 @@ public class AddProducts implements Initializable {
             return;
         }
 
-
         if (prodMrp.isEmpty()) {
             method.show_popup("ENTER PRODUCT MRP ", productMrp);
             return;
@@ -226,15 +225,16 @@ public class AddProducts implements Initializable {
             customDialog.showAlertBox("INVALID MIN SELL PRICE", "ENTER VALID INVALID MIN SELL PRICE");
             e.printStackTrace();
             return;
-        } if (purchase_price >min_Sell_Price ) {
+        }
+
+        if (purchase_price > min_Sell_Price) {
             method.show_popup("ENTER MINIMUM SELLING PRICE MORE THAN PURCHASE PRICE", productMinSellPrice);
             return;
-        }
-        else if ( min_Sell_Price > mrp){
+        } else if (min_Sell_Price > mrp) {
             method.show_popup("ENTER MINIMUM SELLING PRICE LESS THAN MRP", productMinSellPrice);
             return;
 
-        }else if (heightS.isEmpty()) {
+        } else if (heightS.isEmpty()) {
             method.show_popup("ENTER PRODUCT HEIGHT", productHeight);
             return;
         } else if (widthS.isEmpty()) {
@@ -311,7 +311,7 @@ public class AddProducts implements Initializable {
                         String path = "img/icon/delete_ic.png";
 
 
-                     ImageView   iv_delete = new ImageView(new ImageLoader().load(path));
+                        ImageView iv_delete = new ImageView(new ImageLoader().load(path));
                         iv_delete.setFitHeight(17);
                         iv_delete.setFitWidth(17);
                         iv_delete.setPreserveRatio(true);
@@ -396,8 +396,8 @@ public class AddProducts implements Initializable {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
-            DBConnection.closeConnection(connection , ps , rs);
+        } finally {
+            DBConnection.closeConnection(connection, ps, rs);
         }
     }
 
@@ -426,9 +426,9 @@ public class AddProducts implements Initializable {
                 String gstName = rs.getString("gstName");
 
                 String gn;
-                if (gstName == null){
+                if (gstName == null) {
                     gn = "";
-                }else {
+                } else {
                     gn = gstName;
                 }
 
@@ -454,7 +454,7 @@ public class AddProducts implements Initializable {
         }
     }
 
-    private boolean isExist(String value){
+    private boolean isExist(String value) {
 
         Connection connection = null;
         PreparedStatement ps = null;
@@ -465,7 +465,7 @@ public class AddProducts implements Initializable {
             String query = "select PRODUCT_CODE from TBL_PRODUCTS where product_code = ?";
 
             ps = connection.prepareStatement(query);
-            ps.setString(1,value);
+            ps.setString(1, value);
 
             rs = ps.executeQuery();
 
@@ -474,15 +474,15 @@ public class AddProducts implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
-        }finally {
-            DBConnection.closeConnection(connection , ps , rs);
+        } finally {
+            DBConnection.closeConnection(connection, ps, rs);
         }
     }
 
     private void submit() {
         // textField
         String prodName = productName.getText();
-        String prodCode = productCodeTF.getText().replaceAll(" ","");
+        String prodCode = productCodeTF.getText().replaceAll(" ", "");
         String prodDescription = productDescription.getText();
 
         Discount discount = productDiscount.getSelectionModel().getSelectedItem();
@@ -497,14 +497,13 @@ public class AddProducts implements Initializable {
         } else if (prodCode.isEmpty()) {
             method.show_popup("Enter Product Code", productCodeTF);
             return;
-        }else if (isExist(prodCode)){
+        } else if (isExist(prodCode)) {
             method.show_popup("PRODUCT CODE ALREADY EXIST", productCodeTF);
             return;
         } else if (productTax.getSelectionModel().isEmpty()) {
             method.show_popup("SELECT HSN CODE", productTax);
             return;
-        }
-        else if (null == productCategory.getValue()) {
+        } else if (null == productCategory.getValue()) {
             method.show_popup("CHOOSE PRODUCT CATEGORY", productCategory);
             return;
         } else if (null == productColor.getValue()) {
@@ -555,7 +554,7 @@ public class AddProducts implements Initializable {
             } else {
                 ps.setInt(7, tax.getTaxID()); //tax
             }
-            ps.setString(8, prodCode.replaceAll(" ",""));
+            ps.setString(8, prodCode.replaceAll(" ", ""));
             int productResult = ps.executeUpdate();
 
             if (productResult > 0) {
@@ -601,14 +600,14 @@ public class AddProducts implements Initializable {
         } catch (Exception e) {
 
             //System.out.println(e.getErrorCode());
-            customDialog.showAlertBox("Failed..","");
+            customDialog.showAlertBox("Failed..", "");
         }
     }
 
     public void closeBn(ActionEvent event) {
 
-        Stage stage  = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        if (stage.isShowing()){
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        if (stage.isShowing()) {
             stage.close();
         }
     }

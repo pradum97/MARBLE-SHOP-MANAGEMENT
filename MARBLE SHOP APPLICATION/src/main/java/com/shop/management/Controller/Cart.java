@@ -688,7 +688,7 @@ public class Cart implements Initializable {
             map.put("dues", duesAmountTF.getText());
             map.put("paidAmount", receivedAmountTF.getText());
             Main.primaryStage.setUserData(map);
-            customDialog.showFxmlDialog("sellItems/customerDetails.fxml", "ENTER CUSTOMER DETAILS");
+            customDialog.showFxmlDialog2("sellItems/customerDetails.fxml", "ENTER CUSTOMER DETAILS");
             Map<String, Object> receiveMap;
             try {
                 receiveMap = (Map<String, Object>) Main.primaryStage.getUserData();
