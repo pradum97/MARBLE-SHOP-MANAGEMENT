@@ -32,7 +32,7 @@
                             <TableColumn fx:id="colProductColor" editable="false" minWidth="100.0" prefWidth="-1.0" sortable="false" text="COLOR" />
                             <TableColumn fx:id="colProductSize" editable="false" minWidth="100.0" prefWidth="-1.0" sortable="false" text="SIZE" />
                             <TableColumn fx:id="colProductQuantity" editable="false" maxWidth="150.0" minWidth="100.0" prefWidth="-1.0" sortable="false" text="QUANTITY" />
-                            <TableColumn fx:id="colStockStatus" editable="false" minWidth="200" sortable="false" text="STOCK STATUS" />
+                            <TableColumn fx:id="colStockStatus" editable="false" minWidth="230.0" sortable="false" text="STOCK STATUS" />
       
                         </columns>
                <columnResizePolicy>

@@ -101,7 +101,6 @@ public class CustomerDetails implements Initializable {
             gstClaimedL.setText(String.valueOf(map.get("gstAmount")));
             totalPayableL.setText(String.valueOf(totalPayable));
             duesAmountTF.setText(String.valueOf(totalPayable));
-
             defaultPayable.managedProperty().bind(defaultPayable.visibleProperty());
             defaultPayable.setVisible(false);
 

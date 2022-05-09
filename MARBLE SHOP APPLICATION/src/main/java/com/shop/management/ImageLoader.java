@@ -15,4 +15,13 @@ public class ImageLoader {
             return  new Image(Objects.requireNonNull(getClass().getResourceAsStream("img/icon/img_preview.png")));
         }
     }
+
+    public Image loadWithSize(String imagePath){
+
+        try {
+         return  new Image(Objects.requireNonNull(getClass().getResourceAsStream(imagePath)) , 100,100 , false , true);
+        } catch (Exception e) {
+            return  new Image(Objects.requireNonNull(getClass().getResourceAsStream("img/icon/img_preview.png")));
+        }
+    }
 }

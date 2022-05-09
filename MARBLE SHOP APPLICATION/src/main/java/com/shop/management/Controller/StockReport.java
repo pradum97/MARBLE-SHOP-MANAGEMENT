@@ -408,7 +408,7 @@ public class StockReport implements Initializable {
                     });
                     HBox managebtn = new HBox(status, reStock);
                     managebtn.setStyle("-fx-alignment:center ; -fx-padding: 0 10 0 0");
-                    HBox.setMargin(reStock, new Insets(5, 10, 0, 0));
+                    HBox.setMargin(reStock, new Insets(5, 20, 0, 0));
 
                     setGraphic(managebtn);
 

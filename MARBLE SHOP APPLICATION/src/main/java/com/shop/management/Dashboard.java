@@ -115,12 +115,11 @@ public class Dashboard implements Initializable {
 
     }
 
-    private void onClickAction(MenuItem appearance, Menu product, MenuItem gst, MenuItem discount, MenuItem help,
+    private void onClickAction(MenuItem appearance, Menu product, MenuItem gst, MenuItem discount, MenuItem licence,
                                MenuItem shopData, MenuItem category, MenuItem profile, MenuItem users, MenuItem stockControl,
-                               MenuItem supplier, MenuItem purchaseHistory, MenuItem customer) {
+                               MenuItem supplier, MenuItem purchaseHistory, MenuItem customer, MenuItem backup) {
 
         appearance.setOnAction(event -> customDialog.showFxmlDialog2("setting/appearance.fxml", "APPEARANCE"));
-
         discount.setOnAction(event -> {
 
             customDialog.showFxmlDialog2("setting/discountConfig.fxml", "DISCOUNT");
@@ -128,16 +127,14 @@ public class Dashboard implements Initializable {
                 refreshPage();
             }
         });
-
-
         gst.setOnAction(event -> {
             customDialog.showFxmlDialog2("setting/gstConfig.fxml", "GST");
             if (Objects.equals(Login.currentRoleName.toLowerCase(), "admin".toLowerCase())) {
                 refreshPage();
             }
         });
-
-        help.setOnAction(event -> customDialog.showFxmlDialog2("setting/help.fxml", "HELP"));
+        licence.setOnAction(event -> customDialog.showFxmlDialog2("license/licenseMain.fxml", "My Subscription"));
+        backup.setOnAction(event -> customDialog.showFxmlDialog2("db_backup.fxml", "    BACKUP"));
         customer.setOnAction(event -> customDialog.showFxmlFullDialog("setting/customer.fxml", "ALL CUSTOMER"));
         shopData.setOnAction(event -> customDialog.showFxmlDialog2("shopDetails.fxml", ""));
         category.setOnAction(event -> customDialog.showFxmlDialog2("category.fxml", "CATEGORY"));
@@ -306,9 +303,9 @@ public class Dashboard implements Initializable {
                                 MenuItem users = new MenuItem("USERS");
                                 MenuItem purchaseHistory = new MenuItem("PURCHASE HISTORY");
                                 MenuItem customer = new MenuItem("VIEW CUSTOMER");
-                                MenuItem help = new MenuItem("HELP");
+                                MenuItem myLicense = new MenuItem("MY LICENSE");
+                                MenuItem backup = new MenuItem("BACKUP");
 
-                                help.setVisible(false);
 
                                 users.setVisible(Objects.equals(Login.currentRoleName.toLowerCase(), "admin".toLowerCase()));
 
@@ -322,9 +319,10 @@ public class Dashboard implements Initializable {
 
                                 // product --  end
 
-                                menu_button.getItems().addAll(gen, product, profile, users, shopData, purchaseHistory, customer, help);
+                                menu_button.getItems().addAll(gen, product, profile, users, shopData, purchaseHistory, customer, myLicense,backup);
 
-                                onClickAction(appearance, product, gst, discount, help, shopData, category, profile, users, stockControl, supplier, purchaseHistory, customer);
+                                onClickAction(appearance, product, gst, discount, myLicense, shopData, category,
+                                        profile, users, stockControl, supplier, purchaseHistory, customer,backup);
 
 
                                 ImageView icon = new ImageView();

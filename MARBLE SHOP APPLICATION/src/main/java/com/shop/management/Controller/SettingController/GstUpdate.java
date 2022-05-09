@@ -74,7 +74,6 @@ public class GstUpdate implements Initializable {
 
     }
 
-
     public void updateTax(ActionEvent event) {
 
         String sgst = sgstTF.getText();
@@ -235,9 +234,13 @@ public class GstUpdate implements Initializable {
             ps = connection.prepareStatement(query);
             ps.setInt(1,value);
 
-         System.out.println(   rs = ps.executeQuery());
+            rs = ps.executeQuery();
 
-            return rs.next();
+            if(rs.next()){
+                if(tax.getHsn_sac() != rs.getLong("hsn_sac")){  return true; }else { return false; }
+            }else {
+                return false;
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();

@@ -115,8 +115,10 @@ public class AddGst implements Initializable {
 
         int sGst = 0, cGst = 0, iGst = 0, hsn_sac = 0;
 
+      final   String REGEX = "[^0-9.]";
+
         try {
-            hsn_sac = Integer.parseInt(hsn_sacS.replaceAll("[^0-9.]", ""));
+            hsn_sac = Integer.parseInt(hsn_sacS.replaceAll(REGEX, ""));
         } catch (NumberFormatException e) {
             hsn_sacTf.setText("");
             return;
@@ -128,21 +130,21 @@ public class AddGst implements Initializable {
         }
 
         try {
-            sGst = Integer.parseInt(sgst.replaceAll("[^0-9.]", ""));
+            sGst = Integer.parseInt(sgst.replaceAll(REGEX, ""));
         } catch (NumberFormatException e) {
             customDialog.showAlertBox("Validation Failed", "Please Enter Valid SGST");
             return;
         }
 
         try {
-            iGst = Integer.parseInt(igst.replaceAll("[^0-9.]", ""));
+            iGst = Integer.parseInt(igst.replaceAll(REGEX, ""));
         } catch (NumberFormatException e) {
             customDialog.showAlertBox("Validation Failed", "Please Enter Valid IGST");
             return;
         }
 
         try {
-            cGst = Integer.parseInt(cgst.replaceAll("[^0-9.]", ""));
+            cGst = Integer.parseInt(cgst.replaceAll(REGEX, ""));
         } catch (NumberFormatException e) {
             customDialog.showAlertBox("Validation Failed", "Please Enter Valid CGST");
             e.printStackTrace();
@@ -208,8 +210,6 @@ public class AddGst implements Initializable {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-
-            System.out.println();
         }
     }
 }

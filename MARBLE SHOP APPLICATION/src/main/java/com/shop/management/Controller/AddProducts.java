@@ -63,6 +63,7 @@ public class AddProducts implements Initializable {
     public TableColumn<ProductSize, String> col_minSelPrice;
     public TextField productCodeTF;
 
+    private static final  String REGEX = "[^0-9.]";
     double tableViewSize = 70;
 
     private Method method;
@@ -70,9 +71,9 @@ public class AddProducts implements Initializable {
     private DBConnection dbConnection;
     private Connection connection;
 
-    private ObservableList<ProductSize> sizeList = FXCollections.observableArrayList();
-    private ObservableList<Discount> discountList = FXCollections.observableArrayList();
-    private ObservableList<TAX> taxList = FXCollections.observableArrayList();
+    ObservableList<ProductSize> sizeList = FXCollections.observableArrayList();
+    ObservableList<Discount> discountList = FXCollections.observableArrayList();
+    ObservableList<TAX> taxList = FXCollections.observableArrayList();
     private ObservableList<CategoryModel> categoryList = FXCollections.observableArrayList();
 
     public static double profitPercentage = 20; // in %
@@ -117,7 +118,7 @@ public class AddProducts implements Initializable {
             double purchasePrice, minPrice = 0;
 
             try {
-                purchasePrice = Double.parseDouble(productPurchasePrice.getText().replaceAll("[^0-9.]", ""));
+                purchasePrice = Double.parseDouble(productPurchasePrice.getText().replaceAll(REGEX, ""));
 
             } catch (NumberFormatException e) {
                 productMinSellPrice.setText("");
@@ -193,7 +194,7 @@ public class AddProducts implements Initializable {
             return;
         }
         try {
-            purchase_price = Double.parseDouble(purchasePrice.replaceAll("[^0-9.]", ""));
+            purchase_price = Double.parseDouble(purchasePrice.replaceAll(REGEX, ""));
         } catch (NumberFormatException e) {
             customDialog.showAlertBox("INVALID PURCHASE PRICE", "ENTER VALID PURCHASE PRICE");
             e.printStackTrace();
@@ -205,7 +206,7 @@ public class AddProducts implements Initializable {
             return;
         }
         try {
-            mrp = Double.parseDouble(prodMrp.replaceAll("[^0-9.]", ""));
+            mrp = Double.parseDouble(prodMrp.replaceAll(REGEX, ""));
         } catch (NumberFormatException e) {
             customDialog.showAlertBox("INVALID MRP", "ENTER VALID MRP");
             e.printStackTrace();
@@ -219,7 +220,7 @@ public class AddProducts implements Initializable {
             return;
         }
         try {
-            min_Sell_Price = Double.parseDouble(minSellPrice.replaceAll("[^0-9.]", ""));
+            min_Sell_Price = Double.parseDouble(minSellPrice.replaceAll(REGEX, ""));
 
         } catch (NumberFormatException e) {
             customDialog.showAlertBox("INVALID MIN SELL PRICE", "ENTER VALID INVALID MIN SELL PRICE");
@@ -260,8 +261,8 @@ public class AddProducts implements Initializable {
 
 
         try {
-            height = Double.parseDouble(heightS.replaceAll("[^0-9.]", ""));
-            width = Double.parseDouble(widthS.replaceAll("[^0-9.]", ""));
+            height = Double.parseDouble(heightS.replaceAll(REGEX, ""));
+            width = Double.parseDouble(widthS.replaceAll(REGEX, ""));
 
         } catch (NumberFormatException e) {
             customDialog.showAlertBox("INVALID PRODUCT SIZE", "ENTER VALID HEIGHT AND WIDTH ");
@@ -269,7 +270,7 @@ public class AddProducts implements Initializable {
         }
 
         try {
-            quantity = Long.parseLong(quantityS.replaceAll("[^0-9.]", ""));
+            quantity = Long.parseLong(quantityS.replaceAll(REGEX, ""));
         } catch (NumberFormatException e) {
             customDialog.showAlertBox("INVALID QUANTITY", "ENTER VALID QUANTITY");
             e.printStackTrace();
@@ -296,63 +297,55 @@ public class AddProducts implements Initializable {
 
 
         Callback<TableColumn<ProductSize, String>, TableCell<ProductSize, String>>
-                cellFactory = (TableColumn<ProductSize, String> param) -> {
+                cellFactory = (TableColumn<ProductSize, String> param) -> new TableCell<>() {
+                    @Override
+                    public void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                            setText(null);
 
-            final TableCell<ProductSize, String> cell = new TableCell<ProductSize, String>() {
-                @Override
-                public void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty) {
-                        setGraphic(null);
-                        setText(null);
+                        } else {
 
-                    } else {
+                            String path = "img/icon/delete_ic.png";
+                            ImageView iv_delete = new ImageView(new ImageLoader().load(path));
+                            iv_delete.setFitHeight(17);
+                            iv_delete.setFitWidth(17);
+                            iv_delete.setPreserveRatio(true);
 
-                        String path = "img/icon/delete_ic.png";
+                            iv_delete.setStyle(
+                                    " -fx-cursor: hand ;"
+                                            + "-glyph-size:28px;"
+                                            + "-fx-fill:#ff0000;"
+                            );
 
-
-                        ImageView iv_delete = new ImageView(new ImageLoader().load(path));
-                        iv_delete.setFitHeight(17);
-                        iv_delete.setFitWidth(17);
-                        iv_delete.setPreserveRatio(true);
-
-
-                        iv_delete.setStyle(
-                                " -fx-cursor: hand ;"
-                                        + "-glyph-size:28px;"
-                                        + "-fx-fill:#ff0000;"
-                        );
-
-                        iv_delete.setOnMouseClicked((MouseEvent event) -> {
+                            iv_delete.setOnMouseClicked((MouseEvent event) -> {
 
 
-                            ProductSize ps1 = sizeTableView.getSelectionModel().getSelectedItem();
+                                ProductSize ps1 = sizeTableView.getSelectionModel().getSelectedItem();
 
-                            sizeTableView.getItems().remove(ps1);
+                                sizeTableView.getItems().remove(ps1);
 
-                            tableViewSize = tableViewSize - 20;
+                                tableViewSize = tableViewSize - 20;
 
 
-                            sizeTableView.setMinHeight(tableViewSize);
+                                sizeTableView.setMinHeight(tableViewSize);
 
-                        });
+                            });
 
-                        HBox managebtn = new HBox(iv_delete);
+                            HBox managebtn = new HBox(iv_delete);
 
-                        managebtn.setStyle("-fx-alignment:center");
-                        HBox.setMargin(iv_delete, new Insets(2, 3, 0, 20));
+                            managebtn.setStyle("-fx-alignment:center");
+                            HBox.setMargin(iv_delete, new Insets(2, 3, 0, 20));
 
-                        setGraphic(managebtn);
+                            setGraphic(managebtn);
 
-                        setText(null);
+                            setText(null);
 
+                        }
                     }
-                }
 
-            };
-
-            return cell;
-        };
+                };
 
         col_action.setCellFactory(cellFactory);
 
@@ -599,7 +592,6 @@ public class AddProducts implements Initializable {
             }
         } catch (Exception e) {
 
-            //System.out.println(e.getErrorCode());
             customDialog.showAlertBox("Failed..", "");
         }
     }

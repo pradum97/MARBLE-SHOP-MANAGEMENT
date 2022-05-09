@@ -121,7 +121,6 @@ public class AddCustomer implements Initializable {
 
             connection = dbConnection.getConnection();
             if (null == connection) {
-                System.out.println("connection failed");
                 return;
             }
 

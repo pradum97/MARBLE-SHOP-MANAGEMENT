@@ -158,7 +158,6 @@ public class GenerateInvoice {
                 viewer.setZoomRatio(pdfZoomRatio);
                 viewer.setVisible(true);
             }
-
         } catch (JRException e) {
             e.printStackTrace();
         }

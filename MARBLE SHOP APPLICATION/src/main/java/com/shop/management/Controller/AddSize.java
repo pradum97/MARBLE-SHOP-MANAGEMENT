@@ -32,6 +32,7 @@ public class AddSize implements Initializable {
     public ComboBox<String> productSizeUnit;
     public TextField productQuantity;
     public ComboBox<String> productQuantityUnit;
+    private static final String REGEX = "[^0-9.]";
     public Button bnAddSize;
     private Products products;
     private Method method;
@@ -45,8 +46,6 @@ public class AddSize implements Initializable {
         products = (Products) Main.primaryStage.getUserData();
 
         if (null == products) {
-
-            System.out.println("Data Not Found");
             return;
         }
 
@@ -78,10 +77,10 @@ public class AddSize implements Initializable {
 
     public void enterPress(KeyEvent keyEvent) {
 
+
     }
 
-    public void bnAddSize(ActionEvent event) {
-
+    public void addSizeBn(ActionEvent event) {
 
         String heightS = productHeight.getText();
         String widthS = productWidth.getText();
@@ -96,7 +95,7 @@ public class AddSize implements Initializable {
             return;
         }
         try {
-            purchase_price = Double.parseDouble(purchasePrice_s.replaceAll("[^0-9.]", ""));
+            purchase_price = Double.parseDouble(purchasePrice_s.replaceAll(REGEX, ""));
         } catch (NumberFormatException e) {
             customDialog.showAlertBox("INVALID PURCHASE PRICE", "ENTER VALID PURCHASE PRICE");
             e.printStackTrace();
@@ -108,7 +107,7 @@ public class AddSize implements Initializable {
             return;
         }
         try {
-            mrp = Double.parseDouble(prodMrp.replaceAll("[^0-9.]", ""));
+            mrp = Double.parseDouble(prodMrp.replaceAll(REGEX, ""));
         } catch (NumberFormatException e) {
             customDialog.showAlertBox("INVALID MRP", "ENTER VALID MRP");
             e.printStackTrace();
@@ -123,7 +122,7 @@ public class AddSize implements Initializable {
             return;
         }
         try {
-            min_Sell_Price = Double.parseDouble(minSellPrice_s.replaceAll("[^0-9.]", ""));
+            min_Sell_Price = Double.parseDouble(minSellPrice_s.replaceAll(REGEX, ""));
 
         } catch (NumberFormatException e) {
             customDialog.showAlertBox("INVALID MIN SELL PRICE", "ENTER VALID INVALID MIN SELL PRICE");
@@ -164,15 +163,15 @@ public class AddSize implements Initializable {
 
 
         try {
-            height = Integer.parseInt(heightS.replaceAll("[^0-9.]", ""));
-            width = Integer.parseInt(widthS.replaceAll("[^0-9.]", ""));
+            height = Integer.parseInt(heightS.replaceAll(REGEX, ""));
+            width = Integer.parseInt(widthS.replaceAll(REGEX, ""));
 
         } catch (NumberFormatException e) {
             customDialog.showAlertBox("INVALID PRODUCT SIZE", "ENTER VALID HEIGHT AND WIDTH ");
             return;
         }
         try {
-            quantity = Long.parseLong(quantityS.replaceAll("[^0-9.]", ""));
+            quantity = Long.parseLong(quantityS.replaceAll(REGEX, ""));
         } catch (NumberFormatException e) {
             customDialog.showAlertBox("INVALID QUANTITY", "ENTER VALID QUANTITY");
             e.printStackTrace();
@@ -206,9 +205,9 @@ public class AddSize implements Initializable {
 
             if (res > 0) {
 
-                Stage stage = new CustomDialog().stage2;
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
-                if (stage.isShowing()) {
+                if (null != stage && stage.isShowing()) {
                     stage.close();
                 }
             }

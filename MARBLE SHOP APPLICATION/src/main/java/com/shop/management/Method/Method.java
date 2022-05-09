@@ -22,7 +22,6 @@ import java.util.Properties;
 
 public class Method extends StaticData {
 
-
     public ObservableList<Role> getRole(){
 
         Connection connection = null;
