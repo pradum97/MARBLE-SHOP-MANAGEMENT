@@ -86,7 +86,6 @@ public class ProposalItems implements Initializable {
         try {
             connection = dbConnection.getConnection();
             if (null == connection){
-                System.out.println("connection Failed");
                 return;
             }
 
@@ -130,7 +129,10 @@ public class ProposalItems implements Initializable {
             colDiscAmount.setCellValueFactory(new PropertyValueFactory<>("discountAmount"));
 
             setOptionalCell();
-            tableView.setItems(proposeList);
+            if (null != proposeList){
+                tableView.setItems(proposeList);
+            }
+
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -158,13 +160,7 @@ public class ProposalItems implements Initializable {
 
                     ivDelete.setStyle("-fx-cursor: hand");
 
-                    ivDelete.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                        @Override
-                        public void handle(MouseEvent mouseEvent) {
-
-                            deleteProduct(tableView.getSelectionModel().getSelectedItem());
-                        }
-                    });
+                    ivDelete.setOnMouseClicked(mouseEvent -> deleteProduct(tableView.getSelectionModel().getSelectedItem()));
 
                     HBox managebtn = new HBox(ivDelete);
                     managebtn.setStyle("-fx-alignment:center");

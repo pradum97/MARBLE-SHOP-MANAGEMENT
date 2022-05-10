@@ -112,7 +112,6 @@ public class ReturnProduct implements Initializable {
         try {
             connection = dbConnection.getConnection();
             if (null == connection) {
-                System.out.println("connection Failed");
                 return;
             }
             String query = propRead.getProperty("SEARCH_SALE_ITEM");
@@ -159,7 +158,6 @@ public class ReturnProduct implements Initializable {
 
                     addiDiscountContainer.setVisible(additional_discount > 0);
                     res++;
-                    //  actualAmount = net_Amount;
                     netAmount = net_Amount;
                     cusNameL.setText(customerName.toUpperCase());
                     cusPhoneL.setText(customerPhone);

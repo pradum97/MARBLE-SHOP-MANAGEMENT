@@ -5,7 +5,6 @@ import com.shop.management.util.DBConnection;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Arrays;
 
 public class TableCreate {
     public void createLicenseTable() {

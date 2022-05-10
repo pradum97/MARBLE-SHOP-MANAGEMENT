@@ -4,7 +4,6 @@ import com.shop.management.CustomDialog;
 import com.shop.management.Main;
 import com.shop.management.Method.GetUserProfile;
 import com.shop.management.Method.Method;
-import com.shop.management.Method.TableCreate;
 import com.shop.management.Model.UserDetails;
 import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
@@ -18,13 +17,15 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 import java.net.URL;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
 import java.util.Date;
+import java.util.Properties;
+import java.util.ResourceBundle;
 
 public class Login implements Initializable {
     public TextField email_f;
@@ -38,7 +39,7 @@ public class Login implements Initializable {
     public static int currentRole_Id = 0;
     public static String currentRoleName;
     private Connection connection;
-    private Properties propInsert , propDelete , propUpdate , propRead;
+    private Properties propRead;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -47,10 +48,7 @@ public class Login implements Initializable {
         customDialog = new CustomDialog();
         dbConnection = new DBConnection();
         PropertiesLoader propLoader = new PropertiesLoader();
-        propDelete = propLoader.getDeleteProp();
-        propUpdate = propLoader.getUpdateProp();
         propRead = propLoader.getReadProp();
-        propInsert = propLoader.getInsertProp();
     }
 
     @FXML

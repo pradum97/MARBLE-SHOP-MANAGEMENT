@@ -73,93 +73,88 @@ public class GstConfig implements Initializable {
 
 
         Callback<TableColumn<TAX, String>, TableCell<TAX, String>>
-                cellFactory = (TableColumn<TAX, String> param) -> {
+                cellFactory = (TableColumn<TAX, String> param) -> new TableCell<>() {
+                    @Override
+                    public void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                            setText(null);
 
-            final TableCell<TAX, String> cell = new TableCell<TAX, String>() {
-                @Override
-                public void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty) {
-                        setGraphic(null);
-                        setText(null);
+                        } else {
 
-                    } else {
+                            ImageLoader imageLoader = new ImageLoader();
 
-                        ImageLoader imageLoader = new ImageLoader();
+                            ImageView iv_edit = new ImageView(imageLoader.load("img/icon/edit_ic.png"));
+                            iv_edit.setFitHeight(22);
+                            iv_edit.setFitHeight(22);
+                            iv_edit.setPreserveRatio(true);
 
-                      ImageView  iv_edit = new ImageView(imageLoader.load("img/icon/edit_ic.png"));
-                        iv_edit.setFitHeight(22);
-                        iv_edit.setFitHeight(22);
-                        iv_edit.setPreserveRatio(true);
+                            ImageView iv_delete = new ImageView(imageLoader.load("img/icon/delete_ic.png"));
+                            iv_delete.setFitHeight(17);
+                            iv_delete.setFitWidth(17);
+                            iv_delete.setPreserveRatio(true);
 
-                      ImageView  iv_delete = new ImageView(imageLoader.load("img/icon/delete_ic.png"));
-                        iv_delete.setFitHeight(17);
-                        iv_delete.setFitWidth(17);
-                        iv_delete.setPreserveRatio(true);
+                            iv_delete.managedProperty().bind(iv_delete.visibleProperty());
+                            iv_delete.setVisible(Objects.equals(Login.currentRoleName.toLowerCase(), "admin".toLowerCase()));
 
-                        iv_delete.managedProperty().bind(iv_delete.visibleProperty());
-                        iv_delete.setVisible(Objects.equals(Login.currentRoleName.toLowerCase(), "admin".toLowerCase()));
+                            iv_edit.setStyle(
+                                    " -fx-cursor: hand ;"
+                                            + "-glyph-size:28px;"
+                                            + "-fx-fill:#c506fa;"
+                            );
 
-                        iv_edit.setStyle(
-                                " -fx-cursor: hand ;"
-                                        + "-glyph-size:28px;"
-                                        + "-fx-fill:#c506fa;"
-                        );
+                            iv_delete.setStyle(
+                                    " -fx-cursor: hand ;"
+                                            + "-glyph-size:28px;"
+                                            + "-fx-fill:#ff0000;"
+                            );
+                            iv_edit.setOnMouseClicked((MouseEvent event) -> {
 
-                        iv_delete.setStyle(
-                                " -fx-cursor: hand ;"
-                                        + "-glyph-size:28px;"
-                                        + "-fx-fill:#ff0000;"
-                        );
-                        iv_edit.setOnMouseClicked((MouseEvent event) -> {
+                                TAX edit_selection = tableViewGst.
+                                        getSelectionModel().getSelectedItem();
 
-                            TAX edit_selection = tableViewGst.
-                                    getSelectionModel().getSelectedItem();
+                                if (null == edit_selection) {
+                                    method.show_popup("Please Select", tableViewGst);
+                                    return;
+                                }
 
-                            if (null == edit_selection) {
-                                method.show_popup("Please Select", tableViewGst);
-                                return;
-                            }
+                                Main.primaryStage.setUserData(edit_selection);
 
-                            Main.primaryStage.setUserData(edit_selection);
+                                customDialog.showFxmlDialog("setting/update/gstUpdate.fxml", "GST UPDATE");
+                                setGstTableData();
 
-                            customDialog.showFxmlDialog("setting/update/gstUpdate.fxml", "GST UPDATE");
-                            setGstTableData();
+                            });
 
-                        });
-
-                        iv_delete.setOnMouseClicked((MouseEvent event) -> {
+                            iv_delete.setOnMouseClicked((MouseEvent event) -> {
 
 
-                            TAX delete_selection = tableViewGst.
-                                    getSelectionModel().getSelectedItem();
+                                TAX delete_selection = tableViewGst.
+                                        getSelectionModel().getSelectedItem();
 
-                            if (null == delete_selection) {
-                                method.show_popup("Please Select ", tableViewGst);
-                                return;
-                            }
+                                if (null == delete_selection) {
+                                    method.show_popup("Please Select ", tableViewGst);
+                                    return;
+                                }
 
-                            deleteGst(delete_selection);
+                                deleteGst(delete_selection);
 
-                        });
+                            });
 
-                        HBox managebtn = new HBox(iv_edit, iv_delete);
+                            HBox managebtn = new HBox(iv_edit, iv_delete);
 
-                        managebtn.setStyle("-fx-alignment:center");
-                        HBox.setMargin(iv_edit, new Insets(2, 2, 0, 3));
-                        HBox.setMargin(iv_delete, new Insets(2, 3, 0, 20));
+                            managebtn.setStyle("-fx-alignment:center");
+                            HBox.setMargin(iv_edit, new Insets(2, 2, 0, 3));
+                            HBox.setMargin(iv_delete, new Insets(2, 3, 0, 20));
 
-                        setGraphic(managebtn);
+                            setGraphic(managebtn);
 
-                        setText(null);
+                            setText(null);
 
+                        }
                     }
-                }
 
-            };
-
-            return cell;
-        };
+                };
 
 
         colAction.setCellFactory(cellFactory);

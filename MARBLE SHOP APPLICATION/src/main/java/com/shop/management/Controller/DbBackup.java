@@ -257,7 +257,6 @@ public class DbBackup implements Initializable {
                 File dFile = new File(dPath);
                 if (dFile.exists()) {
                     dFile.delete();
-                    System.out.println("delete success : " + filaName);
                 }
             }
         }

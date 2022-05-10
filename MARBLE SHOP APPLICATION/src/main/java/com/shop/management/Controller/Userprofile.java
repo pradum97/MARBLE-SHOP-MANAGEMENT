@@ -4,10 +4,7 @@ import com.shop.management.CustomDialog;
 import com.shop.management.ImageLoader;
 import com.shop.management.Main;
 import com.shop.management.Method.GetUserProfile;
-import com.shop.management.Method.Method;
 import com.shop.management.Model.UserDetails;
-import com.shop.management.PropertiesLoader;
-import com.shop.management.util.DBConnection;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -19,7 +16,6 @@ import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.Objects;
-import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class Userprofile implements Initializable {
@@ -35,15 +31,11 @@ public class Userprofile implements Initializable {
     public Label userAddress;
     public Button bnChangePassword;
     public Button bnEdit;
-    private DBConnection dbConnection;
     private CustomDialog customDialog;
-    private Method method;
     private int userId;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        method = new Method();
-        dbConnection = new DBConnection();
         customDialog = new CustomDialog();
 
 

@@ -62,7 +62,6 @@ public class GetUserProfile {
                         email,username,password,address,user_image,create_time,role_id);
 
             }else {
-                System.out.println("User Not Found..");
             }
 
             return userDetails;

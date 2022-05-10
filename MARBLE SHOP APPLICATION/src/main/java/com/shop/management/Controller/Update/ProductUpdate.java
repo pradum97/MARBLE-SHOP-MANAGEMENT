@@ -67,7 +67,6 @@ public class ProductUpdate implements Initializable {
             connection = dbconnection.getConnection();
 
             if (null == connection) {
-                System.out.println("Product Update : Connection failed");
                 return;
             }
 
@@ -123,7 +122,6 @@ public class ProductUpdate implements Initializable {
                 }
             } else {
 
-                System.out.println("not found");
             }
 
         } catch (SQLException e) {
@@ -259,7 +257,6 @@ public class ProductUpdate implements Initializable {
         try {
             connection = dbconnection.getConnection();
             if (null == connection) {
-                System.out.println("ProductUpdate : Connection failed");
                 return;
             }
 

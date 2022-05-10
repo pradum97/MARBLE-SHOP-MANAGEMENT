@@ -79,10 +79,7 @@ public class LicenseMain implements Initializable {
                 activateLicenseContainer.setVisible(false);
                 detailsContainer.setDisable(false);
 
-             /*   int companyId = rs.getInt("company_id");
-                int period = rs.getInt("license_period_days");*/
                 String appId = rs.getString("application_id");
-              //  String serialKey = rs.getString("serial_key");
                 String startOn = rs.getString("start_on");
                 String expiresDate = rs.getString("expires_on");
                 String type = rs.getString("license_type");

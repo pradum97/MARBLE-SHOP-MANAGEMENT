@@ -41,7 +41,6 @@ public class Customer implements Initializable {
     public Pagination pagination;
     public TextField searchTf;
     private Properties propRead;
-    private Method method;
     private DBConnection dbConnection;
     private CustomDialog customDialog;
     private FilteredList<CustomerModel> filteredData;
@@ -52,7 +51,6 @@ public class Customer implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        method = new Method();
         dbConnection = new DBConnection();
         customDialog = new CustomDialog();
         PropertiesLoader propLoader = new PropertiesLoader();
@@ -89,7 +87,6 @@ public class Customer implements Initializable {
             connection = dbConnection.getConnection();
 
             if (null == connection) {
-                System.out.println("connection Failed");
                 return;
             }
 
@@ -126,7 +123,6 @@ public class Customer implements Initializable {
         try {
             connection = dbConnection.getConnection();
             if (null == connection) {
-                System.out.println("connection failed");
                 return;
             }
             ps = connection.prepareStatement(propRead.getProperty("READ_ALL_CUSTOMER"));
@@ -145,10 +141,12 @@ public class Customer implements Initializable {
 
             }
 
-            if (customerList.size() > 0) {
-                pagination.setVisible(true);
-                search_Item();
-            }
+           if (null != customerList){
+               if (customerList.size() > 0) {
+                   pagination.setVisible(true);
+                   search_Item();
+               }
+           }
 
 
         } catch (SQLException e) {

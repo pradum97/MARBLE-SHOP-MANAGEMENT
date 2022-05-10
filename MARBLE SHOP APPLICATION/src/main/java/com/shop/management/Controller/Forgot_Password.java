@@ -13,13 +13,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -142,7 +140,6 @@ public class Forgot_Password implements Initializable {
             }
 
         } catch (Exception e) {
-            System.out.println("Error : " + e.getMessage());
         }
 
     }

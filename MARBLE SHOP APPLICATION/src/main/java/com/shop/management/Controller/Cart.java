@@ -236,8 +236,6 @@ public class Cart implements Initializable {
             connection = dbconnection.getConnection();
 
             if (null == connection) {
-
-                System.out.println("connection Failed");
                 return;
             }
 
@@ -575,7 +573,10 @@ public class Cart implements Initializable {
 
             DBConnection.closeConnection(con, null, null);
             try {
-                ps.close();
+                if (null != ps){
+                    ps.close();
+                }
+
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -626,7 +627,6 @@ public class Cart implements Initializable {
             try {
                 connection = dbconnection.getConnection();
                 if (null == connection) {
-                    System.out.println("connection Failed");
                     return;
                 }
                 String query = "INSERT INTO PROPOSAL_MAIN (CUSTOMER_ID, SELLER_ID , invoice_num) VALUES (?, ? , ?)";
@@ -715,7 +715,6 @@ public class Cart implements Initializable {
             int customerId = (int) receiveMap.get("customerId");
 
             if (customerId < 0) {
-                System.out.println("customer not found");
                 return;
             }
 

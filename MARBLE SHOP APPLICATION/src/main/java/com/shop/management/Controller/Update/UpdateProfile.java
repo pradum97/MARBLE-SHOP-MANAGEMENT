@@ -11,7 +11,6 @@ import com.shop.management.Model.UserDetails;
 import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -21,7 +20,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -51,7 +49,7 @@ public class UpdateProfile implements Initializable {
     private DBConnection dbConnection;
     private CustomDialog customDialog;
     private int userId;
-    private Properties propUpdate ;
+    private Properties propUpdate;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -63,6 +61,7 @@ public class UpdateProfile implements Initializable {
         propUpdate = propLoader.getUpdateProp();
         setUserDetails(userId);
     }
+
     private void setUserDetails(int userId) {
 
         GetUserProfile getUserProfile = new GetUserProfile();
@@ -80,18 +79,17 @@ public class UpdateProfile implements Initializable {
         full_address_f.setText(userDetails.getFullAddress());
         gender_comboBox.getItems().add(userDetails.getGender());
         gender_comboBox.getSelectionModel().selectFirst();
-        Role role = new Role(userDetails.getRole_id() , userDetails.getRole());
+        Role role = new Role(userDetails.getRole_id(), userDetails.getRole());
         role_combobox.getItems().add(role);
 
         role_combobox.getSelectionModel().selectFirst();
-         role_combobox.setOnMouseClicked(mouseEvent -> {
-             if (null != role_combobox){
-                 role_combobox.getItems().clear();
-             }
-             assert role_combobox != null;
-             role_combobox.setItems(method.getRole());
-         });
-
+        role_combobox.setOnMouseClicked(mouseEvent -> {
+            if (null != role_combobox) {
+                role_combobox.getItems().clear();
+            }
+            assert role_combobox != null;
+            role_combobox.setItems(method.getRole());
+        });
 
 
         gender_comboBox.setItems(method.getGender());
@@ -101,12 +99,10 @@ public class UpdateProfile implements Initializable {
 
         switch (userDetails.getAccountStatus()) {
 
-            case "Active" -> {
-                combo_accountStatus.getSelectionModel().select(1);
-            }
-            case "Inactive" -> {
-                combo_accountStatus.getSelectionModel().select(0);
-            }
+            case "Active" -> combo_accountStatus.getSelectionModel().select(1);
+
+            case "Inactive" -> combo_accountStatus.getSelectionModel().select(0);
+
         }
 
     }
@@ -140,16 +136,16 @@ public class UpdateProfile implements Initializable {
             method.show_popup("Enter Username", username_f);
             return;
 
-        }else if (isExist("LOWER(username )",username)){
+        } else if (isExist("LOWER(username )", username)) {
             method.show_popup("USERNAME ALREADY EXISTS", username_f);
             return;
 
-        }else if (phone.isEmpty()) {
+        } else if (phone.isEmpty()) {
             method.show_popup("Enter 10-digit Phone Number", phone_f);
             return;
 
         }
-        long phoneNum ;
+        long phoneNum;
         try {
             phoneNum = Long.parseLong(phone);
         } catch (NumberFormatException e) {
@@ -162,11 +158,11 @@ public class UpdateProfile implements Initializable {
         if (!phone_matcher.matches()) {
             customDialog.showAlertBox("Registration Failed ", "Enter 10-digit Phone Number Without Country Code");
             return;
-        } else if (isPhoneExist(phoneNum)){
+        } else if (isPhoneExist(phoneNum)) {
             method.show_popup("PHONE NUMBER ALREADY EXISTS", phone_f);
             return;
 
-        }else if (email.isEmpty()) {
+        } else if (email.isEmpty()) {
             method.show_popup("Enter Valid Email", email_f);
             return;
 
@@ -174,7 +170,7 @@ public class UpdateProfile implements Initializable {
             method.show_popup("Enter Valid Email", email_f);
             return;
 
-        }else if (isExist("LOWER(email) ",email)){
+        } else if (isExist("LOWER(email) ", email)) {
             method.show_popup("EMAIL ALREADY EXISTS", email_f);
             return;
 
@@ -245,14 +241,14 @@ public class UpdateProfile implements Initializable {
 
     public void bnCancel(ActionEvent event) {
 
-        Stage stage = (Stage)((Node) event.getSource()).getScene().getWindow();
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
-        if (stage.isShowing()){
+        if (stage.isShowing()) {
             stage.close();
         }
     }
 
-    private boolean isPhoneExist(long phoneNum){
+    private boolean isPhoneExist(long phoneNum) {
 
         Connection connection = null;
         PreparedStatement ps = null;
@@ -263,22 +259,22 @@ public class UpdateProfile implements Initializable {
             String query = "select phone,user_id from tbl_users where phone = ?";
 
             ps = connection.prepareStatement(query);
-            ps.setLong(1,phoneNum);
+            ps.setLong(1, phoneNum);
 
             rs = ps.executeQuery();
 
             int uid = 0;
 
-            if(rs.next()){
+            if (rs.next()) {
 
                 uid = rs.getInt("user_id");
-                if (userId == uid){
+                if (userId == uid) {
                     return false;
-                }else {
+                } else {
                     return true;
                 }
 
-            }else {
+            } else {
                 return false;
             }
 
@@ -286,12 +282,12 @@ public class UpdateProfile implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
-        }finally {
-            DBConnection.closeConnection(connection , ps , rs);
+        } finally {
+            DBConnection.closeConnection(connection, ps, rs);
         }
     }
 
-    private boolean isExist(String columnName , String value){
+    private boolean isExist(String columnName, String value) {
 
         Connection connection = null;
         PreparedStatement ps = null;
@@ -299,25 +295,25 @@ public class UpdateProfile implements Initializable {
         try {
 
             connection = dbConnection.getConnection();
-            String query = "select "+columnName+" ,user_id from tbl_users where "+columnName+" = ?";
+            String query = "select " + columnName + " ,user_id from tbl_users where " + columnName + " = ?";
 
             ps = connection.prepareStatement(query);
-            ps.setString(1,value.toLowerCase());
+            ps.setString(1, value.toLowerCase());
 
             rs = ps.executeQuery();
 
             int uid = 0;
 
-            if(rs.next()){
+            if (rs.next()) {
 
                 uid = rs.getInt("user_id");
-                if (userId == uid){
+                if (userId == uid) {
                     return false;
-                }else {
+                } else {
                     return true;
                 }
 
-            }else {
+            } else {
                 return false;
             }
 
@@ -325,14 +321,14 @@ public class UpdateProfile implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
-        }finally {
-            DBConnection.closeConnection(connection , ps , rs);
+        } finally {
+            DBConnection.closeConnection(connection, ps, rs);
         }
     }
 
     public void enterPress(KeyEvent event) {
 
-        if (event.getCode() == KeyCode.ENTER){
+        if (event.getCode() == KeyCode.ENTER) {
 
             update(event.getSource());
         }

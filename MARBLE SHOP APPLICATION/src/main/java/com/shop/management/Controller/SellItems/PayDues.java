@@ -37,15 +37,13 @@ public class PayDues implements Initializable {
     private Sale_Main saleMain;
     private DecimalFormat df = new DecimalFormat("0.##");
     private Method method;
-    private Properties propInsert , propDelete , propUpdate , propRead;
+    private Properties propInsert , propUpdate ;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         method = new Method();
         PropertiesLoader propLoader = new PropertiesLoader();
-        propDelete = propLoader.getDeleteProp();
         propUpdate = propLoader.getUpdateProp();
-        propRead = propLoader.getReadProp();
         propInsert = propLoader.getInsertProp();
 
         saleMain = (Sale_Main) Main.primaryStage.getUserData();
@@ -94,7 +92,7 @@ public class PayDues implements Initializable {
             }
         });
 
-        paymentModeC.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
+        paymentModeC.setCellFactory(new Callback<>() {
             @Override
             public ListCell<String> call(ListView<String> list) {
                 return new ListCell<String>() {
@@ -192,7 +190,6 @@ public class PayDues implements Initializable {
             try {
                 connection = new DBConnection().getConnection();
                 if (null == connection) {
-                    System.out.println("Connection failed");
                     return;
                 }
                 ps = connection.prepareStatement(propUpdate.getProperty("UPDATE_DUES_IN_PAYDUES"));

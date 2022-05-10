@@ -3,7 +3,6 @@ package com.shop.management.Controller;
 import com.shop.management.CustomDialog;
 import com.shop.management.ImageLoader;
 import com.shop.management.Main;
-import com.shop.management.Method.Method;
 import com.shop.management.Method.StaticData;
 import com.shop.management.Model.SupplierModel;
 import com.shop.management.util.DBConnection;
@@ -13,7 +12,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.geometry.Side;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
@@ -23,7 +21,10 @@ import javafx.stage.Modality;
 import javafx.util.Callback;
 
 import java.net.URL;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -41,8 +42,6 @@ public class AllSupplier implements Initializable {
     public TableColumn<SupplierModel, String> colState;
     public TableColumn<SupplierModel, String> colDate;
     public TableColumn<SupplierModel, String> colAction;
-
-    private Method method;
     private DBConnection dbConnection;
     private CustomDialog customDialog;
 
@@ -51,7 +50,6 @@ public class AllSupplier implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        method = new Method();
         dbConnection = new DBConnection();
         customDialog = new CustomDialog();
         getSupplier();
@@ -71,7 +69,6 @@ public class AllSupplier implements Initializable {
 
             connection = dbConnection.getConnection();
             if (null == connection) {
-                System.out.println("connection failed");
                 return;
             }
 
@@ -165,7 +162,6 @@ public class AllSupplier implements Initializable {
             connection = dbConnection.getConnection();
 
             if (null == connection) {
-                System.out.println("connection Failed");
                 return;
             }
 

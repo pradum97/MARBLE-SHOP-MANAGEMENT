@@ -69,89 +69,84 @@ public class DiscountConfig implements Initializable {
         colDiscountDes.setCellValueFactory(new PropertyValueFactory<>("description"));
 
         Callback<TableColumn<Discount, String>, TableCell<Discount, String>>
-                cellFactory = (TableColumn<Discount, String> param) -> {
+                cellFactory = (TableColumn<Discount, String> param) -> new TableCell<>() {
+            @Override
+            public void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                    setText(null);
 
-            final TableCell<Discount, String> cell = new TableCell<Discount, String>() {
-                @Override
-                public void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty) {
-                        setGraphic(null);
-                        setText(null);
+                } else {
+                    ImageLoader imageLoader = new ImageLoader();
+                    ImageView iv_edit = new ImageView(imageLoader.load("img/icon/edit_ic.png"));
+                    iv_edit.setFitHeight(22);
+                    iv_edit.setFitHeight(22);
+                    iv_edit.setPreserveRatio(true);
 
-                    } else {
-                        ImageLoader imageLoader = new ImageLoader();
-                        ImageView iv_edit = new ImageView(imageLoader.load("img/icon/edit_ic.png"));
-                        iv_edit.setFitHeight(22);
-                        iv_edit.setFitHeight(22);
-                        iv_edit.setPreserveRatio(true);
+                    ImageView iv_delete = new ImageView(imageLoader.load("img/icon/delete_ic.png"));
+                    iv_delete.setFitHeight(17);
+                    iv_delete.setFitWidth(17);
+                    iv_delete.setPreserveRatio(true);
+                    iv_delete.managedProperty().bind(iv_delete.visibleProperty());
+                    iv_delete.setVisible(Objects.equals(Login.currentRoleName.toLowerCase(), "admin".toLowerCase()));
 
-                        ImageView iv_delete = new ImageView(imageLoader.load("img/icon/delete_ic.png"));
-                        iv_delete.setFitHeight(17);
-                        iv_delete.setFitWidth(17);
-                        iv_delete.setPreserveRatio(true);
-                        iv_delete.managedProperty().bind(iv_delete.visibleProperty());
-                        iv_delete.setVisible(Objects.equals(Login.currentRoleName.toLowerCase(), "admin".toLowerCase()));
+                    iv_edit.setStyle(
+                            " -fx-cursor: hand ;"
+                                    + "-glyph-size:28px;"
+                                    + "-fx-fill:#c506fa;"
+                    );
 
-                        iv_edit.setStyle(
-                                " -fx-cursor: hand ;"
-                                        + "-glyph-size:28px;"
-                                        + "-fx-fill:#c506fa;"
-                        );
+                    iv_delete.setStyle(
+                            " -fx-cursor: hand ;"
+                                    + "-glyph-size:28px;"
+                                    + "-fx-fill:#ff0000;"
+                    );
+                    iv_edit.setOnMouseClicked((MouseEvent event) -> {
 
-                        iv_delete.setStyle(
-                                " -fx-cursor: hand ;"
-                                        + "-glyph-size:28px;"
-                                        + "-fx-fill:#ff0000;"
-                        );
-                        iv_edit.setOnMouseClicked((MouseEvent event) -> {
+                        Discount edit_selection = tableViewDiscount.
+                                getSelectionModel().getSelectedItem();
 
-                            Discount edit_selection = tableViewDiscount.
-                                    getSelectionModel().getSelectedItem();
+                        if (null == edit_selection) {
+                            method.show_popup("Please Select", tableViewDiscount);
+                            return;
+                        }
 
-                            if (null == edit_selection) {
-                                method.show_popup("Please Select", tableViewDiscount);
-                                return;
-                            }
+                        Main.primaryStage.setUserData(edit_selection);
 
-                            Main.primaryStage.setUserData(edit_selection);
+                        customDialog.showFxmlDialog("setting/update/discountUpdate.fxml", "UPDATE DISCOUNT");
+                        setDiscountData();
 
-                            customDialog.showFxmlDialog("setting/update/discountUpdate.fxml", "UPDATE DISCOUNT");
-                            setDiscountData();
+                    });
 
-                        });
-
-                        iv_delete.setOnMouseClicked((MouseEvent event) -> {
+                    iv_delete.setOnMouseClicked((MouseEvent event) -> {
 
 
-                            Discount delete_selection = tableViewDiscount.
-                                    getSelectionModel().getSelectedItem();
+                        Discount delete_selection = tableViewDiscount.
+                                getSelectionModel().getSelectedItem();
 
-                            if (null == delete_selection) {
-                                method.show_popup("Please Select ", tableViewDiscount);
-                                return;
-                            }
+                        if (null == delete_selection) {
+                            method.show_popup("Please Select ", tableViewDiscount);
+                            return;
+                        }
 
-                            deleteDiscount(delete_selection);
+                        deleteDiscount(delete_selection);
 
-                        });
+                    });
 
-                        HBox managebtn = new HBox(iv_edit, iv_delete);
+                    HBox managebtn = new HBox(iv_edit, iv_delete);
 
-                        managebtn.setStyle("-fx-alignment:center");
-                        HBox.setMargin(iv_edit, new Insets(2, 2, 0, 3));
-                        HBox.setMargin(iv_delete, new Insets(2, 3, 0, 20));
+                    managebtn.setStyle("-fx-alignment:center");
+                    HBox.setMargin(iv_edit, new Insets(2, 2, 0, 3));
+                    HBox.setMargin(iv_delete, new Insets(2, 3, 0, 20));
 
-                        setGraphic(managebtn);
+                    setGraphic(managebtn);
 
-                        setText(null);
+                    setText(null);
 
-                    }
                 }
+            }
 
-            };
-
-            return cell;
         };
 
 

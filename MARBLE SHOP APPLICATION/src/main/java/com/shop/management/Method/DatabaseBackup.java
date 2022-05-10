@@ -51,7 +51,7 @@ public class DatabaseBackup {
         BufferedReader br = new BufferedReader(isr);
         String ll;
         while ((ll = br.readLine()) != null) {
-            System.out.println(ll);
+
         }
 
     }
@@ -104,7 +104,6 @@ public class DatabaseBackup {
             }
 
         } catch (IOException | InterruptedException e) {
-            System.out.println(e.getMessage());
             return null;
         }
     }

@@ -2,7 +2,6 @@ package com.shop.management;
 
 import javafx.scene.image.Image;
 
-import java.io.File;
 import java.util.Objects;
 
 public class ImageLoader {

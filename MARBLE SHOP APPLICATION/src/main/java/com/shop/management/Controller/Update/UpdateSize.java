@@ -52,8 +52,6 @@ public class UpdateSize implements Initializable {
         stock = (Stock) Main.primaryStage.getUserData();
 
         if (null == stock) {
-
-            System.out.println("Data Not Found");
             return;
         }
 
@@ -263,8 +261,6 @@ public class UpdateSize implements Initializable {
             int res = ps.executeUpdate();
 
             if (res > 0) {
-                System.out.println("sucess");
-
                 clearCart(connection);
             }
 

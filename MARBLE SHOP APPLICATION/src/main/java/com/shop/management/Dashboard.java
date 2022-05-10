@@ -47,7 +47,6 @@ public class Dashboard implements Initializable {
     private Connection connection;
     private DBConnection dbConnection;
     private CustomDialog customDialog;
-    private Method method;
     private Main main;
     public static Stage stage;
     private Properties propRead;
@@ -55,7 +54,6 @@ public class Dashboard implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         main_container.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/setting.css")).toExternalForm());
-        method = new Method();
         dbConnection = new DBConnection();
         PropertiesLoader propLoader = new PropertiesLoader();
         propRead = propLoader.getReadProp();
@@ -403,7 +401,6 @@ public class Dashboard implements Initializable {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("Dashboard : " + e.getMessage());
 
         } finally {
             try {

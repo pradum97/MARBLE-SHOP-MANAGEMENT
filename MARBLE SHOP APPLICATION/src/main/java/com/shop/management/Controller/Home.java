@@ -1,20 +1,20 @@
 package com.shop.management.Controller;
 
-import com.shop.management.Method.Method;
 import com.shop.management.Model.DailySaleReport;
 import com.shop.management.util.DBConnection;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.Pagination;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.text.Text;
 
 import java.net.URL;
 import java.sql.Connection;
@@ -22,7 +22,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class Home implements Initializable {
@@ -42,8 +41,6 @@ public class Home implements Initializable {
 
     public HBox refresh_bn;
     public Pagination pagination;
-
-    private Method method;
     private DBConnection dbConnection;
     private DecimalFormat df = new DecimalFormat("0.##");
 
@@ -52,13 +49,8 @@ public class Home implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
-
-        method = new Method();
         dbConnection = new DBConnection();
         getSaleItems();
-
-
     }
 
     private void getSaleItems() {
@@ -74,7 +66,6 @@ public class Home implements Initializable {
         try {
             connection = dbConnection.getConnection();
             if (null == connection) {
-                System.out.println("home : Connection failed");
                 return;
             }
 
@@ -87,7 +78,7 @@ public class Home implements Initializable {
 
             rs = ps.executeQuery();
 
-            double totalPurchaseAmount = 0, totalProfit = 0 , totalNetAmount = 0;
+            double totalPurchaseAmount = 0, totalProfit = 0, totalNetAmount = 0;
             while (rs.next()) {
                 String category = rs.getString("product_category");
                 int totalItem = rs.getInt("total_Item");
@@ -96,28 +87,27 @@ public class Home implements Initializable {
                 double total_PurAmount = rs.getDouble("total_Pur_Amount");
                 double profit = rs.getDouble("profit");
 
-                reportList.add(new DailySaleReport( totalItem ,category , totalNet_Amount , total_PurAmount , profit));
+                reportList.add(new DailySaleReport(totalItem, category, totalNet_Amount, total_PurAmount, profit));
 
-             //  totalProfit = totalProfit+profit;
-               totalPurchaseAmount  = totalPurchaseAmount + total_PurAmount;
-               totalNetAmount = totalNetAmount+totalNet_Amount;
+                //  totalProfit = totalProfit+profit;
+                totalPurchaseAmount = totalPurchaseAmount + total_PurAmount;
+                totalNetAmount = totalNetAmount + totalNet_Amount;
 
             }
 
-            if(totalNetAmount > totalPurchaseAmount ){
+            if (totalNetAmount > totalPurchaseAmount) {
                 totalProfit = Double.parseDouble(df.format(totalNetAmount - totalPurchaseAmount));
-                double percentage = Double.parseDouble(df.format((totalProfit/totalPurchaseAmount)*100)) ;
-                totalProfitL.setText("+ "+totalProfit + " ( "+percentage+" ) %");
+                double percentage = Double.parseDouble(df.format((totalProfit / totalPurchaseAmount) * 100));
+                totalProfitL.setText("+ " + totalProfit + " ( " + percentage + " ) %");
                 pL.setStyle("-fx-text-fill: green");
                 totalProfitL.setStyle("-fx-text-fill: green");
 
 
-            }
-            else if(totalPurchaseAmount > totalNetAmount){
+            } else if (totalPurchaseAmount > totalNetAmount) {
                 totalProfit = Double.parseDouble(df.format(totalPurchaseAmount - totalNetAmount));
-                double percentage = Double.parseDouble(df.format((totalProfit/totalPurchaseAmount)*100)) ;
+                double percentage = Double.parseDouble(df.format((totalProfit / totalPurchaseAmount) * 100));
 
-                totalProfitL.setText("- "+totalProfit + " ( "+percentage+" ) %");
+                totalProfitL.setText("- " + totalProfit + " ( " + percentage + " ) %");
                 pL.setStyle("-fx-text-fill: red");
                 totalProfitL.setStyle("-fx-text-fill: red");
 
@@ -135,7 +125,7 @@ public class Home implements Initializable {
             DBConnection.closeConnection(connection, ps, rs);
         }
 
-        if (reportList.size() > 0){
+        if (reportList.size() > 0) {
             pagination.setVisible(true);
             pagination.setCurrentPageIndex(0);
             changeTableView(0, rowsPerPage);
@@ -147,11 +137,11 @@ public class Home implements Initializable {
     }
 
     public void bnRefresh(MouseEvent event) {
-        if (null ==  reportList){
+        if (null == reportList) {
             return;
         }
         getSaleItems();
-         
+
         changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);
     }
 
@@ -168,13 +158,12 @@ public class Home implements Initializable {
         colProfit.setCellValueFactory(new PropertyValueFactory<>("profit"));
 
 
-
         int fromIndex = index * limit;
         int toIndex = Math.min(fromIndex + limit, reportList.size());
 
-        int minIndex = Math.min(toIndex,  reportList.size());
+        int minIndex = Math.min(toIndex, reportList.size());
         SortedList<DailySaleReport> sortedData = new SortedList<>(
-                FXCollections.observableArrayList( reportList.subList(Math.min(fromIndex, minIndex), minIndex)));
+                FXCollections.observableArrayList(reportList.subList(Math.min(fromIndex, minIndex), minIndex)));
         sortedData.comparatorProperty().bind(tableViewHome.comparatorProperty());
 
         tableViewHome.setItems(sortedData);

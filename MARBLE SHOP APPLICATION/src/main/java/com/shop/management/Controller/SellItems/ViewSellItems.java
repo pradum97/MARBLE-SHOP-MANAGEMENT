@@ -45,22 +45,20 @@ public class ViewSellItems implements Initializable {
     public TableColumn<SaleItems, String> colDate;
     public TableView<SaleItems> saleTableView;
     public Pagination pagination;
-    private Method method;
-    private CustomDialog customDialog;
     private DBConnection dbConnection;
     private int sale_main_id = 0;
-    private Properties  propRead;
+    private Properties propRead;
     ObservableList<SaleItems> reportList = FXCollections.observableArrayList();
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        method = new Method();
-        customDialog = new CustomDialog();
         dbConnection = new DBConnection();
         PropertiesLoader propLoader = new PropertiesLoader();
         propRead = propLoader.getReadProp();
         sale_main_id = (int) Main.primaryStage.getUserData();
         getSaleItem();
     }
+
     private void getSaleItem() {
         if (null != reportList) {
             reportList.clear();
@@ -72,7 +70,6 @@ public class ViewSellItems implements Initializable {
         try {
             connection = dbConnection.getConnection();
             if (null == connection) {
-                System.out.println("Connection Failed");
                 return;
             }
             ps = connection.prepareStatement(propRead.getProperty("READ_SALE_ITEMS"));
@@ -107,21 +104,24 @@ public class ViewSellItems implements Initializable {
                 int cgst = rs.getInt("cgst");
                 String saleDate = rs.getString("sale_date");
 
-                String fullDiscount = discountAmount+" ( "+rs.getString("discountPer")+" % )";
+                String fullDiscount = discountAmount + " ( " + rs.getString("discountPer") + " % )";
 
 
                 int tax = igst + cgst + sgst;
 
                 reportList.add(new SaleItems(saleItemId, productId, stockId, productName, productColor, productSize, productType, productCategory, purchasePrice, productMrp,
-                        sellPrice, discountAmount, taxAmount, netAmount, discountName, quantity, hsn, tax, igst, cgst, sgst, saleDate,fullDiscount));
+                        sellPrice, discountAmount, taxAmount, netAmount, discountName, quantity, hsn, tax, igst, cgst, sgst, saleDate, fullDiscount));
 
             }
-            if (reportList.size() > 0) {
+            if (null != reportList) {
+                if (reportList.size() > 0) {
 
-                pagination.setVisible(true);
-                pagination.setCurrentPageIndex(0);
-                changeTableView(0, rowsPerPage);
-                pagination.currentPageIndexProperty().addListener((observable1, oldValue1, newValue1) -> changeTableView(newValue1.intValue(), rowsPerPage));
+                    pagination.setVisible(true);
+                    pagination.setCurrentPageIndex(0);
+                    changeTableView(0, rowsPerPage);
+                    pagination.currentPageIndexProperty().addListener((observable1, oldValue1, newValue1) -> changeTableView(newValue1.intValue(), rowsPerPage));
+                }
+
             }
 
 

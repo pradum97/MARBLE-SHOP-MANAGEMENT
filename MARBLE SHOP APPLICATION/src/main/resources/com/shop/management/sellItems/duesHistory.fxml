@@ -11,13 +11,13 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="main" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyReleased="#escPresss" prefHeight="500.0" prefWidth="700.0" stylesheets="@../css/cartTable.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.SellItems.DuesHistory">
+<BorderPane fx:id="main" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"  prefHeight="500.0" prefWidth="700.0" stylesheets="@../css/cartTable.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.SellItems.DuesHistory">
     <center>
-        <AnchorPane onKeyReleased="#escPresss" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <AnchorPane  prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <children>
-                <VBox onKeyReleased="#escPresss" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0">
+                <VBox  AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0">
                     <children>
-                        <TableView fx:id="tableView" onKeyReleased="#escPresss" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="tableView"  VBox.vgrow="ALWAYS">
                             <columns>
                                 <TableColumn fx:id="colSrNo" editable="false" prefWidth="75.0" sortable="false" text="SrNo" />
                                 <TableColumn fx:id="colPreDues" editable="false" minWidth="-Infinity" prefWidth="114.0" sortable="false" text="PREVIOUS DUES " />
@@ -36,18 +36,18 @@
         </AnchorPane>
     </center>
     <top>
-        <HBox onKeyReleased="#escPresss" spacing="20.0" BorderPane.alignment="CENTER">
+        <HBox  spacing="20.0" BorderPane.alignment="CENTER">
             <children>
-                <VBox alignment="CENTER" onKeyReleased="#escPresss" spacing="15.0">
+                <VBox alignment="CENTER"  spacing="15.0">
                     <children>
-                        <HBox onKeyReleased="#escPresss">
+                        <HBox >
                             <children>
-                                <Label onKeyReleased="#escPresss" text="CUSTOMER NAME :">
+                                <Label  text="CUSTOMER NAME :">
                                     <font>
                                         <Font name="Bookman Old Style Bold" size="11.0" />
                                     </font>
                                 </Label>
-                                <Label fx:id="cusNameL" layoutX="10.0" layoutY="10.0" onKeyReleased="#escPresss">
+                                <Label fx:id="cusNameL" layoutX="10.0" layoutY="10.0" >
                                     <HBox.margin>
                                         <Insets left="5.0" />
                                     </HBox.margin>
@@ -57,7 +57,7 @@
                                 </Label>
                             </children>
                         </HBox>
-                        <HBox layoutX="10.0" layoutY="10.0" onKeyReleased="#escPresss">
+                        <HBox layoutX="10.0" layoutY="10.0" >
                             <children>
                                 <Label text="CUSTOMER PHONE : ">
                                     <font>
@@ -79,10 +79,10 @@
                         <Insets left="10.0" />
                     </HBox.margin>
                 </VBox>
-                <Separator onKeyReleased="#escPresss" orientation="VERTICAL" />
-                <VBox alignment="CENTER" layoutX="20.0" layoutY="10.0" onKeyReleased="#escPresss" spacing="15.0" HBox.hgrow="ALWAYS">
+                <Separator  orientation="VERTICAL" />
+                <VBox alignment="CENTER" layoutX="20.0" layoutY="10.0"  spacing="15.0" HBox.hgrow="ALWAYS">
                     <children>
-                        <HBox alignment="CENTER_LEFT" onKeyReleased="#escPresss">
+                        <HBox alignment="CENTER_LEFT" >
                             <children>
                                 <Label minWidth="80.0" text="ADDRESS : ">
                                     <font>
@@ -95,14 +95,14 @@
                            </font></Label>
                             </children>
                         </HBox>
-                        <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="27.0" onKeyReleased="#escPresss">
+                        <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="27.0" >
                             <children>
-                                <Label minWidth="80.0" onKeyReleased="#escPresss" text="INVOICE NUM : ">
+                                <Label minWidth="80.0"  text="INVOICE NUM : ">
                                     <font>
                                         <Font name="Bookman Old Style Bold" size="11.0" />
                                     </font>
                                 </Label>
-                                <Label fx:id="invoiceNumL" alignment="CENTER" layoutX="10.0" layoutY="10.0" onKeyReleased="#escPresss" textAlignment="CENTER" textFill="#e70303" wrapText="true">
+                                <Label fx:id="invoiceNumL" alignment="CENTER" layoutX="10.0" layoutY="10.0"  textAlignment="CENTER" textFill="#e70303" wrapText="true">
                            <font>
                               <Font name="Arial Black" size="12.0" />
                            </font></Label>

@@ -29,7 +29,6 @@ import javafx.util.Callback;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.*;
-import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class AddProducts implements Initializable {
@@ -521,8 +520,6 @@ public class AddProducts implements Initializable {
         try {
             connection = dbConnection.getConnection();
             if (null == connection) {
-                System.out.println("AddProduct : Connection Failed");
-
                 return;
             }
 

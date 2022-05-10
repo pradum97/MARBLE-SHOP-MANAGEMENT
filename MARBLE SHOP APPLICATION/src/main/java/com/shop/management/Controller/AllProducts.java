@@ -447,7 +447,6 @@ public class AllProducts implements Initializable {
 
             connection = dbconnection.getConnection();
             if (null == connection) {
-                System.out.println("MyProduct : Connection Failed");
                 return;
             }
             ps = connection.prepareStatement(query);

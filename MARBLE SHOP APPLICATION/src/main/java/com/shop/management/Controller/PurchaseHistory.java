@@ -1,9 +1,6 @@
 package com.shop.management.Controller;
 
-import com.shop.management.CustomDialog;
-import com.shop.management.Method.Method;
 import com.shop.management.Model.PurchaseHistoryModel;
-import com.shop.management.Model.StockMainModel;
 import com.shop.management.util.DBConnection;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -43,18 +40,14 @@ public class PurchaseHistory implements Initializable {
     public TextField searchTf;
     public Pagination pagination;
 
-    private Method method;
     private DBConnection dbConnection;
-    private CustomDialog customDialog;
     private FilteredList<PurchaseHistoryModel> filteredData;
 
     private ObservableList<PurchaseHistoryModel> purchaseList = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        method = new Method();
         dbConnection = new DBConnection();
-        customDialog = new CustomDialog();
         getPurchaseHistory();
     }
 
@@ -71,7 +64,6 @@ public class PurchaseHistory implements Initializable {
         try {
              connection = dbConnection.getConnection();
              if (null == connection){
-                 System.out.println("connection failed");
                  return;
              }
 

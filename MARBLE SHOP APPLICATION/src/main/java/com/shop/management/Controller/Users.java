@@ -6,7 +6,6 @@ import com.shop.management.Main;
 import com.shop.management.Method.GetUserProfile;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.UserDetails;
-import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -27,7 +26,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class Users implements Initializable {
@@ -47,8 +45,6 @@ public class Users implements Initializable {
     private DBConnection dbConnection;
     private CustomDialog customDialog;
     private Method method;
-    private Main main;
-    private int userID;
 
     ObservableList<UserDetails> userList = FXCollections.observableArrayList();
 
@@ -59,8 +55,6 @@ public class Users implements Initializable {
         method = new Method();
         dbConnection = new DBConnection();
         customDialog = new CustomDialog();
-        main = new Main();
-        userID = Login.currentlyLogin_Id;
 
         setUserData();
     }

@@ -86,7 +86,6 @@ public class ProposalMain implements Initializable {
         try {
             connection = dbConnection.getConnection();
             if (null == connection){
-                System.out.println("connection Failed");
                 return;
             }
 
@@ -444,7 +443,6 @@ public class ProposalMain implements Initializable {
 
             connection = dbConnection.getConnection();
             if (null == connection){
-                System.out.println("connection failed");
                 return;
             }
 

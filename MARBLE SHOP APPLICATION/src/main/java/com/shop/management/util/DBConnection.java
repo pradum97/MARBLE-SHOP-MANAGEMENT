@@ -23,7 +23,6 @@ public class DBConnection {
             return DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
 
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
             return null;
         }
 

@@ -49,7 +49,6 @@ public class StockReport implements Initializable {
     public Pagination pagination;
     public TextField searchTf;
 
-    private Method method;
     private DBConnection dbConnection;
     private CustomDialog customDialog;
 
@@ -62,7 +61,6 @@ public class StockReport implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        method = new Method();
         dbConnection = new DBConnection();
         customDialog = new CustomDialog();
         comboBoxConfig();
@@ -125,9 +123,7 @@ public class StockReport implements Initializable {
 
         try {
             connection = dbConnection.getConnection();
-            ;
             if (null == connection) {
-                System.out.println("connection Failed");
                 return;
             }
 
@@ -169,9 +165,8 @@ public class StockReport implements Initializable {
 
                 switch (filterBy) {
 
-                    case "ALL" -> {
-                        stockList.add(new StockMainModel(productId, stockId, quantity, productCode, type, category, size, color, fullQuantity, purchasePrice, mrp, minSellPrice));
-                    }
+                    case "ALL" ->  stockList.add(new StockMainModel(productId, stockId, quantity, productCode, type, category, size, color, fullQuantity, purchasePrice, mrp, minSellPrice));
+
                     case "Out Of Stock" -> {
                         if (quantity <= requiredQuantity) {
                             stockList.add(new StockMainModel(productId, stockId, quantity, productCode, type, category, size, color, fullQuantity, purchasePrice, mrp, minSellPrice));
@@ -256,7 +251,6 @@ public class StockReport implements Initializable {
             connection = dbConnection.getConnection();
 
             if (null == connection) {
-                System.out.println("connection failed");
                 return;
             }
 

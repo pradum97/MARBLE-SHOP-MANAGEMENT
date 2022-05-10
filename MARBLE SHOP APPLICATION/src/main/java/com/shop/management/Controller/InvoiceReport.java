@@ -54,20 +54,16 @@ public class InvoiceReport implements Initializable {
     public TableColumn<InvoiceModel, String> colInvoice;
     public TableColumn<InvoiceModel, String> colAction;
     public Pagination pagination;
-
     private Method method;
-    private CustomDialog customDialog;
     private DBConnection dbConnection;
 
     private ObservableList<InvoiceModel> invoiceList = FXCollections.observableArrayList();
     private FilteredList<InvoiceModel> filteredData;
 
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         method = new Method();
-        customDialog = new CustomDialog();
         dbConnection = new DBConnection();
 
         getSaleItem(false);
@@ -125,12 +121,10 @@ public class InvoiceReport implements Initializable {
 
             switch (sType) {
 
-                case "SUMA" -> {
-                    searchTf.setPromptText("ENTER INVOICE NUMBER");
-                }
-                case "+91" -> {
-                    searchTf.setPromptText("ENTER PHONE NUMBER");
-                }
+                case "SUMA" -> searchTf.setPromptText("ENTER INVOICE NUMBER");
+
+                case "+91" -> searchTf.setPromptText("ENTER PHONE NUMBER");
+
             }
             changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);
             searchTf.setText("");

@@ -30,7 +30,6 @@ public class TimeFromOnline {
                 return Objects.equals(onlineDate, deviceDate);
             }else { return false; }
         } catch (IOException e) {
-            System.out.println(e.getMessage());
             return false;
         }
     }
