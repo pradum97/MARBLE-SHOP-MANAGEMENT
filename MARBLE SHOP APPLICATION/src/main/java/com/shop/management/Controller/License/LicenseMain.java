@@ -30,7 +30,7 @@ public class LicenseMain implements Initializable {
     public Label dayCountL;
     public Label appIdL;
     public Label emailL;
-    public Button subscriptionStatus;
+    public Label subscriptionStatus;
     public Label startOnL;
     public Label expireL;
     public Label licenseType;
@@ -109,14 +109,13 @@ public class LicenseMain implements Initializable {
                 int checkExpireDate = currentDate.compareTo(expiresDate);
                 if (checkExpireDate > 0) {
                     // The Plan Has Expired. Please Renew The Plan!
-                    statusStyle("RED","EXPIRED");
+                    statusStyle("RED","Your license has expired. please renew the license !");
                 } else if (checkExpireDate == 0) {
                     //Today Is The Last Date Of The Plan!
-                    statusStyle("green","LAST DAY");
+                    statusStyle("green","Today is the last day of the license");
                 } else if (checkExpireDate < 0) {
                    //Plan is Running Now 😊
                     statusStyle("green","ACTIVE");
-
                 }
             }else {
                 detailsContainer.setDisable(true);
@@ -130,9 +129,9 @@ public class LicenseMain implements Initializable {
         }
     }
     private void statusStyle(String borderColor , String text) {
-        subscriptionStatus.setText(text);
-        subscriptionStatus.setStyle("-fx-border-color:"+borderColor+"; -fx-text-fill: black ;-fx-alignment: center;" +
-                "-fx-background-color: white; -fx-border-radius: 7;-fx-padding: 0 , 10 , 0 , 10");
+        subscriptionStatus.setText(text.toUpperCase());
+        subscriptionStatus.setStyle("-fx-text-fill:"+borderColor+" ;" +
+                "-fx-background-color: white; -fx-border-radius: 7;-fx-padding: 0 , 10 , 0 , 10 ; -fx-font-weight: bold;-fx-font-family: 'Arial Black'");
     }
 
     public void activateLicenseBn(ActionEvent actionEvent) {
@@ -141,6 +140,7 @@ public class LicenseMain implements Initializable {
     }
 
     private void openRenewPage(String title){
+
         int avlDays = Integer.parseInt(dayCountL.getText());
         Map<String , Object> map = new HashMap<>();
         map.put("avlDays" , avlDays);
@@ -149,6 +149,7 @@ public class LicenseMain implements Initializable {
         Main.primaryStage.setUserData(map);
 
         customDialog.showFxmlDialog2("license/renewLicense.fxml",title);
+
         getLicenseData();
     }
 }

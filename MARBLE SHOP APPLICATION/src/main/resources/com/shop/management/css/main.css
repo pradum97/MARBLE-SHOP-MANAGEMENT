@@ -16,7 +16,8 @@
     -fx-padding: 5 8 5 8;
     -fx-text-fill: blue;
     -fx-alignment: center;
-    -fx-cursor: hand
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
 }
 
 .payDues{

@@ -1,6 +1,5 @@
 package com.shop.management;
 
-import com.shop.management.Method.TableCreate;
 import com.shop.management.util.AppConfig;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -17,7 +16,6 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        new TableCreate().createLicenseTable();
         primaryStage = stage;
         Parent root = FXMLLoader.load(Objects.requireNonNull(Main.class.getResource("login.fxml")));
         stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream(AppConfig.APPLICATION_ICON))));

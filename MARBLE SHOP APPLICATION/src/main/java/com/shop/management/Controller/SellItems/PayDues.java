@@ -66,8 +66,7 @@ public class PayDues implements Initializable {
                 duesAmountTF.setText(String.valueOf(Double.valueOf(df.format(avlDues))));
             } else {
                 receivedAmountTF.setText("");
-                duesAmountTF.setText("");
-                method.show_popup("YOUR INVOICE VALUE IS : " + totalDues, receivedAmountTF);
+                method.show_popup("YOUR DUES AMOUNT IS : " + totalDues, receivedAmountTF);
             }
 
         });

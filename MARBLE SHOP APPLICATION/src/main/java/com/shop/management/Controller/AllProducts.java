@@ -295,8 +295,8 @@ public class AllProducts implements Initializable {
                     deleteBn.setGraphic(deleteIc);
 
                     deleteBn.setVisible(Objects.equals(Login.currentRoleName.toLowerCase(), "admin".toLowerCase()));
-                    editBn.setStyle("-fx-cursor: hand ; -fx-background-color: blue ; -fx-background-radius: 2 ");
-                    deleteBn.setStyle("-fx-cursor: hand ; -fx-background-color: red ; -fx-background-radius: 2");
+                    editBn.setStyle("-fx-cursor: hand ; -fx-background-color: blue ; -fx-background-radius: 3 ");
+                    deleteBn.setStyle("-fx-cursor: hand ; -fx-background-color: red ; -fx-background-radius: 3 ");
 
                     editBn.setOnMouseClicked((MouseEvent event) -> {
                         selectTable(getIndex());
@@ -373,8 +373,7 @@ public class AllProducts implements Initializable {
 
                     bnCheckPrice.setMinWidth(100);
 
-                    bnCheckPrice.setStyle("-fx-background-color: #008080; -fx-background-radius: 3 ; " +
-                            "-fx-padding: 5 8 5 8 ; -fx-text-fill: white; -fx-alignment: center;-fx-cursor: hand");
+                    bnCheckPrice.getStyleClass().add("checkItem");
 
 
                     bnCheckPrice.setOnMouseClicked(event -> {

@@ -367,8 +367,8 @@ public class SaleReport implements Initializable {
                         bnPayDues.setVisible(true);
                     }
 
-                    bnPayDues.getStyleClass().add("checkItem");
-                    bnDuesHistory.getStyleClass().add("payDues");
+                    bnPayDues.getStyleClass().add("payDues");
+                    bnDuesHistory.getStyleClass().add("checkItem");
 
                     bnPayDues.setMinWidth(90);
                     bnDuesHistory.setMinWidth(130);

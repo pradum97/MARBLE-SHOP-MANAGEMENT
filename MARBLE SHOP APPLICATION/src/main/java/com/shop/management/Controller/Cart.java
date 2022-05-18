@@ -247,8 +247,8 @@ public class Cart implements Initializable {
                     "        td.discount_id , td.discount_name,td.discount,tpt.hsn_sac  ,\n" +
                     "        tpt.tax_id ,tpt.sgst,tpt.cgst,tpt.igst,tpt.gstName,(tc.sellprice * tc.quantity)  amount_asPer_mrp,\n" +
                     "        ((tc.sellprice * tc.quantity)*td.discount/100)as discountAmount,\n" +
-                    "       ((((tc.sellprice * tc.quantity)-((tc.sellprice * tc.quantity)*td.discount/100))*100)/(100+(tpt.sgst+tpt.cgst+tpt.igst))) as taxable,\n" +
-                    "       (((((tc.sellprice * tc.quantity)-((tc.sellprice * tc.quantity)*td.discount/100))*100)/(100+(tpt.sgst+tpt.cgst+tpt.igst))*(tpt.sgst+tpt.cgst+tpt.igst))/100) as gstAmount\n" +
+                    "        ((((tc.sellprice * tc.quantity)-coalesce(((tc.sellprice * tc.quantity)*td.discount/100),0))*100)/(100+(tpt.sgst+tpt.cgst+tpt.igst))) as taxable,\n" +
+                    "        (((((tc.sellprice * tc.quantity)-coalesce(((tc.sellprice * tc.quantity)*td.discount/100),0))*100)/(100+(tpt.sgst+tpt.cgst+tpt.igst))*(tpt.sgst+tpt.cgst+tpt.igst))/100) as gstAmount\n" +
                     "FROM   tbl_cart as tc\n" +
                     "           LEFT JOIN tbl_products as tp ON (tc.product_id = tp.product_id)\n" +
                     "           LEFT JOIN tbl_product_stock as tps ON tc.stock_id = tps.stock_id\n" +

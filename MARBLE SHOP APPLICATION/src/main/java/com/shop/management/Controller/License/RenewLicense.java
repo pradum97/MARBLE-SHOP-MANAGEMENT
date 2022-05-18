@@ -37,8 +37,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class RenewLicense implements Initializable {
-    private final String RENEW_URL = "http://localhost/LicenseManagerAPI/renewLicense.php";
-    private final String UPDATE_DATE_URL = "http://localhost/LicenseManagerAPI/update/updateSerialKey.php";
+    private final String RENEW_URL = "http://techwhizer.in/licenseApi/renewLicense.php";
+    private final String UPDATE_DATE_URL = "http://techwhizer.in/licenseApi/update/updateSerialKey.php";
     private final String RENEW = "renew";
     private final String APP_LINK = "appLink";
     private final String pattern = "dd-MM-yyyy";
@@ -96,8 +96,7 @@ public class RenewLicense implements Initializable {
         } finally {
             DBConnection.closeConnection(connection, ps, rs);
         }
-    }
-    public void activateBn(ActionEvent actionEvent) {
+    }public void activateBn(ActionEvent actionEvent) {
 
         String applicationId = applicationIdTf.getText().replaceAll(" ", "");
         String serialKey = serialKeyTf.getText().replaceAll(" ", "");
@@ -107,7 +106,7 @@ public class RenewLicense implements Initializable {
             method.show_popup("Please Enter Application Id", applicationIdTf);
             return;
         } else if (serialKey.isEmpty()) {
-            method.show_popup("Please Enter 12 Digits Serial Key", serialKeyTf);
+            method.show_popup("Please Enter Serial Key", serialKeyTf);
             return;
 
         }

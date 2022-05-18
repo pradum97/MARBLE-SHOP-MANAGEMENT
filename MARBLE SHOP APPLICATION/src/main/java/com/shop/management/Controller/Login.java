@@ -4,6 +4,7 @@ import com.shop.management.CustomDialog;
 import com.shop.management.Main;
 import com.shop.management.Method.GetUserProfile;
 import com.shop.management.Method.Method;
+import com.shop.management.Method.TableCreate;
 import com.shop.management.Model.UserDetails;
 import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
@@ -43,6 +44,7 @@ public class Login implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        new TableCreate().createLicenseTable();
         main = new Main();
         method = new Method();
         customDialog = new CustomDialog();
@@ -152,8 +154,6 @@ public class Login implements Initializable {
 
         PreparedStatement ps = null;
         ResultSet rs = null;
-
-
 
         String inputValue = email_f.getText();
         String password = password_f.getText();

@@ -327,9 +327,7 @@ public class SaleProduct implements Initializable {
                     Label bnCheckPrice = new Label("CHECK PRICE");
                     Label bnAddCart = new Label("➕ ADD TO CART");
 
-
-                    bnCheckPrice.setStyle("-fx-background-color: #008080; -fx-background-radius: 20  ; " +
-                            "-fx-padding: 5 11 5 11 ; -fx-text-fill: white; -fx-alignment: center;-fx-cursor: hand");
+                    bnCheckPrice.getStyleClass().add("checkItem");
                     bnAddCart.setStyle("-fx-background-color: #625603;" +
                             "-fx-padding: 5 15 5 15 ; -fx-background-radius: 30; -fx-text-fill: white; " +
                             "-fx-alignment: center;-fx-cursor: hand");

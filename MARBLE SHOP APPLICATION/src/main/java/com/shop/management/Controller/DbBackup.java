@@ -37,7 +37,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class DbBackup implements Initializable {
-    final String BACKUP_URL = "http://localhost/LicenseManagerAPI/backup.php";
+    final String BACKUP_URL = "http://techwhizer.in/licenseApi/backup.php";
     public Label backupDateL;
     public Label lastBackupL;
     public Label msgLabel;
@@ -95,7 +95,6 @@ public class DbBackup implements Initializable {
 
 
     private void setLabelData() {
-
         backupDateL.setText(new SimpleDateFormat("dd-MM-yyyy").format(new Date()));
 
         final String FIRST_REGEX = "backup_";
@@ -106,7 +105,10 @@ public class DbBackup implements Initializable {
         String[] list = dir.list((dir1, name) -> name.toLowerCase().endsWith(LAST_REGEX));
 
         List<String> strDateList = new ArrayList<>();
-        assert list != null;
+
+        if (null == list){
+            return;
+        }
         for (String s : list) {
             strDateList.add(s.replaceAll(FIRST_REGEX, "").replaceAll(LAST_REGEX, ""));
         }

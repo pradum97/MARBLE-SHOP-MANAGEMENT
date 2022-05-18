@@ -45,7 +45,6 @@ public class StockReport implements Initializable {
     public TableColumn<StockMainModel, String> colStockStatus;
     public TableColumn<StockMainModel, String> colProductColor;
     public Label totalItemL;
-    public Label outStockItemL;
     public Pagination pagination;
     public TextField searchTf;
 
@@ -159,9 +158,6 @@ public class StockReport implements Initializable {
                 String size = rs.getString("size");
                 String color = rs.getString("product_color");
 
-                if (quantity < 1) {
-                    totOutOfStock++;
-                }
 
                 switch (filterBy) {
 
@@ -176,7 +172,6 @@ public class StockReport implements Initializable {
                                 changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);
                             }
                         }
-
                     }
                     case "LOW" -> {
 
@@ -221,8 +216,6 @@ public class StockReport implements Initializable {
                 pagination.setVisible(true);
                 search_Item();
             }
-
-            outStockItemL.setText(String.valueOf(totOutOfStock));
 
 
         } catch (SQLException e) {
@@ -349,6 +342,7 @@ public class StockReport implements Initializable {
     }
 
     private void setOptionalCells() {
+        final int[] count = {1};
 
         Callback<TableColumn<StockMainModel, String>, TableCell<StockMainModel, String>>
                 cellFactory = (TableColumn<StockMainModel, String> param) -> new TableCell<>() {
@@ -379,6 +373,7 @@ public class StockReport implements Initializable {
                             "-fx-text-fill: white;-fx-background-radius: 5 ; -fx-cursor: hand");
                     if (quantity <= requiredQuantity ) {
                         status.setText("Out Of Stock");
+
                         setStatusStyle(status, "#a90606");
 
                     } else if (quantity >= requiredQuantity && quantity <= lowQuantity) {
