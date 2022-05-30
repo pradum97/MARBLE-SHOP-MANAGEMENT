@@ -2,7 +2,6 @@ package com.shop.management;
 
 import com.shop.management.Controller.Login;
 import com.shop.management.Method.GetUserProfile;
-import com.shop.management.Method.Method;
 import com.shop.management.Model.UserDetails;
 import com.shop.management.util.AppConfig;
 import com.shop.management.util.DBConnection;
@@ -115,7 +114,7 @@ public class Dashboard implements Initializable {
 
     private void onClickAction(MenuItem appearance, Menu product, MenuItem gst, MenuItem discount, MenuItem licence,
                                MenuItem shopData, MenuItem category, MenuItem profile, MenuItem users, MenuItem stockControl,
-                               MenuItem supplier, MenuItem purchaseHistory, MenuItem customer, MenuItem backup) {
+                               MenuItem supplier, MenuItem purchaseHistory, MenuItem customer, MenuItem backup, MenuItem color) {
 
         appearance.setOnAction(event -> customDialog.showFxmlDialog2("setting/appearance.fxml", "APPEARANCE"));
         discount.setOnAction(event -> {
@@ -136,6 +135,7 @@ public class Dashboard implements Initializable {
         customer.setOnAction(event -> customDialog.showFxmlFullDialog("setting/customer.fxml", "ALL CUSTOMER"));
         shopData.setOnAction(event -> customDialog.showFxmlDialog2("shopDetails.fxml", ""));
         category.setOnAction(event -> customDialog.showFxmlDialog2("category.fxml", "CATEGORY"));
+        color.setOnAction(event -> customDialog.showFxmlDialog2("colorMain.fxml", "ALL COLOR"));
         users.setOnAction(event -> {
             customDialog.showFxmlFullDialog("dashboard/users.fxml", "ALL USERS");
 
@@ -313,14 +313,15 @@ public class Dashboard implements Initializable {
                                 MenuItem category = new MenuItem("CATEGORY");
                                 MenuItem gst = new MenuItem("GST");
                                 MenuItem discount = new MenuItem("DISCOUNT");
-                                product.getItems().addAll(category, gst, discount);
+                                MenuItem color = new MenuItem("COLOR");
+                                product.getItems().addAll(category, gst, discount , color);
 
                                 // product --  end
 
                                 menu_button.getItems().addAll(gen, product, profile, users, shopData, purchaseHistory, customer, myLicense,backup);
 
                                 onClickAction(appearance, product, gst, discount, myLicense, shopData, category,
-                                        profile, users, stockControl, supplier, purchaseHistory, customer,backup);
+                                        profile, users, stockControl, supplier, purchaseHistory, customer,backup,color);
 
 
                                 ImageView icon = new ImageView();

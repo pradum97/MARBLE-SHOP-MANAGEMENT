@@ -112,7 +112,6 @@ public class Cart implements Initializable {
         comboBoxConfig();
         textFieldConfig();
         gstContainer.managedProperty().bind(gstContainer.visibleProperty());
-
     }
 
     private void textFieldConfig() {
@@ -562,6 +561,7 @@ public class Cart implements Initializable {
 
                 if (stage.isShowing()) {
                     stage.close();
+                    Main.primaryStage.setUserData(true);
                 }
                 refresh();
             }

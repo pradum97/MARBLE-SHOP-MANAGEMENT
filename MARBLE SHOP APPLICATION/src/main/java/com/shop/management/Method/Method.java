@@ -19,6 +19,32 @@ import java.sql.SQLException;
 
 public class Method extends StaticData {
 
+    public final static int PER_PACKET_PCS = 6;
+
+    public ObservableList<String> getProductColor() {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        ObservableList<String> colorList = FXCollections.observableArrayList();
+
+        try {
+            connection = new DBConnection().getConnection();
+            String query = "select color_name from tbl_color";
+            ps = connection.prepareStatement(query);
+
+            rs = ps.executeQuery();
+            while (rs.next()){
+                String colorName = rs.getString("color_name");
+                colorList.add(colorName);
+            }
+            return colorList;
+        } catch (SQLException e) {
+            return FXCollections.observableArrayList("Color Not Available!");
+        }finally {
+            DBConnection.closeConnection(connection , ps,rs);
+        }
+    }
+
     public ObservableList<Role> getRole(){
 
         Connection connection = null;

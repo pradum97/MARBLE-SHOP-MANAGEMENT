@@ -16,11 +16,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -47,7 +49,6 @@ public class LicenseMain implements Initializable {
         detailsContainer.setDisable(true);
         getLicenseData();
     }
-
     private void setCalenderImage() {
         Image image = new ImageLoader().loadWithSize("img/icon/calender.png");
         BackgroundImage myBI = new BackgroundImage(image,
@@ -92,21 +93,22 @@ public class LicenseMain implements Initializable {
                 expireL.setText(expiresDate);
 
                 String pattern = "dd-MM-yyyy";
-                SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+                SimpleDateFormat sdformat = new SimpleDateFormat(pattern);
                 DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(pattern);
-                LocalDate currentD= LocalDate.now();
-                String currentDate = dateFormat.format(currentD);
 
-                LocalDate c = LocalDate.parse(currentDate,dateFormat);
-                LocalDate e =  LocalDate.parse(expiresDate,dateFormat);
+                Date currentDate = sdformat.parse(sdformat.format(new Date()));
+                Date expires_Date = sdformat.parse(expiresDate);
 
-                long days = ChronoUnit.DAYS.between(c, e);
+                long days = ChronoUnit.DAYS.between(LocalDate.parse(dateFormat.format(LocalDate.now()),dateFormat),
+                        LocalDate.parse(expiresDate,dateFormat));
 
                 if (days < 0){
                     days = 0;
                 }
                 dayCountL.setText(String.valueOf(days));
-                int checkExpireDate = currentDate.compareTo(expiresDate);
+
+                int checkExpireDate = currentDate.compareTo(expires_Date);
+
                 if (checkExpireDate > 0) {
                     // The Plan Has Expired. Please Renew The Plan!
                     statusStyle("RED","Your license has expired. please renew the license !");
@@ -122,9 +124,9 @@ public class LicenseMain implements Initializable {
                 activateLicenseContainer.setVisible(true);
 
             }
-        } catch (SQLException e) {
+        } catch (SQLException | ParseException e) {
             throw new RuntimeException(e);
-        }finally {
+        } finally {
             DBConnection.closeConnection(connection , ps,rs);
         }
     }

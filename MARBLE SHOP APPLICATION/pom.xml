@@ -23,13 +23,12 @@
     </properties>
 
     <dependencies>
-
         <!--Enter New dependency-->
 
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.3.3</version>
+            <version>42.3.4</version>
         </dependency>
 
         <dependency>
@@ -41,7 +40,7 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpmime</artifactId>
-            <version>4.3.1</version>
+            <version>4.5.13</version>
         </dependency>
 
         <dependency>
@@ -50,7 +49,6 @@
             <version>20220320</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.controlsfx/controlsfx -->
         <dependency>
             <groupId>org.controlsfx</groupId>
             <artifactId>controlsfx</artifactId>
@@ -61,25 +59,25 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-web</artifactId>
-            <version>17.0.2</version>
+            <version>18.0.1</version>
         </dependency>
 
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>17.0.2</version>
+            <version>18.0.1</version>
         </dependency>
 
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
-            <version>17.0.2</version>
+            <version>18.0.1</version>
         </dependency>
 
         <dependency>
             <groupId>net.synedra</groupId>
             <artifactId>validatorfx</artifactId>
-            <version>0.2.1</version>
+            <version>0.3.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.openjfx</groupId>

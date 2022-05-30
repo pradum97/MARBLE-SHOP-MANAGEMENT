@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.SellItems.SelectSize">
+<BorderPane xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.SellItems.SelectSize">
    <center>
       <HBox>
           <children>
@@ -19,7 +19,7 @@
                       <TableColumn fx:id="colPurchasePrice" editable="false" minWidth="90.0" sortable="false" text="PUR PRICE" />
                       <TableColumn fx:id="colMrp" editable="false" minWidth="90.0" sortable="false" text="MRP" />
                       <TableColumn fx:id="colMinSellPrice" editable="false" minWidth="90.0" sortable="false" text="MIN-SELL" />
-                      <TableColumn fx:id="colQuantity" editable="false" minWidth="100.0" sortable="false" text="QUANTITY" />
+                      <TableColumn fx:id="colQuantity" editable="false" minWidth="170.0" sortable="false" text="QUANTITY" />
                       <TableColumn fx:id="colAction" editable="false" minWidth="130.0" sortable="false" text="ACTION" />
       
                   </columns>

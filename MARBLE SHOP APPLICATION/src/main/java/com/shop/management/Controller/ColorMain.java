@@ -4,7 +4,7 @@ import com.shop.management.CustomDialog;
 import com.shop.management.ImageLoader;
 import com.shop.management.Main;
 import com.shop.management.Method.Method;
-import com.shop.management.Model.CategoryModel;
+import com.shop.management.Model.ColorModel;
 import com.shop.management.util.DBConnection;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -32,21 +32,21 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-public class Category implements Initializable
+public class ColorMain implements Initializable
 {
-
+    
     private int rowsPerPage = 8;
     public Pagination pagination;
-    public TextField categoryNameTF;
-    public TableView<CategoryModel> tableView;
-    public TableColumn<CategoryModel , String> colCName;
-    public TableColumn<CategoryModel , String> colAction;
-    public TableColumn<CategoryModel,Integer> colSrNo;
+    public TextField colorNameTF;
+    public TableView<ColorModel> tableView;
+    public TableColumn<ColorModel , String> colCName;
+    public TableColumn<ColorModel , String> colAction;
+    public TableColumn<ColorModel,Integer> colSrNo;
     private Method method;
     private DBConnection dbConnection;
     private CustomDialog customDialog;
 
-    private ObservableList<CategoryModel> categoryList = FXCollections.observableArrayList();
+    private ObservableList<ColorModel> colorList = FXCollections.observableArrayList();
 
 
     @Override
@@ -55,15 +55,15 @@ public class Category implements Initializable
         dbConnection = new DBConnection();
         customDialog = new CustomDialog();
 
-        getCategory();
+        getColor();
 
-        categoryNameTF.setFocusTraversable(false);
+        colorNameTF.setFocusTraversable(false);
     }
 
-    private void getCategory() {
+    private void getColor() {
 
-        if (null != categoryList){
-            categoryList.clear();
+        if (null != colorList){
+            colorList.clear();
         }
 
         Connection connection = null;
@@ -76,17 +76,17 @@ public class Category implements Initializable
                 return;
             }
 
-            ps = connection.prepareStatement("SELECT * FROM tbl_category order by category_id asc");
+            ps = connection.prepareStatement("SELECT * FROM tbl_color order by color_id asc");
             rs = ps.executeQuery();
 
             while (rs.next()){
-                int categoryId = rs.getInt("category_id");
-                String categoryName = rs.getString("category_name");
+                int colorId = rs.getInt("color_id");
+                String colorName = rs.getString("color_name");
 
-                categoryList.add(new CategoryModel(categoryId , categoryName));
+                colorList.add(new ColorModel(colorId , colorName));
             }
 
-            if (categoryList.size()>0){
+            if (colorList.size()>0){
                 pagination.setVisible(true);
                 pagination.setCurrentPageIndex(0);
                 changeTableView(0, rowsPerPage);
@@ -103,12 +103,12 @@ public class Category implements Initializable
         }
     }
 
-    public void addCategory(ActionEvent event) {
+    public void addColor(ActionEvent event) {
 
-        String cName = categoryNameTF.getText();
+        String cName = colorNameTF.getText();
 
         if (cName.isEmpty()){
-            method.show_popup("ENTER CATEGORY NAME",categoryNameTF);
+            method.show_popup("ENTER COLOR NAME",colorNameTF);
             return;
         }
 
@@ -116,20 +116,22 @@ public class Category implements Initializable
         PreparedStatement ps = null;
 
         try {
-            connection = dbConnection.getConnection();;
+            connection = dbConnection.getConnection();
             if (null == dbConnection){
                 return;
             }
 
-            ps = connection.prepareStatement("INSERT INTO tbl_category(CATEGORY_NAME) VALUES (?)");
+            ps = connection.prepareStatement("insert into tbl_color(color_name) VALUES (?)");
             ps.setString(1,cName);
 
             int res = ps.executeUpdate();
 
             if (res >0){
-                getCategory();
-                categoryNameTF.setText("");
+                getColor();
+                colorNameTF.setText("");
             }
+
+
 
         } catch (SQLException e) {
             customDialog.showAlertBox("Failed...","DUPLICATE VALUE NOT ALLOW");
@@ -140,15 +142,15 @@ public class Category implements Initializable
 
     private void changeTableView(int index, int limit) {
 
-        int totalPage = (int) (Math.ceil(categoryList.size() * 1.0 / rowsPerPage));
+        int totalPage = (int) (Math.ceil(colorList.size() * 1.0 / rowsPerPage));
         pagination.setPageCount(totalPage);
 
         colSrNo.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(
                 tableView.getItems().indexOf(cellData.getValue()) + 1));
-        colCName.setCellValueFactory(new PropertyValueFactory<>("categoryName"));
+        colCName.setCellValueFactory(new PropertyValueFactory<>("colorName"));
 
-        Callback<TableColumn<CategoryModel, String>, TableCell<CategoryModel, String>>
-                cellFactory = (TableColumn<CategoryModel, String> param) -> new TableCell<>() {
+        Callback<TableColumn<ColorModel, String>, TableCell<ColorModel, String>>
+                cellFactory = (TableColumn<ColorModel, String> param) -> new TableCell<>() {
             @Override
             public void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
@@ -190,36 +192,36 @@ public class Category implements Initializable
                     iv_delete.setOnMouseClicked((MouseEvent event) -> {
 
 
-                        CategoryModel categoryModel = tableView.
+                        ColorModel colorModel = tableView.
                                 getSelectionModel().getSelectedItem();
 
-                        if (null == categoryModel) {
+                        if (null == colorModel) {
                             method.show_popup("Please Select", tableView);
                             return;
                         }
 
 
-                        deleteProduct(categoryModel);
+                        deleteProduct(colorModel);
 
                     });
-                    ivEdit.setOnMouseClicked((MouseEvent event) -> {
+                  /*  ivEdit.setOnMouseClicked((MouseEvent event) -> {
 
 
-                        CategoryModel categoryModel = tableView.
+                        ColorModel ColorModel = tableView.
                                 getSelectionModel().getSelectedItem();
 
-                        if (null == categoryModel) {
+                        if (null == ColorModel) {
                             method.show_popup("Please Select", tableView);
                             return;
                         }
 
-                        Main.primaryStage.setUserData(categoryModel);
+                        Main.primaryStage.setUserData(ColorModel);
                         customDialog.showFxmlDialog("update/categoryUpdate.fxml","UPDATE CATEGORY");
-                        getCategory();
+                        getColor();
 
-                    });
+                    });*/
 
-                    HBox managebtn = new HBox(ivEdit , iv_delete);
+                    HBox managebtn = new HBox( iv_delete);
 
                     managebtn.setStyle("-fx-alignment:center");
                     HBox.setMargin(ivEdit, new Insets(0, 3, 0, 20));
@@ -238,23 +240,23 @@ public class Category implements Initializable
         colAction.setCellFactory(cellFactory);
 
         int fromIndex = index * limit;
-        int toIndex = Math.min(fromIndex + limit, categoryList.size());
+        int toIndex = Math.min(fromIndex + limit, colorList.size());
 
-        int minIndex = Math.min(toIndex, categoryList.size());
-        SortedList<CategoryModel> sortedData = new SortedList<>(
-                FXCollections.observableArrayList(categoryList.subList(Math.min(fromIndex, minIndex), minIndex)));
+        int minIndex = Math.min(toIndex, colorList.size());
+        SortedList<ColorModel> sortedData = new SortedList<>(
+                FXCollections.observableArrayList(colorList.subList(Math.min(fromIndex, minIndex), minIndex)));
         sortedData.comparatorProperty().bind(tableView.comparatorProperty());
 
         tableView.setItems(sortedData);
 
     }
 
-    private void deleteProduct(CategoryModel categoryModel) {
+    private void deleteProduct(ColorModel colorModel) {
 
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Warning ");
-        alert.setHeaderText("Are You Sure You Want to Delete This Category ( " + categoryModel.getCategoryName() + " )");
+        alert.setHeaderText("Are You Sure You Want to Delete This Category ( " + colorModel.getColorName() + " )");
         alert.initModality(Modality.APPLICATION_MODAL);
         alert.initOwner(Main.primaryStage);
         Optional<ButtonType> result = alert.showAndWait();
@@ -270,13 +272,13 @@ public class Category implements Initializable
                     return;
                 }
 
-                ps = con.prepareStatement("DELETE FROM tbl_category WHERE category_id = ?");
-                ps.setInt(1, categoryModel.getCategoryId());
+                ps = con.prepareStatement("DELETE FROM tbl_color WHERE color_id = ?");
+                ps.setInt(1, colorModel.getColorId());
 
                 int res = ps.executeUpdate();
 
                 if (res > 0) {
-                    getCategory();
+                    getColor();
                     changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);
                     customDialog.showAlertBox("", "Successfully Deleted");
                     alert.close();
@@ -300,7 +302,8 @@ public class Category implements Initializable
 
         if (event.getCode() == KeyCode.ENTER){
 
-            addCategory(null);
+            addColor(null);
         }
     }
+
 }

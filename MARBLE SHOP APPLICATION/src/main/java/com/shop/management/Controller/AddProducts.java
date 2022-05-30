@@ -13,6 +13,7 @@ import com.shop.management.util.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -68,7 +69,6 @@ public class AddProducts implements Initializable {
     private Method method;
     private CustomDialog customDialog;
     private DBConnection dbConnection;
-    private Connection connection;
 
     ObservableList<ProductSize> sizeList = FXCollections.observableArrayList();
     ObservableList<Discount> discountList = FXCollections.observableArrayList();
@@ -83,19 +83,27 @@ public class AddProducts implements Initializable {
         method = new Method();
         customDialog = new CustomDialog();
         dbConnection = new DBConnection();
-        connection = new DBConnection().getConnection();
-
-        if (null == connection) {
-            customDialog.showAlertBox("Failed", "Connection Failed");
-            return;
-        }
 
         setComboBoxData();
-        setDiscount();
         textChangeListener();
 
-    }
+        productDiscount.setOnMouseClicked(mouseEvent -> {
+           if (discountList.isEmpty()){
+               setDiscount();
+           }
+        });
+        productTax.setOnMouseClicked(mouseEvent -> {
+           if (taxList.isEmpty()){
+               setTax();
+           }
+        });
 
+        productCategory.setOnMouseClicked(mouseEvent -> {
+            if (categoryList.isEmpty()){
+                getCategory();
+            }
+        });
+    }
     private void textChangeListener() {
 
         productDiscount.setOnMouseClicked(event -> {
@@ -135,46 +143,18 @@ public class AddProducts implements Initializable {
 
     private void setComboBoxData() {
 
-        productColor.setItems(method.getProductColor());
+        productColor.setOnMouseClicked(mouseEvent -> {
+            productColor.setItems(method.getProductColor());
+        });
+
         productType.setItems(method.getProductType());
         productSizeUnit.setItems(method.getSizeUnit());
         productQuantityUnit.setItems(method.getSizeQuantityUnit());
 
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-            connection = dbConnection.getConnection();
-
-            if (null == connection) {
-                return;
-            }
-
-            ps = connection.prepareStatement("SELECT * FROM tbl_category");
-
-            rs = ps.executeQuery();
-
-            while (rs.next()) {
-                int categoryId = rs.getInt("category_id");
-                String cName = rs.getString("category_name");
-
-                categoryList.add(new CategoryModel(categoryId, cName));
-
-            }
-
-            productCategory.setItems(categoryList);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            DBConnection.closeConnection(connection, ps, rs);
-        }
 
     }
 
     public void submit_bn(ActionEvent event) {
-
         submit();
     }
 
@@ -361,16 +341,53 @@ public class AddProducts implements Initializable {
         productQuantityUnit.getSelectionModel().clearSelection();
     }
 
+    private void getCategory(){
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        if (null != categoryList){
+            categoryList.clear();
+        }
+
+        try {
+            connection = dbConnection.getConnection();
+
+            if (null == connection) {
+                return;
+            }
+
+            ps = connection.prepareStatement("SELECT * FROM tbl_category");
+
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                int categoryId = rs.getInt("category_id");
+                String cName = rs.getString("category_name");
+
+                categoryList.add(new CategoryModel(categoryId, cName));
+
+            }
+            productCategory.setItems(categoryList);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DBConnection.closeConnection(connection, ps, rs);
+        }
+    }
     private void setDiscount() {
 
         if (null != discountList) {
             discountList.clear();
         }
 
+        Connection connection = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
 
         try {
+            connection = dbConnection.getConnection();
             ps = connection.prepareStatement(new PropertiesLoader().getReadProp().getProperty("GET_DISCOUNT"));
             rs = ps.executeQuery();
 
@@ -382,9 +399,7 @@ public class AddProducts implements Initializable {
                 discountList.addAll(new Discount(discountID, discountName, discount, description));
 
             }
-
             productDiscount.setItems(discountList);
-            setTax();
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -399,10 +414,12 @@ public class AddProducts implements Initializable {
             taxList.clear();
         }
 
+        Connection connection = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
 
         try {
+            connection = dbConnection.getConnection();
 
             ps = connection.prepareStatement(new PropertiesLoader().getReadProp().getProperty("GET_TAX"));
             rs = ps.executeQuery();

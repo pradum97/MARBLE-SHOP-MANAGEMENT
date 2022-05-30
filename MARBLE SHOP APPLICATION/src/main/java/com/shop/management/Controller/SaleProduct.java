@@ -36,8 +36,7 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class SaleProduct implements Initializable {
-    int rowsPerPage = 15;
-
+    int rowsPerPage = 1;
     public TableColumn<Products, String> colColor;
     public TableColumn<Products, Integer> colSrNo;
     public TableColumn<Products, String> colProductName;
@@ -57,7 +56,6 @@ public class SaleProduct implements Initializable {
 
     private DBConnection dbconnection;
     private CustomDialog customDialog;
-
     private ObservableList<Products> productsList = FXCollections.observableArrayList();
     FilteredList<Products> filteredData;
     @Override
@@ -66,15 +64,11 @@ public class SaleProduct implements Initializable {
         dbconnection = new DBConnection();
         customDialog = new CustomDialog();
         getProduct();
-
     }
-
     private void getProduct() {
-
 
         if (null != productsList) {
             productsList.clear();
-
         }
 
         Connection connection = null;
@@ -157,7 +151,6 @@ public class SaleProduct implements Initializable {
         }
 
     }
-
     private void customColumn(TableColumn<Products, String> columnName) {
 
         columnName.setCellFactory(tc -> {
@@ -182,6 +175,7 @@ public class SaleProduct implements Initializable {
 
     public void bnViewCart(MouseEvent event) {
         try {
+            Main.primaryStage.setUserData(false);
             Stage stage = new Stage();
             Parent parent = FXMLLoader.load(Objects.requireNonNull(CustomDialog.class.getResource("dashboard/cart.fxml")));
             stage.getIcons().add(new ImageLoader().load(AppConfig.APPLICATION_ICON));
@@ -197,7 +191,11 @@ public class SaleProduct implements Initializable {
             e.printStackTrace();
         }
         countCart();
-        bnRefresh(null);
+
+        boolean isSuccess = (boolean) Main.primaryStage.getUserData();
+        if (isSuccess){
+            bnRefresh(null);
+        }
     }
 
     private void countCart() {
@@ -337,13 +335,9 @@ public class SaleProduct implements Initializable {
 
                         if (null != products) {
                             Main.primaryStage.setUserData(products);
-
                             customDialog.showFxmlDialog("sellItems/selectSize.fxml", "Select Size");
-
                             countCart();
-
                         }
-
                     });
 
                     bnCheckPrice.setOnMouseClicked(event -> {

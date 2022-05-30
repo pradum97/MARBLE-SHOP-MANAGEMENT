@@ -24,7 +24,6 @@ public class GetStockData {
         try {
 
             connection = new DBConnection().getConnection();
-
             if (null == connection) {
                 return null;
             }
@@ -35,6 +34,7 @@ public class GetStockData {
             rs = ps.executeQuery();
 
             while (rs.next()) {
+                String fullQuantity;
 
                 int stockID = rs.getInt("stock_id");
                 int productId = rs.getInt("product_id");
@@ -51,8 +51,17 @@ public class GetStockData {
                 String sizeUnit = rs.getString("size_unit");
                 String quantityUnit = rs.getString("quantity_unit");
 
+                if (quantityUnit.equals("PCS")){
 
-                String fullQuantity = quantity+" - "+quantityUnit;
+                    int pkt = quantity / Method.PER_PACKET_PCS;
+                    int pcs = quantity % Method.PER_PACKET_PCS;
+
+                    fullQuantity = pkt+" - PKT , " + pcs+" - PCS";
+                }else {
+                    fullQuantity = quantity+" - "+quantityUnit;
+                }
+
+
 
                 BigDecimal h = BigDecimal.valueOf(height);
                 BigDecimal w = BigDecimal.valueOf(width);

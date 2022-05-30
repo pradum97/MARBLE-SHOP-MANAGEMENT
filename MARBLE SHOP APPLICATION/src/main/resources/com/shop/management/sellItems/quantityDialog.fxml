@@ -13,18 +13,18 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="500.0" style="-fx-background-color: transparent; -fx-border-color: #838385" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.SellItems.QuantityDialog">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="500.0" style="-fx-background-color: white; -fx-border-color: #838385;" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.SellItems.QuantityDialog">
    <center>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <VBox onKeyReleased="#enterPress" prefHeight="200.0" prefWidth="100.0" spacing="6.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <VBox onKeyReleased="#enterPress" prefHeight="200.0" prefWidth="100.0" spacing="2.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 
                <children>
                   <HBox alignment="CENTER_LEFT" onKeyReleased="#enterPress">
                      <children>
                         <Label onKeyReleased="#enterPress" text="SIZE :  ">
                            <font>
-                              <Font size="15.0" />
+                              <Font name="Arial Bold" size="13.0" />
                            </font>
                            <HBox.margin>
                               <Insets left="20.0" />
@@ -44,7 +44,7 @@
                      <children>
                         <Label text="PURCHASE PRICE  : ">
                            <font>
-                              <Font size="15.0" />
+                              <Font name="Arial Bold" size="13.0" />
                            </font>
                            <HBox.margin>
                               <Insets left="20.0" />
@@ -64,7 +64,7 @@
                      <children>
                         <Label onKeyReleased="#enterPress" text="MRP :  ">
                            <font>
-                              <Font size="15.0" />
+                              <Font name="Arial Bold" size="13.0" />
                            </font>
                            <HBox.margin>
                               <Insets left="20.0" />
@@ -84,7 +84,7 @@
                      <children>
                         <Label text="MINIMUM SELLING PRICE :  ">
                            <font>
-                              <Font size="15.0" />
+                              <Font name="Arial Bold" size="13.0" />
                            </font>
                            <HBox.margin>
                               <Insets left="20.0" />
@@ -104,17 +104,48 @@
                      <children>
                         <Label text=" AVAILABLE QUANTITY  :  ">
                            <font>
-                              <Font size="15.0" />
+                              <Font name="Arial Bold" size="13.0" />
                            </font>
                            <HBox.margin>
                               <Insets left="20.0" />
                            </HBox.margin>
                         </Label>
-                        <Label fx:id="quantity_L" layoutX="35.0" layoutY="15.0">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                        </Label>
+                        <VBox style="-fx-border-color: gray; -fx-border-radius: 2;">
+                           <children>
+                              <Label fx:id="quantity_L">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                                 </padding>
+                              </Label>
+                              <Separator />
+                              <HBox alignment="CENTER">
+                                 <children>
+                                    <Label text="IN PCS : ">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                       <padding>
+                                          <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                                       </padding>
+                                    </Label>
+                                    <Label fx:id="avl_in_pcs" layoutX="10.0" layoutY="10.0">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </HBox>
+                           </children>
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                           <padding>
+                              <Insets bottom="3.0" left="5.0" right="5.0" top="3.0" />
+                           </padding>
+                        </VBox>
                      </children>
                      <padding>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -142,20 +173,33 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </padding>
                      <children>
-                        <VBox spacing="5.0">
+                        <VBox alignment="CENTER" spacing="5.0">
                            <children>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="QUANTITY :" />
-                              <TextField fx:id="quantityTf" minHeight="37.0" prefWidth="200.0" promptText="ENTER QUANTITY :" style="-fx-border-color: gray; -fx-border-radius: 3 0 3 3;" />
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="QUANTITY :" textAlignment="RIGHT" wrappingWidth="104.69690322875977">
+                                       <font>
+                                          <Font name="System Bold" size="12.0" />
+                                       </font>
+                                    </Text>
+                                    <HBox>
+                                       <children>
+                                          <TextField fx:id="quantityTf" minHeight="37.0" prefWidth="200.0" promptText="ENTER QUANTITY " style="-fx-border-color: black;">
+                                             <HBox.margin>
+                                                <Insets left="1.0" />
+                                             </HBox.margin></TextField>
+                                          <ComboBox fx:id="quantityUnit" prefHeight="37.0" prefWidth="85.0" style="-fx-border-color: black;" />
+                                       </children>
+                                       <HBox.margin>
+                                          <Insets left="10.0" />
+                                       </HBox.margin>
+                                    </HBox>
+                                 </children>
+                              </HBox>
                            </children>
                            <HBox.margin>
                               <Insets left="20.0" />
                            </HBox.margin>
-                        </VBox>
-                        <VBox layoutX="35.0" layoutY="15.0" spacing="5.0">
-                           <children>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" />
-                              <ComboBox fx:id="quantityUnit" prefHeight="37.0" prefWidth="85.0" style="-fx-border-color: gray; -fx-border-radius: 3 3 3 0;" />
-                           </children>
                         </VBox>
                      </children>
                   </HBox>
@@ -166,8 +210,24 @@
                      <children>
                         <HBox alignment="CENTER_LEFT">
                            <children>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 15;" text="SELLING PRICE : " />
-                              <TextField fx:id="sellingPriceTf" minHeight="37.0" prefWidth="180.0" promptText="ENTER SELLING PRICE : " style="-fx-border-color: gray; -fx-border-radius: 3;" />
+                              <Label text="SELLING PRICE : ">
+                                 <font>
+                                    <Font name="Arial Bold" size="13.0" />
+                                 </font>
+                              </Label>
+                              <HBox>
+                                 <HBox.margin>
+                                    <Insets left="5.0" />
+                                 </HBox.margin>
+                                 <children>
+                                    <TextField fx:id="sellingPriceTf" minHeight="37.0" prefWidth="200.0" promptText="ENTER SELLING PRICE " style="-fx-border-color: black;" />
+                                    <Label alignment="CENTER" minHeight="37.0" prefWidth="85.0" style="-fx-border-color: BLACK;" text="INR" textAlignment="CENTER">
+                                       <font>
+                                          <Font name="Arial Black" size="15.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </HBox>
                            </children>
                            <HBox.margin>
                               <Insets left="20.0" />
@@ -190,7 +250,7 @@
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </padding>
          <children>
-            <Button mnemonicParsing="false" onAction="#cancel" onKeyReleased="#enterPress" prefHeight="27.0" prefWidth="88.0" style="-fx-background-color: RED; -fx-text-fill: WHITE; -fx-background-radius: 2; -fx-cursor: hand;" text="CANCEL" textAlignment="CENTER">
+            <Button mnemonicParsing="false" onAction="#cancel" onKeyReleased="#enterPress" prefHeight="27.0" prefWidth="88.0" style="-fx-background-color: RED; -fx-text-fill: WHITE; -fx-cursor: hand; -fx-background-radius: 1;" text="CANCEL" textAlignment="CENTER">
                <HBox.margin>
                   <Insets right="20.0" />
                </HBox.margin>
@@ -201,7 +261,7 @@
                   <Font name="Arial Black" size="12.0" />
                </font>
             </Button>
-            <Button fx:id="bnAddCart" layoutX="241.0" layoutY="15.0" mnemonicParsing="false" onAction="#bnAddToCart" onKeyReleased="#enterPress" style="-fx-background-color: #625603; -fx-text-fill: WHITE;                     -fx-background-radius: 5; -fx-cursor: hand;" textAlignment="CENTER">
+            <Button fx:id="bnAddCart" layoutX="241.0" layoutY="15.0" mnemonicParsing="false" onAction="#bnAddToCart" onKeyReleased="#enterPress" style="-fx-background-color: #625603; -fx-text-fill: WHITE; -fx-cursor: hand; -fx-background-radius: 1;" textAlignment="CENTER">
                <padding>
                   <Insets bottom="5.0" left="8.0" right="8.0" top="5.0" />
                </padding>
@@ -211,8 +271,39 @@
             </Button>
          </children>
          <BorderPane.margin>
-            <Insets bottom="10.0" />
+            <Insets bottom="10.0" top="40.0" />
          </BorderPane.margin>
       </HBox>
    </bottom>
+   <top>
+      <VBox BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets top="10.0" />
+         </BorderPane.margin>
+         <children>
+            <HBox alignment="CENTER">
+               <children>
+                  <Label text="Required Quantity : " textFill="#8e0505">
+                     <font>
+                        <Font name="Arial Black" size="12.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="requiredQty" layoutX="194.0" layoutY="10.0" textFill="#8e0505">
+                     <font>
+                        <Font name="Arial Black" size="12.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+            </HBox>
+            <Separator prefWidth="200.0">
+               <VBox.margin>
+                  <Insets top="12.0" />
+               </VBox.margin>
+            </Separator>
+         </children>
+      </VBox>
+   </top>
 </BorderPane>

@@ -3,10 +3,13 @@ package com.shop.management.Controller.SellItems;
 import com.shop.management.CustomDialog;
 import com.shop.management.Main;
 import com.shop.management.Method.Method;
+import com.shop.management.Method.StaticData;
 import com.shop.management.Model.Quantity;
 import com.shop.management.Model.Stock;
 import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -40,13 +43,13 @@ public class QuantityDialog implements Initializable {
     public TextField sellingPriceTf;
     public HBox sellPriceContainer;
     public Button bnAddCart;
-    public Label errorL;
+    public Label errorL ,requiredQty,avl_in_pcs;
     private Stock stock;
     private Method method;
     private DBConnection dbConnection;
     private int stock_id;
     private int requiredQuantity;
-    private long avlQty;
+    private int avlQty;
     private Properties  propUpdate , propRead;
     private final static String UPDATE_QUANTITY = "UPDATE QUANTITY";
     private final static String ADD_CART = "➕ ADD TO CART";
@@ -98,9 +101,7 @@ public class QuantityDialog implements Initializable {
 
                 quantityUnit.getItems().add(rs.getString("quantity_unit"));
                 quantityUnit.getSelectionModel().selectFirst();
-
                 double sellingPrice = rs.getDouble("sellprice");
-
                 BigDecimal sell_price = BigDecimal.valueOf(sellingPrice);
 
 
@@ -114,9 +115,12 @@ public class QuantityDialog implements Initializable {
                 errorL.managedProperty().bind(errorL.visibleProperty());
                 BigDecimal mrp = BigDecimal.valueOf(stock.getProductMRP());
                 sellingPriceTf.setText(mrp.stripTrailingZeros().toPlainString());
-
-                quantityUnit.getItems().add(stock.getQuantityUnit());
-                quantityUnit.getSelectionModel().selectFirst();
+                quantityUnit.setItems(new StaticData().getSizeQuantityUnit());
+                if (avlQty<6){
+                    quantityUnit.getSelectionModel().select(0);
+                }else {
+                    quantityUnit.getSelectionModel().select(1);
+                }
 
                 bnAddCart.setText(ADD_CART);
             }
@@ -135,10 +139,33 @@ public class QuantityDialog implements Initializable {
         purchasePrice.setText(stock.getPurchasePrice() + inr);
         productMrp.setText(stock.getProductMRP() + inr);
         minSellingPrice.setText(stock.getMinSellingPrice() + inr);
+        requiredQty.setText(requiredQuantity + " PCS");
 
-        avlQty = (stock.getQuantity()-requiredQuantity);
+        String qtyUnit = stock.getQuantityUnit();
 
-        quantity_L.setText(avlQty+"-"+stock.getFullQuantity().split(" - ")[1]+" ( Tot Avl : "+stock.getQuantity()+" - Required : "+requiredQuantity+" )");
+        if (qtyUnit.equals("PKT")){
+
+            int p = stock.getQuantity()*Method.PER_PACKET_PCS;
+            avlQty = p-requiredQuantity;
+            qtyUnit = "PCS";
+        }else {
+            avlQty = stock.getQuantity()-requiredQuantity;
+        }
+
+        avl_in_pcs.setText(avlQty+" - PCS");
+
+        String fullQuantity;
+
+        if (qtyUnit.equals("PCS")){
+
+            int pkt = avlQty / Method.PER_PACKET_PCS;
+            int pcs = avlQty % Method.PER_PACKET_PCS;
+
+            fullQuantity = pkt+" - PKT , " + pcs+" - PCS";
+        }else {
+            fullQuantity = avlQty+" - "+qtyUnit;
+        }
+        quantity_L.setText(fullQuantity);
     }
 
     public void bnAddToCart(ActionEvent event) {
@@ -154,9 +181,12 @@ public class QuantityDialog implements Initializable {
             method.show_popup("ENTER QUANTITY", quantityTf);
             return;
         }
-
         try {
-            quantity = Long.parseLong(quan.replaceAll("[^0-9.]", ""));
+            if (quantity_Unit.equals("PKT")){
+                quantity = Long.parseLong(quan.replaceAll("[^0-9.]", ""))*Method.PER_PACKET_PCS;
+            }else {
+                quantity = Long.parseLong(quan.replaceAll("[^0-9.]", ""));
+            }
 
         } catch (NumberFormatException e) {
             method.show_popup("ENTER VALID QUANTITY", quantityUnit);
@@ -195,28 +225,29 @@ public class QuantityDialog implements Initializable {
 
                     switch (bnAddCart.getText()) {
                         case UPDATE_QUANTITY -> {
-
                             updateQuantity(quantity, quantity_Unit, sellingPrice);
                         }
                         case ADD_CART -> {
-
                             addToCart(quantity, quantity_Unit, sellingPrice);
-
                         }
                     }
-
                 } else {
-
                     method.show_popup("PLEASE ENTER LESS THEN " + stock.getProductMRP() + " OR " + stock.getProductMRP() + " RS.", sellingPriceTf);
                 }
             } else {
-
                 method.show_popup("PLEASE ENTER MORE THAN " + stock.getMinSellingPrice() + " RS.", sellingPriceTf);
             }
 
         } else {
+            String msg ;
 
-            method.show_popup("QUANTITY NOT AVAILABLE! Tot Avl : "+avlQty+"-"+stock.getFullQuantity().split(" - ")[1], quantityTf);
+            if (quantity_Unit.equals("PKT")){
+               msg = quantity_L.getText();
+            }else {
+                msg = avl_in_pcs.getText();
+            }
+
+            method.show_popup("QUANTITY NOT AVAILABLE! Tot Avl : "+msg, quantityTf);
         }
     }
 
@@ -229,21 +260,15 @@ public class QuantityDialog implements Initializable {
 
         try {
             connection = dbConnection.getConnection();
-
             if (null == connection) {
                 return;
             }
-
             ps = connection.prepareStatement(propRead.getProperty("READ_STOCK_CONTROL"));
             rs = ps.executeQuery();
-
             if (rs.next()) {
-
                 requiredQuantity = rs.getInt("REQUIRED");
                 setDefaultValue();
             }
-
-
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -304,7 +329,6 @@ public class QuantityDialog implements Initializable {
 
         if (e.getCode() == KeyCode.ENTER) {
             //do something
-
             bnAddToCart(null);
         }
     }

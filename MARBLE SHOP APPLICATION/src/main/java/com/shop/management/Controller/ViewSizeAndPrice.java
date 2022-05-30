@@ -59,7 +59,6 @@ public class ViewSizeAndPrice implements Initializable {
             setTableData(products.getProductID());
         }
     }
-
     private void setTableData(int productID) {
 
         stockList = new GetStockData().getStockList(productID);
@@ -222,7 +221,6 @@ public class ViewSizeAndPrice implements Initializable {
         customDialog.showFxmlDialog2("addSize.fxml", "ADD NEW SIZE");
         setTableData(products.getProductID());
     }
-
     public void cancel(ActionEvent event) {
 
         Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();

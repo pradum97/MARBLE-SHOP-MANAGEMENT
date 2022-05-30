@@ -429,3 +429,13 @@ CREATE TABLE IF NOT EXISTS TBL_LICENSE
     LICENSE_PERIOD_DAYS INTEGER      NOT NULL,
     REGISTERED_EMAIL    VARCHAR(100) NOT NULL
 );
+
+CREATE TABLE TBL_COLOR(
+    COLOR_ID SERIAL PRIMARY KEY ,
+    COLOR_NAME VARCHAR(100) NOT NULL
+);
+insert into tbl_color(color_name)
+            values ('White'),('Dark grey'),('Blue'),
+                   ('Brown'),('Black'),('Gold'),('Orange'),('Red'),
+                   ('Green'),('Black porcelain'),('Multicolour'),('Other');
+

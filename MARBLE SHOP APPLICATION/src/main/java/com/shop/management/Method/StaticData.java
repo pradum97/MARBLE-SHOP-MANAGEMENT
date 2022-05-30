@@ -45,12 +45,6 @@ public class StaticData {
 
         return FXCollections.observableArrayList("PCS", "PKT");
     }
-    public ObservableList<String> getProductColor() {
-
-        return FXCollections.observableArrayList("White", "Dark grey","Blue" ,"Brown"
-                ,"Black" ,"Gold " ,"Orange" , "Red" ,"Green", "Black porcelain","Multicolour" , "Other");
-
-    }
     public ObservableList<String> getAccountStatus() {
 
         return FXCollections.observableArrayList("Inactive","Active" );

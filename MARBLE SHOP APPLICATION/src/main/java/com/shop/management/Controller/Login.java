@@ -4,7 +4,6 @@ import com.shop.management.CustomDialog;
 import com.shop.management.Main;
 import com.shop.management.Method.GetUserProfile;
 import com.shop.management.Method.Method;
-import com.shop.management.Method.TableCreate;
 import com.shop.management.Model.UserDetails;
 import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
@@ -44,7 +43,6 @@ public class Login implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        new TableCreate().createLicenseTable();
         main = new Main();
         method = new Method();
         customDialog = new CustomDialog();
@@ -52,7 +50,6 @@ public class Login implements Initializable {
         PropertiesLoader propLoader = new PropertiesLoader();
         propRead = propLoader.getReadProp();
     }
-
     @FXML
     public void forget_password_bn(ActionEvent event) {
         customDialog.showFxmlDialog("dashboard/forgotPassword.fxml", "Forgot Password");
@@ -61,7 +58,7 @@ public class Login implements Initializable {
     public void login_bn(ActionEvent event) {
        startLogin();
     }
-    private void getProfileDetails(ResultSet rs , PreparedStatement ps) throws SQLException {
+    private void getProfileDetails(ResultSet rs , PreparedStatement ps){
 
         getLicenseData(rs , ps);
     }
@@ -95,47 +92,47 @@ public class Login implements Initializable {
 
     private void getLicenseData(ResultSet rsProfile, PreparedStatement psProfile) {
 
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+            Connection connection = null;
+            PreparedStatement ps = null;
+            ResultSet rs = null;
 
-        try {
-            connection = new DBConnection().getConnection();
-            if (null == connection){
-                return;
-            }
-
-            String query = "select expires_on from tbl_license";
-            ps = connection.prepareStatement(query);
-            rs = ps.executeQuery();
-
-            if (rs.next()){
-
-                String pattern = "dd-MM-yyyy";
-                SimpleDateFormat sdformat = new SimpleDateFormat(pattern);
-
-
-                Date currentDate = sdformat.parse(sdformat.format(new Date()));
-                Date expiresDate = sdformat.parse(rs.getString("expires_on"));
-
-                int checkExpireDate = currentDate.compareTo(expiresDate);
-
-                if (checkExpireDate > 0) {
-                    customDialog.showFxmlDialog2("license/licenseMain.fxml","");
-                }else {
-                    openDashboard(rsProfile, psProfile);
+            try {
+                connection = new DBConnection().getConnection();
+                if (null == connection) {
+                    return;
                 }
-            }else {
-                customDialog.showFxmlDialog2("license/licenseMain.fxml","");
-            }
-        } catch (SQLException | ParseException e) {
-            throw new RuntimeException(e);
-        } finally {
-            DBConnection.closeConnection(connection , ps,rs);
-        }
 
+                String query = "select expires_on from tbl_license";
+                ps = connection.prepareStatement(query);
+                rs = ps.executeQuery();
+
+                if (rs.next()) {
+
+                    String pattern = "dd-MM-yyyy";
+                    SimpleDateFormat sdformat = new SimpleDateFormat(pattern);
+
+
+                    Date currentDate = sdformat.parse(sdformat.format(new Date()));
+                    Date expiresDate = sdformat.parse(rs.getString("expires_on"));
+
+                    int checkExpireDate = currentDate.compareTo(expiresDate);
+
+                    if (checkExpireDate > 0) {
+                        customDialog.showFxmlDialog2("license/licenseMain.fxml", "");
+                    } else {
+                        openDashboard(rsProfile, psProfile);
+                    }
+                } else {
+                    customDialog.showFxmlDialog2("license/licenseMain.fxml", "");
+                }
+            } catch (SQLException | ParseException e) {
+                throw new RuntimeException(e);
+            } finally {
+                DBConnection.closeConnection(connection, ps, rs);
+            }
 
     }
+
     public void create_new_account(ActionEvent event) {
         Main.primaryStage.setUserData("newUser");
         main.changeScene("signup.fxml", "Signup Here");
