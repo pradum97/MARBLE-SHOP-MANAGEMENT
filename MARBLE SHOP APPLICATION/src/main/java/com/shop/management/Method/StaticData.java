@@ -1,6 +1,5 @@
 package com.shop.management.Method;
 
-import com.shop.management.ImageLoader;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 

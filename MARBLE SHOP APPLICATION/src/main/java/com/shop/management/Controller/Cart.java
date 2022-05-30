@@ -27,6 +27,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import org.controlsfx.dialog.ProgressDialog;
 
 import java.net.URL;
 import java.sql.*;
@@ -65,18 +66,18 @@ public class Cart implements Initializable {
     private Method method;
     private CustomDialog customDialog;
     private static String invoiceNumber;
-
     // container
     public HBox paidAmountContainer;
     public VBox paymentModeContainer;
 
     private ObservableList<CartModel> cartList = FXCollections.observableArrayList();
 
-    double totalPayableD = 0;
-    double subTotAmount = 0;
-    double discountPrice = 0;
-    double gstPrice = 0;
-    double totTaxable = 0;
+    private double totalPayableD = 0;
+    private double subTotAmount = 0;
+    private double discountPrice = 0;
+    private double gstPrice = 0;
+    private double totTaxable = 0;
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -235,8 +236,6 @@ public class Cart implements Initializable {
             connection = dbconnection.getConnection();
 
             if (null == connection) {
-
-                System.out.println("connection Failed");
                 return;
             }
 
@@ -248,8 +247,8 @@ public class Cart implements Initializable {
                     "        td.discount_id , td.discount_name,td.discount,tpt.hsn_sac  ,\n" +
                     "        tpt.tax_id ,tpt.sgst,tpt.cgst,tpt.igst,tpt.gstName,(tc.sellprice * tc.quantity)  amount_asPer_mrp,\n" +
                     "        ((tc.sellprice * tc.quantity)*td.discount/100)as discountAmount,\n" +
-                    "       ((((tc.sellprice * tc.quantity)-((tc.sellprice * tc.quantity)*td.discount/100))*100)/(100+(tpt.sgst+tpt.cgst+tpt.igst))) as taxable,\n" +
-                    "       (((((tc.sellprice * tc.quantity)-((tc.sellprice * tc.quantity)*td.discount/100))*100)/(100+(tpt.sgst+tpt.cgst+tpt.igst))*(tpt.sgst+tpt.cgst+tpt.igst))/100) as gstAmount\n" +
+                    "        ((((tc.sellprice * tc.quantity)-coalesce(((tc.sellprice * tc.quantity)*td.discount/100),0))*100)/(100+(tpt.sgst+tpt.cgst+tpt.igst))) as taxable,\n" +
+                    "        (((((tc.sellprice * tc.quantity)-coalesce(((tc.sellprice * tc.quantity)*td.discount/100),0))*100)/(100+(tpt.sgst+tpt.cgst+tpt.igst))*(tpt.sgst+tpt.cgst+tpt.igst))/100) as gstAmount\n" +
                     "FROM   tbl_cart as tc\n" +
                     "           LEFT JOIN tbl_products as tp ON (tc.product_id = tp.product_id)\n" +
                     "           LEFT JOIN tbl_product_stock as tps ON tc.stock_id = tps.stock_id\n" +
@@ -574,7 +573,10 @@ public class Cart implements Initializable {
 
             DBConnection.closeConnection(con, null, null);
             try {
-                ps.close();
+                if (null != ps){
+                    ps.close();
+                }
+
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -588,21 +590,36 @@ public class Cart implements Initializable {
 
     public void checkOutBn(ActionEvent event) {
 
+
         if (cartList.size() < 1) {
             customDialog.showAlertBox("NOT AVAILABLE", "ITEM NOT AVAILABLE PLEASE ADD AT LEAST ONE ITEM");
             return;
         }
+        double totalPayable = Double.parseDouble(totalPayAbleL.getText());
         String billType = billingTypeC.getSelectionModel().getSelectedItem();
 
         if (billType.equals("PROPOSAL")) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("billType", billType);
+            map.put("gstAmount", gstPrice);
+            map.put("totalPayable", totalPayable);
+            map.put("dues", duesAmountTF.getText());
+            map.put("paidAmount", receivedAmountTF.getText());
+            Main.primaryStage.setUserData(map);
             customDialog.showFxmlDialog2("sellItems/customerDetails.fxml", "ENTER CUSTOMER DETAILS");
-            CustomerModel customer = null;
+
+            Map<String, Object> receiveMap;
             try {
-                customer = (CustomerModel) Main.primaryStage.getUserData();
+                receiveMap = (Map<String, Object>) Main.primaryStage.getUserData();
             } catch (ClassCastException ignored) {
                 return;
             }
 
+            if (null == receiveMap.get("customerId")) {
+                return;
+            }
+
+            int customerId = (int) receiveMap.get("customerId");
             Connection connection = null;
             PreparedStatement ps = null;
             ResultSet rs = null;
@@ -610,13 +627,13 @@ public class Cart implements Initializable {
             try {
                 connection = dbconnection.getConnection();
                 if (null == connection) {
-                    System.out.println("connection Failed");
                     return;
                 }
                 String query = "INSERT INTO PROPOSAL_MAIN (CUSTOMER_ID, SELLER_ID , invoice_num) VALUES (?, ? , ?)";
 
                 ps = connection.prepareStatement(query, new String[]{"proposal_main_id"});
-                ps.setInt(1, customer.getCustomerId());
+
+                ps.setInt(1, customerId);
                 ps.setInt(2, Login.currentlyLogin_Id);
                 ps.setString(3, generateProposalInvoiceNum());
 
@@ -632,7 +649,6 @@ public class Cart implements Initializable {
 
                         String itemsQuery = "INSERT INTO PROPOSAL_ITEMS (PROPOSAL_MAIN_ID, PRODUCT_ID, SELLPrice, STOCK_ID, QUANTITY, QUANTITY_UNIT) VALUES (?, ?, ?, ?, ?, ?)";
                         for (CartModel cm : cartList) {
-
                             ps = connection.prepareStatement(itemsQuery);
                             ps.setInt(1, proposalMainId);
                             ps.setInt(2, cm.getProductId());
@@ -640,15 +656,11 @@ public class Cart implements Initializable {
                             ps.setInt(4, cm.getProductStockID());
                             ps.setInt(5, cm.getQuantity());
                             ps.setString(6, cm.getQuantityUnit());
-
                             res = ps.executeUpdate();
                         }
                         if (res > 0) {
-                            deleteAll(event);
-                            customDialog.showAlertBox("", "SUCCESSFUL");
-                            // generate Proposal Item
-                            System.out.println(customer.getCustomerId());
                             new GenerateInvoice().proposalInvoice(proposalMainId);
+                            deleteAll(event);
                         }
                     }
                 }
@@ -680,7 +692,7 @@ public class Cart implements Initializable {
             } else if (addDiscTF.getText().isEmpty()) {
                 addDiscTF.setText(String.valueOf(0));
             }
-            double totalPayable = Double.parseDouble(totalPayAbleL.getText());
+
             Map<String, Object> map = new HashMap<>();
             map.put("billType", billType);
             map.put("gstAmount", gstPrice);
@@ -696,14 +708,13 @@ public class Cart implements Initializable {
                 return;
             }
 
-            if (null == receiveMap.get("customerId")){
+            if (null == receiveMap.get("customerId")) {
                 return;
             }
 
             int customerId = (int) receiveMap.get("customerId");
 
             if (customerId < 0) {
-                System.out.println("customer not found");
                 return;
             }
 
@@ -717,12 +728,10 @@ public class Cart implements Initializable {
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
-
                 }
             }
         }
     }
-
     private void addSaleItem(int customerId, String billingType,
                              double receivedAmountD, ActionEvent event, Map<String, Object> receiveMap) throws SQLException {
 
@@ -733,7 +742,7 @@ public class Cart implements Initializable {
         }
 
         String paytmModeS = paymentModeC.getSelectionModel().getSelectedItem();
-        double duesAmtD = 0 , paidAmount = 0;
+        double duesAmtD = 0, paidAmount = 0;
         double totalDisAmtD = discountPrice + additionalDisc;
         double totalTaxAmtD = gstPrice;
         double invoiceValue = 0;
@@ -742,7 +751,7 @@ public class Cart implements Initializable {
             if ((Boolean) receiveMap.get("isGstClaimed")) {
                 invoiceValue = (Double) receiveMap.get("totalPayable");
                 duesAmtD = (Double) receiveMap.get("avlDues");
-                paidAmount = (Double)receiveMap.get("paidAmount");
+                paidAmount = (Double) receiveMap.get("paidAmount");
 
             } else {
                 invoiceValue = Double.parseDouble(totalPayAbleL.getText());
@@ -765,7 +774,6 @@ public class Cart implements Initializable {
         int res = 0;
 
         connection = dbconnection.getConnection();
-        connection.setAutoCommit(false);
 
         double addiDisc = 0;
         try {
@@ -870,43 +878,36 @@ public class Cart implements Initializable {
                             ps1.setInt(2, model.getProductStockID());
                             res = ps1.executeUpdate();
                         }
-
                     }
                     if (res > 0) {
 
-                        connection.commit();
                         addDiscTF.setText(String.valueOf(0));
                         deleteAll(event);
 
                         switch (billingType) {
-
                             case "REGULAR" -> new GenerateInvoice().regularInvoice(sale_main_id, false, null);
-
                             case "GST" -> {
-
                                 if (null != receiveMap.get("isGstClaimed")) {
-
                                     if ((Boolean) receiveMap.get("isGstClaimed")) {
                                         new GenerateInvoice().gstClaimedInvoice(sale_main_id, false, null);
                                     } else {
                                         new GenerateInvoice().gstInvoice(sale_main_id, false, null);
                                     }
-
                                 } else {
                                     new GenerateInvoice().gstInvoice(sale_main_id, false, null);
                                 }
                             }
                         }
                     }
-
                 }
             }
         } catch (SQLException e) {
             customDialog.showAlertBox("ERROR", "Failed to Sale !");
-            connection.rollback();
+
             e.printStackTrace();
         } finally {
             DBConnection.closeConnection(connection, ps, null);
+
 
             if (null != rsMain) {
                 rsMain.close();

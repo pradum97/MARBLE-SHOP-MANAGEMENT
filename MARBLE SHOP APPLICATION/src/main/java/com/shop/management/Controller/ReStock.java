@@ -125,7 +125,6 @@ public class ReStock implements Initializable {
 
                 connection = dbConnection.getConnection();
                 if (null == connection) {
-                    System.out.println("connection failed");
                     return;
                 }
 
@@ -174,7 +173,6 @@ public class ReStock implements Initializable {
 
             connection = dbConnection.getConnection();
             if (null == connection) {
-                System.out.println("connection failed");
                 return;
             }
 
@@ -317,7 +315,6 @@ public class ReStock implements Initializable {
             connection = dbConnection.getConnection();
 
             if (null == connection){
-                System.out.println("connection failed");
                 return;
             }
 

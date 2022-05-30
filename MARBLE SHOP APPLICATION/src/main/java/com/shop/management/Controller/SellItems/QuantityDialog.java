@@ -43,12 +43,11 @@ public class QuantityDialog implements Initializable {
     public Label errorL;
     private Stock stock;
     private Method method;
-    private CustomDialog customDialog;
     private DBConnection dbConnection;
     private int stock_id;
     private int requiredQuantity;
     private long avlQty;
-    private Properties propInsert , propDelete , propUpdate , propRead;
+    private Properties  propUpdate , propRead;
     private final static String UPDATE_QUANTITY = "UPDATE QUANTITY";
     private final static String ADD_CART = "➕ ADD TO CART";
     @Override
@@ -56,17 +55,14 @@ public class QuantityDialog implements Initializable {
 
         stock = (Stock) Main.primaryStage.getUserData();
         PropertiesLoader propLoader = new PropertiesLoader();
-        propDelete = propLoader.getDeleteProp();
         propUpdate = propLoader.getUpdateProp();
         propRead = propLoader.getReadProp();
-        propInsert = propLoader.getInsertProp();
 
         if (null == stock) {
             return;
         }
 
         method = new Method();
-        customDialog = new CustomDialog();
         dbConnection = new DBConnection();
 
         getStockSetting();
@@ -82,7 +78,6 @@ public class QuantityDialog implements Initializable {
         try {
             connection = dbConnection.getConnection();
             if (null == connection) {
-                System.out.println("connection failed");
                 return;
             }
 
@@ -236,7 +231,6 @@ public class QuantityDialog implements Initializable {
             connection = dbConnection.getConnection();
 
             if (null == connection) {
-                System.out.println("connection failed");
                 return;
             }
 
@@ -267,7 +261,6 @@ public class QuantityDialog implements Initializable {
         try {
             connection = dbConnection.getConnection();
             if (null == connection) {
-                System.out.println("connection failed");
                 return;
             }
 

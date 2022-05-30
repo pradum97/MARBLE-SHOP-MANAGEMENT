@@ -24,7 +24,6 @@ public class CategoryUpdate implements Initializable {
     private  CategoryModel categoryModel;
     private Method method;
     private DBConnection dbConnection;
-    private CustomDialog customDialog;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -32,7 +31,6 @@ public class CategoryUpdate implements Initializable {
          categoryModel = (CategoryModel) Main.primaryStage.getUserData();
         method = new Method();
         dbConnection = new DBConnection();
-        customDialog = new CustomDialog();
 
          if (null == categoryModel){
              return;
@@ -86,7 +84,6 @@ public class CategoryUpdate implements Initializable {
             }
 
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
         }finally {
             DBConnection.closeConnection(connection,ps,null);
         }

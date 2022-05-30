@@ -73,7 +73,6 @@ public class ReturnHistory implements Initializable {
         try {
             connection = dbConnection.getConnection();
             if (null == connection) {
-                System.out.println("connection Failed");
                 return;
             }
             String query = propRead.getProperty("GET_ALL_RETURN_ITEMS");
@@ -102,9 +101,11 @@ public class ReturnHistory implements Initializable {
 
             }
 
-            if (returnList.size() > 0) {
-                pagination.setVisible(true);
-                search_Item();
+            if (null != returnList){
+                if (returnList.size() > 0) {
+                    pagination.setVisible(true);
+                    search_Item();
+                }
             }
 
         } catch (SQLException e) {
@@ -220,7 +221,6 @@ public class ReturnHistory implements Initializable {
                     bnCheckItem.setOnMouseClicked(event -> {
                         ReturnMainModel rmm = tableView.getSelectionModel().getSelectedItem();
                         if (null == tableView) {
-                            System.out.println("Items Not Found");
                             return;
                         }
 
@@ -235,7 +235,6 @@ public class ReturnHistory implements Initializable {
 
                     HBox container = new HBox(bnCheckItem);
                     container.setStyle("-fx-alignment:center");
-                    //   HBox.setMargin(bnCheckItem, new Insets(2, 20, 2, 20));
                     setGraphic(container);
 
                     setText(null);

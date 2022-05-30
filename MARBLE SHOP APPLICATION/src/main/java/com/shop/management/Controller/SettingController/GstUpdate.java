@@ -7,13 +7,11 @@ import com.shop.management.Model.TAX;
 import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -73,7 +71,6 @@ public class GstUpdate implements Initializable {
         });*/
 
     }
-
 
     public void updateTax(ActionEvent event) {
 
@@ -235,9 +232,13 @@ public class GstUpdate implements Initializable {
             ps = connection.prepareStatement(query);
             ps.setInt(1,value);
 
-         System.out.println(   rs = ps.executeQuery());
+            rs = ps.executeQuery();
 
-            return rs.next();
+            if(rs.next()){
+                if(tax.getHsn_sac() != rs.getLong("hsn_sac")){  return true; }else { return false; }
+            }else {
+                return false;
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();

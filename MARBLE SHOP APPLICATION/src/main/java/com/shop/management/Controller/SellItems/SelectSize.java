@@ -39,7 +39,6 @@ public class SelectSize implements Initializable {
     public TableColumn<Stock, String> colQuantity;
     public TableColumn<Stock, String> colAction;
     public TableView<Stock> tableView;
-    private Method method;
     private CustomDialog customDialog;
     private DBConnection dbConnection;
     private Products products;
@@ -51,7 +50,6 @@ public class SelectSize implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        method = new Method();
         customDialog = new CustomDialog();
         dbConnection = new DBConnection();
         PropertiesLoader propLoader = new PropertiesLoader();
@@ -77,7 +75,6 @@ public class SelectSize implements Initializable {
             connection = dbConnection.getConnection();
 
             if (null == connection) {
-                System.out.println("connection failed");
                 return;
             }
 
@@ -180,7 +177,6 @@ public class SelectSize implements Initializable {
             connection = dbConnection.getConnection();
 
             if (null == connection) {
-                System.out.println("Select Size : Connection Failed");
                 return;
             }
 
@@ -195,8 +191,6 @@ public class SelectSize implements Initializable {
             int res = ps.executeUpdate();
 
             if (res > 0) {
-
-                System.out.println("success");
                 refreshCartItemCount();
             }
 

@@ -11,6 +11,11 @@ module com.shop.management {
     requires jasperreports;
     requires java.desktop;
     requires javafx.web;
+    requires org.json;
+    requires httpmime;
+    requires httpcore;
+    requires httpclient;
+
 
 
     exports com.shop.management;
@@ -34,4 +39,6 @@ module com.shop.management {
     opens com.shop.management.Controller.ReturnItems to javafx.fxml;
     exports com.shop.management.Controller.Proposal;
     opens com.shop.management.Controller.Proposal to javafx.fxml;
+    exports com.shop.management.Controller.License;
+    opens com.shop.management.Controller.License to javafx.fxml;
 }

@@ -20,14 +20,14 @@
          <children>
             <TableView fx:id="tableView" HBox.hgrow="ALWAYS">
               <columns>
-                  <TableColumn fx:id="colAction" editable="false" minWidth="-Infinity" sortable="false" text="#" />
+                  <TableColumn fx:id="colAction" editable="false" minWidth="100" sortable="false" text="#" />
                 <TableColumn fx:id="colSrNo" editable="false" maxWidth="60.0" minWidth="60.0" sortable="false" text="SrNo" />
                 <TableColumn fx:id="colCname" editable="false" maxWidth="250" minWidth="200.0" sortable="false" text="CUSTOMER NAME" />
                   <TableColumn fx:id="colPhone" editable="false" maxWidth="130" minWidth="130.0" sortable="false" text="PHONE" />
                   <TableColumn fx:id="cAddress" editable="false" maxWidth="250" minWidth="220" sortable="false" text="ADDRESS" />
                   <TableColumn fx:id="cInvoice" editable="false" maxWidth="150" minWidth="150.0" sortable="false" text="INVOICE NUM" />
                   <TableColumn fx:id="cDate" editable="false" maxWidth="140" minWidth="100.0" sortable="false" text="DATE" />
-                  <TableColumn fx:id="colItems" editable="false" minWidth="250" sortable="false" text="ITEMS" />
+                  <TableColumn fx:id="colItems" editable="false" minWidth="230" sortable="false" text="ITEMS" />
               </columns>
                <columnResizePolicy>
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

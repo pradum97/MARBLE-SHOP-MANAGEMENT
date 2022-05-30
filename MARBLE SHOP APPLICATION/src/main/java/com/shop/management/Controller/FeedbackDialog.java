@@ -1,12 +1,10 @@
 package com.shop.management.Controller;
 
 import com.shop.management.CustomDialog;
-import com.shop.management.Main;
-import com.shop.management.Model.Feedback;
+import com.shop.management.Method.Method;
 import com.shop.management.PropertiesLoader;
 import com.shop.management.util.AppConfig;
 import com.shop.management.util.DBConnection;
-import com.shop.management.Method.Method;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -16,15 +14,12 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.stage.Stage;
 import org.controlsfx.control.Rating;
 
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Objects;
-import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -113,7 +108,6 @@ public class FeedbackDialog implements Initializable {
             con = dbConnection.getConnection();
 
             if (null == con) {
-                System.out.println("connection Faield");
                 return;
             }
             ps = con.prepareStatement(new PropertiesLoader().getReadProp().getProperty("FEEDBACK"));

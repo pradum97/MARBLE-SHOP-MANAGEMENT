@@ -33,12 +33,10 @@ public class ShopDetails implements Initializable {
     public Label updateBn;
 
     private DBConnection dbConnection;
-    private Method method;
     private CustomDialog customDialog;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        method = new Method();
         dbConnection = new DBConnection();
         customDialog = new CustomDialog();
 

@@ -96,7 +96,6 @@ public class SaleReport implements Initializable {
         try {
             connection = dbConnection.getConnection();
             if (null == connection) {
-                System.out.println("home : Connection failed");
                 return;
             }
 
@@ -319,14 +318,13 @@ public class SaleReport implements Initializable {
                 } else {
                     Label bnChecItem = new Label("CHECK ITEMS");
 
-                    bnChecItem.setStyle("-fx-background-color: #008080; -fx-background-radius: 25 ; -fx-font-family: 'Bookman Old Style'; " +
-                            "-fx-padding: 5 8 5 8 ; -fx-text-fill: white; -fx-alignment: center;-fx-cursor: hand");
+                    bnChecItem.getStyleClass().add("checkItem");
+
 
 
                     bnChecItem.setOnMouseClicked(event -> {
                         Sale_Main saleMain = tableView.getSelectionModel().getSelectedItem();
                         if (null == tableView) {
-                            System.out.println("Items Not Found");
                             return;
                         }
 
@@ -349,7 +347,6 @@ public class SaleReport implements Initializable {
 
         };
 
-
         Callback<TableColumn<Sale_Main, String>, TableCell<Sale_Main, String>>
                 payDues = (TableColumn<Sale_Main, String> param) -> new TableCell<>() {
             @Override
@@ -370,20 +367,15 @@ public class SaleReport implements Initializable {
                         bnPayDues.setVisible(true);
                     }
 
-                    bnPayDues.setStyle("-fx-background-color: #0881ea; -fx-background-radius: 25 ; -fx-font-family: 'Bookman Old Style'; " +
-                            "-fx-padding: 4 11 4 11 ; -fx-text-fill: white; -fx-alignment: center;-fx-cursor: hand");
-
-                    bnDuesHistory.setStyle("-fx-background-color: #a7a4a8; -fx-background-radius: 25 ; -fx-font-family: 'Bookman Old Style'; " +
-                            "-fx-padding: 4 11 4 11 ; -fx-text-fill: white; -fx-alignment: center;-fx-cursor: hand");
+                    bnPayDues.getStyleClass().add("payDues");
+                    bnDuesHistory.getStyleClass().add("checkItem");
 
                     bnPayDues.setMinWidth(90);
                     bnDuesHistory.setMinWidth(130);
 
-
                     bnPayDues.setOnMouseClicked(event -> {
                         Sale_Main saleMain = tableView.getSelectionModel().getSelectedItem();
                         if (null == tableView) {
-                            System.out.println("Items Not Found");
                             return;
                         }
 
@@ -394,11 +386,9 @@ public class SaleReport implements Initializable {
                                 saleMain.getInvoiceNumber() + "DUES-ID- " + saleMain.getDuesId());
                         bnRefresh(null);
                     });
-
                     bnDuesHistory.setOnMouseClicked(event -> {
                         Sale_Main saleMain = tableView.getSelectionModel().getSelectedItem();
                         if (null == tableView) {
-                            System.out.println("Items Not Found");
                             return;
                         }
 
@@ -415,7 +405,6 @@ public class SaleReport implements Initializable {
                     }
                     VBox.setMargin(bnDuesHistory, new Insets(5, 0, 2, 0));
                     setGraphic(container);
-
                     setText(null);
                 }
             }
@@ -428,8 +417,6 @@ public class SaleReport implements Initializable {
         customColumn(c_address);
         customColumn(colDate);
     }
-
-
     private void convertDateFormat(DatePicker... date) {
 
         for (DatePicker datePicker : date) {

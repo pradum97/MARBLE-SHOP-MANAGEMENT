@@ -4,45 +4,53 @@ import com.shop.management.CustomDialog;
 import com.shop.management.Main;
 import com.shop.management.Method.GetUserProfile;
 import com.shop.management.Method.Method;
+import com.shop.management.Method.TableCreate;
 import com.shop.management.Model.UserDetails;
 import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 import java.net.URL;
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Properties;
+import java.util.ResourceBundle;
 
 public class Login implements Initializable {
     public TextField email_f;
     public PasswordField password_f;
+    public CheckBox rememberPasswordCb;
     private Main main;
     private Method method;
     private CustomDialog customDialog;
     private DBConnection dbConnection;
     public static int currentlyLogin_Id = 0;
     public static int currentRole_Id = 0;
-    public static String currentRoleName ;
+    public static String currentRoleName;
     private Connection connection;
-    private Properties propInsert , propDelete , propUpdate , propRead;
+    private Properties propRead;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        new TableCreate().createLicenseTable();
         main = new Main();
         method = new Method();
         customDialog = new CustomDialog();
         dbConnection = new DBConnection();
         PropertiesLoader propLoader = new PropertiesLoader();
-        propDelete = propLoader.getDeleteProp();
-        propUpdate = propLoader.getUpdateProp();
         propRead = propLoader.getReadProp();
-        propInsert = propLoader.getInsertProp();
     }
 
     @FXML
@@ -51,11 +59,14 @@ public class Login implements Initializable {
     }
 
     public void login_bn(ActionEvent event) {
-
-        startLogin();
-
+       startLogin();
     }
     private void getProfileDetails(ResultSet rs , PreparedStatement ps) throws SQLException {
+
+        getLicenseData(rs , ps);
+    }
+
+    private void openDashboard(ResultSet rs , PreparedStatement ps) throws SQLException {
 
         int userID = rs.getInt("user_id");
         int userStatus = rs.getInt("account_status");
@@ -73,21 +84,61 @@ public class Login implements Initializable {
             customDialog.showAlertBox("Failed", "User Not Found");
         } else {
 
+
             currentRole_Id = userDetails.getRole_id();
             currentRoleName = userDetails.getRole();
-
             Main.primaryStage.setUserData(userDetails);
             main.changeScene("dashboard.fxml", "DASHBOARD");
             Main.primaryStage.setMaximized(true);
-
         }
-
     }
 
+    private void getLicenseData(ResultSet rsProfile, PreparedStatement psProfile) {
+
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            connection = new DBConnection().getConnection();
+            if (null == connection){
+                return;
+            }
+
+            String query = "select expires_on from tbl_license";
+            ps = connection.prepareStatement(query);
+            rs = ps.executeQuery();
+
+            if (rs.next()){
+
+                String pattern = "dd-MM-yyyy";
+                SimpleDateFormat sdformat = new SimpleDateFormat(pattern);
+
+
+                Date currentDate = sdformat.parse(sdformat.format(new Date()));
+                Date expiresDate = sdformat.parse(rs.getString("expires_on"));
+
+                int checkExpireDate = currentDate.compareTo(expiresDate);
+
+                if (checkExpireDate > 0) {
+                    customDialog.showFxmlDialog2("license/licenseMain.fxml","");
+                }else {
+                    openDashboard(rsProfile, psProfile);
+                }
+            }else {
+                customDialog.showFxmlDialog2("license/licenseMain.fxml","");
+            }
+        } catch (SQLException | ParseException e) {
+            throw new RuntimeException(e);
+        } finally {
+            DBConnection.closeConnection(connection , ps,rs);
+        }
+
+
+    }
     public void create_new_account(ActionEvent event) {
         Main.primaryStage.setUserData("newUser");
         main.changeScene("signup.fxml", "Signup Here");
-
     }
 
     public void enterPress(KeyEvent e) {
@@ -103,8 +154,6 @@ public class Login implements Initializable {
 
         PreparedStatement ps = null;
         ResultSet rs = null;
-
-
 
         String inputValue = email_f.getText();
         String password = password_f.getText();

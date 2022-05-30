@@ -7,20 +7,16 @@ import com.shop.management.Method.GetStockData;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.Products;
 import com.shop.management.Model.Stock;
-import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCombination;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
@@ -33,7 +29,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class ViewSizeAndPrice implements Initializable {

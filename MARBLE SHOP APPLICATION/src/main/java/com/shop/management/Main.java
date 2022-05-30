@@ -21,11 +21,9 @@ public class Main extends Application {
         stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream(AppConfig.APPLICATION_ICON))));
         stage.setTitle(AppConfig.APPLICATION_NAME);
         stage.setMaximized(true);
-
         Scene scene = new Scene(root);
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/main.css")).toExternalForm());
         stage.setScene(scene);
-
         stage.show();
     }
     public void changeScene(String fxml, String title) {
@@ -42,6 +40,9 @@ public class Main extends Application {
         }
     }
     public static void main(String... args) {
+
         launch(args);
     }
+
+
 }

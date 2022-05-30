@@ -103,7 +103,6 @@ public class UpdateFeedback implements Initializable {
             con = dbConnection.getConnection();
 
             if (null == con) {
-                System.out.println("connection Faield");
                 return;
             }
 

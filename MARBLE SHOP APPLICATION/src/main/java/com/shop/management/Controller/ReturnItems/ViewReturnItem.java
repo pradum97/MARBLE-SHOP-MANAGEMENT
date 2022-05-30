@@ -33,7 +33,6 @@ public class ViewReturnItem implements Initializable {
     public TableColumn<Return_ItemsModel, String> colProductSize;
     public TableColumn<Return_ItemsModel, String> colReturnQuantity;
     public TableColumn<Return_ItemsModel, String> rate;
-    private Method method;
     private CustomDialog customDialog;
     private DBConnection dbConnection;
     private ObservableList<Return_ItemsModel> itemList = FXCollections.observableArrayList();
@@ -42,7 +41,6 @@ public class ViewReturnItem implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        method = new Method();
         customDialog = new CustomDialog();
         dbConnection = new DBConnection();
         PropertiesLoader propLoader = new PropertiesLoader();
@@ -70,7 +68,6 @@ public class ViewReturnItem implements Initializable {
         try {
             connection = dbConnection.getConnection();
             if (null == connection) {
-                System.out.println("connection Failed");
                 return;
             }
 

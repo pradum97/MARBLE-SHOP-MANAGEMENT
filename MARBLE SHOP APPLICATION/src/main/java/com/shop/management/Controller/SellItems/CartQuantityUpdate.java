@@ -52,7 +52,6 @@ public class CartQuantityUpdate implements Initializable {
 
         cartModel = (CartModel) Main.primaryStage.getUserData();
         if (null == cartModel) {
-            System.out.println("not found");
             return;
         }
 
@@ -93,7 +92,6 @@ public class CartQuantityUpdate implements Initializable {
         try {
             connection = new DBConnection().getConnection();
             if (null == connection) {
-                System.out.println("connection failed");
                 return;
             }
 
@@ -197,7 +195,6 @@ public class CartQuantityUpdate implements Initializable {
             connection = new DBConnection().getConnection();
 
             if (null == connection) {
-                System.out.println("Connection failed");
                 return;
             }
 
@@ -231,7 +228,6 @@ public class CartQuantityUpdate implements Initializable {
         try {
             connection = new DBConnection().getConnection();
             if (null == connection) {
-                System.out.println("connection failed");
                 return;
             }
 

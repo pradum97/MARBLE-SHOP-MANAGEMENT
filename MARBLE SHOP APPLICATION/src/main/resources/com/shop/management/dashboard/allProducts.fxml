@@ -33,7 +33,7 @@
                   <TableColumn fx:id="colHsnSan" editable="false" minWidth="-Infinity" sortable="false" text="HSN/SAC" />
                   <TableColumn fx:id="colTax" editable="false" sortable="false" text="TAX %" />
                   <TableColumn fx:id="colDiscount" editable="false" sortable="false" text="DISCOUNT %" />
-                  <TableColumn fx:id="colAction" editable="false" minWidth="85" prefWidth="85.0" sortable="false" text="ACTION" />
+                  <TableColumn fx:id="colAction" editable="false" minWidth="150.0" prefWidth="85.0" sortable="false" text="ACTION" />
                   <TableColumn fx:id="colDate" editable="false" minWidth="-Infinity" sortable="false" text="DATE" />
                   <TableColumn fx:id="colDescription" editable="false" prefWidth="150.0" sortable="false" text="DESCRIPTION" />
       

@@ -26,7 +26,6 @@ public class GetStockData {
             connection = new DBConnection().getConnection();
 
             if (null == connection) {
-                System.out.println("connection failed");
                 return null;
             }
 

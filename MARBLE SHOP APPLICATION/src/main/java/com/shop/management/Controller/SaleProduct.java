@@ -3,9 +3,7 @@ package com.shop.management.Controller;
 import com.shop.management.CustomDialog;
 import com.shop.management.ImageLoader;
 import com.shop.management.Main;
-import com.shop.management.Method.Method;
 import com.shop.management.Model.Products;
-import com.shop.management.PropertiesLoader;
 import com.shop.management.util.AppConfig;
 import com.shop.management.util.DBConnection;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -35,7 +33,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Objects;
-import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class SaleProduct implements Initializable {
@@ -59,7 +56,6 @@ public class SaleProduct implements Initializable {
     public Pagination pagination;
 
     private DBConnection dbconnection;
-    private Method method;
     private CustomDialog customDialog;
 
     private ObservableList<Products> productsList = FXCollections.observableArrayList();
@@ -67,7 +63,6 @@ public class SaleProduct implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        method = new Method();
         dbconnection = new DBConnection();
         customDialog = new CustomDialog();
         getProduct();
@@ -105,7 +100,6 @@ public class SaleProduct implements Initializable {
             connection = dbconnection.getConnection();
 
             if (null == connection) {
-                System.out.println("MyProduct : Connection Failed");
                 return;
             }
             ps = connection.prepareStatement(query);
@@ -119,10 +113,8 @@ public class SaleProduct implements Initializable {
                 String productColor = rs.getString("product_color");
                 String productType = rs.getString("product_type");
                 String productCategory = rs.getString("category_name");
-                int productDiscountID = rs.getInt("discount_id");
                 String addedDate = rs.getString("added_date");
                 String productCode = " " + rs.getString("product_code");
-                int productTaxID = rs.getInt("tax_id");
 
                 // discount
                 int discountID = rs.getInt("discount_id");
@@ -135,8 +127,6 @@ public class SaleProduct implements Initializable {
                 double sgst = rs.getInt("sgst");
                 double cgst = rs.getInt("cgst");
                 double igst = rs.getInt("igst");
-                String tax_description = rs.getString("description");
-                String gstName = rs.getString("gstName");
 
                 String size =rs.getString("height_width");
 
@@ -221,7 +211,6 @@ public class SaleProduct implements Initializable {
 
             if (null == connection) {
 
-                System.out.println("connection Failed");
                 return;
             }
 
@@ -338,9 +327,7 @@ public class SaleProduct implements Initializable {
                     Label bnCheckPrice = new Label("CHECK PRICE");
                     Label bnAddCart = new Label("➕ ADD TO CART");
 
-
-                    bnCheckPrice.setStyle("-fx-background-color: #008080; -fx-background-radius: 20  ; " +
-                            "-fx-padding: 5 11 5 11 ; -fx-text-fill: white; -fx-alignment: center;-fx-cursor: hand");
+                    bnCheckPrice.getStyleClass().add("checkItem");
                     bnAddCart.setStyle("-fx-background-color: #625603;" +
                             "-fx-padding: 5 15 5 15 ; -fx-background-radius: 30; -fx-text-fill: white; " +
                             "-fx-alignment: center;-fx-cursor: hand");

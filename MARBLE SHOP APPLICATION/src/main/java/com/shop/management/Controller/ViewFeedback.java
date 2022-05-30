@@ -29,7 +29,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class ViewFeedback implements Initializable {
@@ -164,92 +163,87 @@ public class ViewFeedback implements Initializable {
 
 
         Callback<TableColumn<Feedback, String>, TableCell<Feedback, String>>
-                cellFactory = (TableColumn<Feedback, String> param) -> {
+                cellFactory = (TableColumn<Feedback, String> param) -> new TableCell<>() {
+            @Override
+            public void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                    setText(null);
 
-            final TableCell<Feedback, String> cell = new TableCell<Feedback, String>() {
-                @Override
-                public void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty) {
-                        setGraphic(null);
-                        setText(null);
+                } else {
 
-                    } else {
+                    String path = "img/icon/";
 
-                        String path = "img/icon/";
-
-                        ImageLoader loader = new ImageLoader();
-                    ImageView   iv_edit = new ImageView(loader.load(path + "edit_ic.png"));
-                        iv_edit.setFitHeight(22);
-                        iv_edit.setFitHeight(22);
-                        iv_edit.setPreserveRatio(true);
+                    ImageLoader loader = new ImageLoader();
+                    ImageView iv_edit = new ImageView(loader.load(path + "edit_ic.png"));
+                    iv_edit.setFitHeight(22);
+                    iv_edit.setFitHeight(22);
+                    iv_edit.setPreserveRatio(true);
 
 
-                      ImageView  iv_delete = new ImageView(loader.load(path + "delete_ic.png"));
-                        iv_delete.setFitHeight(17);
-                        iv_delete.setFitWidth(17);
-                        iv_delete.setPreserveRatio(true);
+                    ImageView iv_delete = new ImageView(loader.load(path + "delete_ic.png"));
+                    iv_delete.setFitHeight(17);
+                    iv_delete.setFitWidth(17);
+                    iv_delete.setPreserveRatio(true);
 
-                        iv_delete.managedProperty().bind(iv_delete.visibleProperty());
-                        iv_delete.setVisible(Objects.equals(Login.currentRoleName.toLowerCase(), "admin".toLowerCase()));
-
-
-                        iv_edit.setStyle(
-                                " -fx-cursor: hand ;"
-                                        + "-glyph-size:28px;"
-                                        + "-fx-fill:#c506fa;"
-                        );
-
-                        iv_delete.setStyle(
-                                " -fx-cursor: hand ;"
-                                        + "-glyph-size:28px;"
-                                        + "-fx-fill:#ff0000;"
-                        );
-                        iv_edit.setOnMouseClicked((MouseEvent event) -> {
-
-                            Feedback edit_selection = tableView.
-                                    getSelectionModel().getSelectedItem();
-
-                            if (null == edit_selection) {
-                                method.show_popup("Please Select", tableView);
-                                return;
-                            }
-
-                            Main.primaryStage.setUserData(edit_selection);
-
-                            customDialog.showFxmlDialog("update/updateFeedback.fxml", "UPDATE");
-                            refreshTableData();
-
-                        });
-                        iv_delete.setOnMouseClicked((MouseEvent event) -> {
+                    iv_delete.managedProperty().bind(iv_delete.visibleProperty());
+                    iv_delete.setVisible(Objects.equals(Login.currentRoleName.toLowerCase(), "admin".toLowerCase()));
 
 
-                            Feedback delete_selection = tableView.getSelectionModel().getSelectedItem();
+                    iv_edit.setStyle(
+                            " -fx-cursor: hand ;"
+                                    + "-glyph-size:28px;"
+                                    + "-fx-fill:#c506fa;"
+                    );
 
-                            if (null == delete_selection) {
-                                method.show_popup("Please Select ", tableView);
-                                return;
-                            }
+                    iv_delete.setStyle(
+                            " -fx-cursor: hand ;"
+                                    + "-glyph-size:28px;"
+                                    + "-fx-fill:#ff0000;"
+                    );
+                    iv_edit.setOnMouseClicked((MouseEvent event) -> {
 
-                            deleteFeedback(delete_selection);
+                        Feedback edit_selection = tableView.
+                                getSelectionModel().getSelectedItem();
 
-                        });
+                        if (null == edit_selection) {
+                            method.show_popup("Please Select", tableView);
+                            return;
+                        }
 
-                        HBox managebtn = new HBox(iv_edit, iv_delete);
+                        Main.primaryStage.setUserData(edit_selection);
 
-                        managebtn.setStyle("-fx-alignment:center");
-                        HBox.setMargin(iv_edit, new Insets(2, 2, 0, 3));
-                        HBox.setMargin(iv_delete, new Insets(2, 3, 0, 20));
+                        customDialog.showFxmlDialog("update/updateFeedback.fxml", "UPDATE");
+                        refreshTableData();
 
-                        setGraphic(managebtn);
-                        setText(null);
+                    });
+                    iv_delete.setOnMouseClicked((MouseEvent event) -> {
 
-                    }
+
+                        Feedback delete_selection = tableView.getSelectionModel().getSelectedItem();
+
+                        if (null == delete_selection) {
+                            method.show_popup("Please Select ", tableView);
+                            return;
+                        }
+
+                        deleteFeedback(delete_selection);
+
+                    });
+
+                    HBox managebtn = new HBox(iv_edit, iv_delete);
+
+                    managebtn.setStyle("-fx-alignment:center");
+                    HBox.setMargin(iv_edit, new Insets(2, 2, 0, 3));
+                    HBox.setMargin(iv_delete, new Insets(2, 3, 0, 20));
+
+                    setGraphic(managebtn);
+                    setText(null);
+
                 }
+            }
 
-            };
-
-            return cell;
         };
 
         col_action.setCellFactory(cellFactory);

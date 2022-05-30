@@ -9,10 +9,8 @@ import com.shop.management.Model.TaxDetails;
 import com.shop.management.util.DBConnection;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.engine.xml.JRPrintFontFactory;
 import net.sf.jasperreports.view.JasperViewer;
 
-import java.awt.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -41,7 +39,6 @@ public class GenerateInvoice {
 
             connection = new DBConnection().getConnection();
             if (null == connection) {
-                System.out.println("Connection Failed");
                 return;
             }
 
@@ -158,7 +155,6 @@ public class GenerateInvoice {
                 viewer.setZoomRatio(pdfZoomRatio);
                 viewer.setVisible(true);
             }
-
         } catch (JRException e) {
             e.printStackTrace();
         }
@@ -178,7 +174,6 @@ public class GenerateInvoice {
 
             connection = new DBConnection().getConnection();
             if (null == connection) {
-                System.out.println("Connection Failed");
                 return;
             }
 
@@ -351,7 +346,6 @@ public class GenerateInvoice {
 
             connection = new DBConnection().getConnection();
             if (null == connection) {
-                System.out.println("Connection Failed");
                 return;
             }
 
@@ -448,7 +442,6 @@ public class GenerateInvoice {
 
             connection = new DBConnection().getConnection();
             if (null == connection) {
-                System.out.println("Connection Failed");
                 return;
             }
 

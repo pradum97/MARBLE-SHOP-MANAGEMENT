@@ -3,15 +3,12 @@ package com.shop.management.Controller;
 import com.shop.management.CustomDialog;
 import com.shop.management.ImageLoader;
 import com.shop.management.Main;
-import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
-import java.io.*;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -33,20 +30,17 @@ public class Avatar implements Initializable {
             iv.setFitHeight(60);
             final  int i1 = i;
             iv.setStyle("-fx-cursor: hand");
-            iv.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
+            iv.setOnMouseClicked(event -> {
 
-                    String imgAvatarPath = "avtar_"+i1+".png";
+                String imgAvatarPath = "avtar_"+i1+".png";
 
 
-                    Main.primaryStage.setUserData(imgAvatarPath);
+                Main.primaryStage.setUserData(imgAvatarPath);
 
-                    Stage stage =  new  CustomDialog().stage2;
+                Stage stage =  new  CustomDialog().stage2;
 
-                    if (stage.isShowing()){
-                        stage.hide();
-                    }
+                if (stage.isShowing()){
+                    stage.hide();
                 }
             });
 

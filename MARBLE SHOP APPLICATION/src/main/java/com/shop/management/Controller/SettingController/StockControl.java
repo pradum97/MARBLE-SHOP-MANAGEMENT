@@ -51,7 +51,6 @@ public class StockControl implements Initializable {
             connection = dbConnection.getConnection();
 
             if (null == connection) {
-                System.out.println("connection failed");
                 return;
             }
 
@@ -86,10 +85,8 @@ public class StockControl implements Initializable {
                 container.setDisable(false);
                 submitBn.setText("SUBMIT");
             }
-            case "SUBMIT" -> {
+            case "SUBMIT" -> submit();
 
-                submit();
-            }
         }
 
     }
@@ -151,7 +148,6 @@ public class StockControl implements Initializable {
             connection = dbConnection.getConnection();
 
             if (null == connection) {
-                System.out.println("connection failed");
                 return;
             }
 

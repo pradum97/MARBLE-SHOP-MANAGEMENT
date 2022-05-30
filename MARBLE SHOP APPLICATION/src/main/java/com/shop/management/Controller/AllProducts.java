@@ -32,6 +32,7 @@ import java.util.ResourceBundle;
 
 public class AllProducts implements Initializable {
 
+    private static final String SELECT_ALL = "Select All";
     public Button bnSelectAll;
     int rowsPerPage = 15;
 
@@ -116,7 +117,7 @@ public class AllProducts implements Initializable {
             if (productsList.size() == selectedItems.size()) {
                 bnSelectAll.setText("Deselect All");
             } else {
-                bnSelectAll.setText("Select All");
+                bnSelectAll.setText(SELECT_ALL);
             }
         } else {
             invisibleItem(bnDeleteAll, bnSelectAll);
@@ -136,13 +137,13 @@ public class AllProducts implements Initializable {
 
         String txt = bnSelectAll.getText();
 
-        if (txt.equals("Select All")) {
+        if (txt.equals(SELECT_ALL)) {
             tableView.getSelectionModel().selectAll();
             bnSelectAll.setText("Deselect All");
         } else {
 
             tableView.getSelectionModel().clearSelection();
-            bnSelectAll.setText("Select All");
+            bnSelectAll.setText(SELECT_ALL);
             invisibleItem(bnSelectAll);
         }
 
@@ -150,7 +151,7 @@ public class AllProducts implements Initializable {
     }
 
     public void deleteMultipleProduct(ActionEvent event) {
-       int res  = 0;
+        int res = 0;
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Warning ");
         alert.setHeaderText("ARE YOU SURE YOU WANT TO DELETE SELECTED PRODUCT ?");
@@ -162,20 +163,21 @@ public class AllProducts implements Initializable {
 
             ObservableList<Products> selectedItems = tableView.getSelectionModel().getSelectedItems();
             for (Products products : selectedItems) {
-             int[]  i = deleteProduct(products.getProductID());
+                int[] i = deleteProduct(products.getProductID());
 
-             res = i.length;
+                res = i.length;
             }
 
             if (res > 0) {
                 bnRefresh(null);
-                customDialog.showAlertBox("Success","Successfully Deleted");
+                customDialog.showAlertBox("Success", "Successfully Deleted");
             }
 
         } else {
             alert.close();
         }
     }
+
     private void search_Item() {
 
         filteredData = new FilteredList<>(productsList, p -> true);
@@ -205,7 +207,7 @@ public class AllProducts implements Initializable {
                 } else if (products.getAdded_date().toLowerCase().contains(lowerCaseFilter)) {
 
                     return true;
-                }else if (String.valueOf(products.getHsn_sac()).toLowerCase().contains(lowerCaseFilter)) {
+                } else if (String.valueOf(products.getHsn_sac()).toLowerCase().contains(lowerCaseFilter)) {
 
                     return true;
                 }
@@ -241,6 +243,29 @@ public class AllProducts implements Initializable {
         colSize.setCellValueFactory(new PropertyValueFactory<>("sizeUnit"));
         colDate.setCellValueFactory(new PropertyValueFactory<>("added_date"));
 
+        setOptionalCell();
+
+        customColumn(colProductName);
+        customColumn(colDescription);
+        customColumn(colSize);
+        customColumn(colDate);
+        customColumn(colProductCode);
+
+
+        int fromIndex = index * limit;
+        int toIndex = Math.min(fromIndex + limit, productsList.size());
+
+        int minIndex = Math.min(toIndex, filteredData.size());
+        SortedList<Products> sortedData = new SortedList<>(
+                FXCollections.observableArrayList(filteredData.subList(Math.min(fromIndex, minIndex), minIndex)));
+        sortedData.comparatorProperty().bind(tableView.comparatorProperty());
+
+        tableView.setItems(sortedData);
+
+    }
+
+    private void setOptionalCell() {
+
         Callback<TableColumn<Products, String>, TableCell<Products, String>>
                 cellFactory = (TableColumn<Products, String> param) -> new TableCell<>() {
             @Override
@@ -253,31 +278,28 @@ public class AllProducts implements Initializable {
                 } else {
 
                     ImageLoader loader = new ImageLoader();
-                    ImageView iv_edit, iv_delete;
 
-                    iv_edit = new ImageView(loader.load("img/icon/edit_ic.png"));
-                    iv_edit.setFitHeight(22);
-                    iv_edit.setFitHeight(22);
-                    iv_edit.setPreserveRatio(true);
+                    Button editBn = new Button();
+                    Button deleteBn = new Button();
 
-                    iv_delete = new ImageView(loader.load("img/icon/delete_ic.png"));
-                    iv_delete.setFitHeight(17);
-                    iv_delete.setFitWidth(17);
-                    iv_delete.setPreserveRatio(true);
-                    iv_delete.setVisible(Objects.equals(Login.currentRoleName.toLowerCase(), "admin".toLowerCase()));
+                    ImageView editIc = new ImageView(loader.load("img/icon/update_ic.png"));
+                    editIc.setFitHeight(17);
+                    editIc.setFitHeight(17);
+                    editIc.setPreserveRatio(true);
+                    editBn.setGraphic(editIc);
 
-                    iv_edit.setStyle(
-                            " -fx-cursor: hand ;"
-                                    + "-fx-fill:#c506fa;"
-                    );
+                    ImageView deleteIc = new ImageView(loader.load("img/icon/delete_ic_white.png"));
+                    deleteIc.setFitHeight(17);
+                    deleteIc.setFitWidth(17);
+                    deleteIc.setPreserveRatio(true);
+                    deleteBn.setGraphic(deleteIc);
 
-                    iv_delete.setStyle(
-                            " -fx-cursor: hand ;"
+                    deleteBn.setVisible(Objects.equals(Login.currentRoleName.toLowerCase(), "admin".toLowerCase()));
+                    editBn.setStyle("-fx-cursor: hand ; -fx-background-color: blue ; -fx-background-radius: 3 ");
+                    deleteBn.setStyle("-fx-cursor: hand ; -fx-background-color: red ; -fx-background-radius: 3 ");
 
-                                    + "-fx-fill:#ff0000;"
-                    );
-                    iv_edit.setOnMouseClicked((MouseEvent event) -> {
-
+                    editBn.setOnMouseClicked((MouseEvent event) -> {
+                        selectTable(getIndex());
                         Products edit_selection = tableView.
                                 getSelectionModel().getSelectedItem();
 
@@ -292,9 +314,8 @@ public class AllProducts implements Initializable {
                         bnRefresh(null);
 
                     });
-                    iv_delete.setOnMouseClicked((MouseEvent event) -> {
-
-
+                    deleteBn.setOnMouseClicked((MouseEvent event) -> {
+                        selectTable(getIndex());
                         Products products = tableView.
                                 getSelectionModel().getSelectedItem();
 
@@ -315,7 +336,7 @@ public class AllProducts implements Initializable {
                             int[] res = deleteProduct(products.getProductID());
                             if (res.length > 0) {
                                 bnRefresh(null);
-                                customDialog.showAlertBox("Success","Successfully Deleted");
+                                customDialog.showAlertBox("Success", "Successfully Deleted");
                             }
 
                         } else {
@@ -323,12 +344,11 @@ public class AllProducts implements Initializable {
                         }
 
                     });
-
-                    HBox managebtn = new HBox(iv_edit, iv_delete);
+                    HBox managebtn = new HBox(editBn, deleteBn);
 
                     managebtn.setStyle("-fx-alignment:center");
-                    HBox.setMargin(iv_edit, new Insets(0, 0, 0, 0));
-                    HBox.setMargin(iv_delete, new Insets(0, 3, 0, 20));
+                    HBox.setMargin(editBn, new Insets(0, 0, 0, 0));
+                    HBox.setMargin(deleteBn, new Insets(0, 3, 0, 20));
 
                     setGraphic(managebtn);
 
@@ -353,8 +373,7 @@ public class AllProducts implements Initializable {
 
                     bnCheckPrice.setMinWidth(100);
 
-                    bnCheckPrice.setStyle("-fx-background-color: #008080; -fx-background-radius: 3 ; " +
-                            "-fx-padding: 5 8 5 8 ; -fx-text-fill: white; -fx-alignment: center;-fx-cursor: hand");
+                    bnCheckPrice.getStyleClass().add("checkItem");
 
 
                     bnCheckPrice.setOnMouseClicked(event -> {
@@ -382,26 +401,9 @@ public class AllProducts implements Initializable {
             }
 
         };
+
         colAction.setCellFactory(cellFactory);
         colPrice.setCellFactory(cellSize);
-
-        customColumn(colProductName);
-        customColumn(colDescription);
-        customColumn(colSize);
-        customColumn(colDate);
-        customColumn(colProductCode);
-
-
-        int fromIndex = index * limit;
-        int toIndex = Math.min(fromIndex + limit, productsList.size());
-
-        int minIndex = Math.min(toIndex, filteredData.size());
-        SortedList<Products> sortedData = new SortedList<>(
-                FXCollections.observableArrayList(filteredData.subList(Math.min(fromIndex, minIndex), minIndex)));
-        sortedData.comparatorProperty().bind(tableView.comparatorProperty());
-
-        tableView.setItems(sortedData);
-
     }
 
     private void listener() {
@@ -444,7 +446,6 @@ public class AllProducts implements Initializable {
 
             connection = dbconnection.getConnection();
             if (null == connection) {
-                System.out.println("MyProduct : Connection Failed");
                 return;
             }
             ps = connection.prepareStatement(query);
@@ -476,11 +477,11 @@ public class AllProducts implements Initializable {
                 String tax_description = rs.getString("description");
                 String gstName = rs.getString("gstName");
 
-                String size =rs.getString("height_width");
+                String size = rs.getString("height_width");
 
-               if (null == size){
-                   size = "-";
-               }
+                if (null == size) {
+                    size = "-";
+                }
                 double totalTaxPer = sgst + cgst + igst;
 
                 productsList.add(new Products(0, productID, 0, 0,
@@ -564,5 +565,9 @@ public class AllProducts implements Initializable {
         getProduct();
         tableView.refresh();
         changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);
+    }
+
+    private void selectTable(int index) {
+        tableView.getSelectionModel().select(index);
     }
 }

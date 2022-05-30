@@ -86,7 +86,6 @@ public class ProposalMain implements Initializable {
         try {
             connection = dbConnection.getConnection();
             if (null == connection){
-                System.out.println("connection Failed");
                 return;
             }
 
@@ -207,7 +206,7 @@ public class ProposalMain implements Initializable {
                     Label saleNow = new Label("ADD TO CART");
                     Label checkItem = new Label("CHECK ITEMS");
                     saleNow.setMinWidth(140);
-                    checkItem.setMinWidth(120);
+                    checkItem.setMinWidth(140);
 
                     ImageView iv = new ImageView();
                     iv.setFitWidth(15);
@@ -334,10 +333,10 @@ public class ProposalMain implements Initializable {
                     });
 
 
-                    HBox managebtn = new HBox(saleNow ,checkItem);
+                    VBox managebtn = new VBox(saleNow ,checkItem);
 
                     managebtn.setStyle("-fx-alignment:center");
-                    HBox.setMargin(checkItem, new Insets(10, 10, 10, 15));
+                    VBox.setMargin(checkItem, new Insets(10, 10, 10, 15));
                     setGraphic(managebtn);
 
                     setText(null);
@@ -416,7 +415,7 @@ public class ProposalMain implements Initializable {
 
                     managebtn.setStyle("-fx-alignment:center");
                     HBox.setMargin(bnPrint, new Insets(10, 10, 10, 15));
-                    HBox.setMargin(ivDelete, new Insets(0, 0, 0, 20));
+                    HBox.setMargin(ivDelete, new Insets(0, 0, 0, 30));
                     setGraphic(managebtn);
 
                     setText(null);
@@ -444,7 +443,6 @@ public class ProposalMain implements Initializable {
 
             connection = dbConnection.getConnection();
             if (null == connection){
-                System.out.println("connection failed");
                 return;
             }
 

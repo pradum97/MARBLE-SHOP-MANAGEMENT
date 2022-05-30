@@ -45,11 +45,9 @@ public class StockReport implements Initializable {
     public TableColumn<StockMainModel, String> colStockStatus;
     public TableColumn<StockMainModel, String> colProductColor;
     public Label totalItemL;
-    public Label outStockItemL;
     public Pagination pagination;
     public TextField searchTf;
 
-    private Method method;
     private DBConnection dbConnection;
     private CustomDialog customDialog;
 
@@ -62,7 +60,6 @@ public class StockReport implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        method = new Method();
         dbConnection = new DBConnection();
         customDialog = new CustomDialog();
         comboBoxConfig();
@@ -125,9 +122,7 @@ public class StockReport implements Initializable {
 
         try {
             connection = dbConnection.getConnection();
-            ;
             if (null == connection) {
-                System.out.println("connection Failed");
                 return;
             }
 
@@ -163,15 +158,11 @@ public class StockReport implements Initializable {
                 String size = rs.getString("size");
                 String color = rs.getString("product_color");
 
-                if (quantity < 1) {
-                    totOutOfStock++;
-                }
 
                 switch (filterBy) {
 
-                    case "ALL" -> {
-                        stockList.add(new StockMainModel(productId, stockId, quantity, productCode, type, category, size, color, fullQuantity, purchasePrice, mrp, minSellPrice));
-                    }
+                    case "ALL" ->  stockList.add(new StockMainModel(productId, stockId, quantity, productCode, type, category, size, color, fullQuantity, purchasePrice, mrp, minSellPrice));
+
                     case "Out Of Stock" -> {
                         if (quantity <= requiredQuantity) {
                             stockList.add(new StockMainModel(productId, stockId, quantity, productCode, type, category, size, color, fullQuantity, purchasePrice, mrp, minSellPrice));
@@ -181,7 +172,6 @@ public class StockReport implements Initializable {
                                 changeTableView(pagination.getCurrentPageIndex(), rowsPerPage);
                             }
                         }
-
                     }
                     case "LOW" -> {
 
@@ -227,8 +217,6 @@ public class StockReport implements Initializable {
                 search_Item();
             }
 
-            outStockItemL.setText(String.valueOf(totOutOfStock));
-
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -256,7 +244,6 @@ public class StockReport implements Initializable {
             connection = dbConnection.getConnection();
 
             if (null == connection) {
-                System.out.println("connection failed");
                 return;
             }
 
@@ -355,6 +342,7 @@ public class StockReport implements Initializable {
     }
 
     private void setOptionalCells() {
+        final int[] count = {1};
 
         Callback<TableColumn<StockMainModel, String>, TableCell<StockMainModel, String>>
                 cellFactory = (TableColumn<StockMainModel, String> param) -> new TableCell<>() {
@@ -385,6 +373,7 @@ public class StockReport implements Initializable {
                             "-fx-text-fill: white;-fx-background-radius: 5 ; -fx-cursor: hand");
                     if (quantity <= requiredQuantity ) {
                         status.setText("Out Of Stock");
+
                         setStatusStyle(status, "#a90606");
 
                     } else if (quantity >= requiredQuantity && quantity <= lowQuantity) {
@@ -408,7 +397,7 @@ public class StockReport implements Initializable {
                     });
                     HBox managebtn = new HBox(status, reStock);
                     managebtn.setStyle("-fx-alignment:center ; -fx-padding: 0 10 0 0");
-                    HBox.setMargin(reStock, new Insets(5, 10, 0, 0));
+                    HBox.setMargin(reStock, new Insets(5, 20, 0, 0));
 
                     setGraphic(managebtn);
 

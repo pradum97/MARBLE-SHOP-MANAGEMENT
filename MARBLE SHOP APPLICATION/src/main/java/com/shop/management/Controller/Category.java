@@ -5,19 +5,16 @@ import com.shop.management.ImageLoader;
 import com.shop.management.Main;
 import com.shop.management.Method.Method;
 import com.shop.management.Model.CategoryModel;
-import com.shop.management.Model.CategoryModel;
 import com.shop.management.util.DBConnection;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -26,9 +23,6 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.util.Callback;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -136,7 +130,6 @@ public class Category implements Initializable
             }
 
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
             customDialog.showAlertBox("Failed...","DUPLICATE VALUE NOT ALLOW");
         }finally {
             DBConnection.closeConnection(connection,ps,null);

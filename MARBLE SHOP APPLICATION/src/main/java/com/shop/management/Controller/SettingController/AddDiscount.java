@@ -29,7 +29,6 @@ public class AddDiscount implements Initializable {
     public TextArea descriptionTF;
     public Button submitBn;
     public TextField discountNameC;
-    private CustomDialog customDialog;
     private Method method;
     private DBConnection dbConnection;
     private Properties propInsert;
@@ -38,7 +37,6 @@ public class AddDiscount implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        customDialog = new CustomDialog();
         method = new Method();
         dbConnection = new DBConnection();
         PropertiesLoader propLoader = new PropertiesLoader();
