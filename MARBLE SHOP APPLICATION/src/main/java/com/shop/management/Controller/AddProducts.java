@@ -54,7 +54,6 @@ public class AddProducts implements Initializable {
     public TableColumn<ProductSize, String> col_action;
     public TableColumn<ProductSize, String> col_SizeUit;
     public TableColumn<ProductSize, String> col_QuantityUnit;
-
     public TextArea productDescription;
     public Button bnSubmit;
     public ComboBox<TAX> productTax;
@@ -62,10 +61,8 @@ public class AddProducts implements Initializable {
     public TableColumn<ProductSize, String> col_mrp;
     public TableColumn<ProductSize, String> col_minSelPrice;
     public TextField productCodeTF;
-
     private static final  String REGEX = "[^0-9.]";
     double tableViewSize = 70;
-
     private Method method;
     private CustomDialog customDialog;
     private DBConnection dbConnection;
@@ -579,16 +576,23 @@ public class AddProducts implements Initializable {
 
                     for (ProductSize pz : tableData) {
 
+                        long qty ;
+
+                        if (pz.getQuantityUnit().equals("PKT")){
+                            qty = (pz.getQuantity()*Method.PER_PACKET_PCS);
+                        }else {
+                            qty = pz.getQuantity();
+                        }
+
                         ps.setDouble(1, pz.getPurchasePrice());
                         ps.setDouble(2, pz.getProductMRP());
                         ps.setDouble(3, pz.getMinSellPrice());
                         ps.setInt(4, productID);
                         ps.setDouble(5, pz.getHeight());
                         ps.setDouble(6, pz.getWidth());
-                        ps.setDouble(7, pz.getQuantity());
+                        ps.setDouble(7, qty);
                         ps.setString(8, pz.getSizeUnit());
-                        ps.setString(9, pz.getQuantityUnit());
-
+                        ps.setString(9, "PCS");
                         int stockRes = ps.executeUpdate();
 
                         if (stockRes < 0) {

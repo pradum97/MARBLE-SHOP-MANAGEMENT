@@ -2,6 +2,7 @@ package com.shop.management.Controller.SellItems;
 
 import com.shop.management.CustomDialog;
 import com.shop.management.Main;
+import com.shop.management.Method.CountCartQty;
 import com.shop.management.Method.Method;
 import com.shop.management.Method.StaticData;
 import com.shop.management.Model.Quantity;
@@ -32,7 +33,8 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class QuantityDialog implements Initializable {
-
+    final private String PACKET = "PKT";
+    final private String PCS = "PCS";
     public Label size;
     public Label purchasePrice;
     public Label productMrp;
@@ -43,16 +45,19 @@ public class QuantityDialog implements Initializable {
     public TextField sellingPriceTf;
     public HBox sellPriceContainer;
     public Button bnAddCart;
-    public Label errorL ,requiredQty,avl_in_pcs;
+    public Label errorL, requiredQty, avl_in_pcs;
     private Stock stock;
     private Method method;
     private DBConnection dbConnection;
     private int stock_id;
     private int requiredQuantity;
     private int avlQty;
-    private Properties  propUpdate , propRead;
+    private Properties propUpdate, propRead;
     private final static String UPDATE_QUANTITY = "UPDATE QUANTITY";
     private final static String ADD_CART = "➕ ADD TO CART";
+
+    private boolean isPcsExists, isPktExists;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -68,8 +73,12 @@ public class QuantityDialog implements Initializable {
         method = new Method();
         dbConnection = new DBConnection();
 
-        getStockSetting();
-        checkStockExist();
+        synchronized (this){
+            checkStockExist();
+            getStockSetting();
+        }
+
+
     }
 
     private void checkStockExist() {
@@ -88,41 +97,68 @@ public class QuantityDialog implements Initializable {
             ps.setInt(1, stock.getStockID());
 
             rs = ps.executeQuery();
+            int count = 0;
 
-            if (rs.next()) {
-
-                errorL.setVisible(true);
-                errorL.setText("( This item is already in the cart )");
+            while (rs.next()) {
+                count = count + 1;
 
                 stock_id = rs.getInt("stock_id");
 
-                quantityTf.setText(String.valueOf(rs.getLong("quantity")));
-                sellingPriceTf.setText(String.valueOf(rs.getDouble("sellprice")));
+                String cartQtyUnit = rs.getString("quantity_unit");
 
-                quantityUnit.getItems().add(rs.getString("quantity_unit"));
-                quantityUnit.getSelectionModel().selectFirst();
-                double sellingPrice = rs.getDouble("sellprice");
-                BigDecimal sell_price = BigDecimal.valueOf(sellingPrice);
+                if (cartQtyUnit.equals("PCS")) {
+                    isPcsExists = true;
+                    bnAddCart.setText(ADD_CART);
+                    BigDecimal mrp = BigDecimal.valueOf(stock.getProductMRP());
+                    sellingPriceTf.setText(mrp.stripTrailingZeros().toPlainString());
 
+                    if (null != quantityUnit) {
+                        quantityUnit.getItems().clear();
+                    }
 
-                sellingPriceTf.setText(sell_price.stripTrailingZeros().toPlainString());
-
-                bnAddCart.setText(UPDATE_QUANTITY);
-
-            } else {
-                errorL.setText("");
-                errorL.setVisible(false);
-                errorL.managedProperty().bind(errorL.visibleProperty());
-                BigDecimal mrp = BigDecimal.valueOf(stock.getProductMRP());
-                sellingPriceTf.setText(mrp.stripTrailingZeros().toPlainString());
-                quantityUnit.setItems(new StaticData().getSizeQuantityUnit());
-                if (avlQty<6){
-                    quantityUnit.getSelectionModel().select(0);
-                }else {
-                    quantityUnit.getSelectionModel().select(1);
+                    quantityUnit.getItems().add(PACKET);
+                    quantityUnit.getSelectionModel().selectFirst();
                 }
 
-                bnAddCart.setText(ADD_CART);
+                if (cartQtyUnit.equals("PKT")) {
+                    isPktExists = true;
+                    bnAddCart.setText(ADD_CART);
+                    BigDecimal mrp = BigDecimal.valueOf(stock.getProductMRP());
+                    sellingPriceTf.setText(mrp.stripTrailingZeros().toPlainString());
+
+                    if (null != quantityUnit) {
+                        quantityUnit.getItems().clear();
+                    }
+
+                    quantityUnit.getItems().add(PCS);
+                    quantityUnit.getSelectionModel().selectFirst();
+                }
+            }
+
+            if (isPktExists && isPcsExists) {
+                if (null != quantityUnit) {
+                    quantityUnit.getItems().clear();
+                }
+                quantityUnit.setItems(new StaticData().getSizeQuantityUnit());
+                quantityUnit.getSelectionModel().selectFirst();
+                getExitsItem(stock_id, quantityUnit.getSelectionModel().getSelectedItem());
+            }
+            quantityUnit.valueProperty().addListener((observableValue, s, t1) -> {
+
+                if (isPktExists && isPcsExists) {
+                    getExitsItem(stock_id, t1);
+                }
+
+                CountCartQty ccq = new CountCartQty();
+
+                setDefaultValue( ccq.countQty(stock.getStockID(),
+                        t1));
+
+
+            });
+
+            if (count < 1) {
+                addCartBnVisible();
             }
 
         } catch (SQLException e) {
@@ -132,7 +168,63 @@ public class QuantityDialog implements Initializable {
         }
     }
 
-    private void setDefaultValue() {
+    private void getExitsItem(int stockId, String currentQtyUnit) {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+
+            connection = dbConnection.getConnection();
+            String query = "select * from tbl_cart where stock_id = ? and  quantity_unit = ?";
+
+            ps = connection.prepareStatement(query);
+            ps.setInt(1, stockId);
+            ps.setString(2, currentQtyUnit);
+
+
+            rs = ps.executeQuery();
+            if (rs.next()) {
+
+                errorL.setVisible(true);
+                errorL.setText("( This item is already in the cart )");
+                quantityTf.setText(String.valueOf(rs.getLong("quantity")));
+                sellingPriceTf.setText(String.valueOf(rs.getDouble("sellprice")));
+                double sellingPrice = rs.getDouble("sellprice");
+                BigDecimal sell_price = BigDecimal.valueOf(sellingPrice);
+                sellingPriceTf.setText(sell_price.stripTrailingZeros().toPlainString());
+
+                bnAddCart.setText(UPDATE_QUANTITY);
+
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            DBConnection.closeConnection(connection, ps, rs);
+        }
+    }
+
+    private void addCartBnVisible() {
+
+        errorL.setText("");
+        errorL.setVisible(false);
+        errorL.managedProperty().bind(errorL.visibleProperty());
+        BigDecimal mrp = BigDecimal.valueOf(stock.getProductMRP());
+        sellingPriceTf.setText(mrp.stripTrailingZeros().toPlainString());
+        quantityUnit.setItems(new StaticData().getSizeQuantityUnit());
+
+        if (avlQty < 6) {
+            quantityUnit.getSelectionModel().select(0);
+        } else {
+            quantityUnit.getSelectionModel().select(1);
+        }
+
+        bnAddCart.setText(ADD_CART);
+    }
+
+    private void setDefaultValue(int qty) {
+
 
         String inr = " INR";
         size.setText(stock.getFullSize());
@@ -143,28 +235,32 @@ public class QuantityDialog implements Initializable {
 
         String qtyUnit = stock.getQuantityUnit();
 
-        if (qtyUnit.equals("PKT")){
+        if (qtyUnit.equals("PKT")) {
 
-            int p = stock.getQuantity()*Method.PER_PACKET_PCS;
-            avlQty = p-requiredQuantity;
+            int p = stock.getQuantity() * Method.PER_PACKET_PCS;
+            avlQty = p - requiredQuantity;
             qtyUnit = "PCS";
-        }else {
-            avlQty = stock.getQuantity()-requiredQuantity;
+        } else {
+            avlQty = stock.getQuantity() - requiredQuantity;
         }
 
-        avl_in_pcs.setText(avlQty+" - PCS");
+        avlQty = avlQty - qty;
+
+        avl_in_pcs.setText(avlQty + " - PCS");
 
         String fullQuantity;
 
-        if (qtyUnit.equals("PCS")){
+        if (qtyUnit.equals("PCS")) {
 
             int pkt = avlQty / Method.PER_PACKET_PCS;
             int pcs = avlQty % Method.PER_PACKET_PCS;
 
-            fullQuantity = pkt+" - PKT , " + pcs+" - PCS";
-        }else {
-            fullQuantity = avlQty+" - "+qtyUnit;
+            fullQuantity = pkt + " - PKT , " + pcs + " - PCS";
+        } else {
+            fullQuantity = avlQty + " - " + qtyUnit;
         }
+
+
         quantity_L.setText(fullQuantity);
     }
 
@@ -182,11 +278,7 @@ public class QuantityDialog implements Initializable {
             return;
         }
         try {
-            if (quantity_Unit.equals("PKT")){
-                quantity = Long.parseLong(quan.replaceAll("[^0-9.]", ""))*Method.PER_PACKET_PCS;
-            }else {
-                quantity = Long.parseLong(quan.replaceAll("[^0-9.]", ""));
-            }
+            quantity = Long.parseLong(quan.replaceAll("[^0-9.]", ""));
 
         } catch (NumberFormatException e) {
             method.show_popup("ENTER VALID QUANTITY", quantityUnit);
@@ -194,7 +286,7 @@ public class QuantityDialog implements Initializable {
         }
 
         if (quantity < 1) {
-            method.show_popup("ENTER VALID QUANTITY", quantityUnit);
+            method.show_popup("ENTER QUANTITY MORE THEN 0", quantityUnit);
             return;
 
         } else if (sellPrice.isEmpty()) {
@@ -217,7 +309,15 @@ public class QuantityDialog implements Initializable {
             return;
         }
 
-        if (quantity <= avlQty) {
+        long qty;
+
+        if (quantity_Unit.equals("PKT")) {
+            qty = quantity * Method.PER_PACKET_PCS;
+        } else {
+            qty = Long.parseLong(quan.replaceAll("[^0-9.]", ""));
+        }
+
+        if (qty <= avlQty) {
 
             if (sellingPrice >= stock.getMinSellingPrice()) {
 
@@ -225,10 +325,11 @@ public class QuantityDialog implements Initializable {
 
                     switch (bnAddCart.getText()) {
                         case UPDATE_QUANTITY -> {
-                            updateQuantity(quantity, quantity_Unit, sellingPrice);
+                            updateQuantity(quantity, quantity_Unit, sellingPrice, event);
                         }
                         case ADD_CART -> {
-                            addToCart(quantity, quantity_Unit, sellingPrice);
+
+                            addToCart(quantity, quantity_Unit, sellingPrice, event);
                         }
                     }
                 } else {
@@ -239,15 +340,15 @@ public class QuantityDialog implements Initializable {
             }
 
         } else {
-            String msg ;
+            String msg;
 
-            if (quantity_Unit.equals("PKT")){
-               msg = quantity_L.getText();
-            }else {
+            if (quantity_Unit.equals("PKT")) {
+                msg = quantity_L.getText();
+            } else {
                 msg = avl_in_pcs.getText();
             }
 
-            method.show_popup("QUANTITY NOT AVAILABLE! Tot Avl : "+msg, quantityTf);
+            method.show_popup("QUANTITY NOT AVAILABLE! Tot Avl : " + msg, quantityTf);
         }
     }
 
@@ -267,7 +368,9 @@ public class QuantityDialog implements Initializable {
             rs = ps.executeQuery();
             if (rs.next()) {
                 requiredQuantity = rs.getInt("REQUIRED");
-                setDefaultValue();
+
+                setDefaultValue( new CountCartQty().countQty(stock.getStockID(),
+                        quantityUnit.getSelectionModel().getSelectedItem()));
             }
 
         } catch (SQLException e) {
@@ -277,7 +380,7 @@ public class QuantityDialog implements Initializable {
         }
     }
 
-    private void updateQuantity(long quantity, String quantity_Unit, double sellingPrice) {
+    private void updateQuantity(long quantity, String quantity_Unit, double sellingPrice, ActionEvent event) {
 
         Connection connection = null;
         PreparedStatement ps = null;
@@ -294,11 +397,12 @@ public class QuantityDialog implements Initializable {
             ps.setString(2, quantity_Unit);
             ps.setDouble(3, sellingPrice);
             ps.setInt(4, stock_id);
+            ps.setString(5, quantity_Unit);
             int res = ps.executeUpdate();
 
             if (res > 0) {
 
-                Stage stage = CustomDialog.stage;
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
                 if (stage.isShowing()) {
                     stage.close();
@@ -312,12 +416,12 @@ public class QuantityDialog implements Initializable {
         }
     }
 
-    private void addToCart(long quantity, String quantity_Unit, double sellingPrice) {
+    private void addToCart(long quantity, String quantity_Unit, double sellingPrice, ActionEvent event) {
 
         Quantity quantity1 = new Quantity(quantity, quantity_Unit, sellingPrice);
 
         Main.primaryStage.setUserData(quantity1);
-        Stage stage = CustomDialog.stage;
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
         if (stage.isShowing()) {
             stage.close();
@@ -335,8 +439,8 @@ public class QuantityDialog implements Initializable {
 
     public void cancel(ActionEvent event) {
 
-        Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
-        if (stage.isShowing()){
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        if (stage.isShowing()) {
             stage.close();
         }
     }

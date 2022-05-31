@@ -1,3 +1,9 @@
+
+up
+
+update tbl_product_stock set quantity = (quantity*6) ,
+                             quantity_unit='PCS' where quantity_unit = 'PKT';
+
 CREATE TABLE IF NOT EXISTS TBL_LICENSE
 (
     LICENSE_ID          SERIAL PRIMARY KEY,
@@ -28,6 +34,6 @@ values ('White'),('Dark grey'),('Blue'),
 /*
 
 APPLICATION ID :- JEH1653819073034
-SERIAL KEY :- WXOX-FQEQ-RGCJ-9978
+SERIAL KEY :- UXMX-UQRU-SWDC-8165
 
 */

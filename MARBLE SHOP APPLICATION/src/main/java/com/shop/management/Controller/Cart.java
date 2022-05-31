@@ -8,7 +8,6 @@ import com.shop.management.Method.GenerateInvoiceNumber;
 import com.shop.management.Method.Method;
 import com.shop.management.Method.StaticData;
 import com.shop.management.Model.CartModel;
-import com.shop.management.Model.CustomerModel;
 import com.shop.management.util.DBConnection;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -27,7 +26,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import org.controlsfx.dialog.ProgressDialog;
 
 import java.net.URL;
 import java.sql.*;
@@ -69,7 +67,6 @@ public class Cart implements Initializable {
     // container
     public HBox paidAmountContainer;
     public VBox paymentModeContainer;
-
     private ObservableList<CartModel> cartList = FXCollections.observableArrayList();
 
     private double totalPayableD = 0;
@@ -113,6 +110,7 @@ public class Cart implements Initializable {
         textFieldConfig();
         gstContainer.managedProperty().bind(gstContainer.visibleProperty());
     }
+
 
     private void textFieldConfig() {
 

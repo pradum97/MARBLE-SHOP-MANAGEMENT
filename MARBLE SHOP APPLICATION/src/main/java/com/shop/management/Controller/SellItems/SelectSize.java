@@ -134,7 +134,7 @@ public class SelectSize implements Initializable {
                                 return;
                             }
                             Main.primaryStage.setUserData(stock);
-                            customDialog.showFxmlDialog("sellItems/quantityDialog.fxml", "");
+                            customDialog.showFxmlDialog2("sellItems/quantityDialog.fxml", "");
 
                             Quantity quantity = null;
                             try {
@@ -175,7 +175,6 @@ public class SelectSize implements Initializable {
         try {
 
             connection = dbConnection.getConnection();
-
             if (null == connection) {
                 return;
             }
@@ -185,7 +184,7 @@ public class SelectSize implements Initializable {
             ps.setInt(2, Login.currentlyLogin_Id);
             ps.setDouble(3, quantity.getSellingPrice());
             ps.setInt(4, stock.getStockID());
-            ps.setDouble(5, quantity.getQuantity());
+            ps.setLong(5, quantity.getQuantity());
             ps.setString(6, quantity.getQuantityUnit());
 
             int res = ps.executeUpdate();

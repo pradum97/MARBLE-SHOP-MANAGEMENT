@@ -12,6 +12,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
@@ -37,7 +38,6 @@ public class AddSize implements Initializable {
     private Method method;
     private CustomDialog customDialog;
     private DBConnection dbConnection;
-    private double profitPrice = 20; // in %
 
 
     @Override
@@ -47,13 +47,11 @@ public class AddSize implements Initializable {
         if (null == products) {
             return;
         }
-
         method = new Method();
         customDialog = new CustomDialog();
         dbConnection = new DBConnection();
         productSizeUnit.setItems(method.getSizeUnit());
         productQuantityUnit.setItems(method.getSizeQuantityUnit());
-
 
         purchasePrice.textProperty().addListener((observableValue, old, newValue) -> {
 
@@ -66,7 +64,7 @@ public class AddSize implements Initializable {
                 return;
             }
 
-            minPrice = purchasePrice_d + (profitPrice * purchasePrice_d / 100);
+            minPrice = purchasePrice_d + (AddProducts.profitPercentage * purchasePrice_d / 100);
 
             minSellPrice.setText(String.valueOf(minPrice));
 
@@ -74,12 +72,15 @@ public class AddSize implements Initializable {
 
     }
 
-    public void enterPress(KeyEvent keyEvent) {
+    public void enterPress(KeyEvent key) {
 
+        if (key.getCode() == KeyCode.ENTER){
+            finalAddSize(key.getSource());
+        }
 
     }
 
-    public void addSizeBn(ActionEvent event) {
+    private void finalAddSize(Object source) {
 
         String heightS = productHeight.getText();
         String widthS = productWidth.getText();
@@ -188,6 +189,13 @@ public class AddSize implements Initializable {
                 customDialog.showAlertBox("Failed", "Connection Failed");
                 return;
             }
+            long qty ;
+
+            if (quantityUnit.equals("PKT")){
+                qty = (quantity*Method.PER_PACKET_PCS);
+            }else {
+                qty =quantity;
+            }
 
             ps = connection.prepareStatement(new PropertiesLoader().getInsertProp().getProperty("ADD_SIZE"));
             ps.setDouble(1, purchase_price);
@@ -196,15 +204,15 @@ public class AddSize implements Initializable {
             ps.setInt(4, height);
             ps.setInt(5, width);
             ps.setString(6, sizeUnit);
-            ps.setLong(7, quantity);
-            ps.setString(8, quantityUnit);
+            ps.setLong(7, qty);
+            ps.setString(8, "PCS");
             ps.setInt(9, products.getProductID());
 
             int res = ps.executeUpdate();
 
             if (res > 0) {
 
-                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                Stage stage = (Stage) ((Node) source).getScene().getWindow();
 
                 if (null != stage && stage.isShowing()) {
                     stage.close();
@@ -217,6 +225,12 @@ public class AddSize implements Initializable {
 
             DBConnection.closeConnection(connection, ps, null);
         }
+    }
+
+
+    public void addSizeBn(ActionEvent event) {
+
+        finalAddSize(event.getSource());
 
     }
 

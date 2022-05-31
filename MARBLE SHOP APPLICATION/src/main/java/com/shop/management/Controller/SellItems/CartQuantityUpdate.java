@@ -2,8 +2,11 @@ package com.shop.management.Controller.SellItems;
 
 import com.shop.management.CustomDialog;
 import com.shop.management.Main;
+import com.shop.management.Method.CountCartQty;
 import com.shop.management.Method.Method;
+import com.shop.management.Method.StaticData;
 import com.shop.management.Model.CartModel;
+import com.shop.management.Model.Stock;
 import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
 import javafx.event.ActionEvent;
@@ -32,7 +35,8 @@ public class CartQuantityUpdate implements Initializable {
     public TextField sellingPriceTf;
     public Label availableQuantityL;
     public Label minSellPriceL;
-    public Label mrpL;
+    public Label mrpL , requiredQty;
+    public Label avl_in_pcs;
     private Method method;
     private CartModel cartModel;
     private double minSellingPrice, productMrp;
@@ -57,8 +61,8 @@ public class CartQuantityUpdate implements Initializable {
 
         getStockSetting();
         getProductStock();
-
     }
+
 
     private void setDefaultValue() {
 
@@ -69,10 +73,37 @@ public class CartQuantityUpdate implements Initializable {
         mrpL.setText(productMrp + " INR");
         quantityUnit.getItems().add(cartModel.getQuantityUnit());
         quantityUnit.getSelectionModel().selectFirst();
+        requiredQty.setText(requiredQuantity + " PCS");
 
-        avlQty = (availableQuantity - requiredQuantity);
+        CountCartQty ccq = new CountCartQty();
+        availableQuantity = availableQuantity-ccq.countQty(cartModel.getProductStockID(),
+                cartModel.getQuantityUnit());
 
-        availableQuantityL.setText(avlQty + "-" + quantity_unit + " ( Tot Avl : " + availableQuantity + "-" + quantity_unit + " - Required : " + requiredQuantity + " )");
+        String qtyUnit = quantity_unit;
+
+        if (qtyUnit.equals("PKT")) {
+
+            long p = availableQuantity * Method.PER_PACKET_PCS;
+            avlQty = p - requiredQuantity;
+            qtyUnit = "PCS";
+        } else {
+            avlQty = availableQuantity - requiredQuantity;
+        }
+
+        avl_in_pcs.setText(avlQty + " - PCS");
+
+        String fullQuantity;
+
+        if (qtyUnit.equals("PCS")) {
+
+            long pkt = avlQty / Method.PER_PACKET_PCS;
+            long pcs = avlQty % Method.PER_PACKET_PCS;
+
+            fullQuantity = pkt + " - PKT , " + pcs + " - PCS";
+        } else {
+            fullQuantity = avlQty + " - " + qtyUnit;
+        }
+        availableQuantityL.setText(fullQuantity);
     }
 
     public void enterPress(KeyEvent e) {
@@ -165,7 +196,17 @@ public class CartQuantityUpdate implements Initializable {
             return;
 
         }
-        if (quantity <= avlQty) {
+
+
+        long qty;
+
+        if (unit.equals("PKT")) {
+            qty = quantity * Method.PER_PACKET_PCS;
+        } else {
+            qty = Long.parseLong(quan.replaceAll("[^0-9.]", ""));
+        }
+
+        if (qty <= avlQty) {
             if (sellingPrice >= cartModel.getMinSellPrice()) {
 
                 if (sellingPrice <= cartModel.getProductMRP()) {
@@ -179,9 +220,17 @@ public class CartQuantityUpdate implements Initializable {
                 method.show_popup("PLEASE ENTER MORE THAN " + cartModel.getMinSellPrice() + " RS.", sellingPriceTf);
             }
         } else {
-            String msg = "QUANTITY NOT AVAILABLE \n AVAILABLE QTY : " + avlQty + " -" + quantity_unit;
 
-            method.show_popup(msg, quantityTf);
+
+            String msg;
+
+            if (unit.equals("PKT")) {
+                msg = availableQuantityL.getText();
+            } else {
+                msg = avl_in_pcs.getText();
+            }
+
+            method.show_popup("QUANTITY NOT AVAILABLE! Tot Avl : " + msg, quantityTf);
         }
     }
 
@@ -209,6 +258,8 @@ public class CartQuantityUpdate implements Initializable {
                 quantity_unit = rs.getString("quantity_unit");
                 minSellingPrice = rs.getDouble("min_sellingprice");
                 productMrp = rs.getDouble("product_mrp");
+
+                setDefaultValue();
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -216,7 +267,7 @@ public class CartQuantityUpdate implements Initializable {
             DBConnection.closeConnection(connection, ps, rs);
         }
 
-        setDefaultValue();
+
     }
 
     private void getStockSetting() {
@@ -239,7 +290,6 @@ public class CartQuantityUpdate implements Initializable {
             if (rs.next()) {
 
                 requiredQuantity = rs.getInt("REQUIRED");
-                setDefaultValue();
             }
 
 

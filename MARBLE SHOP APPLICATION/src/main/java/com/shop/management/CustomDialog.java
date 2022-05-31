@@ -32,7 +32,6 @@ public class CustomDialog {
             Scene scene = new Scene(root);
             scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/main.css")).toExternalForm());
             stage.setScene(scene);
-
             scene.setOnKeyReleased(e -> {
 
                 if (e.getCode() == KeyCode.ESCAPE){

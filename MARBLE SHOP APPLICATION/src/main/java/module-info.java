@@ -1,7 +1,6 @@
 module com.shop.management {
     requires javafx.controls;
     requires javafx.fxml;
-
     requires com.dlsc.formsfx;
     requires net.synedra.validatorfx;
     requires java.logging;

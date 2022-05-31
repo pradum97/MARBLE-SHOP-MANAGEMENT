@@ -1,5 +1,6 @@
 package com.shop.management.Controller.Update;
 
+import com.shop.management.Controller.AddProducts;
 import com.shop.management.Controller.Login;
 import com.shop.management.CustomDialog;
 import com.shop.management.ImageLoader;
@@ -38,14 +39,11 @@ public class UpdateSize implements Initializable {
     public TextField productHeight;
     public TextField productWidth;
     public ComboBox<String> productSizeUnit;
-    public TextField productQuantity;
-    public ComboBox<String> productQuantityUnit;
     public Button bnAddSize;
     private Stock stock;
     private Method method;
     private CustomDialog customDialog;
     private DBConnection dbConnection;
-    private double profitPrice = 20; // in %
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -72,7 +70,7 @@ public class UpdateSize implements Initializable {
                 return;
             }
 
-            minPrice = purchasePrice_d + (profitPrice * purchasePrice_d / 100);
+            minPrice = purchasePrice_d + (AddProducts.profitPercentage * purchasePrice_d / 100);
 
             minSellPrice.setText(String.valueOf(minPrice));
 
@@ -91,48 +89,12 @@ public class UpdateSize implements Initializable {
 
         productHeight.setText(h.stripTrailingZeros().toPlainString());
         productWidth.setText(w.stripTrailingZeros().toPlainString());
-        productQuantity.setText(String.valueOf(stock.getQuantity()));
 
         productSizeUnit.getItems().add(stock.getSizeUnit());
-        productQuantityUnit.getItems().add(stock.getQuantityUnit());
 
-        productQuantityUnit.getSelectionModel().selectFirst();
         productSizeUnit.getSelectionModel().selectFirst();
 
         productSizeUnit.setItems(method.getSizeUnit());
-        productQuantityUnit.setItems(method.getSizeQuantityUnit());
-
-
-        productQuantity.setOnMouseClicked(mouseEvent -> {
-
-            if (!productQuantity.isEditable()){
-                quantityDialog();
-            }
-        });
-    }
-
-    private void quantityDialog (){
-
-        ImageView image = new ImageView(new ImageLoader().load("img/icon/warning_ic.png"));
-        image.setFitWidth(45);
-        image.setFitHeight(45);
-        Alert alert = new Alert(Alert.AlertType.NONE);
-        alert.setAlertType(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Warning ");
-        alert.setGraphic(image);
-        alert.setHeaderText("Note : If you update from it, it will not be updated in the purchase history.");
-        alert.setContentText("If you've added the wrong quantity, you can update from here.");
-        alert.initModality(Modality.APPLICATION_MODAL);
-        alert.initOwner(Main.primaryStage);
-        Optional<ButtonType> result = alert.showAndWait();
-        ButtonType button = result.orElse(ButtonType.CANCEL);
-        if (button == ButtonType.OK) {
-
-            productQuantity.setEditable(true);
-
-        } else {
-            alert.close();
-        }
     }
 
     public void enterPress(KeyEvent keyEvent) {
@@ -144,7 +106,6 @@ public class UpdateSize implements Initializable {
 
         String heightS = productHeight.getText();
         String widthS = productWidth.getText();
-        String quantityS = productQuantity.getText();
         String purchasePrice_s = purchasePrice.getText();
         String prodMrp = productMrp.getText();
         String minSellPrice_s = minSellPrice.getText();
@@ -205,18 +166,9 @@ public class UpdateSize implements Initializable {
             method.show_popup("CHOOSE SIZE UNIT", productSizeUnit);
             return;
 
-        } else if (quantityS.isEmpty()) {
-
-            method.show_popup("ENTER PRODUCT QUANTITY", productQuantity);
-            return;
-        } else if (null == productQuantityUnit.getValue()) {
-
-            method.show_popup("CHOOSE QUANTITY UNIT", productQuantityUnit);
-            return;
         }
 
         double height = 0, width = 0;
-        long quantity = 0;
 
         try {
             height = Double.parseDouble(heightS.replaceAll("[^0-9.]", ""));
@@ -226,14 +178,7 @@ public class UpdateSize implements Initializable {
             customDialog.showAlertBox("INVALID PRODUCT SIZE", "ENTER VALID HEIGHT AND WIDTH ");
             return;
         }
-        try {
-            quantity = Long.parseLong(quantityS.replaceAll("[^0-9.]", ""));
-        } catch (NumberFormatException e) {
-            customDialog.showAlertBox("INVALID QUANTITY", "ENTER VALID QUANTITY");
-            e.printStackTrace();
-        }
         String sizeUnit = productSizeUnit.getValue();
-        String quantityUnit = productQuantityUnit.getValue();
 
 
         Connection connection = null;
@@ -254,9 +199,7 @@ public class UpdateSize implements Initializable {
             ps.setDouble(4, height);
             ps.setDouble(5, width);
             ps.setString(6, sizeUnit);
-            ps.setLong(7, quantity);
-            ps.setString(8, quantityUnit);
-            ps.setInt(9, stock.getStockID());
+            ps.setInt(7, stock.getStockID());
 
             int res = ps.executeUpdate();
 
@@ -264,14 +207,12 @@ public class UpdateSize implements Initializable {
                 clearCart(connection);
             }
 
-
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
 
             DBConnection.closeConnection(null, ps, null);
         }
-
     }
 
     private void clearCart(Connection con ) {

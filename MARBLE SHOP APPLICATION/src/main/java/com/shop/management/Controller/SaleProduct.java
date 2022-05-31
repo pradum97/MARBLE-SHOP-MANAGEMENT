@@ -36,7 +36,7 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class SaleProduct implements Initializable {
-    int rowsPerPage = 1;
+    int rowsPerPage = 15;
     public TableColumn<Products, String> colColor;
     public TableColumn<Products, Integer> colSrNo;
     public TableColumn<Products, String> colProductName;
@@ -53,7 +53,6 @@ public class SaleProduct implements Initializable {
     public TextField searchTf;
     public TableColumn<Products, String> colHsnSac;
     public Pagination pagination;
-
     private DBConnection dbconnection;
     private CustomDialog customDialog;
     private ObservableList<Products> productsList = FXCollections.observableArrayList();
@@ -192,9 +191,11 @@ public class SaleProduct implements Initializable {
         }
         countCart();
 
-        boolean isSuccess = (boolean) Main.primaryStage.getUserData();
-        if (isSuccess){
-            bnRefresh(null);
+        if (Main.primaryStage.getUserData() instanceof Boolean){
+            boolean isSuccess = (boolean) Main.primaryStage.getUserData();
+            if (isSuccess){
+                bnRefresh(null);
+            }
         }
     }
 

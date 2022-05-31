@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="670.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.AddProducts">
+<BorderPane prefHeight="670.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.shop.management.Controller.AddProducts">
    <center>
       <HBox alignment="CENTER">
           <children>
@@ -34,7 +34,7 @@
                                                               <Font name="Arial Bold" size="12.0" />
                                                           </font>
                                                       </Label>
-                                                      <TextField fx:id="productName" focusTraversable="false" minHeight="60.0" minWidth="510.0" onKeyReleased="#enterPress" prefHeight="60.0" prefWidth="510.0" promptText="Enter Product Name" style="-fx-border-color: gray; -fx-border-radius: 3;" />
+                                                      <TextField fx:id="productName" minHeight="60.0" minWidth="510.0" onKeyReleased="#enterPress" prefHeight="60.0" prefWidth="510.0" promptText="Enter Product Name" style="-fx-border-color: gray; -fx-border-radius: 3;" />
                                                   </children>
                                               </VBox>
                                               <HBox alignment="TOP_CENTER" fillHeight="false" spacing="30.0">
@@ -49,7 +49,7 @@
                                                                       <Insets left="5.0" />
                                                                   </VBox.margin>
                                                               </Label>
-                                                <TextField fx:id="productCodeTF" focusTraversable="false" minHeight="42.0" minWidth="240.0" prefHeight="40.0" prefWidth="290.0" promptText="Enter Product Code :" style="-fx-border-color: gray; -fx-border-radius: 3;" />
+                                                <TextField fx:id="productCodeTF" minHeight="42.0" minWidth="240.0" prefHeight="40.0" prefWidth="290.0" promptText="Enter Product Code :" style="-fx-border-color: gray; -fx-border-radius: 3;" />
                                                           </children>
                                                       </VBox>
                                           <VBox layoutX="145.0" layoutY="10.0" spacing="5.0">
@@ -132,7 +132,7 @@
                                                                               <Font name="Arial Bold" size="12.0" />
                                                                           </font>
                                                                       </Label>
-                                                                      <TextField fx:id="productPurchasePrice" focusTraversable="false" minHeight="40.0" prefHeight="40.0" promptText="Enter purchase price" style="-fx-border-color: gray; -fx-border-radius: 3;" />
+                                                                      <TextField fx:id="productPurchasePrice" minHeight="40.0" prefHeight="40.0" promptText="Enter purchase price" style="-fx-border-color: gray; -fx-border-radius: 3;" />
                                                                   </children>
                                                               </VBox>
                                                               <VBox minWidth="155.0" prefWidth="155.0" spacing="5.0" HBox.hgrow="ALWAYS">
@@ -142,7 +142,7 @@
                                                                               <Font name="Arial Bold" size="12.0" />
                                                                           </font>
                                                                       </Label>
-                                                                      <TextField fx:id="productMrp" focusTraversable="false" minHeight="40.0" onKeyReleased="#enterPress" prefHeight="40.0" promptText="Enter MRP" style="-fx-border-color: gray; -fx-border-radius: 3;" />
+                                                                      <TextField fx:id="productMrp" minHeight="40.0" onKeyReleased="#enterPress" prefHeight="40.0" promptText="Enter MRP" style="-fx-border-color: gray; -fx-border-radius: 3;" />
                                                                   </children>
                                                               </VBox>
                                                               <VBox minWidth="155.0" prefWidth="155.0" spacing="5.0" HBox.hgrow="ALWAYS">
@@ -152,7 +152,7 @@
                                                                               <Font name="Arial Bold" size="12.0" />
                                                                           </font>
                                                                       </Label>
-                                                                      <TextField fx:id="productMinSellPrice" focusTraversable="false" minHeight="40.0" onKeyReleased="#enterPress" prefHeight="40.0" promptText="Enter Min Selling Price" style="-fx-border-color: gray; -fx-border-radius: 3;" />
+                                                                      <TextField fx:id="productMinSellPrice" minHeight="40.0" onKeyReleased="#enterPress" prefHeight="40.0" promptText="Enter Min Selling Price" style="-fx-border-color: gray; -fx-border-radius: 3;" />
                                                                   </children>
                                                               </VBox>
                                                           </children>
@@ -166,7 +166,7 @@
                                                                               <Font name="Arial Bold" size="12.0" />
                                                                           </font>
                                                                       </Label>
-                                                                      <TextField fx:id="productHeight" focusTraversable="false" minHeight="40.0" minWidth="185.0" onKeyReleased="#enterPress" prefHeight="40.0" prefWidth="222.0" promptText="Enter Height : " style="-fx-border-color: gray; -fx-border-radius: 3;" />
+                                                                      <TextField fx:id="productHeight" minHeight="40.0" minWidth="185.0" onKeyReleased="#enterPress" prefHeight="40.0" prefWidth="222.0" promptText="Enter Height : " style="-fx-border-color: gray; -fx-border-radius: 3;" />
                                                                   </children>
                                                               </VBox>
                                                               <VBox layoutX="10.0" layoutY="10.0" spacing="5.0" HBox.hgrow="ALWAYS">
@@ -176,7 +176,7 @@
                                                                               <Font name="Arial Bold" size="12.0" />
                                                                           </font>
                                                                       </Label>
-                                                                      <TextField fx:id="productWidth" focusTraversable="false" minHeight="40.0" minWidth="185.0" onKeyReleased="#enterPress" prefHeight="40.0" prefWidth="222.0" promptText="Enter Width :" style="-fx-border-color: gray; -fx-border-radius: 3;" />
+                                                                      <TextField fx:id="productWidth" minHeight="40.0" minWidth="185.0" onKeyReleased="#enterPress" prefHeight="40.0" prefWidth="222.0" promptText="Enter Width :" style="-fx-border-color: gray; -fx-border-radius: 3;" />
                                                                   </children>
                                                               </VBox>
                                                               <VBox alignment="CENTER_LEFT" layoutX="271.0" layoutY="10.0" spacing="5.0" HBox.hgrow="ALWAYS">
@@ -202,7 +202,7 @@
                                                                                       <Font name="Arial Bold" size="12.0" />
                                                                                   </font>
                                                                               </Label>
-                                                                              <TextField fx:id="productQuantity" focusTraversable="false" minHeight="40.0" minWidth="188.0" onKeyReleased="#enterPress" prefHeight="40.0" prefWidth="250.0" promptText="Enter Quantity :" style="-fx-border-color: gray; -fx-border-radius: 3;" />
+                                                                              <TextField fx:id="productQuantity" minHeight="40.0" minWidth="188.0" onKeyReleased="#enterPress" prefHeight="40.0" prefWidth="250.0" promptText="Enter Quantity :" style="-fx-border-color: gray; -fx-border-radius: 3;" />
                                                                           </children>
                                                                       </VBox>
                                                                       <VBox spacing="5.0" HBox.hgrow="ALWAYS">
