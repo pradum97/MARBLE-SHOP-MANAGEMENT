@@ -4,6 +4,7 @@ import com.shop.management.CustomDialog;
 import com.shop.management.Dashboard;
 import com.shop.management.ImageLoader;
 import com.shop.management.Method.Method;
+import com.shop.management.Method.StaticData;
 import com.shop.management.Model.CategoryModel;
 import com.shop.management.Model.Discount;
 import com.shop.management.Model.ProductSize;
@@ -60,8 +61,14 @@ public class AddProducts implements Initializable {
     public TableColumn<ProductSize, String> col_PurchasePrice;
     public TableColumn<ProductSize, String> col_mrp;
     public TableColumn<ProductSize, String> col_minSelPrice;
+    public TableColumn<ProductSize, String> colPriceType;
+    public TableColumn<ProductSize, String> colPcsPerPkt;
     public TextField productCodeTF;
     private static final  String REGEX = "[^0-9.]";
+    public ComboBox<String> priceTypeC;
+    public ComboBox<Integer> pcsPerPacket;
+
+
     double tableViewSize = 70;
     private Method method;
     private CustomDialog customDialog;
@@ -80,6 +87,11 @@ public class AddProducts implements Initializable {
         method = new Method();
         customDialog = new CustomDialog();
         dbConnection = new DBConnection();
+
+        StaticData sd = new StaticData();
+        pcsPerPacket.setItems(sd.getPcsPerPacketList());
+        pcsPerPacket.getSelectionModel().selectFirst();
+        priceTypeC.setItems(sd.getSizeQuantityUnit());
 
         setComboBoxData();
         textChangeListener();
@@ -137,7 +149,6 @@ public class AddProducts implements Initializable {
 
         });
     }
-
     private void setComboBoxData() {
 
         productColor.setOnMouseClicked(mouseEvent -> {
@@ -150,7 +161,6 @@ public class AddProducts implements Initializable {
 
 
     }
-
     public void submit_bn(ActionEvent event) {
         submit();
     }
@@ -204,6 +214,13 @@ public class AddProducts implements Initializable {
             return;
         }
 
+        if (priceTypeC.getSelectionModel().isEmpty()){
+            method.show_popup("PLEASE SELECT PRICE TYPE", priceTypeC);
+            return;
+        } else if (pcsPerPacket.getSelectionModel().isEmpty()){
+            method.show_popup("PLEASE SELECT PCS PER PACKET", pcsPerPacket);
+            return;
+        }
         if (purchase_price > min_Sell_Price) {
             method.show_popup("ENTER MINIMUM SELLING PRICE MORE THAN PURCHASE PRICE", productMinSellPrice);
             return;
@@ -211,7 +228,8 @@ public class AddProducts implements Initializable {
             method.show_popup("ENTER MINIMUM SELLING PRICE LESS THAN MRP", productMinSellPrice);
             return;
 
-        } else if (heightS.isEmpty()) {
+        }
+        else if (heightS.isEmpty()) {
             method.show_popup("ENTER PRODUCT HEIGHT", productHeight);
             return;
         } else if (widthS.isEmpty()) {
@@ -231,10 +249,8 @@ public class AddProducts implements Initializable {
             return;
         }
 
-
         double height = 0, width = 0;
         long quantity = 0;
-
 
         try {
             height = Double.parseDouble(heightS.replaceAll(REGEX, ""));
@@ -254,7 +270,11 @@ public class AddProducts implements Initializable {
         String sizeUnit = productSizeUnit.getValue();
         String quantityUnit = productQuantityUnit.getValue();
 
-        ProductSize productSize = new ProductSize(purchase_price, mrp, min_Sell_Price, width, height, quantity, sizeUnit, quantityUnit);
+        String priceTypeS = priceTypeC.getSelectionModel().getSelectedItem();
+        int pcsPerPkt = pcsPerPacket.getSelectionModel().getSelectedItem();
+
+        ProductSize productSize = new ProductSize(purchase_price, mrp, min_Sell_Price, width,
+                height, quantity, sizeUnit, quantityUnit , priceTypeS , pcsPerPkt);
         sizeList.add(productSize);
 
         sizeTableView.setItems(sizeList);
@@ -270,6 +290,8 @@ public class AddProducts implements Initializable {
         col_Quantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
         col_SizeUit.setCellValueFactory(new PropertyValueFactory<>("sizeUnit"));
         col_QuantityUnit.setCellValueFactory(new PropertyValueFactory<>("quantityUnit"));
+        colPriceType.setCellValueFactory(new PropertyValueFactory<>("priceType"));
+        colPcsPerPkt.setCellValueFactory(new PropertyValueFactory<>("pcsPerPkt"));
 
 
         Callback<TableColumn<ProductSize, String>, TableCell<ProductSize, String>>
@@ -571,7 +593,7 @@ public class AddProducts implements Initializable {
                     ps = null;
 
                     String stockQuery = "INSERT INTO TBL_PRODUCT_STOCK (PURCHASE_PRICE, PRODUCT_MRP, min_sellingPrice, PRODUCT_ID, HEIGHT," +
-                            " WIDTH, QUANTITY, SIZE_UNIT, QUANTITY_UNIT) VALUES (?,?,?,?,?,?,?,?,?)";
+                            " WIDTH, QUANTITY, SIZE_UNIT, QUANTITY_UNIT , PRICE_TYPE , PCS_PER_PACKET) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
                     ps = connection.prepareStatement(stockQuery);
 
                     for (ProductSize pz : tableData) {
@@ -579,11 +601,10 @@ public class AddProducts implements Initializable {
                         long qty ;
 
                         if (pz.getQuantityUnit().equals("PKT")){
-                            qty = (pz.getQuantity()*Method.PER_PACKET_PCS);
+                            qty = (pz.getQuantity()*pz.getPcsPerPkt());
                         }else {
                             qty = pz.getQuantity();
                         }
-
                         ps.setDouble(1, pz.getPurchasePrice());
                         ps.setDouble(2, pz.getProductMRP());
                         ps.setDouble(3, pz.getMinSellPrice());
@@ -593,6 +614,8 @@ public class AddProducts implements Initializable {
                         ps.setDouble(7, qty);
                         ps.setString(8, pz.getSizeUnit());
                         ps.setString(9, "PCS");
+                        ps.setString(10, pz.getPriceType());
+                        ps.setInt(11, pz.getPcsPerPkt());
                         int stockRes = ps.executeUpdate();
 
                         if (stockRes < 0) {

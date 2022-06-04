@@ -300,18 +300,17 @@ public class AllProducts implements Initializable {
 
                     editBn.setOnMouseClicked((MouseEvent event) -> {
                         selectTable(getIndex());
-                        Products edit_selection = tableView.
-                                getSelectionModel().getSelectedItem();
-
-                        if (null == edit_selection) {
-                            method.show_popup("Please Select", tableView);
-                            return;
-                        }
-
+                        Products edit_selection = tableView.getSelectionModel().getSelectedItem();
                         Main.primaryStage.setUserData(edit_selection);
+                        customDialog.showFxmlDialog2("update/productUpdate.fxml", "UPDATE PRODUCT");
 
-                        customDialog.showFxmlDialog("update/productUpdate.fxml", "UPDATE PRODUCT");
-                        bnRefresh(null);
+                        if (Main.primaryStage.getUserData() instanceof Boolean) {
+                            boolean isSuccess = (boolean) Main.primaryStage.getUserData();
+                            if (isSuccess) {
+                                searchTf.setText("");
+                                bnRefresh(null);
+                            }
+                        }
 
                     });
                     deleteBn.setOnMouseClicked((MouseEvent event) -> {
@@ -370,32 +369,22 @@ public class AllProducts implements Initializable {
 
                 } else {
                     Label bnCheckPrice = new Label("CHECK PRICE");
-
                     bnCheckPrice.setMinWidth(100);
-
                     bnCheckPrice.getStyleClass().add("checkItem");
-
 
                     bnCheckPrice.setOnMouseClicked(event -> {
                         Products products = tableView.getSelectionModel().getSelectedItem();
-
                         if (null == tableView) {
-                            {
-                                return;
-                            }
+                            return;
                         }
-
                         Main.primaryStage.setUserData(products);
-
                         customDialog.showFxmlDialog("ViewSizeAndPrice.fxml", "SIZE AND PRICE CHART");
-                        bnRefresh(null);
                     });
 
                     HBox container = new HBox(bnCheckPrice);
                     container.setStyle("-fx-alignment:center");
                     HBox.setMargin(bnCheckPrice, new Insets(2, 20, 2, 20));
                     setGraphic(container);
-
                     setText(null);
                 }
             }

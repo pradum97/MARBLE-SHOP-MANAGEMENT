@@ -38,7 +38,10 @@ public class SelectSize implements Initializable {
     public TableColumn<Stock, String> colMinSellPrice;
     public TableColumn<Stock, String> colQuantity;
     public TableColumn<Stock, String> colAction;
+    public TableColumn<Stock, String> colPriceType;
     public TableView<Stock> tableView;
+    public TableColumn<Stock, String> colPcsPerPkt;
+
     private CustomDialog customDialog;
     private DBConnection dbConnection;
     private Products products;
@@ -106,6 +109,8 @@ public class SelectSize implements Initializable {
         tableView.setItems(stockList);
         colPurchasePrice.setCellValueFactory(new PropertyValueFactory<>("purchasePrice"));
         colMrp.setCellValueFactory(new PropertyValueFactory<>("productMRP"));
+        colPriceType.setCellValueFactory(new PropertyValueFactory<>("priceType"));
+        colPcsPerPkt.setCellValueFactory(new PropertyValueFactory<>("pcsPerPacket"));
         colMinSellPrice.setCellValueFactory(new PropertyValueFactory<>("minSellingPrice"));
         colQuantity.setCellValueFactory(new PropertyValueFactory<>("fullQuantity"));
         colSize.setCellValueFactory(new PropertyValueFactory<>("fullSize"));
@@ -186,6 +191,7 @@ public class SelectSize implements Initializable {
             ps.setInt(4, stock.getStockID());
             ps.setLong(5, quantity.getQuantity());
             ps.setString(6, quantity.getQuantityUnit());
+            ps.setString(7, quantity.getPriceType());
 
             int res = ps.executeUpdate();
 

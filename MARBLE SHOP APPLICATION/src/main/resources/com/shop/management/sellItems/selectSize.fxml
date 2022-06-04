@@ -18,8 +18,10 @@
                       <TableColumn fx:id="colSize" editable="false" minWidth="130.0" sortable="false" text="SIZE" />
                       <TableColumn fx:id="colPurchasePrice" editable="false" minWidth="90.0" sortable="false" text="PUR PRICE" />
                       <TableColumn fx:id="colMrp" editable="false" minWidth="90.0" sortable="false" text="MRP" />
+                      <TableColumn fx:id="colPriceType" editable="false" minWidth="90.0" sortable="false" text="PRICE TYPE" />
                       <TableColumn fx:id="colMinSellPrice" editable="false" minWidth="90.0" sortable="false" text="MIN-SELL" />
                       <TableColumn fx:id="colQuantity" editable="false" minWidth="170.0" sortable="false" text="QUANTITY" />
+                      <TableColumn fx:id="colPcsPerPkt" editable="false" minWidth="120.0" maxWidth="140" sortable="false" text="PCS PER PACKET" />
                       <TableColumn fx:id="colAction" editable="false" minWidth="130.0" sortable="false" text="ACTION" />
       
                   </columns>

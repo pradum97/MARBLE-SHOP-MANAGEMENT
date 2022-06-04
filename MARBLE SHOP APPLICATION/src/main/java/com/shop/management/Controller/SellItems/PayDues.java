@@ -206,15 +206,7 @@ public class PayDues implements Initializable {
                     ps.setInt(2,saleMain.getSale_main_id());
                     ps.executeUpdate();
 
-                    Stage stage = null;
-
-                    if (source instanceof ActionEvent){
-                        stage = (Stage) ((Node)source).getScene().getWindow();
-                    }else {
-                        stage = (Stage) ((Node)source).getScene().getWindow();
-                    }
-
-
+                    Stage stage = (Stage) ((Node)source).getScene().getWindow();
 
                     String query = propInsert.getProperty("INSERT_DUES_HISTORY_IN_PAYDUES");
                     psH = connection.prepareStatement(query);
@@ -237,6 +229,8 @@ public class PayDues implements Initializable {
                             ps.executeUpdate();
 
                         }
+
+                        Main.primaryStage.setUserData((boolean)true);
                         stage.close();
                     }
 

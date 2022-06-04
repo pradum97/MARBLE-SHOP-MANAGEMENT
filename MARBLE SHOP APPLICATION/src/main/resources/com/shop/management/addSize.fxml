@@ -48,6 +48,39 @@
                     </VBox>
                 </children>
             </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0" spacing="30.0">
+                <children>
+                    <VBox layoutX="10.0" layoutY="10.0" spacing="5.0">
+                        <children>
+                            <Label text="PRICE TYPE  :">
+                                <font>
+                                    <Font name="Arial Bold" size="12.0" />
+                                </font>
+                            </Label>
+                            <ComboBox fx:id="priceTypeC" minHeight="40.0" prefHeight="40.0" prefWidth="250.0" style="-fx-border-color: gray; -fx-border-radius: 2;" />
+                        </children>
+                        <HBox.margin>
+                            <Insets left="20.0" />
+                        </HBox.margin>
+                    </VBox>
+                    <VBox spacing="5.0">
+                        <children>
+                            <Label text="PCS PER PACKET :">
+                                <font>
+                                    <Font name="Arial Bold" size="12.0" />
+                                </font>
+                            </Label>
+                            <ComboBox fx:id="pcsPerPacket" prefHeight="40.0" prefWidth="250.0" style="-fx-border-color: gray; -fx-border-radius: 2;" />
+                        </children>
+                        <HBox.margin>
+                            <Insets right="20.0" />
+                        </HBox.margin>
+                    </VBox>
+                </children>
+                <VBox.margin>
+                    <Insets top="8.0" />
+                </VBox.margin>
+            </HBox>
             <HBox alignment="CENTER" fillHeight="false" spacing="10.0">
                 <children>
                     <VBox layoutX="10.0" layoutY="10.0" spacing="5.0">

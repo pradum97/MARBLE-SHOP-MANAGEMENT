@@ -12,7 +12,8 @@ public class Stock {
 
     private int quantity;
 
-    private String fullSize, fullQuantity;
+    private String fullSize, fullQuantity , priceType;
+    private int pcsPerPacket;
 
     public Stock(int stockID, int productID, double purchasePrice, double productMRP, double minSellingPrice,
                  double height, double width, String sizeUnit, String quantityUnit, int quantity) {
@@ -26,12 +27,11 @@ public class Stock {
         this.sizeUnit = sizeUnit;
         this.quantityUnit = quantityUnit;
         this.quantity = quantity;
-
     }
 
     public Stock(int stockID, int productID, double purchasePrice, double productMRP, double minSellingPrice,
                  double height, double width, String sizeUnit, String quantityUnit, int quantity,
-                 String fullSize, String fullQuantity ) {
+                 String fullSize, String fullQuantity, String priceType, int pcsPerPacket) {
         this.stockID = stockID;
         this.productID = productID;
         this.purchasePrice = purchasePrice;
@@ -44,6 +44,8 @@ public class Stock {
         this.quantity = quantity;
         this.fullSize = fullSize;
         this.fullQuantity = fullQuantity;
+        this.priceType = priceType;
+        this.pcsPerPacket = pcsPerPacket;
     }
 
     @Override
@@ -53,6 +55,22 @@ public class Stock {
 
         return h.stripTrailingZeros().toPlainString() + " x "
                 + w.stripTrailingZeros().toPlainString() + getSizeUnit();
+    }
+
+    public String getPriceType() {
+        return priceType;
+    }
+
+    public void setPriceType(String priceType) {
+        this.priceType = priceType;
+    }
+
+    public int getPcsPerPacket() {
+        return pcsPerPacket;
+    }
+
+    public void setPcsPerPacket(int pcsPerPacket) {
+        this.pcsPerPacket = pcsPerPacket;
     }
 
     public String getFullSize() {

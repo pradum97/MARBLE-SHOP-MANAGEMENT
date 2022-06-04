@@ -6,6 +6,7 @@ import com.shop.management.CustomDialog;
 import com.shop.management.ImageLoader;
 import com.shop.management.Main;
 import com.shop.management.Method.Method;
+import com.shop.management.Method.StaticData;
 import com.shop.management.Model.Stock;
 import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
@@ -15,6 +16,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
@@ -40,6 +42,8 @@ public class UpdateSize implements Initializable {
     public TextField productWidth;
     public ComboBox<String> productSizeUnit;
     public Button bnAddSize;
+    public ComboBox<String> priceTypeC;
+    public ComboBox<Integer> pcsPerPacket;
     private Stock stock;
     private Method method;
     private CustomDialog customDialog;
@@ -58,7 +62,6 @@ public class UpdateSize implements Initializable {
         dbConnection = new DBConnection();
         setPreviousData();
 
-
         purchasePrice.textProperty().addListener((observableValue, old, newValue) -> {
 
             double purchasePrice_d = 0, minPrice = 0;
@@ -75,7 +78,6 @@ public class UpdateSize implements Initializable {
             minSellPrice.setText(String.valueOf(minPrice));
 
         });
-
     }
 
     private void setPreviousData() {
@@ -86,19 +88,28 @@ public class UpdateSize implements Initializable {
         purchasePrice.setText(String.valueOf(stock.getPurchasePrice()));
         productMrp.setText(String.valueOf(stock.getProductMRP()));
         minSellPrice.setText(String.valueOf(stock.getMinSellingPrice()));
-
         productHeight.setText(h.stripTrailingZeros().toPlainString());
         productWidth.setText(w.stripTrailingZeros().toPlainString());
-
         productSizeUnit.getItems().add(stock.getSizeUnit());
-
         productSizeUnit.getSelectionModel().selectFirst();
-
         productSizeUnit.setItems(method.getSizeUnit());
+
+        priceTypeC.getItems().add(stock.getPriceType());
+        priceTypeC.getSelectionModel().selectFirst();
+
+        pcsPerPacket.getItems().add(stock.getPcsPerPacket());
+        pcsPerPacket.getSelectionModel().selectFirst();
+
+        StaticData sd = new StaticData();
+        pcsPerPacket.setItems(sd.getPcsPerPacketList());
+        priceTypeC.setItems(sd.getSizeQuantityUnit());
     }
 
     public void enterPress(KeyEvent keyEvent) {
 
+        if (keyEvent.getCode() == KeyCode.ENTER){
+            bnUpdateSize(null);
+        }
     }
 
     public void bnUpdateSize(ActionEvent event) {
@@ -139,7 +150,14 @@ public class UpdateSize implements Initializable {
         } else if (minSellPrice_s.isEmpty()) {
             method.show_popup("ENTER MIN SELLING PRICE ", minSellPrice);
             return;
+        } else  if (priceTypeC.getSelectionModel().isEmpty()){
+            method.show_popup("PLEASE SELECT PRICE TYPE", priceTypeC);
+            return;
+        } else if (pcsPerPacket.getSelectionModel().isEmpty()){
+            method.show_popup("PLEASE SELECT PCS PER PACKET", pcsPerPacket);
+            return;
         }
+
         try {
             min_Sell_Price = Double.parseDouble(minSellPrice_s.replaceAll("[^0-9.]", ""));
 
@@ -179,6 +197,8 @@ public class UpdateSize implements Initializable {
             return;
         }
         String sizeUnit = productSizeUnit.getValue();
+        String priceTypeS = priceTypeC.getSelectionModel().getSelectedItem();
+        int pcsPerPkt = pcsPerPacket.getSelectionModel().getSelectedItem();
 
 
         Connection connection = null;
@@ -199,7 +219,9 @@ public class UpdateSize implements Initializable {
             ps.setDouble(4, height);
             ps.setDouble(5, width);
             ps.setString(6, sizeUnit);
-            ps.setInt(7, stock.getStockID());
+            ps.setString(7, priceTypeS);
+            ps.setInt(8, pcsPerPkt);
+            ps.setInt(9, stock.getStockID());
 
             int res = ps.executeUpdate();
 

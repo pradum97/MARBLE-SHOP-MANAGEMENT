@@ -6,10 +6,12 @@ public class ProductSize {
    private double purchasePrice, productMRP , MinSellPrice ;
    private double width , height;
    private long quantity ;
-   private String  sizeUnit , quantityUnit;
+   private String  sizeUnit , quantityUnit , priceType;
+   private int pcsPerPkt;
 
-    public ProductSize(double purchasePrice, double productMRP, double minSellPrice, double width, double height,
-                       long quantity, String sizeUnit, String quantityUnit) {
+    public ProductSize(double purchasePrice, double productMRP, double minSellPrice,
+                       double width, double height, long quantity, String sizeUnit, String quantityUnit,
+                       String priceType, int pcsPerPkt) {
         this.purchasePrice = purchasePrice;
         this.productMRP = productMRP;
         MinSellPrice = minSellPrice;
@@ -18,6 +20,24 @@ public class ProductSize {
         this.quantity = quantity;
         this.sizeUnit = sizeUnit;
         this.quantityUnit = quantityUnit;
+        this.priceType = priceType;
+        this.pcsPerPkt = pcsPerPkt;
+    }
+
+    public String getPriceType() {
+        return priceType;
+    }
+
+    public void setPriceType(String priceType) {
+        this.priceType = priceType;
+    }
+
+    public int getPcsPerPkt() {
+        return pcsPerPkt;
+    }
+
+    public void setPcsPerPkt(int pcsPerPkt) {
+        this.pcsPerPkt = pcsPerPkt;
     }
 
     public double getPurchasePrice() {

@@ -18,9 +18,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Method extends StaticData {
-
-    public final static int PER_PACKET_PCS = 6;
-
     public ObservableList<String> getProductColor() {
         Connection connection = null;
         PreparedStatement ps = null;

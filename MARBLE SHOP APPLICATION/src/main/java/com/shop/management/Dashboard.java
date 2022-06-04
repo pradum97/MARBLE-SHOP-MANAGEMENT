@@ -144,7 +144,7 @@ public class Dashboard implements Initializable {
             }
 
         });
-        stockControl.setOnAction(event -> customDialog.showFxmlFullDialog("setting/stockControl.fxml", "STOCK SETTING"));
+        stockControl.setOnAction(event -> customDialog.showFxmlDialog2("setting/stockControl.fxml", "STOCK SETTING"));
         supplier.setOnAction(event -> customDialog.showFxmlFullDialog("stock/allSupplier.fxml", "ALL SUPPLIER"));
         purchaseHistory.setOnAction(event -> customDialog.showFxmlFullDialog("purchaseHistory.fxml", ""));
         profile.setOnAction(event -> {

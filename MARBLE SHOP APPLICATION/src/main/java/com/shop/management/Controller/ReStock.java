@@ -39,12 +39,13 @@ public class ReStock implements Initializable {
     public TextField purchasePriceTf;
     public TextField mrpTf;
     public TextField minSaleTf;
+    public ComboBox<String> priceTypeC;
+    public ComboBox<Integer> pcsPerPacket;
 
     private Method method;
     private DBConnection dbConnection;
     private CustomDialog customDialog;
     private StockMainModel stockMainModel;
-
     private ObservableList<SupplierModel> supplierList = FXCollections.observableArrayList();
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -83,8 +84,14 @@ public class ReStock implements Initializable {
 
     private void comboBox() {
 
-       unitCom.getItems().add(stockMainModel.getProductFullQuantity().split(" -")[1]);
-       unitCom.getSelectionModel().selectFirst();
+       unitCom.setItems(new StaticData().getSizeQuantityUnit());
+       unitCom.getSelectionModel().select(1);
+
+       StaticData sd = new StaticData();
+       priceTypeC.setItems(sd.getSizeQuantityUnit());
+       pcsPerPacket.setItems(sd.getPcsPerPacketList());
+        pcsPerPacket.getSelectionModel().selectFirst();
+
         supplierCom.setButtonCell(new ListCell<>() {
             @Override
             public void updateItem(SupplierModel item, boolean empty) {
@@ -97,6 +104,31 @@ public class ReStock implements Initializable {
                 }
             }
         });
+        priceTypeC.setButtonCell(new ListCell<>() {
+            @Override
+            public void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item != null) {
+                    setText(item);
+                    setAlignment(Pos.CENTER);
+                    Insets old = getPadding();
+                    setPadding(new Insets(old.getTop(), 0, old.getBottom(), 0));
+                }
+            }
+        });
+        pcsPerPacket.setButtonCell(new ListCell<>() {
+            @Override
+            public void updateItem( Integer item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item != null) {
+                    setText(String.valueOf(item));
+                    setAlignment(Pos.CENTER);
+                    Insets old = getPadding();
+                    setPadding(new Insets(old.getTop(), 0, old.getBottom(), 0));
+                }
+            }
+        });
+
 
         supplierCom.setCellFactory(new Callback<>() {
             @Override
@@ -211,7 +243,7 @@ public class ReStock implements Initializable {
 
     public void addSupplier(ActionEvent event) {
 
-        customDialog.showFxmlDialog("stock/addSupplier.fxml", "ADD SUPPLIER");
+        customDialog.showFxmlDialog2("stock/addSupplier.fxml", "ADD SUPPLIER");
         getSupplier();
     }
 
@@ -307,6 +339,12 @@ public class ReStock implements Initializable {
             method.show_popup("ENTER MINIMUM SELLING PRICE LESS THAN MRP", minSaleTf);
             return;
 
+        }else  if (priceTypeC.getSelectionModel().isEmpty()){
+            method.show_popup("PLEASE SELECT PRICE TYPE", priceTypeC);
+            return;
+        } else if (pcsPerPacket.getSelectionModel().isEmpty()){
+            method.show_popup("PLEASE SELECT PCS PER PACKET", pcsPerPacket);
+            return;
         }
         Connection connection = null;
         PreparedStatement ps = null , psStock = null;
@@ -318,23 +356,36 @@ public class ReStock implements Initializable {
                 return;
             }
 
+            int qty ;
+            int pcsPerPkt = pcsPerPacket.getSelectionModel().getSelectedItem();
+
+            if (quantityUnit.equals("PKT")){
+                qty = (quantity*pcsPerPkt);
+            }else {
+                qty = quantity;
+            }
+
             String stockUpdateQuery = "UPDATE tbl_product_stock SET quantity =  quantity + ? , quantity_unit = ? ," +
-                    " purchase_price = ? , product_mrp = ? ,min_sellingprice = ? where stock_id = ?";
+                    " purchase_price = ? , product_mrp = ? ,min_sellingprice = ? , PRICE_TYPE = ? , PCS_PER_PACKET = ? where stock_id = ?";
 
             psStock = connection.prepareStatement(stockUpdateQuery);
-            psStock.setInt(1,quantity);
-            psStock.setString(2,quantityUnit);
+            psStock.setInt(1,qty);
+            psStock.setString(2,"PCS");
             psStock.setDouble(3,purchase_price);
             psStock.setDouble(4,mrp);
             psStock.setDouble(5,min_Sell_Price);
-            psStock.setInt(6,stockMainModel.getStockId());
+            psStock.setString(6,"PCS");
+
+            psStock.setInt(7,pcsPerPkt);
+            psStock.setInt(8,stockMainModel.getStockId());
 
             int res = psStock.executeUpdate();
 
             if (res > 0 ){
                 res = 0;
 
-                String query = "INSERT INTO  purchase_history( SUPPLIER_ID, PRODUCT_ID, STOCK_ID, SELLER_ID, INVOICE_NUM, ACTIVITY_TYPE, QUANTITY , purchase_price , mrp , min_sell) VALUES (?,?,?,?,?,?,?,?,?,?)";
+                String query = "INSERT INTO  purchase_history( SUPPLIER_ID, PRODUCT_ID, STOCK_ID, SELLER_ID," +
+                        " INVOICE_NUM, ACTIVITY_TYPE, QUANTITY , purchase_price , mrp , min_sell) VALUES (?,?,?,?,?,?,?,?,?,?)";
                 ps = connection.prepareStatement(query);
                 ps.setInt(1,supplierId);
                 ps.setInt(2,stockMainModel.getProductId());
@@ -346,7 +397,6 @@ public class ReStock implements Initializable {
                 }else {
                     ps.setString(5 , sInvoiceNumberTf.getText());
                 }
-
                 ps.setString(6,"RE-STOCK");
 
                 ps.setString(7,quantity+" -"+quantityUnit);

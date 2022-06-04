@@ -77,13 +77,13 @@ public class CartQuantityUpdate implements Initializable {
 
         CountCartQty ccq = new CountCartQty();
         availableQuantity = availableQuantity-ccq.countQty(cartModel.getProductStockID(),
-                cartModel.getQuantityUnit());
+                cartModel.getQuantityUnit() , cartModel.getPcsPerPacket());
 
         String qtyUnit = quantity_unit;
 
         if (qtyUnit.equals("PKT")) {
 
-            long p = availableQuantity * Method.PER_PACKET_PCS;
+            long p = availableQuantity * cartModel.getPcsPerPacket();
             avlQty = p - requiredQuantity;
             qtyUnit = "PCS";
         } else {
@@ -96,8 +96,8 @@ public class CartQuantityUpdate implements Initializable {
 
         if (qtyUnit.equals("PCS")) {
 
-            long pkt = avlQty / Method.PER_PACKET_PCS;
-            long pcs = avlQty % Method.PER_PACKET_PCS;
+            long pkt = avlQty / cartModel.getPcsPerPacket();
+            long pcs = avlQty % cartModel.getPcsPerPacket();
 
             fullQuantity = pkt + " - PKT , " + pcs + " - PCS";
         } else {
@@ -201,7 +201,7 @@ public class CartQuantityUpdate implements Initializable {
         long qty;
 
         if (unit.equals("PKT")) {
-            qty = quantity * Method.PER_PACKET_PCS;
+            qty = quantity * cartModel.getPcsPerPacket();
         } else {
             qty = Long.parseLong(quan.replaceAll("[^0-9.]", ""));
         }

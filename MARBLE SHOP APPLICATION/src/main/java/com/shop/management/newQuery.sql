@@ -1,8 +1,8 @@
-
-up
-
 update tbl_product_stock set quantity = (quantity*6) ,
                              quantity_unit='PCS' where quantity_unit = 'PKT';
+
+update tbl_saleitems set product_quantity = concat((NULLIF(SPLIT_PART(product_quantity, ' -', 1), '')::numeric *6) ,' -PCS')
+where SPLIT_PART(product_quantity, ' -', 2) = 'PKT';
 
 CREATE TABLE IF NOT EXISTS TBL_LICENSE
 (
@@ -15,7 +15,6 @@ CREATE TABLE IF NOT EXISTS TBL_LICENSE
     LICENSE_TYPE        VARCHAR(50)  NOT NULL,
     LICENSE_PERIOD_DAYS INTEGER      NOT NULL,
     REGISTERED_EMAIL    VARCHAR(100) NOT NULL
-
 );
 
 delete from tbl_cart;
@@ -31,9 +30,16 @@ values ('White'),('Dark grey'),('Blue'),
        ('Brown'),('Black'),('Gold'),('Orange'),('Red'),
        ('Green'),('Black porcelain'),('Multicolour'),('Other');
 
-/*
+ALTER TABLE tbl_product_stock ADD COLUMN PRICE_TYPE VARCHAR(20) ,
+                              ADD COLUMN PCS_PER_PACKET INTEGER ;
 
-APPLICATION ID :- JEH1653819073034
-SERIAL KEY :- UXMX-UQRU-SWDC-8165
+ALTER TABLE tbl_saleitems ADD COLUMN PRICE_TYPE VARCHAR(20) ,
+                              ADD COLUMN PCS_PER_PACKET INTEGER;
 
-*/
+alter table tbl_cart add column price_type varchar(50)
+
+-- update product
+
+
+--APPLICATION ID :- JEH1653819073034
+--SERIAL KEY :- UXMX-UQRU-SWDC-8165

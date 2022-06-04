@@ -183,7 +183,6 @@ CREATE TABLE TBL_PRODUCTS
 );
 
 
-
 CREATE TABLE TBL_CART
 (
 
@@ -193,9 +192,9 @@ CREATE TABLE TBL_CART
     SELLPrice     NUMERIC               NOT NULL,
     STOCK_ID      INTEGER               NOT NULL,
     QUANTITY      NUMERIC               NOT NULL,
+    price_type    varchar(50),
     QUANTITY_UNIT VARCHAR(100)          NOT NULL
-)
-;
+);
 
 CREATE TABLE TBL_PRODUCT_STOCK
 (
@@ -210,13 +209,14 @@ CREATE TABLE TBL_PRODUCT_STOCK
     STORE_DATE       timestamp default CURRENT_TIMESTAMP not null,
     SIZE_UNIT        VARCHAR(100)                        NOT NULL,
     QUANTITY_UNIT    VARCHAR(100)                        NOT NULL,
+    PRICE_TYPE       VARCHAR(20)                         NOT NULL,
+    PCS_PER_PACKET   INTEGER                             NOT NULL,
     IS_ACTIVE        INT       DEFAULT 1                 NOT NULL,
 
     FOREIGN KEY (PRODUCT_ID)
         REFERENCES TBL_PRODUCTS (PRODUCT_ID)
 
 );
-
 CREATE TABLE TBL_CUSTOMER
 (
     CUSTOMER_ID      SERIAL PRIMARY KEY                  NOT NULL,
@@ -271,6 +271,8 @@ CREATE TABLE tbl_saleItems
     DISCOUNT_NAME    VARCHAR(100),
     DISCOUNT_AMOUNT  NUMERIC,
     discountPer      numeric,
+    PRICE_TYPE       VARCHAR(20)           NOT NULL,
+    PCS_PER_PACKET   INTEGER               NOT NULL,
     HSN_SAC          NUMERIC,
     igst             NUMERIC,
     sgst             NUMERIC,

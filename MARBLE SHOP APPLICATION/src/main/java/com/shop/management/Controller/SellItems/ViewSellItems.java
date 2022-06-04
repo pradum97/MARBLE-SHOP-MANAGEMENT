@@ -24,7 +24,6 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class ViewSellItems implements Initializable {
-
     int rowsPerPage = 8;
     public TableColumn<SaleItems, Integer> col_sno;
     public TableColumn<SaleItems, String> colProductName;
@@ -92,25 +91,33 @@ public class ViewSellItems implements Initializable {
                 double sellPrice = rs.getDouble("sell_price");
 
                 String quantity = rs.getString("product_quantity");
-                String discountName = rs.getString("discount_name");
+                String discName = rs.getString("discount_name");
 
                 double discountAmount = rs.getDouble("discount_amount");
                 double taxAmount = rs.getDouble("tax_amount");
                 double netAmount = rs.getDouble("net_amount");
                 int hsn = rs.getInt("hsn_sac");
+                int pcsPerPkt = rs.getInt("PCS_PER_PACKET");
 
                 int igst = rs.getInt("igst");
                 int sgst = rs.getInt("sgst");
                 int cgst = rs.getInt("cgst");
                 String saleDate = rs.getString("sale_date");
 
+                String discountName;
+                if (null == discName || discName.isEmpty()){
+                    discountName = "-";
+                }else {
+                    discountName = discName;
+                }
+
+                String priceType = rs.getString("price_type");
                 String fullDiscount = discountAmount + " ( " + rs.getString("discountPer") + " % )";
-
-
                 int tax = igst + cgst + sgst;
+                String sellRate = sellPrice+" / "+priceType;
 
                 reportList.add(new SaleItems(saleItemId, productId, stockId, productName, productColor, productSize, productType, productCategory, purchasePrice, productMrp,
-                        sellPrice, discountAmount, taxAmount, netAmount, discountName, quantity, hsn, tax, igst, cgst, sgst, saleDate, fullDiscount));
+                        discountAmount, taxAmount, netAmount, discountName, quantity , hsn, tax, igst, cgst, sgst, saleDate, fullDiscount , sellRate));
 
             }
             if (null != reportList) {

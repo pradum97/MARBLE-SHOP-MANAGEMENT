@@ -29,9 +29,9 @@
                             <TableColumn fx:id="colMrp" editable="false" minWidth="100.0" prefWidth="-1.0" sortable="false" text="MRP" />
                             <TableColumn fx:id="colProductType" editable="false" maxWidth="90.0" minWidth="90.0" prefWidth="-1.0" sortable="false" text="TYPE" />
                             <TableColumn fx:id="colProductCategory" editable="false" minWidth="100.0" prefWidth="-1.0" sortable="false" text="CATEGORY" />
-                            <TableColumn fx:id="colProductColor" editable="false" minWidth="100.0" prefWidth="-1.0" sortable="false" text="COLOR" />
+                            <TableColumn visible="false" fx:id="colProductColor" editable="false" minWidth="100.0" prefWidth="-1.0" sortable="false" text="COLOR" />
                             <TableColumn fx:id="colProductSize" editable="false" minWidth="100.0" prefWidth="-1.0" sortable="false" text="SIZE" />
-                            <TableColumn fx:id="colProductQuantity" editable="false" maxWidth="150.0" minWidth="100.0" prefWidth="-1.0" sortable="false" text="QUANTITY" />
+                            <TableColumn fx:id="colProductQuantity" editable="false" minWidth="150.0" sortable="false" text="QUANTITY" />
                             <TableColumn fx:id="colStockStatus" editable="false" minWidth="230.0" sortable="false" text="STOCK STATUS" />
       
                         </columns>

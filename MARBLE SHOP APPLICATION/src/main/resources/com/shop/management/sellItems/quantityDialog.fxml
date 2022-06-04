@@ -50,10 +50,46 @@
                               <Insets left="20.0" />
                            </HBox.margin>
                         </Label>
-                        <Label fx:id="purchasePrice" layoutX="35.0" layoutY="15.0">
+                        <Label fx:id="purchasePriceL" layoutX="35.0" layoutY="15.0">
                            <font>
                               <Font size="15.0" />
                            </font>
+                        </Label>
+                        <Label fx:id="purPriceType">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets left="5.0" />
+                           </HBox.margin>
+                        </Label>
+                     </children>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="88.0" onKeyReleased="#enterPress">
+                     <children>
+                        <Label text="MINIMUM SELLING PRICE :  ">
+                           <font>
+                              <Font name="Arial Bold" size="13.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets left="20.0" />
+                           </HBox.margin>
+                        </Label>
+                        <Label fx:id="minSellingPrice" layoutX="35.0" layoutY="15.0">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="minPriceType">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets left="5.0" />
+                           </HBox.margin>
                         </Label>
                      </children>
                      <padding>
@@ -75,25 +111,13 @@
                               <Font size="15.0" />
                            </font>
                         </Label>
-                     </children>
-                     <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding>
-                  </HBox>
-                  <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="88.0" onKeyReleased="#enterPress">
-                     <children>
-                        <Label text="MINIMUM SELLING PRICE :  ">
+                        <Label fx:id="mrpPriceType">
                            <font>
-                              <Font name="Arial Bold" size="13.0" />
+                              <Font name="System Bold" size="13.0" />
                            </font>
                            <HBox.margin>
-                              <Insets left="20.0" />
+                              <Insets left="5.0" />
                            </HBox.margin>
-                        </Label>
-                        <Label fx:id="minSellingPrice" layoutX="35.0" layoutY="15.0">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
                         </Label>
                      </children>
                      <padding>
@@ -220,10 +244,10 @@
                                     <Insets left="5.0" />
                                  </HBox.margin>
                                  <children>
-                                    <TextField fx:id="sellingPriceTf" minHeight="37.0" prefWidth="200.0" promptText="ENTER SELLING PRICE " style="-fx-border-color: black;" />
-                                    <Label alignment="CENTER" minHeight="37.0" prefWidth="85.0" style="-fx-border-color: BLACK;" text="INR" textAlignment="CENTER">
+                                    <TextField fx:id="sellingPriceTf" minHeight="37.0" prefWidth="170.0" promptText="ENTER SELLING PRICE " style="-fx-border-color: black;" />
+                                    <Label fx:id="sellPriceType" alignment="CENTER" minHeight="37.0" prefWidth="115.0" style="-fx-border-color: BLACK;" textAlignment="CENTER">
                                        <font>
-                                          <Font name="Arial Black" size="15.0" />
+                                          <Font name="Arial Bold" size="12.0" />
                                        </font>
                                     </Label>
                                  </children>

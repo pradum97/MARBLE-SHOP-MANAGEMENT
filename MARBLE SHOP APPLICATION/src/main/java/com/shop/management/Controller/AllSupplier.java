@@ -281,7 +281,7 @@ public class AllSupplier implements Initializable {
     }
 
     public void addSupplier(ActionEvent event) {
-        customDialog.showFxmlDialog("stock/addSupplier.fxml", "ADD SUPPLIER");
+        customDialog.showFxmlDialog2("stock/addSupplier.fxml", "ADD SUPPLIER");
         getSupplier();
     }
 }

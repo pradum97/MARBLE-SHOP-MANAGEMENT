@@ -45,7 +45,6 @@ public class ViewSizeAndPrice implements Initializable {
     private DBConnection dbConnection;
     private Products products;
     private ObservableList<Stock> stockList = FXCollections.observableArrayList();
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -70,7 +69,6 @@ public class ViewSizeAndPrice implements Initializable {
         }
 
         tableView.setItems(stockList);
-
         colPurchasePrice.setCellValueFactory(new PropertyValueFactory<>("purchasePrice"));
         colMrp.setCellValueFactory(new PropertyValueFactory<>("productMRP"));
         colMinSellPrice.setCellValueFactory(new PropertyValueFactory<>("minSellingPrice"));

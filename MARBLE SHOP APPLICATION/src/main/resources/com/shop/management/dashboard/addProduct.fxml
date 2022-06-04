@@ -121,6 +121,7 @@
                                                       </VBox>
                                                   </children>
                                               </HBox>
+
                                               <VBox spacing="10.0" style="-fx-border-color: linear-gradient(from 25% 25% to 100% 100%, #dc143c, #32cd32); -fx-border-radius: 3;">
                                                   <children>
                                                       <HBox spacing="10.0">
@@ -156,6 +157,33 @@
                                                                   </children>
                                                               </VBox>
                                                           </children>
+                                                      </HBox>
+                                                      <HBox prefHeight="100.0" prefWidth="200.0" spacing="30.0">
+                                                          <children>
+                                                              <VBox layoutX="10.0" layoutY="10.0" spacing="5.0">
+                                                                  <children>
+                                                                      <Label text="PRICE TYPE  :">
+                                                                          <font>
+                                                                              <Font name="Arial Bold" size="12.0" />
+                                                                          </font>
+                                                                      </Label>
+                                                                      <ComboBox fx:id="priceTypeC" minHeight="40.0" prefHeight="40.0" prefWidth="290.0" style="-fx-border-color: gray; -fx-border-radius: 2;" />
+                                                                  </children>
+                                                              </VBox>
+                                                              <VBox spacing="5.0">
+                                                                  <children>
+                                                                      <Label text="PCS PER PACKET :">
+                                                                          <font>
+                                                                              <Font name="Arial Bold" size="12.0" />
+                                                                          </font>
+                                                                      </Label>
+                                                                      <ComboBox fx:id="pcsPerPacket" prefHeight="40.0" prefWidth="290.0" style="-fx-border-color: gray; -fx-border-radius: 2;" />
+                                                                  </children>
+                                                              </VBox>
+                                                          </children>
+                                                          <VBox.margin>
+                                                              <Insets top="8.0" />
+                                                          </VBox.margin>
                                                       </HBox>
                                                       <HBox fillHeight="false" spacing="10.0">
                                                           <children>
@@ -202,40 +230,40 @@
                                                                                       <Font name="Arial Bold" size="12.0" />
                                                                                   </font>
                                                                               </Label>
-                                                                              <TextField fx:id="productQuantity" minHeight="40.0" minWidth="188.0" onKeyReleased="#enterPress" prefHeight="40.0" prefWidth="250.0" promptText="Enter Quantity :" style="-fx-border-color: gray; -fx-border-radius: 3;" />
-                                                                          </children>
-                                                                      </VBox>
-                                                                      <VBox spacing="5.0" HBox.hgrow="ALWAYS">
-                                                                          <children>
-                                                                              <Label>
-                                                                                  <font>
-                                                                                      <Font name="System Bold" size="12.0" />
-                                                                                  </font>
-                                                                              </Label>
-                                                                              <ComboBox fx:id="productQuantityUnit" minHeight="40.0" minWidth="100.0" onKeyReleased="#enterPress" prefWidth="100.0" style="-fx-border-color: gray; -fx-border-radius: 3;" />
+                                                                              <HBox>
+                                                                                  <children>
+                                                                                      <TextField fx:id="productQuantity" minHeight="40.0" minWidth="188.0" onKeyReleased="#enterPress" prefHeight="40.0" prefWidth="250.0" promptText="Enter Quantity :" style="-fx-border-color: gray; -fx-border-radius: 0;" />
+                                                                                      <ComboBox fx:id="productQuantityUnit" minHeight="40.0" minWidth="100.0" onKeyReleased="#enterPress" prefWidth="100.0" style="-fx-border-color: gray; -fx-border-radius: 0;" />
+                                                                                  </children>
+                                                                              </HBox>
                                                                           </children>
                                                                       </VBox>
                                                                   </children>
                                                               </HBox>
                                                               <VBox alignment="CENTER" layoutX="271.0" layoutY="10.0" spacing="5.0" HBox.hgrow="ALWAYS">
                                                                   <children>
-                                                                      <Button fx:id="bnAddSize" alignment="CENTER" minHeight="30.0" minWidth="100.0" mnemonicParsing="false" onAction="#bnAddSize" onKeyReleased="#enterPress" prefHeight="30.0" prefWidth="130.0" style="-fx-border-color: gray; -fx-background-color: blue; -fx-border-radius: 3; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" text="ADD" textAlignment="CENTER">
+                                                                      <Button fx:id="bnAddSize" alignment="CENTER" minHeight="30.0" minWidth="100.0" mnemonicParsing="false" onAction="#bnAddSize" onKeyReleased="#enterPress" prefHeight="30.0" prefWidth="130.0" style="-fx-border-color: gray; -fx-background-color: blue; -fx-border-radius: 3; -fx-text-fill: white; -fx-cursor: hand;" text="ADD" textAlignment="CENTER">
                                                                           <VBox.margin>
                                                                               <Insets top="26.0" />
                                                                           </VBox.margin>
-                                                         <font>
-                                                            <Font name="Bookman Old Style" size="14.0" />
-                                                         </font>
+                                                                          <font>
+                                                                              <Font name="Arial Bold" size="14.0" />
+                                                                          </font>
                                                                       </Button>
                                                                   </children>
                                                               </VBox>
                                                           </children>
+                                                          <VBox.margin>
+                                                              <Insets bottom="10.0" />
+                                                          </VBox.margin>
                                                       </HBox>
                                                   </children>
                                                   <padding>
                                                       <Insets bottom="10.0" left="10.0" right="10.0" top="15.0" />
                                                   </padding>
                                               </VBox>
+
+
                                               <VBox alignment="CENTER" minWidth="510.0" prefWidth="510.0">
                                                   <children>
                                                       <Separator prefWidth="200.0">
@@ -249,6 +277,8 @@
                                                               <TableColumn fx:id="col_PurchasePrice" editable="false" prefWidth="120.0" reorderable="false" sortable="false" text="PURCHASE PRICE" />
                                                               <TableColumn fx:id="col_mrp" editable="false" prefWidth="100.0" reorderable="false" sortable="false" text="MRP" />
                                                               <TableColumn fx:id="col_minSelPrice" editable="false" prefWidth="120.0" reorderable="false" sortable="false" text="MIN SELL PRICE" />
+                                                              <TableColumn fx:id="colPriceType" editable="false" prefWidth="120.0" reorderable="false" sortable="false" text="PRICE TYPE" />
+                                                              <TableColumn fx:id="colPcsPerPkt" editable="false" prefWidth="120.0" reorderable="false" sortable="false" text="PCS PER PKT" />
                                                               <TableColumn fx:id="col_Height" editable="false" reorderable="false" sortable="false" text="HEIGHT" />
                                                               <TableColumn fx:id="col_Width" editable="false" reorderable="false" sortable="false" text="WIDTH" />
                                                               <TableColumn fx:id="col_SizeUit" editable="false" reorderable="false" sortable="false" text="UNIT" />

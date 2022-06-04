@@ -34,7 +34,6 @@ public class GetStockData {
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                String fullQuantity;
 
                 int stockID = rs.getInt("stock_id");
                 int productId = rs.getInt("product_id");
@@ -47,21 +46,26 @@ public class GetStockData {
                 double width = rs.getDouble("width");
 
                 int quantity = rs.getInt("quantity");
+                int pcsPerPkt = rs.getInt("pcs_per_packet");
 
                 String sizeUnit = rs.getString("size_unit");
                 String quantityUnit = rs.getString("quantity_unit");
+                String priceType = rs.getString("price_type");
+
+                String fullQuantity;
 
                 if (quantityUnit.equals("PCS")){
 
-                    int pkt = quantity / Method.PER_PACKET_PCS;
-                    int pcs = quantity % Method.PER_PACKET_PCS;
-
+                    int pkt = 0 , pcs = 0;
+                    try {
+                        pkt = quantity / pcsPerPkt;
+                        pcs = quantity % pcsPerPkt;
+                    } catch (Exception e) {
+                    }
                     fullQuantity = pkt+" - PKT , " + pcs+" - PCS";
                 }else {
                     fullQuantity = quantity+" - "+quantityUnit;
                 }
-
-
 
                 BigDecimal h = BigDecimal.valueOf(height);
                 BigDecimal w = BigDecimal.valueOf(width);
@@ -69,9 +73,8 @@ public class GetStockData {
                String fullSize =  h.stripTrailingZeros().toPlainString()+" x "
                        +w.stripTrailingZeros().toPlainString()+" "+sizeUnit;
 
-
                 stocks.add(new Stock(stockID, productId, purchasePrice, mrp, minSellPrice,
-                        height, width, sizeUnit, quantityUnit, quantity,fullSize,fullQuantity));
+                        height, width, sizeUnit, quantityUnit, quantity,fullSize,fullQuantity , priceType , pcsPerPkt));
             }
 
             return stocks;

@@ -194,6 +194,7 @@ public class SaleProduct implements Initializable {
         if (Main.primaryStage.getUserData() instanceof Boolean){
             boolean isSuccess = (boolean) Main.primaryStage.getUserData();
             if (isSuccess){
+                searchTf.setText("");
                 bnRefresh(null);
             }
         }
@@ -343,17 +344,13 @@ public class SaleProduct implements Initializable {
 
                     bnCheckPrice.setOnMouseClicked(event -> {
                         Products products = tableView.getSelectionModel().getSelectedItem();
-
                         if (null == tableView) {
                             {
                                 return;
                             }
                         }
-
                         Main.primaryStage.setUserData(products);
-
                         customDialog.showFxmlDialog("ViewSizeAndPrice.fxml", "SIZE AND PRICE CHART");
-                        bnRefresh(null);
                     });
 
 

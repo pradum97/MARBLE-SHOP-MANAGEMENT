@@ -36,7 +36,7 @@ public class QuantityDialog implements Initializable {
     final private String PACKET = "PKT";
     final private String PCS = "PCS";
     public Label size;
-    public Label purchasePrice;
+    public Label purchasePriceL;
     public Label productMrp;
     public Label minSellingPrice;
     public Label quantity_L;
@@ -46,6 +46,9 @@ public class QuantityDialog implements Initializable {
     public HBox sellPriceContainer;
     public Button bnAddCart;
     public Label errorL, requiredQty, avl_in_pcs;
+    public Label mrpPriceType;
+    public Label minPriceType;
+    public Label purPriceType, sellPriceType;
     private Stock stock;
     private Method method;
     private DBConnection dbConnection;
@@ -55,8 +58,10 @@ public class QuantityDialog implements Initializable {
     private Properties propUpdate, propRead;
     private final static String UPDATE_QUANTITY = "UPDATE QUANTITY";
     private final static String ADD_CART = "➕ ADD TO CART";
-
     private boolean isPcsExists, isPktExists;
+    private double purchasePrice = 0, minSellPrice = 0, mrp = 0;
+
+    private String priceType;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -73,11 +78,32 @@ public class QuantityDialog implements Initializable {
         method = new Method();
         dbConnection = new DBConnection();
 
-        synchronized (this){
+        synchronized (this) {
             checkStockExist();
             getStockSetting();
         }
+    }
 
+    private void changePriceType(String priceType, double purPrice, double minPrice, double mrp) {
+
+        this.priceType = priceType;
+
+        String str = " PER ";
+        String inr = "";
+        mrpPriceType.setText(str + priceType + inr);
+        minPriceType.setText(str + priceType + inr);
+        purPriceType.setText(str + priceType + inr);
+        sellPriceType.setText(str + priceType + inr);
+        productMrp.setText(String.valueOf(mrp));
+
+        if (!isPktExists) {
+            sellingPriceTf.setText(String.valueOf(mrp));
+        } else if (!isPcsExists) {
+            sellingPriceTf.setText(String.valueOf(mrp));
+        }
+
+        purchasePriceL.setText(String.valueOf(purPrice));
+        minSellingPrice.setText(String.valueOf(minPrice));
 
     }
 
@@ -109,8 +135,6 @@ public class QuantityDialog implements Initializable {
                 if (cartQtyUnit.equals("PCS")) {
                     isPcsExists = true;
                     bnAddCart.setText(ADD_CART);
-                    BigDecimal mrp = BigDecimal.valueOf(stock.getProductMRP());
-                    sellingPriceTf.setText(mrp.stripTrailingZeros().toPlainString());
 
                     if (null != quantityUnit) {
                         quantityUnit.getItems().clear();
@@ -123,8 +147,6 @@ public class QuantityDialog implements Initializable {
                 if (cartQtyUnit.equals("PKT")) {
                     isPktExists = true;
                     bnAddCart.setText(ADD_CART);
-                    BigDecimal mrp = BigDecimal.valueOf(stock.getProductMRP());
-                    sellingPriceTf.setText(mrp.stripTrailingZeros().toPlainString());
 
                     if (null != quantityUnit) {
                         quantityUnit.getItems().clear();
@@ -150,11 +172,8 @@ public class QuantityDialog implements Initializable {
                 }
 
                 CountCartQty ccq = new CountCartQty();
-
-                setDefaultValue( ccq.countQty(stock.getStockID(),
-                        t1));
-
-
+                setDefaultValue(ccq.countQty(stock.getStockID(),
+                        t1, stock.getPcsPerPacket()));
             });
 
             if (count < 1) {
@@ -189,13 +208,11 @@ public class QuantityDialog implements Initializable {
                 errorL.setVisible(true);
                 errorL.setText("( This item is already in the cart )");
                 quantityTf.setText(String.valueOf(rs.getLong("quantity")));
-                sellingPriceTf.setText(String.valueOf(rs.getDouble("sellprice")));
                 double sellingPrice = rs.getDouble("sellprice");
                 BigDecimal sell_price = BigDecimal.valueOf(sellingPrice);
                 sellingPriceTf.setText(sell_price.stripTrailingZeros().toPlainString());
 
                 bnAddCart.setText(UPDATE_QUANTITY);
-
             }
 
         } catch (SQLException e) {
@@ -210,34 +227,58 @@ public class QuantityDialog implements Initializable {
         errorL.setText("");
         errorL.setVisible(false);
         errorL.managedProperty().bind(errorL.visibleProperty());
-        BigDecimal mrp = BigDecimal.valueOf(stock.getProductMRP());
-        sellingPriceTf.setText(mrp.stripTrailingZeros().toPlainString());
         quantityUnit.setItems(new StaticData().getSizeQuantityUnit());
-
-        if (avlQty < 6) {
-            quantityUnit.getSelectionModel().select(0);
-        } else {
-            quantityUnit.getSelectionModel().select(1);
-        }
-
+        quantityUnit.getSelectionModel().select(1);
         bnAddCart.setText(ADD_CART);
     }
 
     private void setDefaultValue(int qty) {
 
-
-        String inr = " INR";
         size.setText(stock.getFullSize());
-        purchasePrice.setText(stock.getPurchasePrice() + inr);
-        productMrp.setText(stock.getProductMRP() + inr);
-        minSellingPrice.setText(stock.getMinSellingPrice() + inr);
+
+        String currentUnit = quantityUnit.getSelectionModel().getSelectedItem();
+
+        if (currentUnit.equals("PKT")) {
+            purchasePrice = 0;
+            minSellPrice = 0;
+            mrp = 0;
+            if (stock.getPriceType().equals("PKT")) {
+                purchasePrice = stock.getPurchasePrice();
+                minSellPrice = stock.getMinSellingPrice();
+                mrp = stock.getProductMRP();
+            } else {
+                purchasePrice = stock.getPurchasePrice() * stock.getPcsPerPacket();
+                minSellPrice = stock.getMinSellingPrice() * stock.getPcsPerPacket();
+                mrp = stock.getProductMRP() * stock.getPcsPerPacket();
+            }
+            changePriceType("PKT", purchasePrice, minSellPrice, mrp);
+        } else {
+            purchasePrice = 0;
+            minSellPrice = 0;
+            mrp = 0;
+
+            if (stock.getPriceType().equals("PCS")) {
+                purchasePrice = stock.getPurchasePrice();
+                minSellPrice = stock.getMinSellingPrice();
+                mrp = stock.getProductMRP();
+
+            } else {
+                purchasePrice = stock.getPurchasePrice() / stock.getPcsPerPacket();
+                minSellPrice = stock.getMinSellingPrice() / stock.getPcsPerPacket();
+                mrp = stock.getProductMRP() / stock.getPcsPerPacket();
+            }
+
+            changePriceType("PCS", purchasePrice, minSellPrice, mrp);
+        }
+
         requiredQty.setText(requiredQuantity + " PCS");
 
         String qtyUnit = stock.getQuantityUnit();
 
+
         if (qtyUnit.equals("PKT")) {
 
-            int p = stock.getQuantity() * Method.PER_PACKET_PCS;
+            int p = stock.getQuantity() * stock.getPcsPerPacket();
             avlQty = p - requiredQuantity;
             qtyUnit = "PCS";
         } else {
@@ -252,14 +293,13 @@ public class QuantityDialog implements Initializable {
 
         if (qtyUnit.equals("PCS")) {
 
-            int pkt = avlQty / Method.PER_PACKET_PCS;
-            int pcs = avlQty % Method.PER_PACKET_PCS;
+            int pkt = avlQty / stock.getPcsPerPacket();
+            int pcs = avlQty % stock.getPcsPerPacket();
 
             fullQuantity = pkt + " - PKT , " + pcs + " - PCS";
         } else {
             fullQuantity = avlQty + " - " + qtyUnit;
         }
-
 
         quantity_L.setText(fullQuantity);
     }
@@ -284,7 +324,6 @@ public class QuantityDialog implements Initializable {
             method.show_popup("ENTER VALID QUANTITY", quantityUnit);
             return;
         }
-
         if (quantity < 1) {
             method.show_popup("ENTER QUANTITY MORE THEN 0", quantityUnit);
             return;
@@ -312,16 +351,16 @@ public class QuantityDialog implements Initializable {
         long qty;
 
         if (quantity_Unit.equals("PKT")) {
-            qty = quantity * Method.PER_PACKET_PCS;
+            qty = quantity * stock.getPcsPerPacket();
         } else {
             qty = Long.parseLong(quan.replaceAll("[^0-9.]", ""));
         }
 
         if (qty <= avlQty) {
 
-            if (sellingPrice >= stock.getMinSellingPrice()) {
+            if (sellingPrice >= minSellPrice) {
 
-                if (sellingPrice <= stock.getProductMRP()) {
+                if (sellingPrice <= mrp) {
 
                     switch (bnAddCart.getText()) {
                         case UPDATE_QUANTITY -> {
@@ -329,25 +368,23 @@ public class QuantityDialog implements Initializable {
                         }
                         case ADD_CART -> {
 
-                            addToCart(quantity, quantity_Unit, sellingPrice, event);
+                            addToCart(quantity, quantity_Unit, sellingPrice, event, priceType);
                         }
                     }
                 } else {
-                    method.show_popup("PLEASE ENTER LESS THEN " + stock.getProductMRP() + " OR " + stock.getProductMRP() + " RS.", sellingPriceTf);
+                    method.show_popup("PLEASE ENTER LESS THEN " + mrp + " RS.", sellingPriceTf);
                 }
             } else {
-                method.show_popup("PLEASE ENTER MORE THAN " + stock.getMinSellingPrice() + " RS.", sellingPriceTf);
+                method.show_popup("PLEASE ENTER MORE THAN " + minSellPrice + " RS.", sellingPriceTf);
             }
 
         } else {
             String msg;
-
             if (quantity_Unit.equals("PKT")) {
                 msg = quantity_L.getText();
             } else {
                 msg = avl_in_pcs.getText();
             }
-
             method.show_popup("QUANTITY NOT AVAILABLE! Tot Avl : " + msg, quantityTf);
         }
     }
@@ -369,8 +406,8 @@ public class QuantityDialog implements Initializable {
             if (rs.next()) {
                 requiredQuantity = rs.getInt("REQUIRED");
 
-                setDefaultValue( new CountCartQty().countQty(stock.getStockID(),
-                        quantityUnit.getSelectionModel().getSelectedItem()));
+                setDefaultValue(new CountCartQty().countQty(stock.getStockID(),
+                        quantityUnit.getSelectionModel().getSelectedItem(), stock.getPcsPerPacket()));
             }
 
         } catch (SQLException e) {
@@ -416,9 +453,9 @@ public class QuantityDialog implements Initializable {
         }
     }
 
-    private void addToCart(long quantity, String quantity_Unit, double sellingPrice, ActionEvent event) {
+    private void addToCart(long quantity, String quantity_Unit, double sellingPrice, ActionEvent event, String priceType) {
 
-        Quantity quantity1 = new Quantity(quantity, quantity_Unit, sellingPrice);
+        Quantity quantity1 = new Quantity(quantity, quantity_Unit, sellingPrice, priceType);
 
         Main.primaryStage.setUserData(quantity1);
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -430,9 +467,7 @@ public class QuantityDialog implements Initializable {
     }
 
     public void enterPress(KeyEvent e) {
-
         if (e.getCode() == KeyCode.ENTER) {
-            //do something
             bnAddToCart(null);
         }
     }

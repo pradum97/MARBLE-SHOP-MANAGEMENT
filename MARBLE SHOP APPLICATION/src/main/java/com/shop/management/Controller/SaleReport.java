@@ -329,11 +329,8 @@ public class SaleReport implements Initializable {
                         }
 
                         Main.primaryStage.setUserData(saleMain.getSale_main_id());
-
-
                         customDialog.showFxmlFullDialog("sellItems/viewSellItems.fxml", "All Items - " + saleMain.getCustomerName() + " / " + saleMain.getSellingDate() + " / Invoice- " +
                                 saleMain.getInvoiceNumber());
-                        bnRefresh(null);
                     });
 
                     HBox container = new HBox(bnChecItem);
@@ -380,11 +377,15 @@ public class SaleReport implements Initializable {
                         }
 
                         Main.primaryStage.setUserData(saleMain);
-
-
-                        customDialog.showFxmlDialog("sellItems/payDues.fxml", "PAY DUES - " + saleMain.getCustomerName() + " / " + saleMain.getSellingDate() + " / Invoice- " +
+                        customDialog.showFxmlDialog2("sellItems/payDues.fxml", "PAY DUES - " + saleMain.getCustomerName() + " / " + saleMain.getSellingDate() + " / Invoice- " +
                                 saleMain.getInvoiceNumber() + "DUES-ID- " + saleMain.getDuesId());
-                        bnRefresh(null);
+
+                        if (Main.primaryStage.getUserData() instanceof Boolean){
+                            boolean isSuccess = (boolean) Main.primaryStage.getUserData();
+                            if (isSuccess){
+                                bnRefresh(null);
+                            }
+                        }
                     });
                     bnDuesHistory.setOnMouseClicked(event -> {
                         Sale_Main saleMain = tableView.getSelectionModel().getSelectedItem();

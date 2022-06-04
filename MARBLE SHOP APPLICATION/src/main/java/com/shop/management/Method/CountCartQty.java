@@ -9,7 +9,7 @@ import java.sql.SQLException;
 
 public class CountCartQty {
 
-    public int countQty( int stockId , String qUnit){
+    public int countQty( int stockId , String qUnit , int pcsPerPkt){
 
         Connection connection = null;
         PreparedStatement ps = null;
@@ -41,7 +41,7 @@ public class CountCartQty {
                 String qtyUnit = rs.getString("quantity_unit");
 
                 if (qtyUnit.equals("PKT")){
-                    qty += quantity*Method.PER_PACKET_PCS;
+                    qty += quantity*pcsPerPkt;
                 }else {
                     qty += quantity;
                 }

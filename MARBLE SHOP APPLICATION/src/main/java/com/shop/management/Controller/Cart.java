@@ -68,7 +68,6 @@ public class Cart implements Initializable {
     public HBox paidAmountContainer;
     public VBox paymentModeContainer;
     private ObservableList<CartModel> cartList = FXCollections.observableArrayList();
-
     private double totalPayableD = 0;
     private double subTotAmount = 0;
     private double discountPrice = 0;
@@ -237,7 +236,7 @@ public class Cart implements Initializable {
             }
 
             String query = "SELECT  tps.purchase_price ,tps.product_mrp , tps.min_sellingprice ,\n" +
-                    "        tc.sellprice , tps.height , tps.width,tps.size_unit,\n" +
+                    "        tc.sellprice , tps.height ,tc.price_type,tps.pcs_per_packet , tps.width,tps.size_unit,\n" +
                     "        tc.quantity_unit, tc.quantity,tp.product_id , tp.product_color , tc.cart_id , tc.seller_id ,\n" +
                     "        tp.product_name,tp.product_type,tcategory.category_name , tcategory.category_id,\n" +
                     "        tp.discount_id ,tp.tax_id , tps.stock_id ,\n" +
@@ -252,8 +251,6 @@ public class Cart implements Initializable {
                     "           Left JOIN tbl_discount as td  ON ( tp.discount_id = td.discount_id )\n" +
                     "           Left Join tbl_product_tax as tpt  on ( tp.tax_id = tpt.tax_id )\n" +
                     "           LEFT JOIN tbl_category as tcategory ON (tp.category_id = tcategory.category_id) order by cart_id ASC";
-
-
             ps = connection.prepareStatement(query);
             rs = ps.executeQuery();
 
@@ -304,10 +301,13 @@ public class Cart implements Initializable {
 
                 double netAmount = (amountAsPerMrp - disAmount);
 
+                String priceType = rs.getString("price_type");
+                int pcsPerPkt = rs.getInt("pcs_per_packet");
+
                 cartList.add(new CartModel(cartId, productId, stockID, discountId, taxId, sellerId, productName, product_type,
                         productCategory, purchasePrice, productMRP, minSellPrice, sellingPrice, height, width,
                         sizeUnit, quantityUnit, totalDisStr, totalGstPer, quantity, productColor, discount_name,
-                        disAmount, hsn_sac, Math.round(netAmount), gstAmount, sgst, cgst, igst, taxStr, discountPer));
+                        disAmount, hsn_sac, Math.round(netAmount), gstAmount, sgst, cgst, igst, taxStr, discountPer , priceType , pcsPerPkt));
 
                 subTotAmount += amountAsPerMrp;
                 discountPrice += disAmount;
@@ -321,9 +321,7 @@ public class Cart implements Initializable {
             taxL.setText(String.valueOf(Math.round(gstPrice)));
             totalPayAbleL.setText(String.valueOf(Math.ceil(totalPayableD)));
             taxableValueL.setText(String.valueOf(totTaxable));
-
             duesAmountTF.setText(String.valueOf(Math.ceil(totalPayableD)));
-
 
             addDiscTF.textProperty().addListener((observableValue, s, t1) -> {
 
@@ -588,7 +586,6 @@ public class Cart implements Initializable {
 
     public void checkOutBn(ActionEvent event) {
 
-
         if (cartList.size() < 1) {
             customDialog.showAlertBox("NOT AVAILABLE", "ITEM NOT AVAILABLE PLEASE ADD AT LEAST ONE ITEM");
             return;
@@ -731,7 +728,8 @@ public class Cart implements Initializable {
         }
     }
     private void addSaleItem(int customerId, String billingType,
-                             double receivedAmountD, ActionEvent event, Map<String, Object> receiveMap) throws SQLException {
+                             double receivedAmountD, ActionEvent event, Map<String, Object> receiveMap)
+            throws SQLException {
 
         double additionalDisc = 0;
         try {
@@ -763,21 +761,20 @@ public class Cart implements Initializable {
         }
 
         long timestamp = System.currentTimeMillis();
-
         ObservableList<CartModel> items = cartTableView.getItems();
+
         Connection connection = null;
         PreparedStatement ps = null, ps1 = null, ps3 = null, psDues = null;
         ResultSet rsMain = null;
 
         int res = 0;
-
         connection = dbconnection.getConnection();
 
         double addiDisc = 0;
         try {
             addiDisc = Double.parseDouble(addDiscTF.getText());
-        } catch (NumberFormatException ignored) {
-        }
+        } catch (NumberFormatException ignored) {}
+
         try {
             String saleMainQuery = "INSERT INTO tbl_sale_main(CUSTOMER_ID, SELLER_ID, ADDITIONAL_DISCOUNT, RECEIVED_AMOUNT," +
                     " PAYMENT_MODE, TOT_DISC_AMOUNT,\n" +
@@ -815,7 +812,6 @@ public class Cart implements Initializable {
                 if (rsMain.next()) {
 
                     int sale_main_id = rsMain.getInt(1);
-
                     if (duesAmtD > 0) {
                         String duesQuery = "INSERT INTO tbl_dues (CUSTOMER_ID, SALE_MAIN_ID, DUES_AMOUNT," +
                                 " DUES_NOTES, PAYMENT_MODE, LAST_PAYMENT,INVOICE_NUMBER)\n" +
@@ -831,16 +827,29 @@ public class Cart implements Initializable {
                         psDues.executeUpdate();
                     }
 
+
+
+
                     for (CartModel model : items) {
 
+
+
+
+                        String quantityUnit = model.getFullQuantity().split(" -")[1];
+                        int q = Integer.parseInt(model.getFullQuantity().split(" -")[0]);
+                        int qty ;
+                        if (quantityUnit.equals("PKT")){
+                            qty = (q*model.getPcsPerPacket());
+                        }else {
+                            qty = q;
+                        }
                         res = 0;
                         String query = "INSERT INTO tbl_saleItems (sale_main_id, product_id, stock_id, product_name, product_color, \n" +
                                 "                           product_category, product_type, product_size, purchase_price, product_mrp, sell_price,\n" +
                                 "                           product_quantity, discount_name, discount_amount, hsn_sac, igst, sgst, cgst," +
-                                " net_amount, tax_amount,SALE_DATE,discountPer) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                                " net_amount, tax_amount,SALE_DATE,discountPer ,PRICE_TYPE , PCS_PER_PACKET) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
                         ps = connection.prepareStatement(query);
-
                         ps.setInt(1, sale_main_id);
                         ps.setInt(2, model.getProductId());
                         ps.setInt(3, model.getProductStockID());
@@ -853,7 +862,6 @@ public class Cart implements Initializable {
                         ps.setDouble(10, model.getProductMRP());
                         ps.setDouble(11, model.getSellingPrice());
                         ps.setString(12, model.getFullQuantity());
-
                         if (null != model.getDiscountName()) {
                             ps.setString(13, model.getDiscountName());
                         } else {
@@ -868,11 +876,12 @@ public class Cart implements Initializable {
                         ps.setDouble(20, model.getGstAmount());
                         ps.setTimestamp(21, new Timestamp(timestamp));
                         ps.setDouble(22, model.getDiscountPercentage());
-
+                        ps.setString(23, model.getPriceType());
+                        ps.setInt(24, model.getPcsPerPacket());
                         res = ps.executeUpdate();
                         if (res > 0) {
                             ps1 = connection.prepareStatement("update tbl_product_stock set quantity = quantity-? where stock_id = ?");
-                            ps1.setInt(1, model.getQuantity());
+                            ps1.setInt(1, qty);
                             ps1.setInt(2, model.getProductStockID());
                             res = ps1.executeUpdate();
                         }
@@ -904,9 +913,8 @@ public class Cart implements Initializable {
 
             e.printStackTrace();
         } finally {
+
             DBConnection.closeConnection(connection, ps, null);
-
-
             if (null != rsMain) {
                 rsMain.close();
             }

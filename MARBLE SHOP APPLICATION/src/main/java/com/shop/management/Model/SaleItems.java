@@ -4,16 +4,14 @@ public class SaleItems {
 
     private int sale_item_Id, productId, stockId;
     private String productName, productColor, productSize, productType, productCategory;
-    private double purchasePrice, mrp, sellPrice , discountAmount,taxAmount, netAmount;
+    private double purchasePrice, mrp , discountAmount,taxAmount, netAmount;
     private String discountName, quantity;
     private int hsnSac, tax ,  igst , cgst , sgst;
-    private String sellingDate , discountPer;
+    private String sellingDate , discountPer , sellPrice;
 
-    public SaleItems(int sale_item_Id, int productId, int stockId, String productName,
-                     String productColor, String productSize, String productType,
-                     String productCategory, double purchasePrice, double mrp,
-                     double sellPrice, double discountAmount, double taxAmount, double netAmount,
-                     String discountName, String quantity, int hsnSac, int tax, int igst, int cgst, int sgst , String sellingDate, String discountPer ) {
+    public SaleItems(int sale_item_Id, int productId, int stockId, String productName, String productColor, String productSize, String productType,
+                     String productCategory, double purchasePrice, double mrp, double discountAmount, double taxAmount, double netAmount,
+                     String discountName, String quantity, int hsnSac, int tax, int igst, int cgst, int sgst, String sellingDate, String discountPer, String sellPrice) {
         this.sale_item_Id = sale_item_Id;
         this.productId = productId;
         this.stockId = stockId;
@@ -24,7 +22,6 @@ public class SaleItems {
         this.productCategory = productCategory;
         this.purchasePrice = purchasePrice;
         this.mrp = mrp;
-        this.sellPrice = sellPrice;
         this.discountAmount = discountAmount;
         this.taxAmount = taxAmount;
         this.netAmount = netAmount;
@@ -37,6 +34,7 @@ public class SaleItems {
         this.sgst = sgst;
         this.sellingDate = sellingDate;
         this.discountPer = discountPer;
+        this.sellPrice = sellPrice;
     }
 
     public String getDiscountPer() {
@@ -135,11 +133,10 @@ public class SaleItems {
         this.mrp = mrp;
     }
 
-    public double getSellPrice() {
+    public String getSellPrice() {
         return sellPrice;
     }
-
-    public void setSellPrice(double sellPrice) {
+    public void setSellPrice(String sellPrice) {
         this.sellPrice = sellPrice;
     }
 

@@ -3,6 +3,7 @@ package com.shop.management.Controller;
 import com.shop.management.CustomDialog;
 import com.shop.management.Main;
 import com.shop.management.Method.Method;
+import com.shop.management.Method.StaticData;
 import com.shop.management.Model.Products;
 import com.shop.management.PropertiesLoader;
 import com.shop.management.util.DBConnection;
@@ -34,6 +35,8 @@ public class AddSize implements Initializable {
     public ComboBox<String> productQuantityUnit;
     private static final String REGEX = "[^0-9.]";
     public Button bnAddSize;
+    public ComboBox<String> priceTypeC;
+    public ComboBox<Integer> pcsPerPacket;
     private Products products;
     private Method method;
     private CustomDialog customDialog;
@@ -53,6 +56,11 @@ public class AddSize implements Initializable {
         productSizeUnit.setItems(method.getSizeUnit());
         productQuantityUnit.setItems(method.getSizeQuantityUnit());
 
+        StaticData sd = new StaticData();
+        priceTypeC.setItems(sd.getSizeQuantityUnit());
+        pcsPerPacket.setItems(sd.getPcsPerPacketList());
+        pcsPerPacket.getSelectionModel().selectFirst();
+
         purchasePrice.textProperty().addListener((observableValue, old, newValue) -> {
 
             double purchasePrice_d = 0, minPrice = 0;
@@ -69,7 +77,6 @@ public class AddSize implements Initializable {
             minSellPrice.setText(String.valueOf(minPrice));
 
         });
-
     }
 
     public void enterPress(KeyEvent key) {
@@ -136,6 +143,12 @@ public class AddSize implements Initializable {
             method.show_popup("ENTER MINIMUM SELLING PRICE LESS THAN MRP", minSellPrice);
             return;
 
+        }else  if (priceTypeC.getSelectionModel().isEmpty()){
+            method.show_popup("PLEASE SELECT PRICE TYPE", priceTypeC);
+            return;
+        } else if (pcsPerPacket.getSelectionModel().isEmpty()){
+            method.show_popup("PLEASE SELECT PCS PER PACKET", pcsPerPacket);
+            return;
         }
         if (heightS.isEmpty()) {
             method.show_popup("ENTER PRODUCT HEIGHT", productHeight);
@@ -179,6 +192,9 @@ public class AddSize implements Initializable {
         String sizeUnit = productSizeUnit.getValue();
         String quantityUnit = productQuantityUnit.getValue();
 
+        String priceTypeS = priceTypeC.getSelectionModel().getSelectedItem();
+        int pcsPerPkt = pcsPerPacket.getSelectionModel().getSelectedItem();
+
         Connection connection = null;
         PreparedStatement ps = null;
 
@@ -192,7 +208,7 @@ public class AddSize implements Initializable {
             long qty ;
 
             if (quantityUnit.equals("PKT")){
-                qty = (quantity*Method.PER_PACKET_PCS);
+                qty = (quantity*pcsPerPkt);
             }else {
                 qty =quantity;
             }
@@ -207,6 +223,9 @@ public class AddSize implements Initializable {
             ps.setLong(7, qty);
             ps.setString(8, "PCS");
             ps.setInt(9, products.getProductID());
+
+            ps.setString(10, priceTypeS);
+            ps.setInt(11, pcsPerPkt);
 
             int res = ps.executeUpdate();
 

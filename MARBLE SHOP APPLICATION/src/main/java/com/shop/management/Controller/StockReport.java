@@ -127,7 +127,7 @@ public class StockReport implements Initializable {
             }
 
             String query = "select (select  count(stock_id) as totalItem from tbl_product_stock ), tp.product_id , tps.stock_id , tp.product_code , tps.purchase_price , tps.product_mrp , tps.min_sellingprice,\n" +
-                    "       tps.quantity , tp.product_type , tc.category_name ,concat(tps.quantity,' -',tps.quantity_unit) as fullQuantity ,\n" +
+                    "       tps.quantity , tps.quantity_unit,tps.pcs_per_packet , tp.product_type , tc.category_name ,concat(tps.quantity,' -',tps.quantity_unit) as fullQuantity ,\n" +
                     "       concat(tps.height,'x' , tps.width ,' ' ,tps.size_unit) as size  , tp.product_color from tbl_product_stock tps\n" +
                     " left join tbl_products tp on tps.product_id = tp.product_id\n" +
                     " left join tbl_category tc on tp.category_id = tc.category_id order by tps.stock_id asc ";
@@ -137,12 +137,11 @@ public class StockReport implements Initializable {
 
             rs = ps.executeQuery();
 
-            int totOutOfStock = 0;
-
             while (rs.next()) {
 
                 int productId = rs.getInt("product_id");
                 int stockId = rs.getInt("stock_id");
+                int pcaPerPkt = rs.getInt("pcs_per_packet");
 
                 String productCode = rs.getString("product_code");
 
@@ -154,9 +153,22 @@ public class StockReport implements Initializable {
 
                 String category = rs.getString("category_name");
                 String type = rs.getString("product_type");
-                String fullQuantity = rs.getString("fullQuantity");
+              //  String fullQuantity = rs.getString("fullQuantity");
                 String size = rs.getString("size");
                 String color = rs.getString("product_color");
+                String quantityUnit = rs.getString("quantity_unit");
+
+                String fullQuantity;
+
+                if (quantityUnit.equals("PCS")){
+
+                    int pkt = quantity / pcaPerPkt;
+                    int pcs = quantity % pcaPerPkt;
+
+                    fullQuantity = pkt+" - PKT , " + pcs+" - PCS";
+                }else {
+                    fullQuantity = quantity+" - "+quantityUnit;
+                }
 
 
                 switch (filterBy) {
@@ -342,7 +354,6 @@ public class StockReport implements Initializable {
     }
 
     private void setOptionalCells() {
-        final int[] count = {1};
 
         Callback<TableColumn<StockMainModel, String>, TableCell<StockMainModel, String>>
                 cellFactory = (TableColumn<StockMainModel, String> param) -> new TableCell<>() {
@@ -392,7 +403,7 @@ public class StockReport implements Initializable {
                     reStock.setOnMouseClicked(mouseEvent -> {
                         StockMainModel smm = tableView.getSelectionModel().getSelectedItem();
                         Main.primaryStage.setUserData(smm);
-                        customDialog.showFxmlDialog("stock/reStock.fxml", "");
+                        customDialog.showFxmlDialog2("stock/reStock.fxml", "");
                         filterBy();
                     });
                     HBox managebtn = new HBox(status, reStock);

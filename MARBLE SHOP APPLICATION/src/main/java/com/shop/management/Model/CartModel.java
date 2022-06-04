@@ -3,19 +3,13 @@ package com.shop.management.Model;
 import java.math.BigDecimal;
 
 public class CartModel {
-
     private int cartId, productId,productStockID , discountId, taxId, sellerId;
-
     private String productName, type, category ;
-
     private double purchasePrice, productMRP, minSellPrice, sellingPrice, height, width;
-
     private String sizeUnit, quantityUnit  ,  totalDiscountStr;
-
     private double totalTaxPer;
 
     public String fullSize, fullQuantity;
-
     private int quantity;
     private String productColor , discountName  ;
     private long hsn;
@@ -23,11 +17,13 @@ public class CartModel {
     private double sgst , csgt , igst;
     private String totalTaxStr ;
     private  double discountPercentage;
+    private String priceType;
+    private int pcsPerPacket;
 
     public CartModel(int cartId, int productId, int productStockID, int discountId, int taxId, int sellerId, String productName, String type, String category, double purchasePrice, double productMRP,
                      double minSellPrice, double sellingPrice, double height, double width, String sizeUnit, String quantityUnit, String totalDiscountStr, double totalTaxPer,
                      int quantity, String productColor, String discountName, double discountAmount ,
-                     long hsn, double netAmount, double gstAmount, double sgst, double csgt, double igst, String totalTaxStr, double discountPercentage) {
+                     long hsn, double netAmount, double gstAmount, double sgst, double csgt, double igst, String totalTaxStr, double discountPercentage , String priceType, int pcsPerPacket) {
 
         this.cartId = cartId;
         this.productId = productId;
@@ -60,6 +56,36 @@ public class CartModel {
         this.igst = igst;
         this.totalTaxStr = totalTaxStr;
         this.discountPercentage = discountPercentage;
+        this.priceType = priceType;
+        this.pcsPerPacket = pcsPerPacket;
+    }
+
+    public void setSgst(double sgst) {
+        this.sgst = sgst;
+    }
+
+    public void setCsgt(double csgt) {
+        this.csgt = csgt;
+    }
+
+    public void setIgst(double igst) {
+        this.igst = igst;
+    }
+
+    public String getPriceType() {
+        return priceType;
+    }
+
+    public void setPriceType(String priceType) {
+        this.priceType = priceType;
+    }
+
+    public int getPcsPerPacket() {
+        return pcsPerPacket;
+    }
+
+    public void setPcsPerPacket(int pcsPerPacket) {
+        this.pcsPerPacket = pcsPerPacket;
     }
 
     public double getDiscountPercentage() {

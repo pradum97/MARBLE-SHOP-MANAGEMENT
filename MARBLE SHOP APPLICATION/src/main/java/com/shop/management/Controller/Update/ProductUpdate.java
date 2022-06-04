@@ -212,11 +212,16 @@ public class ProductUpdate implements Initializable {
 
         if (e.getCode() == KeyCode.ENTER) {
 
-            bnUpdate(null);
+            update(e.getSource());
         }
     }
 
     public void bnUpdate(ActionEvent event) {
+
+      update(event.getSource());
+    }
+
+    private void update(Object source) {
 
         String prodName = productName.getText();
         String prodCode = productCodeTF.getText();
@@ -287,7 +292,8 @@ public class ProductUpdate implements Initializable {
             int res = ps.executeUpdate();
 
             if (res > 0) {
-                Stage stage = CustomDialog.stage;
+                Main.primaryStage.setUserData(true);
+                Stage stage = (Stage) ((Node) source).getScene().getWindow();
                 if (stage.isShowing()) {
                     stage.close();
                 }
@@ -299,6 +305,7 @@ public class ProductUpdate implements Initializable {
             DBConnection.closeConnection(connection , ps, null);
         }
     }
+
     public void cancel(ActionEvent event) {
         Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
         if (stage.isShowing()){
