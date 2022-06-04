@@ -38,7 +38,6 @@ public class PayDues implements Initializable {
     private DecimalFormat df = new DecimalFormat("0.##");
     private Method method;
     private Properties propInsert , propUpdate ;
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         method = new Method();

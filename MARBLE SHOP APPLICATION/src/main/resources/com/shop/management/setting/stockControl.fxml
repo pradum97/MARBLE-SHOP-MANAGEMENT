@@ -37,7 +37,7 @@
    <center>
       <VBox alignment="CENTER" fillWidth="false" onKeyReleased="#enterPress" BorderPane.alignment="CENTER">
          <children>
-            <VBox fx:id="container" alignment="CENTER_RIGHT" fillWidth="false" onKeyReleased="#enterPress" spacing="20.0">
+            <VBox fx:id="container" alignment="CENTER_RIGHT" disable="true" fillWidth="false" onKeyReleased="#enterPress" spacing="20.0">
                <children>
                   <HBox alignment="CENTER" onKeyReleased="#enterPress" prefHeight="35.0" prefWidth="410.0" spacing="10.0">
                      <children>

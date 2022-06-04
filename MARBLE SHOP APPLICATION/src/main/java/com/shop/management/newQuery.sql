@@ -36,7 +36,9 @@ ALTER TABLE tbl_product_stock ADD COLUMN PRICE_TYPE VARCHAR(20) ,
 ALTER TABLE tbl_saleitems ADD COLUMN PRICE_TYPE VARCHAR(20) ,
                               ADD COLUMN PCS_PER_PACKET INTEGER;
 
-alter table tbl_cart add column price_type varchar(50)
+alter table tbl_cart add column price_type varchar(50);
+
+alter table proposal_items add column price_type varchar(50)
 
 -- update product
 

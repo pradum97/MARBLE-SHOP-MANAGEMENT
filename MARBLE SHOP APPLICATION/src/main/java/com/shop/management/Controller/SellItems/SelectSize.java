@@ -178,7 +178,6 @@ public class SelectSize implements Initializable {
         ResultSet rs = null;
 
         try {
-
             connection = dbConnection.getConnection();
             if (null == connection) {
                 return;

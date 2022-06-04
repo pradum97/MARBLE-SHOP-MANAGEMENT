@@ -36,8 +36,6 @@ import java.util.ResourceBundle;
 
 public class Cart implements Initializable {
     public TableView<CartModel> cartTableView;
-
-
     public TableColumn<CartModel, String> colProduct_name;
     public TableColumn<CartModel, String> colSize;
     public TableColumn<CartModel, String> colType;
@@ -642,7 +640,7 @@ public class Cart implements Initializable {
                         ps = null;
                         res = 0;
 
-                        String itemsQuery = "INSERT INTO PROPOSAL_ITEMS (PROPOSAL_MAIN_ID, PRODUCT_ID, SELLPrice, STOCK_ID, QUANTITY, QUANTITY_UNIT) VALUES (?, ?, ?, ?, ?, ?)";
+                        String itemsQuery = "INSERT INTO PROPOSAL_ITEMS (PROPOSAL_MAIN_ID, PRODUCT_ID, SELLPrice, STOCK_ID, QUANTITY, QUANTITY_UNIT , price_type) VALUES (?,?, ?, ?, ?, ?, ?)";
                         for (CartModel cm : cartList) {
                             ps = connection.prepareStatement(itemsQuery);
                             ps.setInt(1, proposalMainId);
@@ -651,6 +649,7 @@ public class Cart implements Initializable {
                             ps.setInt(4, cm.getProductStockID());
                             ps.setInt(5, cm.getQuantity());
                             ps.setString(6, cm.getQuantityUnit());
+                            ps.setString(7, cm.getPriceType());
                             res = ps.executeUpdate();
                         }
                         if (res > 0) {
@@ -734,8 +733,7 @@ public class Cart implements Initializable {
         double additionalDisc = 0;
         try {
             additionalDisc = Double.parseDouble(addDiscTF.getText());
-        } catch (NumberFormatException ignored) {
-        }
+        } catch (NumberFormatException ignored) {}
 
         String paytmModeS = paymentModeC.getSelectionModel().getSelectedItem();
         double duesAmtD = 0, paidAmount = 0;
@@ -827,13 +825,7 @@ public class Cart implements Initializable {
                         psDues.executeUpdate();
                     }
 
-
-
-
                     for (CartModel model : items) {
-
-
-
 
                         String quantityUnit = model.getFullQuantity().split(" -")[1];
                         int q = Integer.parseInt(model.getFullQuantity().split(" -")[0]);
@@ -886,6 +878,8 @@ public class Cart implements Initializable {
                             res = ps1.executeUpdate();
                         }
                     }
+
+
                     if (res > 0) {
 
                         addDiscTF.setText(String.valueOf(0));

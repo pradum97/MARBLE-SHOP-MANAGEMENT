@@ -241,11 +241,6 @@ public class ProposalMain implements Initializable {
 
                                 connection = dbConnection.getConnection();
 
-                                if (null == connection) {
-                                    System.out.println("Select Size : Connection Failed");
-                                    return;
-                                }
-
                                 ps = connection.prepareStatement("select count(cart_id) from tbl_cart");
                                 rs = ps.executeQuery();
 
@@ -258,7 +253,7 @@ public class ProposalMain implements Initializable {
                                         ps = null;
                                         rs = null;
 
-                                        String query = "select pi.product_id , pi.stock_id , pi.quantity_unit , pi.quantity , pi.sellprice  from proposal_items pi\n" +
+                                        String query = "select pi.product_id , pi.stock_id , pi.price_type , pi.quantity_unit , pi.quantity , pi.sellprice  from proposal_items pi\n" +
                                                 "left join proposal_main pm on pi.proposal_main_id = pm.proposal_main_id where pi.proposal_main_id = ?";
 
                                         ps = connection.prepareStatement(query);
@@ -275,6 +270,7 @@ public class ProposalMain implements Initializable {
                                             int stockId = rs.getInt("stock_id");
                                             int quantity = rs.getInt("quantity");
                                             String qtyUnit = rs.getString("quantity_unit");
+                                            String priceType = rs.getString("price_type");
                                             double rate = rs.getDouble("sellprice");
 
                                             ps = connection.prepareStatement(new PropertiesLoader().getInsertProp().getProperty("INSERT_CART_DETAILS"));
@@ -284,10 +280,9 @@ public class ProposalMain implements Initializable {
                                             ps.setInt(4, stockId);
                                             ps.setDouble(5, quantity);
                                             ps.setString(6, qtyUnit);
+                                            ps.setString(7, priceType);
 
                                              res = ps.executeUpdate();
-
-
                                         }
 
                                         if (res > 0) {

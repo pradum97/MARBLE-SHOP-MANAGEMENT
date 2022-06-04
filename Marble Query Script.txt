@@ -415,6 +415,7 @@ CREATE TABLE PROPOSAL_ITEMS
     SELLPrice         NUMERIC      NOT NULL,
     STOCK_ID          INTEGER      NOT NULL,
     QUANTITY          NUMERIC      NOT NULL,
+    price_type        varchar(50),
     QUANTITY_UNIT     VARCHAR(100) NOT NULL
 );
 
